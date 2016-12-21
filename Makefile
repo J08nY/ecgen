@@ -20,7 +20,7 @@ all: ecgen
 ecgen: ecgen.o $(GPO)
 	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
-gp2c: $(GPC)
+gp2c: $(GPC) $(GPH)
 
 $(GPO): $(GPC) $(GPH)
 	$(CC) $(GP_CFLAGS) -c -o $@ $< $(LIBS)
@@ -31,11 +31,13 @@ $(GPO): $(GPC) $(GPH)
 %.h %.c: %.gp
 	$(GP2C) $*.gp $(GPFLAGS) 2>/dev/null | { sed -u '/\/\*End of prototype\*\//q' >"$*.h"; echo '#include "$*.h"' >"$*.c"; cat >>"$*.c"; }
 
-.PHONY: clean clean-gp
+.PHONY: clean-all clean clean-gp
+
+clean-all: clean clean-gp
 
 clean:
 	rm -f ecgen
-	rm *.o
+	rm -f *.o
 
 clean-gp:
 	rm -f $(GPH)
