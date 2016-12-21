@@ -46,3 +46,7 @@ curve arithmetic and it's SEA point counting algorithm implementation.
 
 gen.sh script uses [OpenSSL](https://www.openssl.org/) to generate the random domain parameters,
 although any library/language can be used here, ecgen does not require OpenSSL.
+
+
+
+*© Eastern Seaboard Phishing Authority*
