@@ -1,34 +1,39 @@
 
 CC=gcc
 GP2C=gp2c
-CFLAGS=-g -O3 -Wall
-GP_CFLAGS=-g -O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC -I"/usr/include/x86_64-linux-gnu"
-STATIC_CFLAGS=-o points.so -shared -g -O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC -Wl,-shared -Wl,-z,relro points.o -lc -lm -L/usr/lib/x86_64-linux-gnu -lpari
+
+INCLUDES=-I.
+
+CFLAGS=$(INCLUDES) -g -O3 -Wall
+GP_CFLAGS=$(INCLUDES) -g -O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC
 GPFLAGS=-g
+
 LIBS=-lpari -lreadline -ltermcap
 
-GP = points.c sea.c
-OBJ = points.o sea.o
-DEPS = points.h sea.h
+GP = points sea
+GPC = $(addsuffix .c, $(GP))
+GPO = $(addsuffix .o, $(GP))
+GPH = $(addsuffix .h, $(GP))
 
 all: ecgen
 
-ecgen: $(OBJ)
-	$(CC) -o $@ $^ $(CFLAGS) $(LIBS)
+ecgen: ecgen.o $(GPO)
+	$(CC) $(CFLAGS) -o $@ $^  $(LIBS)
 
-gp2c: $(GP)
+gp2c: $(GPC)
 
-$(OBJ): $(GP)
-	$(CC) -c -o $@ $< $(GP_CFLAGS)
+$(GPO): $(GPC) $(GPH)
+	$(CC) $(GP_CFLAGS) -c -o $@ $< $(LIBS)
 
-%.o: %.c
-	$(CC) -c -o $@ $< $(CFLAGS)
+%.o: %.c $(GPH)
+	$(CC) $(CFLAGS) -c -o $@ $< $(LIBS)
 
-%.c: %.gp
-	$(GP2C) -o $(basename $@).gp.c $< $(GPFLAGS)
-	{ sed -n '/\/\*End of prototype\*\//q;p'; cat >"$@"; } < $(basename $@).gp.c > $(basename $@).h
+%.h %.c: %.gp
+	$(GP2C) $*.gp $(GPFLAGS) 2>/dev/null | { sed -u '/\/\*End of prototype\*\//q' >"$*.h"; echo '#include "$*.h"' >"$*.c"; cat >>"$*.c"; }
 
 .PHONY: clean
 
 clean:
+	rm -f ecgen
 	rm *.o
+	rm -f $(GPH)

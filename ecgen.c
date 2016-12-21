@@ -4,8 +4,8 @@
 #include <stdio.h>
 #include <readline/readline.h>
 
-#include "points.c"
-#include "sea.c"
+#include "points.h"
+#include "sea.h"
 
 char *readHex() {
     char *r = readline(NULL);
@@ -38,7 +38,7 @@ int main(int argc, char * argv[]) {
 	init_sea();
 	pari_init( 1e9, 1e8 );
 	
-	default0("datadir","./data");
+	//default0("datadir","./data");
 
 	char *sp = readHex();
 	char *sa = readHex();

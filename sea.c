@@ -1,22 +1,4 @@
-/*-*- compile-command: "cc -c -o sea.o -g -O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC -I"/usr/include/x86_64-linux-gnu" sea.c && cc -o sea.so -shared -g -O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC -Wl,-shared -Wl,-z,relro sea.o -lc -lm -L/usr/lib/x86_64-linux-gnu -lpari"; -*-*/
-#include <pari/pari.h>
-/*
-GP;install("init_sea","v","init_sea","./sea.so");
-GP;install("largest_prime","D0,G,D0,G,D0,G,p","largest_prime","./sea.so");
-GP;install("smallest_prime","D0,G,D0,G,D0,G,p","smallest_prime","./sea.so");
-GP;install("all_prime","D0,G,D0,G,D0,G,p","all_prime","./sea.so");
-GP;install("small_pubkey","D0,G,D0,G,D0,G,p","small_pubkey","./sea.so");
-GP;install("print_params","vD0,G,","print_params","./sea.so");
-GP;install("print_params_pub","vD0,G,","print_params_pub","./sea.so");
-*/
-void init_sea(void);
-GEN largest_prime(GEN p, GEN a, GEN b, long prec);
-GEN smallest_prime(GEN p, GEN a, GEN b, long prec);
-GEN all_prime(GEN p, GEN a, GEN b, long prec);
-GEN small_pubkey(GEN p, GEN a, GEN b, long prec);
-void print_params(GEN curve);
-void print_params_pub(GEN curve);
-/*End of prototype*/
+#include "sea.h"
 
 void
 init_sea(void)	  /* void */
