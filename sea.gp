@@ -1,6 +1,6 @@
-\rpoints
-/* E(Fp): y^2 = x^3 + ax + b mod p
- * @returns [p, a, b, [G.x, G.y], n, h]
+/**
+ * E(Fp): y^2 = x^3 + ax + b mod p
+ * @returns [p, a, b, G.x, G.y, n, h], G has the largest prime order possible
  * @param p
  * @param a
  * @param b
@@ -12,11 +12,12 @@ largest_prime(p, a, b) = {
 	if(!o, return);
 
 	G = find_point(e, o, maxprime_order(o));
-	return([p, a, b, lift(G[1][1]), lift(G[1][2]), G[2], G[3]]);
+	return(pack_params(p, a, b, G));
 }
 
-/* E(Fp): y^2 = x^3 + ax + b mod p
- * @returns [p, a, b, G, n, h]
+/**
+ * E(Fp): y^2 = x^3 + ax + b mod p
+ * @returns [p, a, b, G.x, G.y, n, h], G has the smallest prime order possible
  * @param p
  * @param a
  * @param b
@@ -28,10 +29,28 @@ smallest_prime(p, a, b) = {
 	if(!o, return);
 
 	G = find_point(e, o, minprime_order(o));
-	return([p, a, b, lift(G[1][1]), lift(G[1][2]), G[2], G[3]]);
+	return(pack_params(p, a, b, G));
 }
 
-/* E(Fp): y^2 = x^3 + ax + b mod p
+/**
+ * E(Fp): y^2 = x^3 + ax + b mod p
+ * @returns [p, a, b, G.x, G.y, n, h=1], G is generator of E(Fp)
+ * @param p
+ * @param a
+ * @param b
+ */
+generator(p, a, b) = {
+	local(e, o, G);
+	e = ellinit([a, b], p);
+	o = ellsea(e);
+	if(!o, return);
+
+	G = find_point(e, o, o);
+	return(pack_params(p, a, b, G));
+}
+
+/**
+ * E(Fp): y^2 = x^3 + ax + b mod p
  * @returns vector of domain parameters [p, a, b, G, n, h]  points of all prime orders
  * @param p
  * @param a
@@ -44,50 +63,38 @@ all_prime(p, a, b) = {
 	if(!o, return);
 
 	G = find_points(e, o, prime_orders(o));
-	return(vector(length(G),X,[p, a, b, lift(G[X][1][1]), lift(G[X][1][2]), G[X][2], G[X][3]]));
+	return(vector(length(G),X,pack_params(p, a, b, G[X])));
 }
 
 /*####################################################################*/
 
-/* E(Fp): y^2 = x^3 + ax + b mod p
- * @returns [p, a, b, G.x, G.y, r, k, P.x, P.y, n]
+/**
+ * E(Fp): y^2 = x^3 + ax + b mod p
+ * @returns [p, a, b, G.x, G.y, r, k, P.x, P.y, n], G is generator of E(Fp), P has the smallest prime order
  */
-small_pubkey(p,a,b) =
-{
-	local(e, o, f, G, n, h, r, P);
-	e = ellinit([a,b],p);
+small_pubkey(p, a, b) = {
+	local(e, o, G, f, n, r, P);
+	e = ellinit([a, b], p);
 	o = ellsea(e);
 	if(!o, return);
 
 	if(isprime(o),
 		G = random(e);
 		n = o;
-		h = 1;
+		r = o;
 		P = random(e);
-		,
+	,
+		G = find_point(e, o, o);
 		f = factor(o);
-		f = vecsort(f);
-		n = f[1,2];
-		h = o\n;
-
-		\\printf("%s %u %u\n", f, n, h);
+		n = f[1,1];
+		/*
 		until(r % n == 0,
 			G = random(e);
 			r = ellorder(e, G);
-			\\printf("%s %s\n", G, r);
 		);
-		P = ellmul(e,G,r\n);
+		*/
+		P = ellmul(e, G, o\n);
 	);
 
-	return([p,a,b,lift(G[1]),lift(G[2]),r,o\r,lift(P[1]),lift(P[2]),n]);
-}
-
-print_params(curve) =
-{
-	printf("%x,%x,%x,%x,%x,%x,%x\n", curve[1], curve[2], curve[3], curve[4], curve[5], curve[6], curve[7]);
-}
-
-print_params_pub(curve) =
-{
-	printf("%x,%x,%x,%x,%x,%x,%x,%x,%x,%x\n", curve[1], curve[2], curve[3], curve[4], curve[5], curve[6], curve[7], curve[8], curve[9], curve[10]);
+	return([p, a, b, lift(G[1]), lift(G[2]), r, o\r, lift(P[1]), lift(P[2]), n]);
 }

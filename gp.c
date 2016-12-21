@@ -8,7 +8,43 @@ init_gp(void)	  /* void */
   return;
 }
 
-/* Finds random point of order n on curve e of order o.
+void
+print_params(GEN curve)	  /* void */
+{
+  pari_sp ltop = avma;
+  printf0("%x,%x,%x,%x,%x,%x,%x\n", mkvecn(7, gel(curve, 1), gel(curve, 2), gel(curve, 3), gel(curve, 4), gel(curve, 5), gel(curve, 6), gel(curve, 7)));
+  avma = ltop;
+  return;
+}
+
+void
+print_params_pub(GEN curve)	  /* void */
+{
+  pari_sp ltop = avma;
+  printf0("%x,%x,%x,%x,%x,%x,%x,%x,%x,%x\n", mkvecn(10, gel(curve, 1), gel(curve, 2), gel(curve, 3), gel(curve, 4), gel(curve, 5), gel(curve, 6), gel(curve, 7), gel(curve, 8), gel(curve, 9), gel(curve, 10)));
+  avma = ltop;
+  return;
+}
+
+GEN
+pack_params(GEN p, GEN a, GEN b, GEN G)	  /* vec */
+{
+  pari_sp ltop = avma;
+  GEN p1 = gen_0;	  /* vec */
+  p1 = cgetg(8, t_VEC);
+  gel(p1, 1) = gcopy(p);
+  gel(p1, 2) = gcopy(a);
+  gel(p1, 3) = gcopy(b);
+  gel(p1, 4) = lift(gel(gel(G, 1), 1));
+  gel(p1, 5) = lift(gel(gel(G, 1), 2));
+  gel(p1, 6) = gcopy(gel(G, 2));
+  gel(p1, 7) = gcopy(gel(G, 3));
+  p1 = gerepilecopy(ltop, p1);
+  return p1;
+}
+
+/**
+* Finds random point of order n on curve e of order o.
 * @returns [[P.x, P.y], n, h]
 * @param e curve
 * @param o curve order
@@ -38,7 +74,8 @@ find_point(GEN e, GEN o, GEN n)	  /* vec */
   return p1;
 }
 
-/* Finds random points of orders given by vector p.
+/**
+* Finds random points of orders given by vector p.
 * @returns vector of points in format [[P.x, P.y], n, h]
 * @param e curve
 * @param o curve order
@@ -103,32 +140,6 @@ minprime_order(GEN e, GEN o)
   return gen_0;
 }
 
-GEN
-max_order(GEN e, GEN o)
-{
-  pari_sp ltop = avma;
-  o = gerepilecopy(ltop, o);
-  return o;
-}
-
-/* Finds a random point of order given by f(o).
-* @returns [[P.x, P.y], n, h]
-* with P being the point with order f(o).
-* @param e curve
-* @param o curve order
-* @param f function returning the point order, \in maxprime_order,
-*			minprime_order, max_order
-*/
-GEN
-get_point(GEN e, GEN o, GEN f)	  /* vec */
-{
-  pari_sp ltop = avma;
-  GEN p1 = gen_0;	  /* vec */
-  p1 = find_point(e, o, closure_callgen1(f, o));
-  p1 = gerepilecopy(ltop, p1);
-  return p1;
-}
-
 /*####################################################################*/
 
 GEN
@@ -163,24 +174,9 @@ prime_orders(GEN e, GEN o)
   return gen_0;
 }
 
-/* Finds random points of orders given by f(o).
-* @returns vector of points in format [[P.x, P.y], n, h]
-* @param e curve
-* @param o curve order
-* @param f function returning a vector of point orders
-*/
-GEN
-get_points(GEN e, GEN o, GEN f)	  /* vec */
-{
-  pari_sp ltop = avma;
-  GEN p1 = gen_0;	  /* vec */
-  p1 = find_points(e, o, closure_callgen1(f, o));
-  p1 = gerepilecopy(ltop, p1);
-  return p1;
-}
-
-/* E(Fp): y^2 = x^3 + ax + b mod p
-* @returns [p, a, b, [G.x, G.y], n, h]
+/**
+* E(Fp): y^2 = x^3 + ax + b mod p
+* @returns [p, a, b, G.x, G.y, n, h], G has the largest prime order possible
 * @param p
 * @param a
 * @param b
@@ -202,20 +198,14 @@ largest_prime(GEN p, GEN a, GEN b, long prec)
     return gen_0;
   }
   G = find_point(e, o, maxprime_order(o, gen_0));
-  p2 = cgetg(8, t_VEC);
-  gel(p2, 1) = gcopy(p);
-  gel(p2, 2) = gcopy(a);
-  gel(p2, 3) = gcopy(b);
-  gel(p2, 4) = lift(gel(gel(G, 1), 1));
-  gel(p2, 5) = lift(gel(gel(G, 1), 2));
-  gel(p2, 6) = gcopy(gel(G, 2));
-  gel(p2, 7) = gcopy(gel(G, 3));
+  p2 = pack_params(p, a, b, G);
   p2 = gerepilecopy(ltop, p2);
   return p2;
 }
 
-/* E(Fp): y^2 = x^3 + ax + b mod p
-* @returns [p, a, b, G, n, h]
+/**
+* E(Fp): y^2 = x^3 + ax + b mod p
+* @returns [p, a, b, G.x, G.y, n, h], G has the smallest prime order possible
 * @param p
 * @param a
 * @param b
@@ -237,19 +227,42 @@ smallest_prime(GEN p, GEN a, GEN b, long prec)
     return gen_0;
   }
   G = find_point(e, o, minprime_order(o, gen_0));
-  p2 = cgetg(8, t_VEC);
-  gel(p2, 1) = gcopy(p);
-  gel(p2, 2) = gcopy(a);
-  gel(p2, 3) = gcopy(b);
-  gel(p2, 4) = lift(gel(gel(G, 1), 1));
-  gel(p2, 5) = lift(gel(gel(G, 1), 2));
-  gel(p2, 6) = gcopy(gel(G, 2));
-  gel(p2, 7) = gcopy(gel(G, 3));
+  p2 = pack_params(p, a, b, G);
   p2 = gerepilecopy(ltop, p2);
   return p2;
 }
 
-/* E(Fp): y^2 = x^3 + ax + b mod p
+/**
+* E(Fp): y^2 = x^3 + ax + b mod p
+* @returns [p, a, b, G.x, G.y, n, h=1], G is generator of E(Fp)
+* @param p
+* @param a
+* @param b
+*/
+GEN
+generator(GEN p, GEN a, GEN b, long prec)
+{
+  pari_sp ltop = avma;
+  GEN e = gen_0, o = gen_0, G = gen_0;
+  GEN p1 = gen_0, p2 = gen_0;	  /* vec */
+  p1 = cgetg(3, t_VEC);
+  gel(p1, 1) = gcopy(a);
+  gel(p1, 2) = gcopy(b);
+  e = ellinit(p1, p, prec);
+  o = ellsea(e, 0);
+  if (gequal0(o))
+  {
+    avma = ltop;
+    return gen_0;
+  }
+  G = find_point(e, o, o);
+  p2 = pack_params(p, a, b, G);
+  p2 = gerepilecopy(ltop, p2);
+  return p2;
+}
+
+/**
+* E(Fp): y^2 = x^3 + ax + b mod p
 * @returns vector of domain parameters [p, a, b, G, n, h]  points of all prime orders
 * @param p
 * @param a
@@ -279,18 +292,7 @@ all_prime(GEN p, GEN a, GEN b, long prec)
     long X;
     p3 = cgetg(l2+1, t_VEC);
     for (X = 1; X <= l2; ++X)
-    {
-      GEN p4 = gen_0;	  /* vec */
-      p4 = cgetg(8, t_VEC);
-      gel(p4, 1) = gcopy(p);
-      gel(p4, 2) = gcopy(a);
-      gel(p4, 3) = gcopy(b);
-      gel(p4, 4) = lift(gel(gel(gel(G, X), 1), 1));
-      gel(p4, 5) = lift(gel(gel(gel(G, X), 1), 2));
-      gel(p4, 6) = gcopy(gel(gel(G, X), 2));
-      gel(p4, 7) = gcopy(gel(gel(G, X), 3));
-      gel(p3, X) = p4;
-    }
+      gel(p3, X) = pack_params(p, a, b, gel(G, X));
   }
   p3 = gerepilecopy(ltop, p3);
   return p3;
@@ -298,14 +300,15 @@ all_prime(GEN p, GEN a, GEN b, long prec)
 
 /*####################################################################*/
 
-/* E(Fp): y^2 = x^3 + ax + b mod p
-* @returns [p, a, b, G.x, G.y, r, k, P.x, P.y, n]
+/**
+* E(Fp): y^2 = x^3 + ax + b mod p
+* @returns [p, a, b, G.x, G.y, r, k, P.x, P.y, n], G is generator of E(Fp), P has the smallest prime order
 */
 GEN
 small_pubkey(GEN p, GEN a, GEN b, long prec)
 {
   pari_sp ltop = avma;
-  GEN e = gen_0, o = gen_0, f = gen_0, G = gen_0, n = gen_0, h = gen_0, r = gen_0, P = gen_0;
+  GEN e = gen_0, o = gen_0, G = gen_0, f = gen_0, n = gen_0, r = gen_0, P = gen_0;
   GEN p1 = gen_0, p2 = gen_0;	  /* vec */
   p1 = cgetg(3, t_VEC);
   gel(p1, 1) = gcopy(a);
@@ -321,28 +324,21 @@ small_pubkey(GEN p, GEN a, GEN b, long prec)
   {
     G = genrand(e);
     n = o;
-    h = gen_1;
+    r = o;
     P = genrand(e);
   }
   else
   {
+    G = find_point(e, o, o);
     f = factor(o);
-    f = vecsort0(f, NULL, 0);
-    n = gcopy(gcoeff(f, 1, 2));
-    h = gdivent(o, n);
-    /*printf("%s %u %u\n", f, n, h); */
-    {
-      pari_sp btop = avma;
-      do
-      {
-        G = genrand(e);
-        r = ellorder(e, G, NULL);
-        if (gc_needed(btop, 1))
-          gerepileall(btop, 2, &G, &r);
-      } while(!gequal0(gmod(r, n)));
-    }
-    /*printf("%s %s\n", G, r); */
-    P = ellmul(e, G, gdivent(r, n));
+    n = gcopy(gcoeff(f, 1, 1));
+    /*
+    until(r % n == 0,
+    G = random(e);
+    r = ellorder(e, G);
+    );
+    */
+    P = ellmul(e, G, gdivent(o, n));
   }
   p2 = cgetg(11, t_VEC);
   gel(p2, 1) = gcopy(p);
@@ -357,23 +353,5 @@ small_pubkey(GEN p, GEN a, GEN b, long prec)
   gel(p2, 10) = gcopy(n);
   p2 = gerepilecopy(ltop, p2);
   return p2;
-}
-
-void
-print_params(GEN curve)	  /* void */
-{
-  pari_sp ltop = avma;
-  printf0("%x,%x,%x,%x,%x,%x,%x\n", mkvecn(7, gel(curve, 1), gel(curve, 2), gel(curve, 3), gel(curve, 4), gel(curve, 5), gel(curve, 6), gel(curve, 7)));
-  avma = ltop;
-  return;
-}
-
-void
-print_params_pub(GEN curve)	  /* void */
-{
-  pari_sp ltop = avma;
-  printf0("%x,%x,%x,%x,%x,%x,%x,%x,%x,%x\n", mkvecn(10, gel(curve, 1), gel(curve, 2), gel(curve, 3), gel(curve, 4), gel(curve, 5), gel(curve, 6), gel(curve, 7), gel(curve, 8), gel(curve, 9), gel(curve, 10)));
-  avma = ltop;
-  return;
 }
 
