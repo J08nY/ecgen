@@ -30,7 +30,7 @@ maxprime_order(e, o) = {
 		return(o);
 	,
 		return(vecmax(factor(o)));
-    );
+	);
 }
 
 minprime_order(e, o) = {

@@ -83,10 +83,10 @@ small_pubkey(p,a,b) =
 
 print_params(curve) =
 {
-    printf("%x,%x,%x,%x,%x,%x,%x\n", curve[1], curve[2], curve[3], curve[4], curve[5], curve[6], curve[7]);
+	printf("%x,%x,%x,%x,%x,%x,%x\n", curve[1], curve[2], curve[3], curve[4], curve[5], curve[6], curve[7]);
 }
 
 print_params_pub(curve) =
 {
-    printf("%x,%x,%x,%x,%x,%x,%x,%x,%x,%x\n", curve[1], curve[2], curve[3], curve[4], curve[5], curve[6], curve[7], curve[8], curve[9], curve[10]);
+	printf("%x,%x,%x,%x,%x,%x,%x,%x,%x,%x\n", curve[1], curve[2], curve[3], curve[4], curve[5], curve[6], curve[7], curve[8], curve[9], curve[10]);
 }
