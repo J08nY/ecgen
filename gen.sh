@@ -17,9 +17,9 @@ b=$(openssl rand -hex $(($bits / 8)));
 params="$p\n$a\n$b\n";
 
 if [ "$#" -eq 4 ]; then
-	res=$(echo -e "$params" | timeout "$timeout" ecgen "$option");
+	res=$(echo -e "$params" | timeout "$timeout" ./ecgen "$option");
 else
-	res=$(echo -e "$params" | ecgen "$option");
+	res=$(echo -e "$params" | ./ecgen "$option");
 fi
 
 if [ "$?" -ne 0 ]; then
