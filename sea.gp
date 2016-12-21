@@ -1,3 +1,4 @@
+\rpoints
 /* E(Fp): y^2 = x^3 + ax + b mod p
  * @returns [p, a, b, [G.x, G.y], n, h]
  * @param p
@@ -10,7 +11,7 @@ largest_prime(p, a, b) = {
 	o = ellsea(e);
 	if(!o, return);
 
-	G = get_point(e, o, maxprime_point);
+	G = find_point(e, o, maxprime_order(o));
 	return([p, a, b, lift(G[1][1]), lift(G[1][2]), G[2], G[3]]);
 }
 
@@ -26,7 +27,7 @@ smallest_prime(p, a, b) = {
 	o = ellsea(e);
 	if(!o, return);
 
-	G = get_point(e, o, minprime_point);
+	G = find_point(e, o, minprime_order(o));
 	return([p, a, b, lift(G[1][1]), lift(G[1][2]), G[2], G[3]]);
 }
 
@@ -42,7 +43,7 @@ all_prime(p, a, b) = {
 	o = ellsea(e);
 	if(!o, return);
 
-	G = get_points(e, o, prime_orders);
+	G = find_points(e, o, prime_orders(o));
 	return(vector(length(G),X,[p, a, b, lift(G[X][1][1]), lift(G[X][1][2]), G[X][2], G[X][3]]));
 }
 

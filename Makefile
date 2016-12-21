@@ -10,7 +10,7 @@ GPFLAGS=-g
 
 LIBS=-lpari -lreadline -ltermcap
 
-GP = points sea
+GP = gp
 GPC = $(addsuffix .c, $(GP))
 GPO = $(addsuffix .o, $(GP))
 GPH = $(addsuffix .h, $(GP))
@@ -18,7 +18,7 @@ GPH = $(addsuffix .h, $(GP))
 all: ecgen
 
 ecgen: ecgen.o $(GPO)
-	$(CC) $(CFLAGS) -o $@ $^  $(LIBS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LIBS)
 
 gp2c: $(GPC)
 
