@@ -6,11 +6,11 @@ if [ "$#" -lt 3 ]; then
 fi
 
 option=$1
-keys=$2
+curves=$2
 bits=$3
 timeout=$4
 
-time for (( i=1; i <= "$keys"; i++ )); do
+time for (( i=1; i <= "$curves"; i++ )); do
 p=$(openssl prime -generate -hex -bits "$bits");
 a=$(openssl rand -hex $(($bits / 8)));
 b=$(openssl rand -hex $(($bits / 8)));
@@ -26,7 +26,7 @@ if [ "$?" -ne 0 ]; then
     i=$((i - 1));
 else
     r=($res);
-    echo "${r[3]}" | tee -a "$2b.curves";
+    echo "${r[3]}" | tee -a "${bits}b.curves";
 fi
 done
 
