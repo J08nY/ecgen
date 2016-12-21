@@ -31,9 +31,13 @@ $(GPO): $(GPC) $(GPH)
 %.h %.c: %.gp
 	$(GP2C) $*.gp $(GPFLAGS) 2>/dev/null | { sed -u '/\/\*End of prototype\*\//q' >"$*.h"; echo '#include "$*.h"' >"$*.c"; cat >>"$*.c"; }
 
-.PHONY: clean
+.PHONY: clean clean-gp
 
 clean:
 	rm -f ecgen
 	rm *.o
+
+clean-gp:
 	rm -f $(GPH)
+	rm -f $(GPC)
+	rm -f $(GPO)
