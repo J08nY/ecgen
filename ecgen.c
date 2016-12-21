@@ -6,8 +6,8 @@
 
 #include "gp.h"
 
-char *readHex() {
-    char *r = readline(NULL);
+char *readHex(const char* prompt) {
+    char *r = readline(prompt);
     size_t len = strlen(r);
     char *result = realloc(r, len + 3);
     memmove(result + 2, result, len);
@@ -39,13 +39,16 @@ int main(int argc, char * argv[]) {
 	
 	//default0("datadir","./data");
 
-	char *sp = readHex();
-	char *sa = readHex();
-	char *sb = readHex();
+	char *sp = readHex("p:");
+	char *sa = readHex("a:");
+	char *sb = readHex("b:");
 
 	GEN p = strtoi(sp);
 	GEN a = strtoi(sa);
 	GEN b = strtoi(sb);
+	free(sp);
+	free(sa);
+	free(sb);
 
 	GEN result = (*todo)(p, a, b, 0);
 	(*print)(result);
