@@ -23,7 +23,7 @@ the curve is then specified as `E(Fp): y^2 = x^3 + a x + b mod p`
 #### gen.sh
 Utility script, uses openssl to generate the *p*, *a*, *b* parameters
 required for ecgen.
-`gen.sh [-l|-s|-p] [num_curves] [prime_size] [timeout]`
+```gen.sh [-l|-s|-p] [num_curves] [prime_size] [timeout]```
 *p* is `prime_size` bits prime number, *a* and *b* are `prime_size` bits
 random numbers.
 This script will generate `num_curves` curves with random parameters.
