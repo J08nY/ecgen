@@ -26,12 +26,11 @@ required for ecgen.
 ```
 gen.sh [-l|-s|-p] [num_curves] [prime_size] [timeout]
 ```
-*p* is `prime_size` bits prime number, *a* and *b* are `prime_size` bits
-random numbers.
-This script will generate `num_curves` curves with random parameters.
+This script will generate `num_curves` curves with random `prime_size` bit size parameters.
 It requires a timeout value, as the curve order computation can get really
 slow for some unfortunate curve parameters, it is therefore more effective
 to skip those after some timeout.
+The `-l -s -p` options correspond to ecgen options.
 
 ### Build
 ```
