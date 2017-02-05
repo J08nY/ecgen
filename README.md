@@ -2,35 +2,19 @@
 
 Tool for generating Elliptic curve domain parameters.
 
-Currently only supports curves over prime fields.
-
 ### Usage
 
 #### ecgen
 The main binary of the tool, does the hard work.
 ```
-ecgen [-l|-s|-p]
-	-l for point with the largest prime order on the curve
-	-s for point with the smallest prime order on the curve
-	-p for a generator of the whole curve as well as a smallest prime order point(pubkey)
+ecgen --fp/--f2m -r BITS
 ```
-ecgen then reads three lines of input:
-* `p` - a prime number, in hex, without hex prefix
-* `a` - a random number, in hex, without hex prefix
-* `b` - a random number, in hex, without hex prefix
-the curve is then specified as `E(Fp): y^2 = x^3 + a x + b mod p`
-
-#### gen.sh
-Utility script, uses OpenSSL to generate the *p*, *a*, *b* parameters
-required for ecgen.
-```
-gen.sh [-l|-s|-p] [num_curves] [prime_size] [timeout]
-```
-This script will generate `num_curves` curves with random `prime_size` bit size parameters.
-It requires a timeout value, as the curve order computation can get really
-slow for some unfortunate curve parameters, it is therefore more effective
-to skip those after some timeout.
-The `-l -s -p` options correspond to ecgen options.
+ - `--fp`/`--f2m` specifies the field type(prime/binary).
+ - `-r` requests a random curve to be generated, currently only supported feature.
+ - `-o/--output FILE` writes output to `FILE`.
+ - `-i/--input FILE` reads input from `FILE`.
+ - `-a/--append` appends to output file(doesn't overwrite it).
+ - `-d/--datadir DIR` specifies the PARI/GP datadir containing the `seadata` and `elldata` packages.
 
 ### Build
 ```
@@ -43,9 +27,19 @@ make
 ecgen uses the [PARI/GP](http://pari.math.u-bordeaux.fr/) library for elliptic
 curve arithmetic and it's SEA point counting algorithm implementation.
 
-gen.sh script uses [OpenSSL](https://www.openssl.org/) to generate the random domain parameters,
-although any library/language can be used here, ecgen does not require OpenSSL.
+### License
+```
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
 
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
 
-
+You should have received a copy of the GNU General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+```
 *© Eastern Seaboard Phishing Authority*
