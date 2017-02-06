@@ -14,7 +14,7 @@ ecgen --fp/--f2m -r BITS
  - `-o/--output FILE` writes output to `FILE`.
  - `-i/--input FILE` reads input from `FILE`.
  - `-a/--append` appends to output file(doesn't overwrite it).
- - `-d/--datadir DIR` specifies the PARI/GP datadir containing the `seadata` and `elldata` packages.
+ - `-d/--datadir DIR` specifies the PARI/GP datadir containing the `seadata` package.
 
 ### Build
 ```
@@ -24,8 +24,14 @@ make
 ```
 
 ### Requirements
+ - PARI/GP
+ - parson
+
 ecgen uses the [PARI/GP](http://pari.math.u-bordeaux.fr/) library for elliptic
-curve arithmetic and it's SEA point counting algorithm implementation.
+curve arithmetic and it's SEA point counting algorithm implementation. It also requires the 
+additional [seadata](http://pari.math.u-bordeaux.fr/packages.html) package (seadata and seadata-big recommended for large curves).
+
+[parson](https://github.com/kgabis/parson) is used to output curve parameters in JSON format.
 
 ### License
 ```

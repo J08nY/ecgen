@@ -14,7 +14,8 @@
  *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
- * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301, USA.
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
+ * USA.
  */
 /**
  * @author J08nY <johny@neuromancer.sk>
@@ -24,27 +25,27 @@
 
 #include <time.h>
 #include "cli.h"
-#include "field.h"
 #include "curve.h"
 #include "output.h"
+#include "input.h"
 
-const char *argp_program_version = "ecgen 0.2\n"
-	"Copyright (C) 2017 J08nY\n"
-	"License GPLv2: GNU GPL version 2 (or later) <http://gnu.org/licenses/gpl.html>\n"
-	"This is free software: you are free to change and redistribute it.\n"
-	"There is NO WARRANTY, to the extent permitted by law.";
+const char *argp_program_version =
+    "ecgen 0.2\n"
+    "Copyright (C) 2017 J08nY\n"
+    "License GPLv2: GNU GPL version 2 (or later) "
+    "<http://gnu.org/licenses/gpl.html>\n"
+    "This is free software: you are free to change and redistribute it.\n"
+    "There is NO WARRANTY, to the extent permitted by law.";
 const char *argp_program_bug_address = "<johny@neuromancer.sk>";
 
 static struct argp argp = {options, parse_opt, args_doc, doc};
-static struct arguments args;
+static struct config_t cfg;
 static FILE *in;
 static FILE *out;
 
 bool init() {
 	// Init PARI, 1GB stack, 1M primes
 	pari_init(1000000000, 1000000);
-	init_gp();
-
 
 	// Init PARI PRNG
 	pari_ulong seed = 0;
@@ -58,9 +59,9 @@ bool init() {
 	if (seed == 0) {
 		struct timespec t;
 		if (!clock_gettime(CLOCK_REALTIME, &t)) {
-			seed = (pari_ulong) t.tv_nsec;
+			seed = (pari_ulong)t.tv_nsec;
 		} else {
-			seed = (pari_ulong) time(NULL);
+			seed = (pari_ulong)time(NULL);
 		}
 	}
 
@@ -68,32 +69,16 @@ bool init() {
 	setrand(utoi(seed));
 	avma = ltop;
 
-	//set datadir if specified
-	if (args.datadir) {
-		default0("datadir", args.datadir);
+	// set datadir if specified
+	if (cfg.datadir) {
+		default0("datadir", cfg.datadir);
 	}
 
-	//open outfile
-	out = stdout;
-	if (args.output) {
-		out = fopen(args.output, args.append ? "a" : "w");
-		if (!out) {
-			//fallback to stdout and output err
-			out = stdout;
-			perror("Failed to open output file.");
-		}
-	}
+	// open outfile
+	out = output_open(cfg.output, cfg.append);
 
-	//open infile
-	in = stdin;
-	if (args.input) {
-		in = fopen(args.input, "r");
-		if (!in) {
-			//fallback to stdin or quit?
-			in = stdin;
-			perror("Failed to open input file.");
-		}
-	}
+	// open infile
+	in = input_open(cfg.input);
 
 	return true;
 }
@@ -101,47 +86,33 @@ bool init() {
 int quit(int status) {
 	pari_close();
 
-	if (out != NULL && out != stdout) {
-		fclose(out);
-	}
-
-	if (in != NULL && in != stdout) {
-		fclose(in);
-	}
+	output_close(out);
+	input_close(in);
 
 	return status;
 }
 
 int main(int argc, char *argv[]) {
 	// Parse cli args
-	memset(&args, 0, sizeof(args));
-	argp_parse(&argp, argc, argv, 0, 0, &args);
-
+	memset(&cfg, 0, sizeof(cfg));
+	argp_parse(&argp, argc, argv, 0, 0, &cfg);
 
 	if (!init()) {
 		return quit(1);
 	}
 
-	if (args.random) {
-		GEN field = gen_0;
-		switch (args.field) {
-			case FIELD_PRIME:
-				field = field_primer(args.bits);
-				break;
-			case FIELD_BINARY:
-				field = field_binaryr(args.bits);
-				break;
+	if (cfg.random) {
+		curve_t *curve;
+		if (cfg.prime) {
+			curve = curve_primef(cfg.field, cfg.bits);
+		} else {
+			curve = curve_nonzerof(cfg.field, cfg.bits);
 		}
-		GEN curve = curve_random(field);
-		GEN ord = ellcard(curve, NULL);
 
-		GEN f = field_params(field);
-		GEN a = gtovec(field_elementi(ell_get_a4(curve)));
-		GEN b = gtovec(field_elementi(ell_get_a6(curve)));
+		output_csv(out, "%Px", ',', curve_params(curve));
 
-		GEN o = gconcat(gconcat(gconcat(f, a), b), gtovec(ord));
+		free_curve(&curve);
 
-		output_csv(out, ',', 'x', o);
 	} else {
 		fprintf(stderr, "Currently unsupported.");
 	}

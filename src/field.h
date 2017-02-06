@@ -6,7 +6,8 @@
 #define ECGEN_FIELD_H
 
 #include "poly.h"
-#include "gp.h"
+#include "random.h"
+#include "cli.h"
 
 /**
  *
@@ -23,9 +24,18 @@ GEN field_primer(long bits);
 GEN field_binaryr(long bits);
 
 /**
+ *
+ * @param t
+ * @param bits
+ * @return
+ */
+GEN field_random(enum field_e t, long bits);
+
+/**
  * Extract a field representation from a field.
  *  - char(field) == 2:
- *    returns the vector of powers of middle coefficients of the reduction polynomial.
+ *    returns the vector of powers of middle coefficients of the reduction
+ * polynomial.
  *  - char(field) != 2:
  *     returns the field characteristic(p).-
  *
@@ -34,6 +44,11 @@ GEN field_binaryr(long bits);
  */
 GEN field_params(GEN field);
 
+/**
+ *
+ * @param element
+ * @return
+ */
 GEN field_elementi(GEN element);
 
-#endif //ECGEN_FIELD_H
+#endif  // ECGEN_FIELD_H

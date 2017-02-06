@@ -9,22 +9,22 @@ CC=gcc
 GP2C=gp2c
 
 CFLAGS=-O3 -Wall
-LDFLAGS=
+LDFLAGS=-L../lib
 
 GP_CFLAGS=-O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC
 GPFLAGS=-g -i4
 
-INCLUDES=-I.
-LIBS=-lpari
+INCLUDES=-I. -I../lib
+LIBS=-lpari -lparson
 
 ####
 
-GP = gp
+GP =
 GPC = $(addsuffix .c, $(GP))
 GPO = $(addsuffix .o, $(GP))
 GPH = $(addsuffix .h, $(GP))
 
-SRC = cli input
+SRC = cli input output poly field curve random
 OBJ = $(addsuffix .o, $(SRC))
 HDR = $(addsuffix .h, $(SRC))
 
@@ -48,8 +48,6 @@ $(GPO): $(GPC) $(GPH)
 
 ####
 
-.PHONY: all gp2c clean-all clean clean-gp help
-
 clean-all: clean clean-gp
 
 clean:
@@ -70,3 +68,10 @@ help:
 	@echo " - clean : cleans up after a build"
 	@echo " - clean-gp : cleans up after gp2c generation"
 	@echo " - clean-all : cleans all"
+	@echo " - format : run clang-format on source files"
+
+format:
+	clang-format -i *.c
+	clang-format -i *.h
+
+.PHONY: all gp2c clean-all clean clean-gp help format

@@ -1,8 +1,6 @@
 ### Custom
-*.curves
-ecgen
 data/
-
+src/ecgen
 
 ### C template
 # Prerequisites
@@ -81,7 +79,7 @@ dkms.conf
 .idea/mongoSettings.xml
 
 ## CMake
-cmake-build-debug/
+build/
 
 ## File-based project format:
 *.iws

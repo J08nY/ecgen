@@ -4,36 +4,42 @@
  */
 #include "field.h"
 
-
-GEN field_primer(long bits) {
-	return random_prime(bits);
-}
-
+GEN field_primer(long bits) { return random_prime(bits); }
 
 GEN field_binaryr(long bits) {
 	if (poly_exists(bits)) {
 		return poly_find_gen(bits);
 	} else {
-		fprintf(stderr, "Unable to find a suitable binary field. Use an explicit one.");
+		fprintf(stderr,
+		        "Unable to find a suitable binary field. Use an explicit one.");
 		exit(1);
+	}
+}
+
+GEN field_random(enum field_e t, long bits) {
+	switch(t) {
+		case FIELD_PRIME:
+			return field_primer(bits);
+		case FIELD_BINARY:
+			return field_binaryr(bits);
+		default:
+			return gen_0; /* NOT REACHABLE */
 	}
 }
 
 GEN field_params(GEN field) {
 	pari_sp ltop = avma;
 
-	long l2;
 	if (typ(field) == t_INT) {
 		GEN p3 = cgetg(2, t_VEC);
 		gel(p3, 1) = gcopy(field);
-		p3 = gerepilecopy(ltop, p3);
-		return p3;
+		return gerepilecopy(ltop, p3);
 	}
 
 	GEN out = gtovec0(gen_0, 3);
 
 	long j = 1;
-	l2 = glength(member_mod(field)) - 2;
+	long l2 = glength(member_mod(field)) - 2;
 	{
 		pari_sp btop = avma;
 		for (GEN i = gen_1; gcmpgs(i, l2) <= 0; i = gaddgs(i, 1)) {
@@ -45,8 +51,7 @@ GEN field_params(GEN field) {
 			if (gc_needed(btop, 1)) gerepileall(btop, 4, &out, &c, &i);
 		}
 	}
-	out = gerepilecopy(ltop, out);
-	return out;
+	return gerepilecopy(ltop, out);
 }
 
 GEN field_elementi(GEN element) {

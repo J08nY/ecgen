@@ -5,13 +5,9 @@
 #ifndef ECGEN_INPUT_H
 #define ECGEN_INPUT_H
 
-#include "gp.h"
+#include "random.h"
 
-typedef enum PARAM {
-	PARAM_PRIME,
-	PARAM_INT,
-	PARAM_SHORT
-} param_t;
+typedef enum PARAM { PARAM_PRIME, PARAM_INT, PARAM_SHORT } param_t;
 
 /**
  *
@@ -42,10 +38,13 @@ GEN fread_int(FILE *stream, const char *prompt, long bits, int delim);
  */
 GEN fread_short(FILE *stream, const char *prompt, int delim);
 
-
-GEN fread_param(param_t param, FILE *stream, const char *prompt, long bits, int delim);
+GEN fread_param(param_t param, FILE *stream, const char *prompt, long bits,
+                int delim);
 
 GEN read_param(param_t param, const char *prompt, long bits, int delim);
 
+FILE *input_open(const char *input);
 
-#endif //ECGEN_INPUT_H
+void input_close(FILE *in);
+
+#endif  // ECGEN_INPUT_H

@@ -6,7 +6,7 @@
 #define ECGEN_POLY_H
 
 #include <stdbool.h>
-#include "gp.h"
+#include <pari/pari.h>
 
 typedef struct polynomial {
 	int m;
@@ -45,4 +45,4 @@ GEN poly_find_gen(long m);
  */
 GEN poly_gen(polynomial_t *polynomial);
 
-#endif //ECGEN_POLY_H
+#endif  // ECGEN_POLY_H

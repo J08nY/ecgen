@@ -1,7 +1,10 @@
 cmake_minimum_required(VERSION 2.8.11)
 project(ecgen)
 
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -Wall")
+set(CMAKE_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/lib)
+
+SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -Wall")
+SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall")
 
 add_custom_command(
         OUTPUT gp.c gp.h
@@ -14,10 +17,12 @@ add_custom_command(
 add_custom_target(gp2c ALL DEPENDS gp.c gp.h)
 
 include_directories(src)
+include_directories(lib)
 
 file(GLOB SOURCES "src/*.c")
 
 add_executable(ecgen ${SOURCES})
-add_dependencies(ecgen gp2c)
 
 target_link_libraries(ecgen pari)
+find_library(parson parson/libparson.a)
+target_link_libraries(ecgen ${parson})

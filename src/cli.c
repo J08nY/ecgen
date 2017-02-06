@@ -4,87 +4,97 @@
  */
 #include "cli.h"
 
-char doc[] = "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 Eastern Seaboard Phishing Authority";
+char doc[] =
+    "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
+    "Eastern Seaboard Phishing Authority";
 char args_doc[] = "bits";
 
 enum opt_keys {
 	OPT_DATADIR = 'd',
-	OPT_APPEND = 'a',
 	OPT_PRIME = 'p',
+	OPT_RANDOM = 'r',
+	OPT_SEED = 's',
 	OPT_OUTPUT = 'o',
 	OPT_INPUT = 'i',
-	OPT_RANDOM = 'r',
+	OPT_APPEND = 'a',
 	OPT_FP = 1,
 	OPT_F2M = 2,
 };
 
+// clang-format off
 struct argp_option options[] = {
 	// Field specification
-	{"fp",       OPT_FP,      0,      0, "Prime field."},
-	{"f2m",      OPT_F2M,     0,      0, "Binary field."},
+	{"fp",       OPT_FP,      0,      0,                   "Prime field."},
+	{"f2m",      OPT_F2M,     0,      0,                   "Binary field."},
 	// Curve specification
-	{"random",   OPT_RANDOM,  0,      0, "Generate a random curve."},
-	{"prime",    OPT_PRIME,   0,      0, "Generate a curve with prime order."},
+	{"random",   OPT_RANDOM,  0,      0,                   "Generate a random curve."},
+	{"prime",    OPT_PRIME,   0,      0,                   "Generate a curve with prime order."},
+	{"seed",     OPT_SEED,    "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED(ANSI X9.62 verifiable procedure)."},
 	// Other
-	{"data-dir", OPT_DATADIR, "DIR",  0,
-										 "PARI/GP data directory (containing seadata and elldata)."},
-	{"input",    OPT_INPUT,   "FILE", 0, "Input from file."},
-	{"output",   OPT_OUTPUT,  "FILE", 0, "Output into file. Overwrites any existing file!"},
-	{"append",   OPT_APPEND,  0,      0, "Append to output file(don't overwrite)."},
+	{"data-dir", OPT_DATADIR, "DIR",  0,                   "PARI/GP data directory (containing seadata and elldata)."},
+	{"input",    OPT_INPUT,   "FILE", 0,                   "Input from file."},
+	{"output",   OPT_OUTPUT,  "FILE", 0,                   "Output into file. Overwrites any existing file!"},
+	{"append",   OPT_APPEND,  0,      0,                   "Append to output file(don't overwrite)."},
 	{0}};
+// clang-format on
 
 error_t parse_opt(int key, char *arg, struct argp_state *state) {
-	struct arguments *args = state->input;
+	struct config_t *cfg = state->input;
 
 	switch (key) {
 		case OPT_DATADIR:
-			args->datadir = arg;
+			cfg->datadir = arg;
 			break;
 		case OPT_INPUT:
-			args->input = arg;
+			cfg->input = arg;
 			break;
 		case OPT_OUTPUT:
-			args->output = arg;
+			cfg->output = arg;
 			break;
 		case OPT_APPEND:
-			args->append = true;
+			cfg->append = true;
 			break;
 		case OPT_RANDOM:
-			args->random = true;
+			cfg->random = true;
 			break;
 		case OPT_PRIME:
-			args->prime = true;
+			cfg->prime = true;
+			break;
+		case OPT_SEED:
+			cfg->from_seed = true;
+			cfg->seed = arg;
 			break;
 		case OPT_FP:
-			if (args->binary_field) {
+			if (cfg->binary_field) {
 				argp_failure(
-					state, 1, 0,
-					"Either specify prime field or binary field, not both.");
+				    state, 1, 0,
+				    "Either specify prime field or binary field, not both.");
 			}
-			args->field = FIELD_PRIME;
-			args->prime_field = true;
+			cfg->field = FIELD_PRIME;
+			cfg->prime_field = true;
 			break;
 		case OPT_F2M:
-			if (args->prime_field) {
+			if (cfg->prime_field) {
 				argp_failure(
-					state, 1, 0,
-					"Either specify binary field or prime field, not both.");
+				    state, 1, 0,
+				    "Either specify binary field or prime field, not both.");
 			}
-			args->field = FIELD_BINARY;
-			args->binary_field = true;
+			cfg->field = FIELD_BINARY;
+			cfg->binary_field = true;
 			break;
 		case ARGP_KEY_ARG:
 			if (state->arg_num >= 1) {
 				argp_usage(state);
 			}
 
-			args->bits = strtol(arg, NULL, 10);
+			cfg->bits = strtol(arg, NULL, 10);
 			break;
 		case ARGP_KEY_END:
-			if (!args->prime_field && !args->binary_field) {
+			// validate all option states here.
+			if (!cfg->prime_field && !cfg->binary_field) {
 				argp_failure(
-					state, 1, 0,
-					"Specify field type, prime or binary, with --fp / --f2m.");
+				    state, 1, 0,
+				    "Specify field type, prime or binary, with --fp / --f2m.");
 			}
 			break;
 		case ARGP_KEY_NO_ARGS:

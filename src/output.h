@@ -5,8 +5,44 @@
 #ifndef ECGEN_OUTPUT_H
 #define ECGEN_OUTPUT_H
 
-#include "gp.h"
+#include <stdbool.h>
+#include <parson/parson.h>
+#include <pari/pari.h>
 
-void output_csv(FILE *out, char delim, char format, GEN vector);
+/**
+ *
+ * @param delim
+ * @param format
+ * @param vector
+ * @return
+ */
+char *output_scsv(const char *format, char delim, GEN vector);
 
-#endif //ECGEN_OUTPUT_H
+/**
+ *
+ * @param out
+ * @param delim
+ * @param format
+ * @param vector
+ */
+void output_csv(FILE *out, const char *format, char delim, GEN vector);
+
+/**
+ *
+ * @param vector
+ * @return
+ */
+char *output_sjson(GEN vector);
+
+/**
+ *
+ * @param out
+ * @param vector
+ */
+void output_json(FILE *out, GEN vector);
+
+FILE *output_open(const char *output, bool append);
+
+void output_close(FILE *out);
+
+#endif  // ECGEN_OUTPUT_H

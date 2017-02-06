@@ -13,23 +13,22 @@ extern char doc[];
 extern char args_doc[];
 extern struct argp_option options[];
 
-typedef enum {
-	FIELD_PRIME,
-	FIELD_BINARY
-} field_t;
+enum field_e { FIELD_PRIME, FIELD_BINARY } ;
 
-struct arguments {
-	field_t field;
+typedef struct config_t {
+	enum field_e field;
 	bool binary_field;
 	bool prime_field;
 	bool random;
 	bool prime;
+	bool from_seed;
+	char *seed;
 	char *datadir;
 	char *output;
 	char *input;
 	bool append;
 	long bits;
-};
+} config_t;
 
 error_t parse_opt(int key, char *arg, struct argp_state *state);
 
