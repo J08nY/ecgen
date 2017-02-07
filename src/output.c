@@ -5,6 +5,8 @@
 
 #include "output.h"
 
+FILE *out;
+
 char *output_scsv(const char *format, char delim, GEN vector) {
 	long len = lg(vector) - 1;
 	char *params[len];
@@ -44,8 +46,7 @@ void output_csv(FILE *out, const char *format, char delim, GEN vector) {
 	free(string);
 }
 
-char *output_sjson(GEN vector) {
-}
+char *output_sjson(GEN vector) {}
 
 void output_json(FILE *out, GEN vector) {}
 

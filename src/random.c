@@ -3,6 +3,32 @@
  * Copyright (C) 2017 J08nY
  */
 #include "random.h"
+#include <time.h>
+
+bool random_init() {
+	pari_ulong seed = 0;
+	// Try urandom first
+	FILE *rand = fopen("/dev/urandom", "rb");
+	if (rand) {
+		fread(&seed, sizeof(char), sizeof(pari_ulong), rand);
+		fclose(rand);
+	}
+	// Try worse methods later
+	if (seed == 0) {
+		struct timespec t;
+		if (!clock_gettime(CLOCK_REALTIME, &t)) {
+			seed = (pari_ulong)t.tv_nsec;
+		} else {
+			seed = (pari_ulong)time(NULL);
+		}
+	}
+
+	pari_sp ltop = avma;
+	setrand(utoi(seed));
+	avma = ltop;
+
+	return true;
+}
 
 GEN random_prime(long bits) {
 	pari_sp ltop = avma;

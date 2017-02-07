@@ -24,10 +24,13 @@
  */
 
 #include <time.h>
-#include "cli.h"
 #include "curve.h"
-#include "output.h"
+#include "equation.h"
+#include "field.h"
+#include "generators.h"
 #include "input.h"
+#include "output.h"
+#include "seed.h"
 
 const char *argp_program_version =
     "ecgen 0.2\n"
@@ -40,34 +43,13 @@ const char *argp_program_bug_address = "<johny@neuromancer.sk>";
 
 static struct argp argp = {options, parse_opt, args_doc, doc};
 static struct config_t cfg;
-static FILE *in;
-static FILE *out;
 
 bool init() {
 	// Init PARI, 1GB stack, 1M primes
 	pari_init(1000000000, 1000000);
 
 	// Init PARI PRNG
-	pari_ulong seed = 0;
-	// Try urandom first
-	FILE *rand = fopen("/dev/urandom", "rb");
-	if (rand) {
-		fread(&seed, sizeof(char), sizeof(pari_ulong), rand);
-		fclose(rand);
-	}
-	// Try worse methods later
-	if (seed == 0) {
-		struct timespec t;
-		if (!clock_gettime(CLOCK_REALTIME, &t)) {
-			seed = (pari_ulong)t.tv_nsec;
-		} else {
-			seed = (pari_ulong)time(NULL);
-		}
-	}
-
-	pari_sp ltop = avma;
-	setrand(utoi(seed));
-	avma = ltop;
+	if (!random_init()) return false;
 
 	// set datadir if specified
 	if (cfg.datadir) {
@@ -101,21 +83,17 @@ int main(int argc, char *argv[]) {
 		return quit(1);
 	}
 
-	if (cfg.random) {
-		curve_t *curve;
-		if (cfg.prime) {
-			curve = curve_primef(cfg.field, cfg.bits);
-		} else {
-			curve = curve_nonzerof(cfg.field, cfg.bits);
-		}
+	gen_t generators[5];
+	gen_init(generators, &cfg);
 
-		output_csv(out, "%Px", ',', curve_params(curve));
-
-		free_curve(&curve);
-
-	} else {
-		fprintf(stderr, "Currently unsupported.");
+	curve_t *curve = curve_new();
+	int state = 0;
+	while (state != 5) {
+		int diff = generators[state](curve, &cfg);
+		state += diff;
 	}
+	output_csv(out, "%Px", ';', curve_params(curve));
+	curve_free(&curve);
 
 	return quit(0);
 }

@@ -3,9 +3,8 @@
  * Copyright (C) 2017 J08nY
  */
 #include "poly.h"
-#include <stdlib.h>
 
-polynomial_t ansi_trinomials[] = {
+static polynomial_t ansi_trinomials[] = {
     {161, 18},   {162, 27},   {166, 37},   {167, 6},    {169, 34},
     {170, 11},   {172, 1},    {174, 13},   {175, 6},    {177, 8},
     {178, 31},   {180, 3},    {182, 81},   {183, 56},   {185, 24},
@@ -199,7 +198,7 @@ polynomial_t ansi_trinomials[] = {
     {1988, 555}, {1990, 133}, {1991, 546}, {1993, 103}, {1994, 15},
     {1996, 307}, {1999, 367}};
 
-polynomial_t ansi_pentanomials[] = {
+static polynomial_t ansi_pentanomials[] = {
     {160, 1, 2, 117},   {163, 1, 2, 8},     {164, 1, 2, 49},
     {165, 1, 2, 25},    {168, 1, 2, 65},    {171, 1, 3, 42},
     {173, 1, 2, 10},    {176, 1, 2, 43},    {179, 1, 2, 4},

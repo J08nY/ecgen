@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "cli.h"
+#include <string.h>
 
 char doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
@@ -14,8 +15,9 @@ enum opt_keys {
 	OPT_PRIME = 'p',
 	OPT_RANDOM = 'r',
 	OPT_SEED = 's',
+	OPT_INVALID = 'i',
 	OPT_OUTPUT = 'o',
-	OPT_INPUT = 'i',
+	OPT_INPUT = 'f',
 	OPT_APPEND = 'a',
 	OPT_FP = 1,
 	OPT_F2M = 2,
@@ -29,12 +31,13 @@ struct argp_option options[] = {
 	// Curve specification
 	{"random",   OPT_RANDOM,  0,      0,                   "Generate a random curve."},
 	{"prime",    OPT_PRIME,   0,      0,                   "Generate a curve with prime order."},
-	{"seed",     OPT_SEED,    "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED(ANSI X9.62 verifiable procedure)."},
+	{"seed",     OPT_SEED,    "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure)."},
+	{"invalid",  OPT_INVALID, 0,      0,                   "Generate a set of invalid curves (for a given curve)."},
 	// Other
-	{"data-dir", OPT_DATADIR, "DIR",  0,                   "PARI/GP data directory (containing seadata and elldata)."},
+	{"data-dir", OPT_DATADIR, "DIR",  0,                   "PARI/GP data directory (containing seadata package)."},
 	{"input",    OPT_INPUT,   "FILE", 0,                   "Input from file."},
 	{"output",   OPT_OUTPUT,  "FILE", 0,                   "Output into file. Overwrites any existing file!"},
-	{"append",   OPT_APPEND,  0,      0,                   "Append to output file(don't overwrite)."},
+	{"append",   OPT_APPEND,  0,      0,                   "Append to output file (don't overwrite)."},
 	{0}};
 // clang-format on
 
@@ -60,25 +63,26 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 		case OPT_PRIME:
 			cfg->prime = true;
 			break;
+		case OPT_INVALID:
+			cfg->invalid = true;
+			break;
 		case OPT_SEED:
 			cfg->from_seed = true;
-			cfg->seed = arg;
+			if (arg) {
+				// ANSI X9.62 specifies seed as at least 160 bits in length.
+				if (strlen(arg) < 20) {
+					argp_failure(
+					    state, 1, 0,
+					    "SEED must be at least 160 bits(20 characters).");
+				}
+				cfg->seed = arg;
+			}
 			break;
 		case OPT_FP:
-			if (cfg->binary_field) {
-				argp_failure(
-				    state, 1, 0,
-				    "Either specify prime field or binary field, not both.");
-			}
 			cfg->field = FIELD_PRIME;
 			cfg->prime_field = true;
 			break;
 		case OPT_F2M:
-			if (cfg->prime_field) {
-				argp_failure(
-				    state, 1, 0,
-				    "Either specify binary field or prime field, not both.");
-			}
 			cfg->field = FIELD_BINARY;
 			cfg->binary_field = true;
 			break;
@@ -91,10 +95,18 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 			break;
 		case ARGP_KEY_END:
 			// validate all option states here.
+			// Only one field
 			if (!cfg->prime_field && !cfg->binary_field) {
-				argp_failure(
-				    state, 1, 0,
-				    "Specify field type, prime or binary, with --fp / --f2m.");
+				argp_failure(state, 1, 0,
+				             "Specify field type, prime or binary, with --fp / "
+				             "--f2m(but not both).");
+			}
+			// Invalid is not prime or seed or random by definition.
+			if (cfg->invalid && (cfg->prime || cfg->from_seed || cfg->random)) {
+				// not seed, not prime
+				argp_failure(state, 1, 0,
+				             "Invalid curve generation can not generate curves "
+				             "from seed, random or prime order.");
 			}
 			break;
 		case ARGP_KEY_NO_ARGS:

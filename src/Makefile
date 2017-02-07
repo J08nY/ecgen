@@ -24,7 +24,7 @@ GPC = $(addsuffix .c, $(GP))
 GPO = $(addsuffix .o, $(GP))
 GPH = $(addsuffix .h, $(GP))
 
-SRC = cli input output poly field curve random
+SRC = cli input output poly field equation curve point random seed generators
 OBJ = $(addsuffix .o, $(SRC))
 HDR = $(addsuffix .h, $(SRC))
 

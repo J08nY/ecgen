@@ -5,31 +5,24 @@
 #ifndef ECGEN_FIELD_H
 #define ECGEN_FIELD_H
 
-#include "poly.h"
-#include "random.h"
 #include "cli.h"
+#include "types.h"
 
 /**
  *
- * @param bits
+ * @param curve
+ * @param config
  * @return
  */
-GEN field_primer(long bits);
+int field_random(curve_t *curve, config_t *config);
 
 /**
  *
- * @param bits
+ * @param curve
+ * @param config
  * @return
  */
-GEN field_binaryr(long bits);
-
-/**
- *
- * @param t
- * @param bits
- * @return
- */
-GEN field_random(enum field_e t, long bits);
+int field_input(curve_t *curve, config_t *config);
 
 /**
  * Extract a field representation from a field.

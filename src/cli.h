@@ -13,7 +13,7 @@ extern char doc[];
 extern char args_doc[];
 extern struct argp_option options[];
 
-enum field_e { FIELD_PRIME, FIELD_BINARY } ;
+enum field_e { FIELD_PRIME, FIELD_BINARY };
 
 typedef struct config_t {
 	enum field_e field;
@@ -21,6 +21,7 @@ typedef struct config_t {
 	bool prime_field;
 	bool random;
 	bool prime;
+	bool invalid;
 	bool from_seed;
 	char *seed;
 	char *datadir;

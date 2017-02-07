@@ -19,7 +19,7 @@ add_custom_target(gp2c ALL DEPENDS gp.c gp.h)
 include_directories(src)
 include_directories(lib)
 
-file(GLOB SOURCES "src/*.c")
+file(GLOB SOURCES "src/*.c" "src/*.h")
 
 add_executable(ecgen ${SOURCES})
 

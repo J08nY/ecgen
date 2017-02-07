@@ -6,6 +6,9 @@
 #define ECGEN_RANDOM_H
 
 #include <pari/pari.h>
+#include <stdbool.h>
+
+bool random_init();
 
 GEN random_prime(long bits);
 

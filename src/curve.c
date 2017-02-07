@@ -3,9 +3,11 @@
  * Copyright (C) 2017 J08nY
  */
 #include "curve.h"
+#include "field.h"
+#include "seed.h"
 
-curve_t *new_curve() {
-	curve_t *curve = malloc(sizeof(curve_t));
+curve_t *curve_new() {
+	curve_t *curve = pari_malloc(sizeof(curve_t));
 	if (!curve) {
 		perror("Couldn't malloc.");
 		exit(1);
@@ -14,197 +16,99 @@ curve_t *new_curve() {
 	return curve;
 }
 
-void free_curve(curve_t **curve) {
+void curve_free(curve_t **curve) {
 	if (*curve) {
-		free((*curve)->points);
-		free(*curve);
+		seed_free(&(*curve)->seed);
+		pari_free((*curve)->points);
+		pari_free(*curve);
 		*curve = NULL;
 	}
 }
 
-curve_t *curve_random(GEN field) {
-	curve_t *result = new_curve();
+int curve_init(curve_t *curve, config_t *config) {
 	pari_sp ltop = avma;
-
-	GEN curve, a, b;
-	a = genrand(field);
-	b = genrand(field);
-
 	GEN v = gen_0;
-	switch (typ(field)) {
+	switch (typ(curve->field)) {
 		case t_INT:
 			v = gtovec0(gen_0, 2);
-			gel(v, 1) = a;
-			gel(v, 2) = b;
+			gel(v, 1) = curve->a;
+			gel(v, 2) = curve->b;
 			break;
 		case t_FFELT:
 			v = gtovec0(gen_0, 5);
 			gel(v, 1) = gen_1;
-			gel(v, 4) = a;
-			gel(v, 5) = b;
+			gel(v, 4) = curve->a;
+			gel(v, 5) = curve->b;
 			break;
 		default:
-			pari_err_TYPE("curve_random", field);
+			pari_err_TYPE("curve_init", curve->field);
 	}
-	curve = ellinit(v, field, -1);
 
-	result->field = field;
-	gerepileall(ltop, 3, &a, &b, &curve);
-	result->a = a;
-	result->b = b;
-	result->curve = curve;
-	return result;
+	curve->curve = gerepilecopy(ltop, ellinit(v, curve->field, -1));
+	return 1;
 }
 
-curve_t *curve_randomf(enum field_e t, long bits) {
-	GEN field = field_random(t, bits);
-	return curve_random(field);
-}
-
-curve_t *curve_nonzero(GEN field) {
+int curve_nonzero(curve_t *curve, config_t *config) {
 	pari_sp ltop = avma;
-
-	curve_t *result = NULL;
-	do {
-		if (result) {
-			avma = ltop;
-			free_curve(&result);
-		}
-		result = curve_random(field);
-	} while (gequal0(ell_get_disc(result->curve)));
-
-	return result;
+	curve_init(curve, config);
+	if (gequal0(ell_get_disc(curve->curve))) {
+		avma = ltop;
+		return -3;
+	} else {
+		return 1;
+	}
 }
 
-curve_t *curve_nonzerof(enum field_e t, long bits) {
+int curve_prime(curve_t *curve, config_t *config) {
 	pari_sp ltop = avma;
-
-	curve_t *result = NULL;
-	do {
-		if (result) {
+	int nonzero = curve_nonzero(curve, config);
+	if (nonzero == 1) {
+		curve->order = ellsea(curve->curve, 1);
+		if (gequal0(curve->order) || !(isprime(curve->order))) {
 			avma = ltop;
-			free_curve(&result);
+			return -3;
+		} else {
+			return 1;
 		}
-		result = curve_randomf(t, bits);
-	} while(gequal0(ell_get_disc(result->curve)));
-
-	return result;
+	} else {
+		avma = ltop;
+		return nonzero;
+	}
 }
 
-curve_t *curve_prime(GEN field) {
-	pari_sp ltop = avma;
+int curve_seed_fp(curve_t *curve, config_t *config) {}
 
-	curve_t *result = NULL;
-	do {
-		if (result) {
-			avma = ltop;
-			free_curve(&result);
-		}
-		result = curve_nonzero(field);
-		result->order = ellsea(result->curve, 1);
-	} while (gequal0(result->order) || !isprime(result->order));
+int curve_seed_f2m(curve_t *curve, config_t *config) {}
 
-	return result;
-}
-
-curve_t *curve_primef(enum field_e t, long bits) {
-	pari_sp ltop = avma;
-
-	curve_t *result = NULL;
-	do {
-		if (result) {
-			avma = ltop;
-			free_curve(&result);
-		}
-		result = curve_nonzerof(t, bits);
-		result->order = ellsea(result->curve, 1);
-	} while (gequal0(result->order) || !isprime(result->order));
-
-	return result;
-}
-
-GEN curve_invalid(GEN field, GEN a, GEN b) {
-	return gen_m1;
-}
-
-curve_t *curve_seed_Fp(GEN field, GEN seed) {
-	return NULL;
-}
-
-curve_t *curve_seed_F2m(GEN field, GEN seed) {
-	return NULL;
-}
-
-curve_t *curve_seed(GEN field, GEN seed) {
-	switch (typ(field)) {
+int curve_seed(curve_t *curve, config_t *config) {
+	switch (typ(curve->field)) {
 		case t_INT:
-			return curve_seed_Fp(field, seed);
+			return curve_seed_fp(curve, config);
 		case t_FFELT:
-			return curve_seed_F2m(field, seed);
+			return curve_seed_f2m(curve, config);
 		default:
-			pari_err_TYPE("curve_seed", field);
-			return NULL; /* NOT REACHED */
+			pari_err_TYPE("curve_seed", curve->field);
+			return 0; /* NOT REACHABLE */
 	}
 }
 
-curve_t *curve_seedr(GEN field) {
-	pari_sp ltop = avma;
-
-	GEN seed;
-	curve_t *result = NULL;
-	do {
-		if (result) {
-			avma = ltop;
-			free_curve(&result);
-		}
-		seed = random_int(160);
-		result = curve_seed(field, seed);
-	} while(gequal0(ell_get_disc(result->curve)));
-
-	return result;
-}
-
-curve_t *curve_seedf(GEN seed, enum field_e t, long bits) {
-	pari_sp ltop = avma;
-
-	GEN field;
-	curve_t *result = NULL;
-	do {
-		if (result) {
-			avma = ltop;
-			free_curve(&result);
-		}
-		field = field_random(t, bits);
-		result = curve_seed(field, seed);
-	} while(gequal0(ell_get_disc(result->curve)));
-
-	return result;
-}
-
-curve_t *curve_seedrf(enum field_e t, long bits) {
-	pari_sp ltop = avma;
-
-	GEN seed, field;
-	curve_t *result = NULL;
-	do {
-		if (result) {
-			avma = ltop;
-			free_curve(&result);
-		}
-		seed = random_int(160);
-		field = field_random(t, bits);
-		result = curve_seed(field, seed);
-	} while(gequal0(ell_get_disc(result->curve)));
-
-	return result;
+int curve_g(curve_t *curve, config_t *config) {
+	if (config->from_seed) {
+		return curve_seed(curve, config);
+	} else if (config->prime) {
+		return curve_prime(curve, config);
+	} else {
+		return curve_nonzero(curve, config);
+	}
 }
 
 GEN curve_params(curve_t *curve) {
 	pari_sp ltop = avma;
 
-	GEN field = field_params(curve->field);
-	GEN a = gtovec(field_elementi(curve->a));
-	GEN b = gtovec(field_elementi(curve->b));
+	GEN result = field_params(curve->field);
+	if (curve->a) result = gconcat(result, field_elementi(curve->a));
+	if (curve->b) result = gconcat(result, field_elementi(curve->b));
+	if (curve->order) result = gconcat(result, gtovec(curve->order));
 
-	return gerepilecopy(ltop, gconcat(gconcat(field, a), b));
+	return gerepilecopy(ltop, result);
 }

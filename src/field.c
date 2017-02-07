@@ -3,6 +3,8 @@
  * Copyright (C) 2017 J08nY
  */
 #include "field.h"
+#include "poly.h"
+#include "random.h"
 
 GEN field_primer(long bits) { return random_prime(bits); }
 
@@ -16,15 +18,21 @@ GEN field_binaryr(long bits) {
 	}
 }
 
-GEN field_random(enum field_e t, long bits) {
-	switch(t) {
+int field_random(curve_t *curve, config_t *config) {
+	switch (config->field) {
 		case FIELD_PRIME:
-			return field_primer(bits);
+			curve->field = field_primer(config->bits);
+			return 1;
 		case FIELD_BINARY:
-			return field_binaryr(bits);
+			curve->field = field_binaryr(config->bits);
+			return 1;
 		default:
-			return gen_0; /* NOT REACHABLE */
+			return 0; /* NOT REACHABLE */
 	}
+}
+
+int field_input(curve_t *curve, config_t *config) {
+	return -1;  // NOT IMPLEMENTED
 }
 
 GEN field_params(GEN field) {
@@ -42,13 +50,13 @@ GEN field_params(GEN field) {
 	long l2 = glength(member_mod(field)) - 2;
 	{
 		pari_sp btop = avma;
-		for (GEN i = gen_1; gcmpgs(i, l2) <= 0; i = gaddgs(i, 1)) {
-			GEN c = polcoeff0(member_mod(field), gtos(i), -1);
+		for (long i = 0; i <= l2; ++i) {
+			GEN c = polcoeff0(member_mod(field), i, -1);
 			if (cmpis(c, 0) != 0) {
-				gel(out, j) = gcopy(i);
+				gel(out, j) = stoi(i);
 				j++;
 			}
-			if (gc_needed(btop, 1)) gerepileall(btop, 4, &out, &c, &i);
+			if (gc_needed(btop, 1)) gerepileall(btop, 3, &out, &c);
 		}
 	}
 	return gerepilecopy(ltop, out);

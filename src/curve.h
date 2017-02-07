@@ -6,100 +6,50 @@
 #define ECGEN_CURVE_H
 
 #include <pari/pari.h>
-#include "field.h"
-#include "point.h"
-
-typedef struct curve_t {
-	GEN seed;
-	GEN field;
-	GEN a;
-	GEN b;
-	GEN curve;
-	GEN order;
-	point_t **points;
-	size_t npoints;
-} curve_t;
+#include "cli.h"
+#include "types.h"
 
 /**
  *
- * @param field
+ * @param curve
+ * @param config
  * @return
  */
-curve_t *curve_random(GEN field);
+int curve_init(curve_t *curve, config_t *config);
 
 /**
  *
- * @param t
- * @param bits
+ * @param curve
+ * @param config
  * @return
  */
-curve_t *curve_randomf(enum field_e t, long bits);
+int curve_nonzero(curve_t *curve, config_t *config);
 
 /**
  *
- * @param field
+ * @param curve
+ * @param config
  * @return
  */
-curve_t *curve_nonzero(GEN field);
+int curve_prime(curve_t *curve, config_t *config);
 
 /**
  *
- * @param t
- * @param bits
+ * @param curve
+ * @param config
  * @return
  */
-curve_t *curve_nonzerof(enum field_e t, long bits);
+int curve_seed(curve_t *curve, config_t *config);
 
 /**
  *
- * @param field
+ * @param curve
+ * @param config
  * @return
  */
-curve_t *curve_prime(GEN field);
+int curve_g(curve_t *curve, config_t *config);
 
 /**
- *
- * @param t
- * @param bits
- * @return
- */
-curve_t *curve_primef(enum field_e t, long bits);
-
-/**
- * ANSI X9.62 Verifiable random curve over field with seed.
- *
- * @param field
- * @param seed
- * @return
- */
-curve_t *curve_seed(GEN field, GEN seed);
-
-/**
- *
- * @param field
- * @return
- */
-curve_t *curve_seedr(GEN field);
-
-/**
- *
- * @param seed
- * @param t
- * @param bits
- * @return
- */
-curve_t *curve_seedf(GEN seed, enum field_e t, long bits);
-
-/**
- *
- * @param t
- * @param bits
- * @return
- */
-curve_t *curve_seedrf(enum field_e t, long bits);
-
-/**
- *
  * @param curve
  * @return
  */
@@ -107,9 +57,14 @@ GEN curve_params(curve_t *curve);
 
 /**
  *
+ * @return
+ */
+curve_t *curve_new();
+
+/**
+ *
  * @param curve
  */
-void free_curve(curve_t **curve);
-
+void curve_free(curve_t **curve);
 
 #endif  // ECGEN_CURVE_H

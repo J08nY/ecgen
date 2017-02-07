@@ -5,8 +5,8 @@
 #ifndef ECGEN_POLY_H
 #define ECGEN_POLY_H
 
-#include <stdbool.h>
 #include <pari/pari.h>
+#include <stdbool.h>
 
 typedef struct polynomial {
 	int m;
@@ -14,9 +14,6 @@ typedef struct polynomial {
 	int e2;
 	int e3;
 } polynomial_t;
-
-extern polynomial_t ansi_trinomials[];
-extern polynomial_t ansi_pentanomials[];
 
 /**
  *

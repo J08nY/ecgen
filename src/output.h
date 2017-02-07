@@ -5,9 +5,9 @@
 #ifndef ECGEN_OUTPUT_H
 #define ECGEN_OUTPUT_H
 
-#include <stdbool.h>
-#include <parson/parson.h>
 #include <pari/pari.h>
+#include <parson/parson.h>
+#include <stdbool.h>
 
 /**
  *
@@ -40,6 +40,8 @@ char *output_sjson(GEN vector);
  * @param vector
  */
 void output_json(FILE *out, GEN vector);
+
+extern FILE *out;
 
 FILE *output_open(const char *output, bool append);
 

@@ -6,12 +6,8 @@
 #define ECGEN_POINT_H
 
 #include <pari/pari.h>
-
-typedef struct point_t {
-	GEN point;
-	GEN order;
-} point_t;
+#include "types.h"
 
 point_t *gerepile_point(pari_sp ltop, point_t *point);
 
-#endif //ECGEN_POINT_H
+#endif  // ECGEN_POINT_H
