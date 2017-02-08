@@ -7,9 +7,7 @@ Tool for generating Elliptic curve domain parameters.
 #### ecgen
 The main binary of the tool, does the hard work.
 
-`
-ecgen --fp/--f2m -r -p BITS
-`
+	ecgen --fp/--f2m -r -p BITS
 
  - `--fp`/`--f2m` specifies the field type (prime/binary).
  - `-r/--random` requests a random curve to be generated.
@@ -22,11 +20,10 @@ ecgen --fp/--f2m -r -p BITS
 
 ### Build
 
-`
-git clone https://github.com/J08nY/ecgen.git
-cd ecgen
-make
-`
+
+	git clone https://github.com/J08nY/ecgen.git
+	cd ecgen
+	make
 
 ### Requirements
 
@@ -41,19 +38,18 @@ additional [seadata](http://pari.math.u-bordeaux.fr/packages.html) package (sead
 
 ### License
 
-`
-This program is free software: you can redistribute it and/or modify
-it under the terms of the GNU General Public License as published by
-the Free Software Foundation, either version 3 of the License, or
-(at your option) any later version.
+	This program is free software: you can redistribute it and/or modify
+	it under the terms of the GNU General Public License as published by
+	the Free Software Foundation, either version 3 of the License, or
+	(at your option) any later version.
 
-This program is distributed in the hope that it will be useful,
-but WITHOUT ANY WARRANTY; without even the implied warranty of
-MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-GNU General Public License for more details.
+	This program is distributed in the hope that it will be useful,
+	but WITHOUT ANY WARRANTY; without even the implied warranty of
+	MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+	GNU General Public License for more details.
 
-You should have received a copy of the GNU General Public License
-along with this program.  If not, see <http://www.gnu.org/licenses/>.
-`
+	You should have received a copy of the GNU General Public License
+	along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
 
 *© Eastern Seaboard Phishing Authority*
