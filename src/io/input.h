@@ -5,7 +5,7 @@
 #ifndef ECGEN_INPUT_H
 #define ECGEN_INPUT_H
 
-#include "random.h"
+#include "math/random.h"
 
 typedef enum PARAM {
 	PARAM_PRIME,

@@ -18,7 +18,7 @@ GEN field_binaryr(long bits) {
 	}
 }
 
-int field_random(curve_t *curve, config_t *config) {
+int field_random(curve_t *curve, config_t *config, ...) {
 	switch (config->field) {
 		case FIELD_PRIME:
 			curve->field = field_primer(config->bits);
@@ -31,7 +31,7 @@ int field_random(curve_t *curve, config_t *config) {
 	}
 }
 
-int field_input(curve_t *curve, config_t *config) {
+int field_input(curve_t *curve, config_t *config, ...) {
 	return -1;  // NOT IMPLEMENTED
 }
 

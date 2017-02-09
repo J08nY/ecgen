@@ -4,6 +4,7 @@
  */
 
 #include "output.h"
+#include <parson/parson.h>
 
 FILE *out;
 
@@ -46,11 +47,15 @@ void output_csv(FILE *out, const char *format, char delim, GEN vector) {
 	free(string);
 }
 
-char *output_sjson(GEN vector) {}
+char *output_sjson(GEN vector) {
+	parson
+}
 
 void output_json(FILE *out, GEN vector) {}
 
 FILE *output_open(const char *output, bool append) {
+	json_set_allocation_functions(pari_malloc, pari_free);
+
 	if (output) {
 		FILE *out = fopen(output, append ? "a" : "w");
 		if (!out) {

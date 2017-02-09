@@ -24,13 +24,10 @@
  */
 
 #include <time.h>
-#include "curve.h"
-#include "equation.h"
-#include "field.h"
-#include "generators.h"
-#include "input.h"
-#include "output.h"
-#include "seed.h"
+#include "io/input.h"
+#include "io/output.h"
+#include "math/curve.h"
+#include "random/generators.h"
 
 const char *argp_program_version =
     "ecgen 0.2\n"
@@ -83,17 +80,21 @@ int main(int argc, char *argv[]) {
 		return quit(1);
 	}
 
-	gen_t generators[5];
-	gen_init(generators, &cfg);
+	if (cfg.cm) {
+	} else if (cfg.invalid) {
+	} else {
+		gen_t generators[5];
+		gen_init(generators, &cfg);
 
-	curve_t *curve = curve_new();
-	int state = 0;
-	while (state != 5) {
-		int diff = generators[state](curve, &cfg);
-		state += diff;
+		curve_t *curve = curve_new();
+		int state = 0;
+		while (state != 5) {
+			int diff = generators[state](curve, &cfg);
+			state += diff;
+		}
+		output_csv(out, "%Px", ';', curve_params(curve));
+		curve_free(&curve);
 	}
-	output_csv(out, "%Px", ';', curve_params(curve));
-	curve_free(&curve);
 
 	return quit(0);
 }

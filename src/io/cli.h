@@ -22,6 +22,9 @@ typedef struct config_t {
 	bool random;
 	bool prime;
 	bool invalid;
+	bool cm;
+	char *order;
+	bool koblitz;
 	bool from_seed;
 	char *seed;
 	char *datadir;
@@ -29,6 +32,7 @@ typedef struct config_t {
 	char *input;
 	bool append;
 	long bits;
+
 } config_t;
 
 error_t parse_opt(int key, char *arg, struct argp_state *state);

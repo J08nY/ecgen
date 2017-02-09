@@ -5,7 +5,7 @@
 #ifndef ECGEN_FIELD_H
 #define ECGEN_FIELD_H
 
-#include "cli.h"
+#include "io/cli.h"
 #include "types.h"
 
 /**
@@ -14,7 +14,7 @@
  * @param config
  * @return
  */
-int field_random(curve_t *curve, config_t *config);
+int field_random(curve_t *curve, config_t *config, ...);
 
 /**
  *
@@ -22,7 +22,7 @@ int field_random(curve_t *curve, config_t *config);
  * @param config
  * @return
  */
-int field_input(curve_t *curve, config_t *config);
+int field_input(curve_t *curve, config_t *config, ...);
 
 /**
  * Extract a field representation from a field.

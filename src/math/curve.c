@@ -4,7 +4,7 @@
  */
 #include "curve.h"
 #include "field.h"
-#include "seed.h"
+#include "random/seed.h"
 
 curve_t *curve_new() {
 	curve_t *curve = pari_malloc(sizeof(curve_t));
@@ -25,7 +25,7 @@ void curve_free(curve_t **curve) {
 	}
 }
 
-int curve_init(curve_t *curve, config_t *config) {
+int curve_init(curve_t *curve, config_t *config, ...) {
 	pari_sp ltop = avma;
 	GEN v = gen_0;
 	switch (typ(curve->field)) {
@@ -48,7 +48,7 @@ int curve_init(curve_t *curve, config_t *config) {
 	return 1;
 }
 
-int curve_nonzero(curve_t *curve, config_t *config) {
+int curve_nonzero(curve_t *curve, config_t *config, ...) {
 	pari_sp ltop = avma;
 	curve_init(curve, config);
 	if (gequal0(ell_get_disc(curve->curve))) {
@@ -59,7 +59,7 @@ int curve_nonzero(curve_t *curve, config_t *config) {
 	}
 }
 
-int curve_prime(curve_t *curve, config_t *config) {
+int curve_prime(curve_t *curve, config_t *config, ...) {
 	pari_sp ltop = avma;
 	int nonzero = curve_nonzero(curve, config);
 	if (nonzero == 1) {
@@ -76,11 +76,11 @@ int curve_prime(curve_t *curve, config_t *config) {
 	}
 }
 
-int curve_seed_fp(curve_t *curve, config_t *config) {}
+int curve_seed_fp(curve_t *curve, config_t *config, ...) {}
 
-int curve_seed_f2m(curve_t *curve, config_t *config) {}
+int curve_seed_f2m(curve_t *curve, config_t *config, ...) {}
 
-int curve_seed(curve_t *curve, config_t *config) {
+int curve_seed(curve_t *curve, config_t *config, ...) {
 	switch (typ(curve->field)) {
 		case t_INT:
 			return curve_seed_fp(curve, config);
@@ -89,16 +89,6 @@ int curve_seed(curve_t *curve, config_t *config) {
 		default:
 			pari_err_TYPE("curve_seed", curve->field);
 			return 0; /* NOT REACHABLE */
-	}
-}
-
-int curve_g(curve_t *curve, config_t *config) {
-	if (config->from_seed) {
-		return curve_seed(curve, config);
-	} else if (config->prime) {
-		return curve_prime(curve, config);
-	} else {
-		return curve_nonzero(curve, config);
 	}
 }
 

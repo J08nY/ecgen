@@ -14,19 +14,21 @@ LDFLAGS=-L../lib
 GP_CFLAGS=-O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC
 GPFLAGS=-g -i4
 
-INCLUDES=-I. -I../lib
+INCLUDES=-I. -I../lib -Icm -Iinvalid -Iio -Irandom
 LIBS=-lpari -lparson
 
 ####
+
+VPATH = cm:invalid:io:random:math
 
 GP =
 GPC = $(addsuffix .c, $(GP))
 GPO = $(addsuffix .o, $(GP))
 GPH = $(addsuffix .h, $(GP))
 
-SRC = cli input output poly field equation curve point random seed generators
-OBJ = $(addsuffix .o, $(SRC))
-HDR = $(addsuffix .h, $(SRC))
+SRC = $(wildcard *.c) $(wildcard */*.c)
+OBJ = $(patsubst %.c,%.o, $(SRC))
+HDR = $(wildcard *.h) $(wildcard */*.h)
 
 ####
 
@@ -52,7 +54,7 @@ clean-all: clean clean-gp
 
 clean:
 	rm -f ecgen
-	rm -f *.o
+	find . -type f -name '*.o' -exec rm {} +
 
 clean-gp:
 	rm -f $(GPH)
@@ -71,7 +73,7 @@ help:
 	@echo " - format : run clang-format on source files"
 
 format:
-	clang-format -i *.c
-	clang-format -i *.h
+	clang-format -i $(SRC)
+	clang-format -i $(HDR)
 
 .PHONY: all gp2c clean-all clean clean-gp help format

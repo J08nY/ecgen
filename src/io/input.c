@@ -2,12 +2,12 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+#include <parson/parson.h>
 #include "input.h"
 
 FILE *in;
 
-GEN fread_i(FILE *stream, const char *prompt, long bits, int delim,
-            GEN (*rand_func)(long)) {
+GEN fread_i(FILE *stream, const char *prompt, long bits, int delim) {
 	if (prompt) {
 		printf("%s ", prompt);
 	}
@@ -17,11 +17,7 @@ GEN fread_i(FILE *stream, const char *prompt, long bits, int delim,
 	ssize_t len = getdelim(&line, &n, delim, stream);
 	if (len == 1) {
 		free(line);
-		if (rand_func) {
-			return rand_func(bits);
-		} else {
-			return gen_0;
-		}
+		return gen_m1;
 	}
 	pari_sp ltop = avma;
 	GEN in = strtoi(line);
@@ -38,7 +34,7 @@ GEN fread_i(FILE *stream, const char *prompt, long bits, int delim,
 }
 
 GEN fread_prime(FILE *stream, const char *prompt, long bits, int delim) {
-	GEN read = fread_i(stream, prompt, bits, delim, &random_prime);
+	GEN read = fread_i(stream, prompt, bits, delim);
 	if (equalii(read, gen_m1)) {
 		return read;
 	} else {
@@ -52,11 +48,11 @@ GEN fread_prime(FILE *stream, const char *prompt, long bits, int delim) {
 }
 
 GEN fread_int(FILE *stream, const char *prompt, long bits, int delim) {
-	return fread_i(stream, prompt, bits, delim, &random_int);
+	return fread_i(stream, prompt, bits, delim);
 }
 
 GEN fread_short(FILE *stream, const char *prompt, int delim) {
-	return fread_i(stream, prompt, 16, delim, NULL);
+	return fread_i(stream, prompt, 16, delim);
 }
 
 GEN fread_string(FILE *stream, const char *prompt, int delim) {
@@ -79,7 +75,7 @@ GEN fread_string(FILE *stream, const char *prompt, int delim) {
 }
 
 GEN fread_param(param_t param, FILE *stream, const char *prompt, long bits,
-                int delim) {
+				int delim) {
 	switch (param) {
 		case PARAM_PRIME:
 			return fread_prime(stream, prompt, bits, delim);
@@ -98,6 +94,7 @@ GEN read_param(param_t param, const char *prompt, long bits, int delim) {
 }
 
 FILE *input_open(const char *input) {
+	json_set_allocation_functions(pari_malloc, pari_free);
 	if (input) {
 		FILE *in = fopen(input, "r");
 		if (!in) {

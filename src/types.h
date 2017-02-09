@@ -6,7 +6,7 @@
 #define ECGEN_TYPES_H
 
 #include <pari/pari.h>
-#include "cli.h"
+#include "io/cli.h"
 
 typedef struct seed { GEN seed; } seed_t;
 
@@ -26,6 +26,6 @@ typedef struct curve {
 	size_t npoints;
 } curve_t;
 
-typedef int (*gen_t)(curve_t *, config_t *);
+typedef int (*gen_t)(curve_t *, config_t *, ...);
 
 #endif  // ECGEN_TYPES_H

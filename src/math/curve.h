@@ -6,7 +6,7 @@
 #define ECGEN_CURVE_H
 
 #include <pari/pari.h>
-#include "cli.h"
+#include "io/cli.h"
 #include "types.h"
 
 /**
@@ -15,7 +15,7 @@
  * @param config
  * @return
  */
-int curve_init(curve_t *curve, config_t *config);
+int curve_init(curve_t *curve, config_t *config, ...);
 
 /**
  *
@@ -23,7 +23,7 @@ int curve_init(curve_t *curve, config_t *config);
  * @param config
  * @return
  */
-int curve_nonzero(curve_t *curve, config_t *config);
+int curve_nonzero(curve_t *curve, config_t *config, ...);
 
 /**
  *
@@ -31,7 +31,7 @@ int curve_nonzero(curve_t *curve, config_t *config);
  * @param config
  * @return
  */
-int curve_prime(curve_t *curve, config_t *config);
+int curve_prime(curve_t *curve, config_t *config, ...);
 
 /**
  *
@@ -39,15 +39,7 @@ int curve_prime(curve_t *curve, config_t *config);
  * @param config
  * @return
  */
-int curve_seed(curve_t *curve, config_t *config);
-
-/**
- *
- * @param curve
- * @param config
- * @return
- */
-int curve_g(curve_t *curve, config_t *config);
+int curve_seed(curve_t *curve, config_t *config, ...);
 
 /**
  * @param curve

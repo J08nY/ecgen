@@ -6,7 +6,6 @@
 #define ECGEN_OUTPUT_H
 
 #include <pari/pari.h>
-#include <parson/parson.h>
 #include <stdbool.h>
 
 /**

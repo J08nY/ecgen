@@ -3,12 +3,12 @@
  * Copyright (C) 2017 J08nY
  */
 #include "generators.h"
-#include "curve.h"
-#include "equation.h"
-#include "field.h"
-#include "seed.h"
+#include "math/curve.h"
+#include "math/equation.h"
+#include "math/field.h"
+#include "random/seed.h"
 
-int gen_skip(curve_t *curve, config_t *config) { return 1; }
+int gen_skip(curve_t *curve, config_t *config, ...) { return 1; }
 
 void gen_init(gen_t generators[], config_t *config) {
 	if (config->from_seed) {
@@ -26,8 +26,19 @@ void gen_init(gen_t generators[], config_t *config) {
 		generators[OFFSET_CURVE] = &curve_seed;
 	} else {
 		generators[OFFSET_SEED] = &gen_skip;
-		generators[OFFSET_A] = &a_random;
-		generators[OFFSET_B] = &b_random;
+
+		if (config->random) {
+			generators[OFFSET_A] = &a_random;
+			generators[OFFSET_B] = &b_random;
+		} else {
+			generators[OFFSET_A] = &a_input;
+			generators[OFFSET_B] = &b_input;
+		}
+
+		if (config->koblitz) {
+			generators[OFFSET_A] = &a_zero;
+		}
+
 		if (config->prime) {
 			generators[OFFSET_CURVE] = &curve_prime;
 		} else {
@@ -35,5 +46,9 @@ void gen_init(gen_t generators[], config_t *config) {
 		}
 	}
 
-	generators[OFFSET_FIELD] = &field_random;
+	if (config->random) {
+		generators[OFFSET_FIELD] = &field_random;
+	} else {
+		generators[OFFSET_FIELD] = &field_input;
+	}
 }
