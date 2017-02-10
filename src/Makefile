@@ -14,12 +14,12 @@ LDFLAGS=-L../lib
 GP_CFLAGS=-O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC
 GPFLAGS=-g -i4
 
-INCLUDES=-I. -I../lib -Icm -Iinvalid -Iio -Irandom
+INCLUDES=-I. -I../lib -Icm -Iinvalid -Iio -Irandom -Iexhaustive
 LIBS=-lpari -lparson
 
 ####
 
-VPATH = cm:invalid:io:random:math
+VPATH = cm:invalid:io:exhaustive:math
 
 GP =
 GPC = $(addsuffix .c, $(GP))

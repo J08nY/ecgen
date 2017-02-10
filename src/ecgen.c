@@ -17,17 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  */
+#include <pari/pari.h>
+#include "cm/cm.h"
+#include "exhaustive/exhaustive.h"
+#include "invalid/invalid.h"
+#include "io/input.h"
+#include "io/output.h"
+
 /**
  * @author J08nY <johny@neuromancer.sk>
  * @license GPL v2.0
  * @version 0.2
  */
-
-#include <time.h>
-#include "io/input.h"
-#include "io/output.h"
-#include "math/curve.h"
-#include "random/generators.h"
 
 const char *argp_program_version =
     "ecgen 0.2\n"
@@ -71,6 +72,38 @@ int quit(int status) {
 	return status;
 }
 
+/**
+ * Three fundamentally different Elliptic curve generation approaches can be
+ * taken.
+ *   - Complex Multiplication:
+ *     - Capable of generating a curve of a given prime order.
+ *     - Generates a subset of all Elliptic Curves over a given field.
+ *     - Used with the -n / --order option
+ *
+ *     - [Broker, Stevenhagen] - https://arxiv.org/abs/0712.2022
+ *
+ *   - Invalid curve generation:
+ *     - Generates *invalid* curves for a given curve.
+ *     - These curves have the same field, and *A* parameter in the short
+ * Weierstrass equation.
+ *     - Multiplication using some(most?) scalar multiplication algorithm
+ * proceeds the same way
+ *       multiplication on the input curve would.
+ *
+ *     - [Antipa, Brown, Menezes, Struik, Vanstone] -
+ * https://www.iacr.org/archive/pkc2003/25670211/25670211.pdf
+ *     - [Biehl, Mayer, Muller] -
+ * http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.107.3920&rep=rep1&type=pdf
+ *     - [Jager, Schwenk, Somorovksy] -
+ * http://euklid.org/pdf/ECC_Invalid_Curve.pdf
+ *
+ *   - Exhaustive/Random approach:
+ *     - Generates field and equation parameters:
+ *       - randomly
+ *       - using ANSI X9.62 verifiably random method(from seed)
+ *       - given input
+ *       , until a curve with requested properties appears.
+ */
 int main(int argc, char *argv[]) {
 	// Parse cli args
 	memset(&cfg, 0, sizeof(cfg));
@@ -80,21 +113,13 @@ int main(int argc, char *argv[]) {
 		return quit(1);
 	}
 
+	int status = 0;
 	if (cfg.cm) {
+		status = cm_do(&cfg);
 	} else if (cfg.invalid) {
+		status = invalid_do(&cfg);
 	} else {
-		gen_t generators[5];
-		gen_init(generators, &cfg);
-
-		curve_t *curve = curve_new();
-		int state = 0;
-		while (state != 5) {
-			int diff = generators[state](curve, &cfg);
-			state += diff;
-		}
-		output_csv(out, "%Px", ';', curve_params(curve));
-		curve_free(&curve);
+		status = exhaustive_do(&cfg);
 	}
-
-	return quit(0);
+	return quit(status);
 }

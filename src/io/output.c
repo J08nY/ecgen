@@ -47,9 +47,7 @@ void output_csv(FILE *out, const char *format, char delim, GEN vector) {
 	free(string);
 }
 
-char *output_sjson(GEN vector) {
-	parson
-}
+char *output_sjson(GEN vector) {}
 
 void output_json(FILE *out, GEN vector) {}
 

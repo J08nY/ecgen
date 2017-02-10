@@ -32,7 +32,7 @@ int field_random(curve_t *curve, config_t *config, ...) {
 }
 
 int field_input(curve_t *curve, config_t *config, ...) {
-	return -1;  // NOT IMPLEMENTED
+	return INT_MIN;  // NOT IMPLEMENTED
 }
 
 GEN field_params(GEN field) {

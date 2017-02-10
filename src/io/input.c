@@ -2,8 +2,8 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-#include <parson/parson.h>
 #include "input.h"
+#include <parson/parson.h>
 
 FILE *in;
 
@@ -75,7 +75,7 @@ GEN fread_string(FILE *stream, const char *prompt, int delim) {
 }
 
 GEN fread_param(param_t param, FILE *stream, const char *prompt, long bits,
-				int delim) {
+                int delim) {
 	switch (param) {
 		case PARAM_PRIME:
 			return fread_prime(stream, prompt, bits, delim);

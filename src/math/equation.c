@@ -2,8 +2,8 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-#include <io/input.h>
 #include "equation.h"
+#include "io/input.h"
 
 int eq_random(curve_t *curve, config_t *config, ...) {
 	int r = a_random(curve, config) + b_random(curve, config);

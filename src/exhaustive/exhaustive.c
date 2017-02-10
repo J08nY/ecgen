@@ -2,15 +2,15 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-#include "generators.h"
+#include "exhaustive.h"
+#include "io/output.h"
 #include "math/curve.h"
 #include "math/equation.h"
 #include "math/field.h"
-#include "random/seed.h"
+#include "math/order.h"
+#include "seed.h"
 
-int gen_skip(curve_t *curve, config_t *config, ...) { return 1; }
-
-void gen_init(gen_t generators[], config_t *config) {
+void exhaustive_init(gen_t generators[], config_t *config) {
 	if (config->from_seed) {
 		if (config->seed) {
 			generators[OFFSET_SEED] = &seed_argument;
@@ -39,10 +39,12 @@ void gen_init(gen_t generators[], config_t *config) {
 			generators[OFFSET_A] = &a_zero;
 		}
 
+		generators[OFFSET_CURVE] = &curve_nonzero;
+
 		if (config->prime) {
-			generators[OFFSET_CURVE] = &curve_prime;
+			generators[OFFSET_ORDER] = &order_prime;
 		} else {
-			generators[OFFSET_CURVE] = &curve_nonzero;
+			generators[OFFSET_ORDER] = &order_init;
 		}
 	}
 
@@ -51,4 +53,19 @@ void gen_init(gen_t generators[], config_t *config) {
 	} else {
 		generators[OFFSET_FIELD] = &field_input;
 	}
+}
+
+int exhaustive_do(config_t *cfg) {
+	gen_t generators[OFFSET_END];
+	exhaustive_init(generators, cfg);
+
+	curve_t *curve = curve_new();
+	int state = 0;
+	while (state != OFFSET_POINTS) {
+		int diff = generators[state](curve, cfg);
+		state += diff;
+	}
+	output_csv(out, "%Px", ';', curve_params(curve));
+	curve_free(&curve);
+	return 0;
 }

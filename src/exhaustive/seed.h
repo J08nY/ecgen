@@ -6,7 +6,7 @@
 #define ECGEN_SEED_H
 
 #include "io/cli.h"
-#include "types.h"
+#include "math/types.h"
 
 /**
  *

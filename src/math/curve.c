@@ -3,8 +3,8 @@
  * Copyright (C) 2017 J08nY
  */
 #include "curve.h"
+#include "exhaustive/seed.h"
 #include "field.h"
-#include "random/seed.h"
 
 curve_t *curve_new() {
 	curve_t *curve = pari_malloc(sizeof(curve_t));
@@ -56,23 +56,6 @@ int curve_nonzero(curve_t *curve, config_t *config, ...) {
 		return -3;
 	} else {
 		return 1;
-	}
-}
-
-int curve_prime(curve_t *curve, config_t *config, ...) {
-	pari_sp ltop = avma;
-	int nonzero = curve_nonzero(curve, config);
-	if (nonzero == 1) {
-		curve->order = ellsea(curve->curve, 1);
-		if (gequal0(curve->order) || !(isprime(curve->order))) {
-			avma = ltop;
-			return -3;
-		} else {
-			return 1;
-		}
-	} else {
-		avma = ltop;
-		return nonzero;
 	}
 }
 

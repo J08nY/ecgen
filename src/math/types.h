@@ -26,6 +26,19 @@ typedef struct curve {
 	size_t npoints;
 } curve_t;
 
+enum curve_offset {
+	OFFSET_SEED,
+	OFFSET_FIELD,
+	OFFSET_A,
+	OFFSET_B,
+	OFFSET_CURVE,
+	OFFSET_ORDER,
+	OFFSET_POINTS,
+	OFFSET_END
+};
+
 typedef int (*gen_t)(curve_t *, config_t *, ...);
+
+int gen_skip(curve_t *curve, config_t *config, ...);
 
 #endif  // ECGEN_TYPES_H
