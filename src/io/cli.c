@@ -31,7 +31,7 @@ struct argp_option options[] = {
 	{"fp",         OPT_FP,      0,       0,                  "Prime field."},
 	{"f2m",        OPT_F2M,     0,       0,                  "Binary field."},
 	// Curve specification
-	{"exhaustive", OPT_RANDOM,  0,       0,                  "Generate a exhaustive curve."},
+	{"random", OPT_RANDOM,  0,       0,                  "Generate a random curve."},
 	{"prime",      OPT_PRIME,   0,       0,                  "Generate a curve with prime order."},
 	{"seed",       OPT_SEED,    "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure)."},
 	{"invalid",    OPT_INVALID, 0,       0,                  "Generate a set of invalid curves (for a given curve)."},
