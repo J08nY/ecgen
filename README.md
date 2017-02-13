@@ -4,19 +4,47 @@ Tool for generating Elliptic curve domain parameters.
 
 ### Usage
 
-#### ecgen
-The main binary of the tool, does the hard work.
-
 	ecgen --fp/--f2m -r -p BITS
 
  - `--fp`/`--f2m` specifies the field type (prime/binary).
+<br/><br/>
  - `-r/--random` requests a random curve to be generated.
- - `-p/--prime` requests the curve order to be prime.
  - `-s/--seed=[SEED]` requests to generate a curve based on the ANSI X9.62 generation process and seed `SEED`.
+ - `-k/--koblitz` requests to generate a Koblitz curve.
+ - `-p/--prime` requests the curve order to be prime.
+ - `-n/--order=ORDER` requests the curve to have a (prime) order `ORDER`.
+ - `-i/--invalid` requests that invalid curves of small prime orders be generated.
+<br/><br/>
  - `-o/--output=FILE` writes output to `FILE`.
  - `-f/--input=FILE` reads input from `FILE`.
  - `-a/--append` appends to output file (doesn't overwrite it).
+<br/><br/>
  - `-d/--datadir=DIR` specifies the PARI/GP datadir containing the `seadata` package.
+
+### Generation methods
+Three different EC curve parameters generation methods are implemented.
+
+##### Random approach
+ - Generates field and equation parameters:
+   - randomly
+   - using ANSI X9.62 verifiably random method(from seed), until a curve with requested properties appears.
+   - given input
+
+##### Invalid curve generation
+ - Generates *invalid* curves for a given curve.
+ - These curves have the same field, and *A* parameter in the short Weierstrass equation.
+ - Multiplication using some(most?) scalar multiplication algorithm proceeds the same way multiplication on the input curve would.
+ - Used with the `-i / --invalid` option
+ - [Validation of Elliptic Curve Public Keys - [Antipa, Brown, Menezes, Struik, Vanstone]](https://www.iacr.org/archive/pkc2003/25670211/25670211.pdf)
+ - [Differential Fault Attacks on Elliptic Curve Cryptosystems - [Biehl, Mayer, Muller]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.107.3920&rep=rep1&type=pdf)
+ - [Practical Invalid Curve Attacks on TLS-ECDH - [Jager, Schwenk, Somorovksy]](http://euklid.org/pdf/ECC_Invalid_Curve.pdf)
+
+##### Complex multiplication
+ - Capable of generating a curve of a given prime order.
+ - Generates a subset of all Elliptic Curves over a given field.
+ - Used with the `-n / --order` option
+ - [Constructing elliptic curves of prime order - [Broker, Stevenhagen]](https://arxiv.org/abs/0712.2022)
+
 
 ### Build
 
