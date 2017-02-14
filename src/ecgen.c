@@ -55,10 +55,10 @@ bool init() {
 	}
 
 	// open outfile
-	out = output_open(cfg.output, cfg.append);
+	output_init(cfg.output, cfg.append);
 
 	// open infile
-	in = input_open(cfg.input);
+	input_init(cfg.input);
 
 	return true;
 }
@@ -66,8 +66,8 @@ bool init() {
 int quit(int status) {
 	pari_close();
 
-	output_close(out);
-	input_close(in);
+	output_quit();
+	input_quit();
 
 	return status;
 }
@@ -101,8 +101,8 @@ int quit(int status) {
  *     - Generates field and equation parameters:
  *       - randomly
  *       - using ANSI X9.62 verifiably random method(from seed)
- *       - given input
  *       , until a curve with requested properties appears.
+ *       - given input
  */
 int main(int argc, char *argv[]) {
 	// Parse cli args

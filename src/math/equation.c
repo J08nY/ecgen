@@ -19,7 +19,7 @@ int a_random(curve_t *curve, config_t *config, ...) {
 }
 
 int a_input(curve_t *curve, config_t *config, ...) {
-	curve->a = fread_int(in, "a: ", config->bits, '\n');
+	curve->a = fread_int(in, "a:", config->bits);
 	return 1;
 }
 
@@ -41,7 +41,7 @@ int b_random(curve_t *curve, config_t *config, ...) {
 }
 
 int b_input(curve_t *curve, config_t *config, ...) {
-	curve->b = fread_int(in, "a: ", config->bits, '\n');
+	curve->b = fread_int(in, "b:", config->bits);
 	return 1;
 }
 

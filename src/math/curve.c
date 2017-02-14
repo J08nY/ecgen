@@ -71,7 +71,7 @@ int curve_seed(curve_t *curve, config_t *config, ...) {
 			return curve_seed_f2m(curve, config);
 		default:
 			pari_err_TYPE("curve_seed", curve->field);
-			return 0; /* NOT REACHABLE */
+			return INT_MIN; /* NOT REACHABLE */
 	}
 }
 

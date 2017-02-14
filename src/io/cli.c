@@ -6,8 +6,8 @@
 #include <string.h>
 
 char doc[] =
-	"ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
-		"Eastern Seaboard Phishing Authority";
+    "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
+    "Eastern Seaboard Phishing Authority";
 char args_doc[] = "bits";
 
 enum opt_keys {
@@ -85,8 +85,8 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 				// ANSI X9.62 specifies seed as at least 160 bits in length.
 				if (strlen(arg) < 20) {
 					argp_failure(
-						state, 1, 0,
-						"SEED must be at least 160 bits(20 characters).");
+					    state, 1, 0,
+					    "SEED must be at least 160 bits(20 characters).");
 				}
 				cfg->seed = arg;
 			}
@@ -111,22 +111,22 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 			// Only one field
 			if (!cfg->prime_field && !cfg->binary_field) {
 				argp_failure(state, 1, 0,
-							 "Specify field type, prime or binary, with --fp / "
-								 "--f2m(but not both).");
+				             "Specify field type, prime or binary, with --fp / "
+				             "--f2m(but not both).");
 			}
-			// Invalid is not prime or seed or exhaustive by definition.
-			if (cfg->invalid && (cfg->prime || cfg->from_seed || cfg->random)) {
-				// not seed, not prime, not exhaustive
+			// Invalid is not prime or seed by definition.
+			if (cfg->invalid && (cfg->prime || cfg->from_seed)) {
+				// not seed, not prime
 				argp_failure(state, 1, 0,
-							 "Invalid curve generation can not generate curves "
-								 "from seed, exhaustive or prime order.");
+				             "Invalid curve generation can not generate curves "
+				             "from seed, exhaustive or prime order.");
 			}
 			if (cfg->cm && (cfg->prime || cfg->from_seed || cfg->invalid)) {
 				argp_failure(state, 1, 0,
-							 "Fixed order curve generation can not generate "
-								 "curves from seed, or invalid curves. Prime order "
-								 "also doesn't make sense if the given one isn't "
-								 "prime.");
+				             "Fixed order curve generation can not generate "
+				             "curves from seed, or invalid curves. Prime order "
+				             "also doesn't make sense if the given one isn't "
+				             "prime.");
 			}
 			break;
 		case ARGP_KEY_NO_ARGS:

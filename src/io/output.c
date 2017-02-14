@@ -43,7 +43,7 @@ char *output_scsv(const char *format, char delim, GEN vector) {
 
 void output_csv(FILE *out, const char *format, char delim, GEN vector) {
 	char *string = output_scsv(format, delim, vector);
-	fprintf(out, "%s", string);
+	fprintf(out, "%s\n", string);
 	free(string);
 }
 
@@ -51,23 +51,22 @@ char *output_sjson(GEN vector) {}
 
 void output_json(FILE *out, GEN vector) {}
 
-FILE *output_open(const char *output, bool append) {
+void output_init(const char *output, bool append) {
 	json_set_allocation_functions(pari_malloc, pari_free);
 
 	if (output) {
-		FILE *out = fopen(output, append ? "a" : "w");
+		out = fopen(output, append ? "a" : "w");
 		if (!out) {
 			// fallback to stdout and output err
 			out = stdout;
 			perror("Failed to open output file.");
 		}
-		return out;
 	} else {
-		return stdout;
+		out = stdout;
 	}
 }
 
-void output_close(FILE *out) {
+void output_quit() {
 	if (out != NULL && out != stdout) {
 		fclose(out);
 	}

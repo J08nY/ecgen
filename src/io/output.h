@@ -42,8 +42,8 @@ void output_json(FILE *out, GEN vector);
 
 extern FILE *out;
 
-FILE *output_open(const char *output, bool append);
+void output_init(const char *output, bool append);
 
-void output_close(FILE *out);
+void output_quit();
 
 #endif  // ECGEN_OUTPUT_H

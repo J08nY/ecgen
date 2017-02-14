@@ -10,6 +10,8 @@
 #include "types.h"
 
 /**
+ * Creates a curve GEN in curve_t curve from field, a and b.
+ * Always succeeds.
  *
  * @param curve
  * @param config
@@ -18,6 +20,8 @@
 int curve_init(curve_t *curve, config_t *config, ...);
 
 /**
+ * Creates a curve GEN in curve_t curve from field, a and b.
+ * Succeeds if a curve exists(non-zero discriminant).
  *
  * @param curve
  * @param config
@@ -26,14 +30,9 @@ int curve_init(curve_t *curve, config_t *config, ...);
 int curve_nonzero(curve_t *curve, config_t *config, ...);
 
 /**
- *
- * @param curve
- * @param config
- * @return
- */
-int curve_prime(curve_t *curve, config_t *config, ...);
-
-/**
+ * Creates a curve GEN in curve_t curve from field, a and b. Using the ANSI
+ * X9.62 verifiably random algorithm.
+ * Succeeds if a curve exists(non-zero discriminant).
  *
  * @param curve
  * @param config
@@ -43,7 +42,7 @@ int curve_seed(curve_t *curve, config_t *config, ...);
 
 /**
  * @param curve
- * @return
+ * @return a t_VEC of curve parameters: field,a,b,order
  */
 GEN curve_params(curve_t *curve);
 
@@ -54,8 +53,8 @@ GEN curve_params(curve_t *curve);
 curve_t *curve_new();
 
 /**
- *
- * @param curve
+ * Free a curve_t along with it's seed_t and point_ts.
+ * @param curve to free
  */
 void curve_free(curve_t **curve);
 

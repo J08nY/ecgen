@@ -10,7 +10,7 @@ bool random_init() {
 	// Try urandom first
 	FILE *rand = fopen("/dev/urandom", "rb");
 	if (rand) {
-		fread(&seed, sizeof(char), sizeof(pari_ulong), rand);
+		fread(&seed, 1, sizeof(pari_ulong), rand);
 		fclose(rand);
 	}
 	// Try worse methods later

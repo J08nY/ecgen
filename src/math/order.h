@@ -25,4 +25,4 @@ int order_init(curve_t *curve, config_t *cfg, ...);
  */
 int order_prime(curve_t *curve, config_t *cfg, ...);
 
-#endif //ECGEN_ORDER_H
+#endif  // ECGEN_ORDER_H
