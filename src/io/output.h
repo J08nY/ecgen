@@ -7,6 +7,7 @@
 
 #include <pari/pari.h>
 #include <stdbool.h>
+#include "math/types.h"
 
 /**
  *
@@ -31,7 +32,7 @@ void output_csv(FILE *out, const char *format, char delim, GEN vector);
  * @param vector
  * @return
  */
-char *output_sjson(GEN vector);
+char *output_sjson(curve_t *curve);
 
 /**
  *

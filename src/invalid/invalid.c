@@ -136,6 +136,7 @@ int invalid_do(config_t *cfg) {
 		curve_free(&curve);
 		return 1;
 	}
+	output_csv(out, "%P#x", ',', curve_params(curve));
 
 	// now, generate primes upto order^2
 	pari_ulong *primes;

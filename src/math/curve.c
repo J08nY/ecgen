@@ -29,6 +29,7 @@ curve_t *curve_copy(curve_t *src, curve_t *dest) {
 		dest->points = points_copy(src->points, dest->points, src->npoints);
 		dest->npoints = src->npoints;
 	}
+	return dest;
 }
 
 void curve_free(curve_t **curve) {

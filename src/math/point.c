@@ -102,7 +102,7 @@ int points_prime(curve_t *curve, config_t *config, ...) {
 
 				point_t *p = point_new();
 				p->point = point;
-				p->order = ord;
+				p->order = gel(primes, i);
 				curve->points[i - 1] = p;
 				npoints++;
 			}

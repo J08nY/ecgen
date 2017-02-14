@@ -20,7 +20,7 @@ char *output_scsv(const char *format, char delim, GEN vector) {
 		total += lengths[i];
 	}
 
-	char *result = (char *)malloc(total + len);
+	char *result = (char *) malloc(total + len);
 	if (!result) {
 		perror("Couldn't malloc.");
 		exit(1);
@@ -48,7 +48,12 @@ void output_csv(FILE *out, const char *format, char delim, GEN vector) {
 	free(string);
 }
 
-char *output_sjson(GEN vector) {}
+
+char *output_sjson(curve_t *curve) {
+	JSON_Value *root_value = json_value_init_object();
+	JSON_Object *root_object = json_value_get_object(root_value);
+	char *result = NULL;
+}
 
 void output_json(FILE *out, GEN vector) {}
 
