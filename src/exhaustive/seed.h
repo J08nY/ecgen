@@ -10,6 +10,20 @@
 
 /**
  *
+ * @return
+ */
+seed_t *seed_new(void);
+
+/**
+ *
+ * @param src
+ * @param dest
+ * @return
+ */
+seed_t *seed_copy(seed_t *src, seed_t *dest);
+
+/**
+ *
  * @param seed
  */
 void seed_free(seed_t **seed);

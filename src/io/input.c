@@ -111,7 +111,7 @@ void input_init(const char *input) {
 	}
 }
 
-void input_quit() {
+void input_quit(void) {
 	if (in != NULL && in != stdout) {
 		fclose(in);
 	}

@@ -31,6 +31,8 @@ typedef struct config_t {
 	char *output;
 	char *input;
 	bool append;
+	long verbose;
+	char *debug;
 	long bits;
 
 } config_t;

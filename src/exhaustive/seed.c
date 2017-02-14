@@ -5,7 +5,7 @@
 #include "seed.h"
 #include "io/input.h"
 
-seed_t *seed_new() {
+seed_t *seed_new(void) {
 	seed_t *seed = pari_malloc(sizeof(seed_t));
 	if (!seed) {
 		perror("Couldn't malloc.");
@@ -13,6 +13,11 @@ seed_t *seed_new() {
 	}
 	memset(seed, 0, sizeof(seed_t));
 	return seed;
+}
+
+seed_t *seed_copy(seed_t *src, seed_t *dest) {
+	dest->seed = gcopy(src->seed);
+	return dest;
 }
 
 void seed_free(seed_t **seed) {

@@ -8,7 +8,7 @@
 #include <pari/pari.h>
 #include <stdbool.h>
 
-bool random_init();
+bool random_init(void);
 
 GEN random_prime(long bits);
 

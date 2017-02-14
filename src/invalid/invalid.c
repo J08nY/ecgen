@@ -9,6 +9,7 @@
 #include "math/equation.h"
 #include "math/field.h"
 #include "math/order.h"
+#include "math/point.h"
 
 void invalid_init(gen_t generators[], config_t *cfg) {
 	generators[OFFSET_SEED] = &gen_skip;
@@ -74,6 +75,7 @@ size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 	invalid_gen[OFFSET_B] = &b_random;
 	invalid_gen[OFFSET_CURVE] = &curve_nonzero;
 	invalid_gen[OFFSET_ORDER] = &order_init;
+	invalid_gen[OFFSET_POINTS] = &points_prime;
 
 	// We will have nprimes curves in the end
 	*curves = pari_malloc(nprimes * sizeof(curve_t *));
@@ -94,7 +96,7 @@ size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 	while (ncurves < nprimes) {
 		pari_sp btop = avma;
 		// generate a curve with random b
-		exhaustive_gen(invalid, cfg, invalid_gen, OFFSET_B, OFFSET_POINTS);
+		exhaustive_gen(invalid, cfg, invalid_gen, OFFSET_B, OFFSET_END);
 
 		// does some small prime from our array divide the curve order?
 		size_t count = 0;
@@ -104,13 +106,9 @@ size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 					(*curves)[i] = invalid;
 				} else {
 					(*curves)[i] = curve_new();
-					(*curves)[i]->field = gcopy(invalid->field);
-					(*curves)[i]->a = gcopy(invalid->a);
-					(*curves)[i]->b = gcopy(invalid->b);
-					(*curves)[i]->curve = gcopy(invalid->curve);
-					(*curves)[i]->order = gcopy(invalid->order);
+					(*curves)[i] = curve_copy(invalid, (*curves)[i]);
 				}
-				output_csv(out, "%P#x", ';', curve_params((*curves)[i]));
+				output_csv(out, "%P#x", ',', curve_params((*curves)[i]));
 				ncurves++;
 				count++;
 			}

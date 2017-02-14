@@ -42,7 +42,7 @@ const char *argp_program_bug_address = "<johny@neuromancer.sk>";
 static struct argp argp = {options, parse_opt, args_doc, doc};
 static struct config_t cfg;
 
-bool init() {
+bool init(void) {
 	// Init PARI, 1GB stack, 1M primes
 	pari_init(1000000000, 1000000);
 
@@ -101,8 +101,8 @@ int quit(int status) {
  *     - Generates field and equation parameters:
  *       - randomly
  *       - using ANSI X9.62 verifiably random method(from seed)
- *       , until a curve with requested properties appears.
  *       - given input
+ *     , until a curve with requested properties appears.
  */
 int main(int argc, char *argv[]) {
 	// Parse cli args

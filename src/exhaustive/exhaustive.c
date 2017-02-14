@@ -8,6 +8,7 @@
 #include "math/equation.h"
 #include "math/field.h"
 #include "math/order.h"
+#include "math/point.h"
 #include "seed.h"
 
 void exhaustive_init(gen_t generators[], config_t *config) {
@@ -53,6 +54,8 @@ void exhaustive_init(gen_t generators[], config_t *config) {
 	} else {
 		generators[OFFSET_FIELD] = &field_input;
 	}
+
+	generators[OFFSET_POINTS] = &points_generators;
 }
 
 int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
@@ -64,8 +67,21 @@ int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
 			fprintf(stderr, "Error generating a curve. %i\n", state);
 			return 0;
 		}
+		if (config->verbose) {
+			if (diff > 0) {
+				fprintf(out, "+");
+			} else if (diff < 0) {
+				fprintf(out, "-");
+			} else {
+				fprintf(out, ".");
+			}
+			fflush(out);
+		}
 		state += diff;
 	}
+
+	if (config->verbose) fprintf(out, "\n");
+
 	return 1;
 }
 
@@ -74,11 +90,11 @@ int exhaustive_do(config_t *cfg) {
 	exhaustive_init(generators, cfg);
 
 	curve_t *curve = curve_new();
-	if (!exhaustive_gen(curve, cfg, generators, OFFSET_FIELD, OFFSET_POINTS)) {
+	if (!exhaustive_gen(curve, cfg, generators, OFFSET_FIELD, OFFSET_END)) {
 		curve_free(&curve);
 		return 1;
 	}
-	output_csv(out, "%P#x", ';', curve_params(curve));
+	output_csv(out, "%P#x", ',', curve_params(curve));
 	curve_free(&curve);
 	return 0;
 }

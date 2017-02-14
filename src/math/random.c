@@ -5,7 +5,7 @@
 #include "random.h"
 #include <time.h>
 
-bool random_init() {
+bool random_init(void) {
 	pari_ulong seed = 0;
 	// Try urandom first
 	FILE *rand = fopen("/dev/urandom", "rb");

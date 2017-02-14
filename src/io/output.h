@@ -41,9 +41,10 @@ char *output_sjson(GEN vector);
 void output_json(FILE *out, GEN vector);
 
 extern FILE *out;
+extern FILE *debug;
 
 void output_init(const char *output, bool append);
 
-void output_quit();
+void output_quit(void);
 
 #endif  // ECGEN_OUTPUT_H

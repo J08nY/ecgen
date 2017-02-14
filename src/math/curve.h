@@ -50,7 +50,15 @@ GEN curve_params(curve_t *curve);
  *
  * @return
  */
-curve_t *curve_new();
+curve_t *curve_new(void);
+
+/**
+ *
+ * @param src
+ * @param dest
+ * @return
+ */
+curve_t *curve_copy(curve_t *src, curve_t *dest);
 
 /**
  * Free a curve_t along with it's seed_t and point_ts.

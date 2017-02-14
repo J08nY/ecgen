@@ -2719,7 +2719,7 @@ polynomial_t *poly_find(long m) {
 		return NULL;
 	}
 	polynomial_t *search_tri = ansi_trinomials;
-	polynomial_t *search_penta = ansi_trinomials;
+	polynomial_t *search_penta = ansi_pentanomials;
 	size_t len_tri = sizeof(ansi_trinomials) / sizeof(polynomial_t);
 	size_t len_penta = sizeof(ansi_pentanomials) / sizeof(polynomial_t);
 	if (m < 160 || m > 2000) {

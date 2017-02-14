@@ -50,6 +50,6 @@ extern FILE *in;
 
 void input_init(const char *input);
 
-void input_quit();
+void input_quit(void);
 
 #endif  // ECGEN_INPUT_H

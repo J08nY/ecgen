@@ -5,8 +5,9 @@
 #include "curve.h"
 #include "exhaustive/seed.h"
 #include "field.h"
+#include "point.h"
 
-curve_t *curve_new() {
+curve_t *curve_new(void) {
 	curve_t *curve = pari_malloc(sizeof(curve_t));
 	if (!curve) {
 		perror("Couldn't malloc.");
@@ -16,10 +17,29 @@ curve_t *curve_new() {
 	return curve;
 }
 
+curve_t *curve_copy(curve_t *src, curve_t *dest) {
+	if (src->seed) dest->seed = seed_copy(src->seed, dest->seed);
+	if (src->field) dest->field = gcopy(src->field);
+	if (src->a) dest->a = gcopy(src->a);
+	if (src->b) dest->b = gcopy(src->b);
+	if (src->curve) dest->curve = gcopy(src->curve);
+	if (src->order) dest->order = gcopy(src->order);
+	if (src->points) {
+		dest->points = points_new(src->npoints);
+		dest->points = points_copy(src->points, dest->points, src->npoints);
+		dest->npoints = src->npoints;
+	}
+}
+
 void curve_free(curve_t **curve) {
 	if (*curve) {
 		seed_free(&(*curve)->seed);
-		pari_free((*curve)->points);
+		if ((*curve)->points) {
+			for (size_t i = 0; i < (*curve)->npoints; ++i) {
+				point_free(&(*curve)->points[i]);
+			}
+			points_free(&(*curve)->points);
+		}
 		pari_free(*curve);
 		*curve = NULL;
 	}
@@ -82,6 +102,15 @@ GEN curve_params(curve_t *curve) {
 	if (curve->a) result = gconcat(result, field_elementi(curve->a));
 	if (curve->b) result = gconcat(result, field_elementi(curve->b));
 	if (curve->order) result = gconcat(result, gtovec(curve->order));
+	if (curve->points) {
+		for (size_t i = 0; i < curve->npoints; ++i) {
+			GEN point =
+			    gconcat(field_elementi(gel(curve->points[i]->point, 1)),
+			            field_elementi(gel(curve->points[i]->point, 2)));
+			result = gconcat(result, point);
+			result = gconcat(result, curve->points[i]->order);
+		}
+	}
 
 	return gerepilecopy(ltop, result);
 }

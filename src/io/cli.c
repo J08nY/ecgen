@@ -21,6 +21,7 @@ enum opt_keys {
 	OPT_OUTPUT = 'o',
 	OPT_INPUT = 'f',
 	OPT_APPEND = 'a',
+	OPT_VERBOSE = 'v',
 	OPT_FP = 1,
 	OPT_F2M = 2,
 };
@@ -28,20 +29,21 @@ enum opt_keys {
 // clang-format off
 struct argp_option options[] = {
 	// Field specification
-	{"fp",         OPT_FP,      0,       0,                  "Prime field."},
-	{"f2m",        OPT_F2M,     0,       0,                  "Binary field."},
+	{"fp",       OPT_FP,      0,       0,                  "Prime field."},
+	{"f2m",      OPT_F2M,     0,       0,                  "Binary field."},
 	// Curve specification
-	{"random", OPT_RANDOM,  0,       0,                  "Generate a random curve."},
-	{"prime",      OPT_PRIME,   0,       0,                  "Generate a curve with prime order."},
-	{"seed",       OPT_SEED,    "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure)."},
-	{"invalid",    OPT_INVALID, 0,       0,                  "Generate a set of invalid curves (for a given curve)."},
-	{"order",      OPT_ORDER,   "ORDER", 0,                  "Generate a curve with given order (using Complex Multiplication)."},
-	{"koblitz",    OPT_KOBLITZ, 0,       0,                  "Generate a Koblitz curve."},
+	{"random",   OPT_RANDOM,  0,       0,                  "Generate a random curve."},
+	{"prime",    OPT_PRIME,   0,       0,                  "Generate a curve with prime order."},
+	{"seed",     OPT_SEED,    "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure)."},
+	{"invalid",  OPT_INVALID, 0,       0,                  "Generate a set of invalid curves (for a given curve)."},
+	{"order",    OPT_ORDER,   "ORDER", 0,                  "Generate a curve with given order (using Complex Multiplication)."},
+	{"koblitz",  OPT_KOBLITZ, 0,       0,                  "Generate a Koblitz curve."},
 	// Other
-	{"data-dir",   OPT_DATADIR, "DIR",   0,                  "PARI/GP data directory (containing seadata package)."},
-	{"input",      OPT_INPUT,   "FILE",  0,                  "Input from file."},
-	{"output",     OPT_OUTPUT,  "FILE",  0,                  "Output into file. Overwrites any existing file!"},
-	{"append",     OPT_APPEND,  0,       0,                  "Append to output file (don't overwrite)."},
+	{"data-dir", OPT_DATADIR, "DIR",   0,                  "PARI/GP data directory (containing seadata package)."},
+	{"input",    OPT_INPUT,   "FILE",  0,                  "Input from file."},
+	{"output",   OPT_OUTPUT,  "FILE",  0,                  "Output into file. Overwrites any existing file!"},
+	{"append",   OPT_APPEND,  0,       0,                  "Append to output file (don't overwrite)."},
+	{"verbose",  OPT_VERBOSE, "FILE", OPTION_ARG_OPTIONAL, "Verbose logging to stdout"},
 	{0}};
 // clang-format on
 
@@ -60,6 +62,12 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 			break;
 		case OPT_APPEND:
 			cfg->append = true;
+			break;
+		case OPT_VERBOSE:
+			cfg->verbose++;
+			if (arg) {
+				cfg->debug = arg;
+			}
 			break;
 		case OPT_RANDOM:
 			cfg->random = true;
@@ -86,7 +94,7 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 				if (strlen(arg) < 20) {
 					argp_failure(
 					    state, 1, 0,
-					    "SEED must be at least 160 bits(20 characters).");
+					    "SEED must be at least 160 bits (20 characters).");
 				}
 				cfg->seed = arg;
 			}
@@ -112,7 +120,7 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 			if (!cfg->prime_field && !cfg->binary_field) {
 				argp_failure(state, 1, 0,
 				             "Specify field type, prime or binary, with --fp / "
-				             "--f2m(but not both).");
+				             "--f2m (but not both).");
 			}
 			// Invalid is not prime or seed by definition.
 			if (cfg->invalid && (cfg->prime || cfg->from_seed)) {

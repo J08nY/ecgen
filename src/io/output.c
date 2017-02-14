@@ -7,6 +7,7 @@
 #include <parson/parson.h>
 
 FILE *out;
+FILE *debug;
 
 char *output_scsv(const char *format, char delim, GEN vector) {
 	long len = lg(vector) - 1;
@@ -66,7 +67,7 @@ void output_init(const char *output, bool append) {
 	}
 }
 
-void output_quit() {
+void output_quit(void) {
 	if (out != NULL && out != stdout) {
 		fclose(out);
 	}

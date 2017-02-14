@@ -8,7 +8,9 @@
 #include <pari/pari.h>
 /*
 GP;install("init_gp","v","init_gp","./gp/gp.gp.so");
+GP;install("test","","test","./gp/gp.gp.so");
 */
 void init_gp(void);
+GEN test(void);
 /*End of prototype*/
 #endif  // GP_H
