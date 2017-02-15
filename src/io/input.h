@@ -6,6 +6,7 @@
 #define ECGEN_INPUT_H
 
 #include "math/random.h"
+#include "math/types.h"
 
 typedef enum PARAM {
 	PARAM_PRIME,
@@ -48,7 +49,7 @@ GEN read_param(param_t param, const char *prompt, long bits);
 
 extern FILE *in;
 
-void input_init(const char *input);
+void input_init(config_t *cfg);
 
 void input_quit(void);
 

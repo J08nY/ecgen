@@ -3,7 +3,7 @@ project(ecgen)
 
 set(CMAKE_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/lib)
 
-SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -Wall")
+SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -Wall -Werror")
 SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall")
 
 add_custom_command(

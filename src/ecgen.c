@@ -55,10 +55,10 @@ bool init(void) {
 	}
 
 	// open outfile
-	output_init(cfg.output, cfg.append);
+	output_init(&cfg);
 
 	// open infile
-	input_init(cfg.input);
+	input_init(&cfg);
 
 	return true;
 }

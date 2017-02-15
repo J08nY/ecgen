@@ -34,7 +34,10 @@ int a_one(curve_t *curve, config_t *config, ...) {
 	return 1;
 }
 
-int a_seed(curve_t *curve, config_t *config, ...) {}
+int a_seed(curve_t *curve, config_t *config, ...) {
+	//TODO implement
+	return INT_MIN;
+}
 
 int b_random(curve_t *curve, config_t *config, ...) {
 	curve->b = genrand(curve->field);
@@ -57,4 +60,7 @@ int b_one(curve_t *curve, config_t *config, ...) {
 	return 1;
 }
 
-int b_seed(curve_t *curve, config_t *config, ...) {}
+int b_seed(curve_t *curve, config_t *config, ...) {
+	//TODO implement
+	return INT_MIN;
+}

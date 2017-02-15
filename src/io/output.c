@@ -50,18 +50,24 @@ void output_csv(FILE *out, const char *format, char delim, GEN vector) {
 
 
 char *output_sjson(curve_t *curve) {
+	/*
 	JSON_Value *root_value = json_value_init_object();
 	JSON_Object *root_object = json_value_get_object(root_value);
 	char *result = NULL;
+	 */
+	//TODO implement
+	return NULL;
 }
 
-void output_json(FILE *out, GEN vector) {}
+void output_json(FILE *out, GEN vector) {
+	//TODO implement
+}
 
-void output_init(const char *output, bool append) {
+void output_init(config_t *cfg) {
 	json_set_allocation_functions(pari_malloc, pari_free);
 
-	if (output) {
-		out = fopen(output, append ? "a" : "w");
+	if (cfg->output) {
+		out = fopen(cfg->output, cfg->append ? "a" : "w");
 		if (!out) {
 			// fallback to stdout and output err
 			out = stdout;

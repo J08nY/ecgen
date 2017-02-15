@@ -93,11 +93,11 @@ GEN read_param(param_t param, const char *prompt, long bits) {
 	return fread_param(param, stdin, prompt, bits);
 }
 
-void input_init(const char *input) {
+void input_init(config_t *cfg) {
 	json_set_allocation_functions(pari_malloc, pari_free);
 
-	if (input) {
-		in = fopen(input, "r");
+	if (cfg->input) {
+		in = fopen(cfg->input, "r");
 		delim = ',';
 		if (!in) {
 			// fallback to stdin or quit?

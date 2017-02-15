@@ -80,9 +80,15 @@ int curve_nonzero(curve_t *curve, config_t *config, ...) {
 	}
 }
 
-int curve_seed_fp(curve_t *curve, config_t *config, ...) {}
+int curve_seed_fp(curve_t *curve, config_t *config, ...) {
+	//TODO implement
+	return INT_MIN;
+}
 
-int curve_seed_f2m(curve_t *curve, config_t *config, ...) {}
+int curve_seed_f2m(curve_t *curve, config_t *config, ...) {
+	//TODO implement
+	return INT_MIN;
+}
 
 int curve_seed(curve_t *curve, config_t *config, ...) {
 	switch (typ(curve->field)) {

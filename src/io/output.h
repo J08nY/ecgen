@@ -44,7 +44,7 @@ void output_json(FILE *out, GEN vector);
 extern FILE *out;
 extern FILE *debug;
 
-void output_init(const char *output, bool append);
+void output_init(config_t *cfg);
 
 void output_quit(void);
 
