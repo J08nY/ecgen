@@ -75,6 +75,7 @@ int field_input(curve_t *curve, config_t *config, ...) {
 			gel(v, 1) = gen_1;
 
 			GEN poly = gmul(gtopolyrev(v, -1), gmodulss(1, 2));
+			//TODO check irreducibility here
 
 			GEN field = gerepilecopy(ltop, ffgen(poly, -1));
 			curve->field = field;

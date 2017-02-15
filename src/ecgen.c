@@ -17,18 +17,18 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  */
+/**
+ * @file ecgen.c
+ * @author J08nY <johny@neuromancer.sk>
+ * @version 0.2
+ * @copyright GPL v2.0
+ */
 #include <pari/pari.h>
 #include "cm/cm.h"
 #include "exhaustive/exhaustive.h"
 #include "invalid/invalid.h"
 #include "io/input.h"
 #include "io/output.h"
-
-/**
- * @author J08nY <johny@neuromancer.sk>
- * @license GPL v2.0
- * @version 0.2
- */
 
 const char *argp_program_version =
     "ecgen 0.2\n"
@@ -73,6 +73,7 @@ int quit(int status) {
 }
 
 /**
+ * @mainpage
  * Three fundamentally different Elliptic curve generation approaches can be
  * taken.
  *   - Complex Multiplication:
@@ -103,6 +104,10 @@ int quit(int status) {
  *       - using ANSI X9.62 verifiably random method(from seed)
  *       - given input
  *     , until a curve with requested properties appears.
+ *     - Can generate curves repeatedly until one satisfies requested properties:
+ *       - -p / --prime generates curves until a prime order curve is found.
+ *       - -k / --koblitz generates a curve with fixed A = 0 parameter.
+ *
  */
 int main(int argc, char *argv[]) {
 	// Parse cli args

@@ -2,6 +2,9 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+/**
+ * @file field.h
+ */
 #ifndef ECGEN_FIELD_H
 #define ECGEN_FIELD_H
 
@@ -9,18 +12,27 @@
 #include "types.h"
 
 /**
+ * GENERATOR(gen_t)
+ * Creates a random field.
+ * Always succeeds.
  *
  * @param curve
  * @param config
- * @return
+ * @param ... unused
+ * @return state diff
  */
 int field_random(curve_t *curve, config_t *config, ...);
 
 /**
+ * GENERATOR(gen_t)
+ * Creates a field by reading:
+ *  - a prime number in the prime field case
+ *  - three short exponents of the reduction polynomial in the binary case
  *
  * @param curve
  * @param config
- * @return
+ * @param ... unused
+ * @return state diff
  */
 int field_input(curve_t *curve, config_t *config, ...);
 
@@ -30,7 +42,7 @@ int field_input(curve_t *curve, config_t *config, ...);
  *    returns the vector of powers of middle coefficients of the reduction
  * polynomial.
  *  - char(field) != 2:
- *     returns the field characteristic(p).-
+ *     returns the vector of the field characteristic(p).
  *
  * @param field
  * @return field representation
@@ -38,9 +50,11 @@ int field_input(curve_t *curve, config_t *config, ...);
 GEN field_params(GEN field);
 
 /**
+ * Transforms a field element to an integer.
+ * Uses the polynomial basis of the underlying field in case of a binary field.
  *
- * @param element
- * @return
+ * @param element t_INTMOD, t_INT, t_FFELT to transform
+ * @return t_INT
  */
 GEN field_elementi(GEN element);
 

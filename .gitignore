@@ -1,5 +1,6 @@
 ### Custom
 data/
+doc/
 src/ecgen
 
 ### C template

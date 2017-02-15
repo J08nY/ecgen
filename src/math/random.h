@@ -2,6 +2,9 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+/**
+ * @file random.h
+ */
 #ifndef ECGEN_RANDOM_H
 #define ECGEN_RANDOM_H
 

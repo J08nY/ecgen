@@ -20,6 +20,7 @@ int a_random(curve_t *curve, config_t *config, ...) {
 
 int a_input(curve_t *curve, config_t *config, ...) {
 	curve->a = fread_int(in, "a:", config->bits);
+	//TODO check if a is valid int here, if not repeat
 	// TODO change a to a field element here?. a t_INTMOD or a t_FFELT.
 	return 1;
 }
@@ -46,6 +47,7 @@ int b_random(curve_t *curve, config_t *config, ...) {
 
 int b_input(curve_t *curve, config_t *config, ...) {
 	curve->b = fread_int(in, "b:", config->bits);
+	//TODO check if a is valid int here, if not repeat
 	// TODO change b to a field element here?. a t_INTMOD or a t_FFELT.
 	return 1;
 }

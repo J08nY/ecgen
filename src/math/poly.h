@@ -2,13 +2,16 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+/**
+ * @file poly.h
+ */
 #ifndef ECGEN_POLY_H
 #define ECGEN_POLY_H
 
 #include <pari/pari.h>
 #include <stdbool.h>
 
-typedef struct polynomial {
+typedef struct polynomial_t {
 	int m;
 	int e1;
 	int e2;
