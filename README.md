@@ -15,8 +15,10 @@ Tool for generating Elliptic curve domain parameters.
  - `-n/--order=ORDER` requests the curve to have a (prime) order `ORDER`.
  - `-i/--invalid` requests that invalid curves of small prime orders be generated.
 <br/><br/>
- - `-o/--output=FILE` writes output to `FILE`.
+ - `-v/--verbose=[FILE]` turns on verbose output (to file).
+ - `-t/--format=[FORMAT]` sets format to output in. One of \[csv,json\], default is json.
  - `-f/--input=FILE` reads input from `FILE`.
+ - `-o/--output=FILE` writes output to `FILE`.
  - `-a/--append` appends to output file (doesn't overwrite it).
 <br/><br/>
  - `-d/--datadir=DIR` specifies the PARI/GP datadir containing the `seadata` package.
@@ -29,6 +31,9 @@ Three different EC curve parameters generation methods are implemented.
    - randomly
    - using ANSI X9.62 verifiably random method(from seed), until a curve with requested properties appears.
    - given input
+ - Can generate curves repeatedly until one satisfies requested properties:
+   - `-p/--prime` generates curves until a prime order curve is found.
+   - `-k/--koblitz` generates a curve with fixed *A = 0* parameter.
 
 ##### Invalid curve generation
  - Generates *invalid* curves for a given curve.

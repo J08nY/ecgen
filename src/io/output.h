@@ -11,41 +11,92 @@
 
 /**
  *
- * @param delim
- * @param format
- * @param vector
+ * @param curve
+ * @param config
  * @return
  */
-char *output_scsv(const char *format, char delim, GEN vector);
+char *output_scsv(curve_t *curve, config_t *config);
 
 /**
  *
  * @param out
- * @param delim
- * @param format
- * @param vector
+ * @param curve
+ * @param config
  */
-void output_csv(FILE *out, const char *format, char delim, GEN vector);
+void output_fcsv(FILE *out, curve_t *curve, config_t *config);
 
 /**
  *
- * @param vector
+ * @param curve
+ * @param config
+ */
+void output_csv(curve_t *curve, config_t *config);
+
+/**
+ *
+ * @param curve
+ * @param config
  * @return
  */
-char *output_sjson(curve_t *curve);
+char *output_sjson(curve_t *curve, config_t *config);
 
 /**
  *
  * @param out
- * @param vector
+ * @param curve
+ * @param config
  */
-void output_json(FILE *out, GEN vector);
+void output_fjson(FILE *out, curve_t *curve, config_t *config);
 
+/**
+ *
+ * @param curve
+ * @param config
+ */
+void output_json(curve_t *curve, config_t *config);
+
+/**
+ *
+ * @param curve
+ * @param config
+ * @return
+ */
+char *(*output_s)(curve_t *curve, config_t *config);
+
+/**
+ *
+ * @param out
+ * @param curve
+ * @param config
+ */
+void (*output_f)(FILE *out, curve_t *curve, config_t *config);
+
+/**
+ *
+ * @param curve
+ * @param config
+ */
+void (*output_o)(curve_t *curve, config_t *config);
+
+/**
+ *
+ */
 extern FILE *out;
+
+/**
+ *
+ */
 extern FILE *debug;
 
+/**
+ *
+ * @param cfg
+ */
 void output_init(config_t *cfg);
 
+/**
+ *
+ */
 void output_quit(void);
 
 #endif  // ECGEN_OUTPUT_H

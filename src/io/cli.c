@@ -6,8 +6,8 @@
 #include <string.h>
 
 char doc[] =
-    "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
-    "Eastern Seaboard Phishing Authority";
+	"ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
+		"Eastern Seaboard Phishing Authority";
 char args_doc[] = "bits";
 
 enum opt_keys {
@@ -18,6 +18,7 @@ enum opt_keys {
 	OPT_INVALID = 'i',
 	OPT_ORDER = 'n',
 	OPT_KOBLITZ = 'k',
+	OPT_FORMAT = 't',
 	OPT_OUTPUT = 'o',
 	OPT_INPUT = 'f',
 	OPT_APPEND = 'a',
@@ -29,21 +30,22 @@ enum opt_keys {
 // clang-format off
 struct argp_option options[] = {
 	// Field specification
-	{"fp",       OPT_FP,      0,       0,                  "Prime field."},
-	{"f2m",      OPT_F2M,     0,       0,                  "Binary field."},
+	{"fp",       OPT_FP,      0,        0,                 "Prime field."},
+	{"f2m",      OPT_F2M,     0,        0,                 "Binary field."},
 	// Curve specification
-	{"random",   OPT_RANDOM,  0,       0,                  "Generate a random curve."},
-	{"prime",    OPT_PRIME,   0,       0,                  "Generate a curve with prime order."},
+	{"random",   OPT_RANDOM,  0,        0,                 "Generate a random curve."},
+	{"prime",    OPT_PRIME,   0,        0,                 "Generate a curve with prime order."},
 	{"seed",     OPT_SEED,    "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure)."},
-	{"invalid",  OPT_INVALID, 0,       0,                  "Generate a set of invalid curves (for a given curve)."},
-	{"order",    OPT_ORDER,   "ORDER", 0,                  "Generate a curve with given order (using Complex Multiplication)."},
-	{"koblitz",  OPT_KOBLITZ, 0,       0,                  "Generate a Koblitz curve."},
+	{"invalid",  OPT_INVALID, 0,        0,                 "Generate a set of invalid curves (for a given curve)."},
+	{"order",    OPT_ORDER,   "ORDER",  0,                 "Generate a curve with given order (using Complex Multiplication)."},
+	{"koblitz",  OPT_KOBLITZ, 0,        0,                 "Generate a Koblitz curve."},
 	// Other
-	{"data-dir", OPT_DATADIR, "DIR",   0,                  "PARI/GP data directory (containing seadata package)."},
-	{"input",    OPT_INPUT,   "FILE",  0,                  "Input from file."},
-	{"output",   OPT_OUTPUT,  "FILE",  0,                  "Output into file. Overwrites any existing file!"},
-	{"append",   OPT_APPEND,  0,       0,                  "Append to output file (don't overwrite)."},
-	{"verbose",  OPT_VERBOSE, "FILE", OPTION_ARG_OPTIONAL, "Verbose logging to stdout"},
+	{"data-dir", OPT_DATADIR, "DIR",    0,                 "PARI/GP data directory (containing seadata package)."},
+	{"format",   OPT_FORMAT,  "FORMAT", 0,                 "Format to output in. One of [csv,json], default is json."},
+	{"input",    OPT_INPUT,   "FILE",   0,                 "Input from file."},
+	{"output",   OPT_OUTPUT,  "FILE",   0,                 "Output into file. Overwrites any existing file!"},
+	{"append",   OPT_APPEND,  0,        0,                 "Append to output file (don't overwrite)."},
+	{"verbose",  OPT_VERBOSE, "FILE", OPTION_ARG_OPTIONAL, "Verbose logging (to stdout or file)."},
 	{0}};
 // clang-format on
 
@@ -53,6 +55,21 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 	switch (key) {
 		case OPT_DATADIR:
 			cfg->datadir = arg;
+			break;
+		case OPT_FORMAT:
+			if (arg) {
+				if (!strcmp(arg, "csv")) {
+					cfg->format = FORMAT_CSV;
+				} else if (!strcmp(arg, "json")) {
+					cfg->format = FORMAT_JSON;
+				} else {
+					argp_failure(state, 1, 0,
+					"Invalid format specified. One of [csv, json] is valid.");
+				}
+			} else {
+				argp_failure(state, 1, 0,
+							 "You have to specify a format with the format option.");
+			}
 			break;
 		case OPT_INPUT:
 			cfg->input = arg;
@@ -93,8 +110,8 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 				// ANSI X9.62 specifies seed as at least 160 bits in length.
 				if (strlen(arg) < 20) {
 					argp_failure(
-					    state, 1, 0,
-					    "SEED must be at least 160 bits (20 characters).");
+						state, 1, 0,
+						"SEED must be at least 160 bits (20 characters).");
 				}
 				cfg->seed = arg;
 			}
@@ -119,22 +136,22 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 			// Only one field
 			if (!cfg->prime_field && !cfg->binary_field) {
 				argp_failure(state, 1, 0,
-				             "Specify field type, prime or binary, with --fp / "
-				             "--f2m (but not both).");
+							 "Specify field type, prime or binary, with --fp / "
+								 "--f2m (but not both).");
 			}
 			// Invalid is not prime or seed by definition.
 			if (cfg->invalid && (cfg->prime || cfg->from_seed)) {
 				// not seed, not prime
 				argp_failure(state, 1, 0,
-				             "Invalid curve generation can not generate curves "
-				             "from seed, exhaustive or prime order.");
+							 "Invalid curve generation can not generate curves "
+								 "from seed, exhaustive or prime order.");
 			}
 			if (cfg->cm && (cfg->prime || cfg->from_seed || cfg->invalid)) {
 				argp_failure(state, 1, 0,
-				             "Fixed order curve generation can not generate "
-				             "curves from seed, or invalid curves. Prime order "
-				             "also doesn't make sense if the given one isn't "
-				             "prime.");
+							 "Fixed order curve generation can not generate "
+								 "curves from seed, or invalid curves. Prime order "
+								 "also doesn't make sense if the given one isn't "
+								 "prime.");
 			}
 			break;
 		case ARGP_KEY_NO_ARGS:

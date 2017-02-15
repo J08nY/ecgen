@@ -108,7 +108,7 @@ size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 					(*curves)[i] = curve_new();
 					(*curves)[i] = curve_copy(invalid, (*curves)[i]);
 				}
-				output_csv(out, "%P#x", ',', curve_params((*curves)[i]));
+				output_o((*curves)[i], cfg);
 				ncurves++;
 				count++;
 			}
@@ -136,7 +136,7 @@ int invalid_do(config_t *cfg) {
 		curve_free(&curve);
 		return 1;
 	}
-	output_csv(out, "%P#x", ',', curve_params(curve));
+	output_o(curve, cfg);
 
 	// now, generate primes upto order^2
 	pari_ulong *primes;

@@ -5,17 +5,23 @@
 
 #include "output.h"
 #include <parson/parson.h>
+#include "math/field.h"
+#include "math/curve.h"
+
 
 FILE *out;
 FILE *debug;
 
-char *output_scsv(const char *format, char delim, GEN vector) {
-	long len = lg(vector) - 1;
+char *output_scsv(curve_t *curve, config_t *config) {
+	pari_sp ltop = avma;
+	GEN vector = curve_params(curve);
+
+	long len = glength(vector);
 	char *params[len];
 	size_t lengths[len];
 	size_t total = 0;
 	for (long i = 0; i < len; ++i) {
-		params[i] = pari_sprintf(format, gel(vector, i + 1));
+		params[i] = pari_sprintf("%P#x", gel(vector, i + 1));
 		lengths[i] = strlen(params[i]);
 		total += lengths[i];
 	}
@@ -33,34 +39,111 @@ char *output_scsv(const char *format, char delim, GEN vector) {
 
 		offset += lengths[i];
 		if (i != len - 1) {
-			result[offset] = delim;
+			result[offset] = ',';
 			offset++;
 		}
 	}
 	memset(result + offset, 0, 1);
 
+	avma = ltop;
 	return result;
 }
 
-void output_csv(FILE *out, const char *format, char delim, GEN vector) {
-	char *string = output_scsv(format, delim, vector);
+void output_fcsv(FILE *out, curve_t *curve, config_t *config) {
+	char *string = output_scsv(curve, config);
 	fprintf(out, "%s\n", string);
 	free(string);
 }
 
-
-char *output_sjson(curve_t *curve) {
-	/*
-	JSON_Value *root_value = json_value_init_object();
-	JSON_Object *root_object = json_value_get_object(root_value);
-	char *result = NULL;
-	 */
-	//TODO implement
-	return NULL;
+void output_csv(curve_t *curve, config_t *config) {
+	output_fcsv(out, curve, config);
 }
 
-void output_json(FILE *out, GEN vector) {
-	//TODO implement
+JSON_Value *output_jjson(curve_t *curve, config_t *config) {
+	pari_sp ltop = avma;
+	// root object/value is curve
+	JSON_Value *root_value = json_value_init_object();
+	JSON_Object *root_object = json_value_get_object(root_value);
+
+	switch (config->field) {
+		case FIELD_PRIME: {
+			char *prime = pari_sprintf("%P#x", curve->field);
+			json_object_dotset_string(root_object, "field.p", prime);
+			pari_free(prime);
+			break;
+		}
+		case FIELD_BINARY: {
+			GEN field = field_params(curve->field);
+			char *e1 = pari_sprintf("%P#x", gel(field, 1));
+			char *e2 = pari_sprintf("%P#x", gel(field, 2));
+			char *e3 = pari_sprintf("%P#x", gel(field, 3));
+			char *m = pari_sprintf("%#lx", config->bits); // maybe not?
+			json_object_dotset_string(root_object, "field.m", m);
+			json_object_dotset_string(root_object, "field.e1", e1);
+			json_object_dotset_string(root_object, "field.e2", e2);
+			json_object_dotset_string(root_object, "field.e3", e3);
+			pari_free(m);
+			pari_free(e1);
+			pari_free(e2);
+			pari_free(e3);
+			break;
+		}
+		default:
+			fprintf(stderr, "Error, field has unknown amount of elements.\n");
+			exit(1);
+	}
+
+	char *a = pari_sprintf("%P#x", field_elementi(curve->a));
+	json_object_set_string(root_object, "a", a);
+	pari_free(a);
+	char *b = pari_sprintf("%P#x", field_elementi(curve->b));
+	json_object_set_string(root_object, "b", b);
+	pari_free(b);
+	char *order = pari_sprintf("%P#x", curve->order);
+	json_object_set_string(root_object, "order", order);
+	pari_free(order);
+	if (curve->npoints) {
+		JSON_Value *points_value = json_value_init_array();
+		JSON_Array *points_array = json_value_get_array(points_value);
+
+		for (size_t i = 0; i < curve->npoints; ++i) {
+			JSON_Value *point_value = json_value_init_object();
+			JSON_Object *point_object = json_value_get_object(point_value);
+
+			char *x = pari_sprintf("%P#x", field_elementi(gel(curve->points[i]->point, 1)));
+			json_object_set_string(point_object, "x", x);
+			pari_free(x);
+			char *y = pari_sprintf("%P#x", field_elementi(gel(curve->points[i]->point, 2)));
+			json_object_set_string(point_object, "y", y);
+			pari_free(y);
+			char *p_order = pari_sprintf("%P#x", curve->points[i]->order);
+			json_object_set_string(point_object, "order", p_order);
+			pari_free(p_order);
+			json_array_append_value(points_array, point_value);
+		}
+
+		json_object_set_value(root_object, "points", points_value);
+	}
+	avma = ltop;
+	return root_value;
+}
+
+char *output_sjson(curve_t *curve, config_t *config) {
+	JSON_Value *root_value = output_jjson(curve, config);
+	char *result = json_serialize_to_string_pretty(root_value);
+	json_value_free(root_value);
+
+	return result;
+}
+
+void output_fjson(FILE *out, curve_t *curve, config_t *config) {
+	char *s = output_sjson(curve, config);
+	fprintf(out, "%s", s);
+	json_free_serialized_string(s);
+}
+
+void output_json(curve_t *curve, config_t *config) {
+	output_fjson(out, curve, config);
 }
 
 void output_init(config_t *cfg) {
@@ -75,6 +158,28 @@ void output_init(config_t *cfg) {
 		}
 	} else {
 		out = stdout;
+	}
+	if (cfg->debug) {
+		debug = fopen(cfg->debug, "w");
+		if (!debug) {
+			debug = stdout;
+			perror("Failed to open verbose output file.");
+		}
+	} else {
+		debug = stdout;
+	}
+
+	switch (cfg->format) {
+		case FORMAT_JSON:
+			output_s = &output_sjson;
+			output_f = &output_fjson;
+			output_o = &output_json;
+			break;
+		case FORMAT_CSV:
+			output_s = &output_scsv;
+			output_f = &output_fcsv;
+			output_o = &output_csv;
+			break;
 	}
 }
 

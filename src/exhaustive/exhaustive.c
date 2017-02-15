@@ -69,18 +69,18 @@ int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
 		}
 		if (config->verbose) {
 			if (diff > 0) {
-				fprintf(out, "+");
+				fprintf(debug, "+");
 			} else if (diff < 0) {
-				fprintf(out, "-");
+				fprintf(debug, "-");
 			} else {
-				fprintf(out, ".");
+				fprintf(debug, ".");
 			}
-			fflush(out);
+			fflush(debug);
 		}
 		state += diff;
 	}
 
-	if (config->verbose) fprintf(out, "\n");
+	if (config->verbose) fprintf(debug, "\n");
 
 	return 1;
 }
@@ -90,11 +90,11 @@ int exhaustive_do(config_t *cfg) {
 	exhaustive_init(generators, cfg);
 
 	curve_t *curve = curve_new();
-	if (!exhaustive_gen(curve, cfg, generators, OFFSET_FIELD, OFFSET_END)) {
+	if (!exhaustive_gen(curve, cfg, generators, OFFSET_SEED, OFFSET_END)) {
 		curve_free(&curve);
 		return 1;
 	}
-	output_csv(out, "%P#x", ',', curve_params(curve));
+	output_o(curve, cfg);
 	curve_free(&curve);
 	return 0;
 }
