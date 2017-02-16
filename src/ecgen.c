@@ -104,7 +104,8 @@ int quit(int status) {
  *       - using ANSI X9.62 verifiably random method(from seed)
  *       - given input
  *     , until a curve with requested properties appears.
- *     - Can generate curves repeatedly until one satisfies requested properties:
+ *     - Can generate curves repeatedly until one satisfies requested
+ * properties:
  *       - -p / --prime generates curves until a prime order curve is found.
  *       - -k / --koblitz generates a curve with fixed A = 0 parameter.
  *

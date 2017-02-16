@@ -54,24 +54,49 @@ point_t **points_copy(point_t **src, point_t **dest, size_t num);
 void points_free(point_t ***point);
 
 /**
- * GENERATOR(gen_t)
  *
- * @param curve
- * @param config
- * @param ... unused
- * @return state diff
+ * @param points
+ * @param npoints
  */
-int point_random(curve_t *curve, config_t *config, ...);
+void points_free_deep(point_t ***points, size_t npoints);
 
 /**
  * GENERATOR(gen_t)
  *
  * @param curve
  * @param config
- * @param ... size_t number of points to generate
+ * @param args unused
  * @return state diff
  */
-int points_random(curve_t *curve, config_t *config, ...);
+int point_random(curve_t *curve, config_t *config, arg_t *args);
+
+/**
+ * GENERATOR(gen_t)
+ *
+ * @param curve
+ * @param config
+ * @param args size_t number of points to generate
+ * @return state diff
+ */
+int points_random(curve_t *curve, config_t *config, arg_t *args);
+
+/**
+ * GENERATOR(gen_t)
+ * Generates prime order points using trial division.
+ * The supplied arg is of format:
+ *
+ * pari_ulong *args->args  primes
+ * size_t args->nargs      length of primes
+ *
+ * Assumes the primes divide curve order, thus that points with all
+ * prime orders specified exist.
+ *
+ * @param curve
+ * @param config
+ * @param args
+ * @return state diff
+ */
+int points_primet(curve_t *curve, config_t *config, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -82,10 +107,10 @@ int points_random(curve_t *curve, config_t *config, ...);
  *
  * @param curve
  * @param config
- * @param ...
+ * @param args
  * @return state diff
  */
-int points_prime(curve_t *curve, config_t *config, ...);
+int points_prime(curve_t *curve, config_t *config, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -94,9 +119,9 @@ int points_prime(curve_t *curve, config_t *config, ...);
  *
  * @param curve
  * @param config
- * @param ... unused
+ * @param args unused
  * @return state diff
  */
-int points_generators(curve_t *curve, config_t *config, ...);
+int points_generators(curve_t *curve, config_t *config, arg_t *args);
 
 #endif  // ECGEN_POINT_H

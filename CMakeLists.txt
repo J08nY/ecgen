@@ -3,8 +3,8 @@ project(ecgen)
 
 set(CMAKE_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/lib)
 
-SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -Wall -Werror")
-SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall")
+SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -std=c11 -g -Wall -Werror -pedantic")
+SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c11 -O3 -Wall")
 
 add_custom_command(
         OUTPUT gp.c gp.h
@@ -19,9 +19,9 @@ add_custom_target(gp2c ALL DEPENDS gp.c gp.h)
 include_directories(src)
 include_directories(lib)
 
-file(GLOB SOURCES "src/*.c" "src/math/*.c" "src/cm/*.c" "src/invalid/*.c" "src/io/*.c" "src/exhaustive/*.c" )
+file(GLOB ECGEN_SRC "src/ecgen.c" "src/math/*.c" "src/cm/*.c" "src/invalid/*.c" "src/io/*.c" "src/exhaustive/*.c" )
 
-add_executable(ecgen ${SOURCES})
+add_executable(ecgen ${ECGEN_SRC})
 
 find_library(parson parson/libparson.a)
 

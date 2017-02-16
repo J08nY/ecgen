@@ -2,24 +2,29 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+#define _POSIX_C_SOURCE 200809L
 #include "input.h"
 #include <parson/parson.h>
+#include "output.h"
 
 FILE *in;
 int delim;
 
-GEN fread_i(FILE *stream, const char *prompt, long bits) {
-	if (prompt) {
-		printf("%s ", prompt);
+GEN input_i(const char *prompt, long bits) {
+	if (prompt && out == stdout) {
+		fprintf(out, "%s ", prompt);
 	}
 	char *line = NULL;
 	size_t n = 0;
 
-	ssize_t len = getdelim(&line, &n, delim, stream);
+	ssize_t len = getdelim(&line, &n, delim, in);
 	if (len == 1) {
 		free(line);
 		return gen_m1;
 	}
+	for (size_t i = 0, j = 0; (line[j] = line[i]); j += !isspace(line[i++]))
+		;
+
 	pari_sp ltop = avma;
 	GEN in = strtoi(line);
 	free(line);
@@ -34,8 +39,8 @@ GEN fread_i(FILE *stream, const char *prompt, long bits) {
 	}
 }
 
-GEN fread_prime(FILE *stream, const char *prompt, long bits) {
-	GEN read = fread_i(stream, prompt, bits);
+GEN input_prime(const char *prompt, long bits) {
+	GEN read = input_i(prompt, bits);
 	if (equalii(read, gen_m1)) {
 		return read;
 	} else {
@@ -48,22 +53,18 @@ GEN fread_prime(FILE *stream, const char *prompt, long bits) {
 	}
 }
 
-GEN fread_int(FILE *stream, const char *prompt, long bits) {
-	return fread_i(stream, prompt, bits);
-}
+GEN input_int(const char *prompt, long bits) { return input_i(prompt, bits); }
 
-GEN fread_short(FILE *stream, const char *prompt) {
-	return fread_i(stream, prompt, 16);
-}
+GEN input_short(const char *prompt) { return input_i(prompt, 16); }
 
-GEN fread_string(FILE *stream, const char *prompt) {
-	if (prompt) {
-		printf("%s ", prompt);
+GEN input_string(const char *prompt) {
+	if (prompt && out == stdout) {
+		fprintf(out, "%s ", prompt);
 	}
 	char *line = NULL;
 	size_t n = 0;
 
-	ssize_t len = getdelim(&line, &n, delim, stream);
+	ssize_t len = getdelim(&line, &n, delim, in);
 	if (len == 1) {
 		free(line);
 		return strtoGENstr("");
@@ -75,22 +76,18 @@ GEN fread_string(FILE *stream, const char *prompt) {
 	return result;
 }
 
-GEN fread_param(param_t param, FILE *stream, const char *prompt, long bits) {
+GEN input_param(param_t param, const char *prompt, long bits) {
 	switch (param) {
 		case PARAM_PRIME:
-			return fread_prime(stream, prompt, bits);
+			return input_prime(prompt, bits);
 		case PARAM_INT:
-			return fread_int(stream, prompt, bits);
+			return input_int(prompt, bits);
 		case PARAM_SHORT:
-			return fread_short(stream, prompt);
+			return input_short(prompt);
 		case PARAM_STRING:
-			return fread_string(stream, prompt);
+			return input_string(prompt);
 	}
 	return gen_m1;
-}
-
-GEN read_param(param_t param, const char *prompt, long bits) {
-	return fread_param(param, stdin, prompt, bits);
 }
 
 void input_init(config_t *cfg) {

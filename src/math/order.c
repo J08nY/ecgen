@@ -4,12 +4,12 @@
  */
 #include "order.h"
 
-int order_init(curve_t *curve, config_t *cfg, ...) {
+int order_init(curve_t *curve, config_t *cfg, arg_t *args) {
 	curve->order = ellff_get_card(curve->curve);
 	return 1;
 }
 
-int order_prime(curve_t *curve, config_t *cfg, ...) {
+int order_prime(curve_t *curve, config_t *cfg, arg_t *args) {
 	pari_sp ltop = avma;
 	curve->order = ellsea(curve->curve, 1);
 	if (gequal0(curve->order) || !(isprime(curve->order))) {

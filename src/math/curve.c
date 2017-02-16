@@ -35,18 +35,13 @@ curve_t *curve_copy(curve_t *src, curve_t *dest) {
 void curve_free(curve_t **curve) {
 	if (*curve) {
 		seed_free(&(*curve)->seed);
-		if ((*curve)->points) {
-			for (size_t i = 0; i < (*curve)->npoints; ++i) {
-				point_free(&(*curve)->points[i]);
-			}
-			points_free(&(*curve)->points);
-		}
+		points_free_deep(&(*curve)->points, (*curve)->npoints);
 		pari_free(*curve);
 		*curve = NULL;
 	}
 }
 
-int curve_init(curve_t *curve, config_t *config, ...) {
+int curve_init(curve_t *curve, config_t *config, arg_t *args) {
 	pari_sp ltop = avma;
 	GEN v = gen_0;
 	switch (typ(curve->field)) {
@@ -69,9 +64,9 @@ int curve_init(curve_t *curve, config_t *config, ...) {
 	return 1;
 }
 
-int curve_nonzero(curve_t *curve, config_t *config, ...) {
+int curve_nonzero(curve_t *curve, config_t *config, arg_t *args) {
 	pari_sp ltop = avma;
-	curve_init(curve, config);
+	curve_init(curve, config, args);
 	if (gequal0(ell_get_disc(curve->curve))) {
 		avma = ltop;
 		return -3;
@@ -80,22 +75,22 @@ int curve_nonzero(curve_t *curve, config_t *config, ...) {
 	}
 }
 
-int curve_seed_fp(curve_t *curve, config_t *config, ...) {
-	//TODO implement
+int curve_seed_fp(curve_t *curve, config_t *config, arg_t *args) {
+	// TODO implement
 	return INT_MIN;
 }
 
-int curve_seed_f2m(curve_t *curve, config_t *config, ...) {
-	//TODO implement
+int curve_seed_f2m(curve_t *curve, config_t *config, arg_t *args) {
+	// TODO implement
 	return INT_MIN;
 }
 
-int curve_seed(curve_t *curve, config_t *config, ...) {
+int curve_seed(curve_t *curve, config_t *config, arg_t *args) {
 	switch (typ(curve->field)) {
 		case t_INT:
-			return curve_seed_fp(curve, config);
+			return curve_seed_fp(curve, config, args);
 		case t_FFELT:
-			return curve_seed_f2m(curve, config);
+			return curve_seed_f2m(curve, config, args);
 		default:
 			pari_err_TYPE("curve_seed", curve->field);
 			return INT_MIN; /* NOT REACHABLE */

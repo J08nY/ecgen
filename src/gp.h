@@ -11,4 +11,4 @@ GP;install("init_gp","v","init_gp","./gp/gp.gp.so");
 */
 void init_gp(void);
 /*End of prototype*/
-#endif //GP_H
+#endif  // GP_H

@@ -19,7 +19,7 @@ GEN field_binaryr(long bits) {
 	}
 }
 
-int field_random(curve_t *curve, config_t *config, ...) {
+int field_random(curve_t *curve, config_t *config, arg_t *args) {
 	switch (config->field) {
 		case FIELD_PRIME:
 			curve->field = field_primer(config->bits);
@@ -32,11 +32,11 @@ int field_random(curve_t *curve, config_t *config, ...) {
 	}
 }
 
-int field_input(curve_t *curve, config_t *config, ...) {
+int field_input(curve_t *curve, config_t *config, arg_t *args) {
 	pari_sp ltop = avma;
 	switch (config->field) {
 		case FIELD_PRIME: {
-			GEN p = fread_prime(in, "p:", config->bits);
+			GEN p = input_prime("p:", config->bits);
 			if (equalii(p, gen_m1)) {
 				avma = ltop;
 				return 0;
@@ -45,17 +45,17 @@ int field_input(curve_t *curve, config_t *config, ...) {
 			return 1;
 		}
 		case FIELD_BINARY: {
-			GEN e1 = fread_short(in, "e1:");
+			GEN e1 = input_short("e1:");
 			if (equalii(e1, gen_m1)) {
 				avma = ltop;
 				return 0;
 			}
-			GEN e2 = fread_short(in, "e2:");
+			GEN e2 = input_short("e2:");
 			if (equalii(e2, gen_m1)) {
 				avma = ltop;
 				return 0;
 			}
-			GEN e3 = fread_short(in, "e3:");
+			GEN e3 = input_short("e3:");
 			if (equalii(e3, gen_m1)) {
 				avma = ltop;
 				return 0;
@@ -75,7 +75,7 @@ int field_input(curve_t *curve, config_t *config, ...) {
 			gel(v, 1) = gen_1;
 
 			GEN poly = gmul(gtopolyrev(v, -1), gmodulss(1, 2));
-			//TODO check irreducibility here
+			// TODO check irreducibility here
 
 			GEN field = gerepilecopy(ltop, ffgen(poly, -1));
 			curve->field = field;
@@ -93,10 +93,10 @@ GEN field_params(GEN field) {
 		return gtovec(field);
 	}
 
-	GEN out = gtovec0(gen_0, 3);
+	GEN out = gtovec0(gen_0, 4);
 
 	long j = 1;
-	long l2 = glength(member_mod(field)) - 2;
+	long l2 = glength(member_mod(field)) - 1;
 	{
 		pari_sp btop = avma;
 		for (long i = l2; i > 0; --i) {
@@ -105,7 +105,7 @@ GEN field_params(GEN field) {
 				gel(out, j) = stoi(i);
 				j++;
 			}
-			if (gc_needed(btop, 1)) gerepileall(btop, 3, &out, &c);
+			if (gc_needed(btop, 1)) gerepileall(btop, 2, &out, &c);
 		}
 	}
 	return gerepilecopy(ltop, out);

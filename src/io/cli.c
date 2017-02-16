@@ -6,12 +6,13 @@
 #include <string.h>
 
 char doc[] =
-	"ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
-		"Eastern Seaboard Phishing Authority";
+    "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
+    "Eastern Seaboard Phishing Authority";
 char args_doc[] = "bits";
 
 enum opt_keys {
 	OPT_DATADIR = 'd',
+	OPT_COUNT = 'c',
 	OPT_PRIME = 'p',
 	OPT_RANDOM = 'r',
 	OPT_SEED = 's',
@@ -39,6 +40,7 @@ struct argp_option options[] = {
 	{"invalid",  OPT_INVALID, 0,        0,                 "Generate a set of invalid curves (for a given curve)."},
 	{"order",    OPT_ORDER,   "ORDER",  0,                 "Generate a curve with given order (using Complex Multiplication)."},
 	{"koblitz",  OPT_KOBLITZ, 0,        0,                 "Generate a Koblitz curve."},
+	//{"count",    OPT_COUNT,   "COUNT",  0,                 "Generate multiple curves."},
 	// Other
 	{"data-dir", OPT_DATADIR, "DIR",    0,                 "PARI/GP data directory (containing seadata package)."},
 	{"format",   OPT_FORMAT,  "FORMAT", 0,                 "Format to output in. One of [csv,json], default is json."},
@@ -56,6 +58,11 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 		case OPT_DATADIR:
 			cfg->datadir = arg;
 			break;
+		case OPT_COUNT:
+			if (arg) {
+				cfg->count = strtol(arg, NULL, 10);
+			}
+			break;
 		case OPT_FORMAT:
 			if (arg) {
 				if (!strcmp(arg, "csv")) {
@@ -64,11 +71,13 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 					cfg->format = FORMAT_JSON;
 				} else {
 					argp_failure(state, 1, 0,
-					"Invalid format specified. One of [csv, json] is valid.");
+					             "Invalid format specified. One of [csv, json] "
+					             "is valid.");
 				}
 			} else {
-				argp_failure(state, 1, 0,
-							 "You have to specify a format with the format option.");
+				argp_failure(
+				    state, 1, 0,
+				    "You have to specify a format with the format option.");
 			}
 			break;
 		case OPT_INPUT:
@@ -110,8 +119,8 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 				// ANSI X9.62 specifies seed as at least 160 bits in length.
 				if (strlen(arg) < 20) {
 					argp_failure(
-						state, 1, 0,
-						"SEED must be at least 160 bits (20 characters).");
+					    state, 1, 0,
+					    "SEED must be at least 160 bits (20 characters).");
 				}
 				cfg->seed = arg;
 			}
@@ -136,22 +145,26 @@ error_t parse_opt(int key, char *arg, struct argp_state *state) {
 			// Only one field
 			if (!cfg->prime_field && !cfg->binary_field) {
 				argp_failure(state, 1, 0,
-							 "Specify field type, prime or binary, with --fp / "
-								 "--f2m (but not both).");
+				             "Specify field type, prime or binary, with --fp / "
+				             "--f2m (but not both).");
 			}
 			// Invalid is not prime or seed by definition.
 			if (cfg->invalid && (cfg->prime || cfg->from_seed)) {
 				// not seed, not prime
 				argp_failure(state, 1, 0,
-							 "Invalid curve generation can not generate curves "
-								 "from seed, exhaustive or prime order.");
+				             "Invalid curve generation can not generate curves "
+				             "from seed, exhaustive or prime order.");
 			}
 			if (cfg->cm && (cfg->prime || cfg->from_seed || cfg->invalid)) {
 				argp_failure(state, 1, 0,
-							 "Fixed order curve generation can not generate "
-								 "curves from seed, or invalid curves. Prime order "
-								 "also doesn't make sense if the given one isn't "
-								 "prime.");
+				             "Fixed order curve generation can not generate "
+				             "curves from seed, or invalid curves. Prime order "
+				             "also doesn't make sense if the given one isn't "
+				             "prime.");
+			}
+			// default values
+			if (!cfg->count) {
+				cfg->count = 1;
 			}
 			break;
 		case ARGP_KEY_NO_ARGS:

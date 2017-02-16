@@ -8,10 +8,10 @@
 CC=gcc
 GP2C=gp2c
 
-CFLAGS=-O3 -Wall
+CFLAGS=-O3 -Wall -std=c11
 LDFLAGS=-L../lib
 
-GP_CFLAGS=-O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC
+GP_CFLAGS=-O3 -Wall -std=c11 -fomit-frame-pointer -fno-strict-aliasing -fPIC
 GPFLAGS=-g -i4
 
 INCLUDES=-I. -I../lib -Icm -Iinvalid -Iio -Irandom -Iexhaustive
@@ -26,7 +26,7 @@ GPC = $(addsuffix .c, $(GP))
 GPO = $(addsuffix .o, $(GP))
 GPH = $(addsuffix .h, $(GP))
 
-SRC = $(wildcard *.c) $(wildcard */*.c)
+SRC = ecgen.c $(wildcard */*.c)
 OBJ = $(patsubst %.c,%.o, $(SRC))
 HDR = $(wildcard *.h) $(wildcard */*.h)
 
@@ -36,6 +36,7 @@ all: ecgen
 
 ecgen: ecgen.o $(GPO) $(OBJ)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) $(LIBS)
+	mv ecgen ..
 
 gp2c: $(GPC) $(GPH)
 

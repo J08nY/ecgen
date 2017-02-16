@@ -11,7 +11,7 @@
 #include "math/order.h"
 #include "math/point.h"
 
-void invalid_init(gen_t generators[], config_t *cfg) {
+void invalid_ginit(gen_t *generators, config_t *cfg) {
 	generators[OFFSET_SEED] = &gen_skip;
 	if (cfg->random) {
 		generators[OFFSET_FIELD] = &field_random;
@@ -53,6 +53,7 @@ size_t invalid_primes(GEN order, pari_ulong **primes) {
 			}
 		}
 	}
+	// realloc to smaller size, to tightly fit all generated primes
 	pari_ulong *new_primes =
 	    pari_realloc(*primes, nprimes * sizeof(pari_ulong));
 	if (new_primes) {
@@ -61,6 +62,7 @@ size_t invalid_primes(GEN order, pari_ulong **primes) {
 		perror("Couldn't malloc.");
 		return 0;
 	}
+
 	avma = ltop;
 
 	return nprimes;
@@ -68,14 +70,15 @@ size_t invalid_primes(GEN order, pari_ulong **primes) {
 
 size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
                       size_t nprimes, curve_t ***curves) {
-	// Have primes, now generate random b
 	gen_t invalid_gen[OFFSET_END];
 	invalid_gen[OFFSET_FIELD] = &gen_skip;
 	invalid_gen[OFFSET_A] = &gen_skip;
 	invalid_gen[OFFSET_B] = &b_random;
 	invalid_gen[OFFSET_CURVE] = &curve_nonzero;
 	invalid_gen[OFFSET_ORDER] = &order_init;
-	invalid_gen[OFFSET_POINTS] = &points_prime;
+	invalid_gen[OFFSET_POINTS] = &points_primet;
+
+	arg_t *invalid_argss[OFFSET_END];
 
 	// We will have nprimes curves in the end
 	*curves = pari_malloc(nprimes * sizeof(curve_t *));
@@ -96,28 +99,86 @@ size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 	while (ncurves < nprimes) {
 		pari_sp btop = avma;
 		// generate a curve with random b
-		exhaustive_gen(invalid, cfg, invalid_gen, OFFSET_B, OFFSET_END);
+		exhaustive_gen(invalid, cfg, invalid_gen, NULL, OFFSET_B,
+		               OFFSET_POINTS);
 
 		// does some small prime from our array divide the curve order?
-		size_t count = 0;
+		// if so how many?
+		size_t total = 0;
 		for (size_t i = nprimes; i-- > 0;) {
-			if (dvdis(invalid->order, primes[i]) && (*curves)[i] == NULL) {
-				if (count == 0) {
-					(*curves)[i] = invalid;
-				} else {
-					(*curves)[i] = curve_new();
-					(*curves)[i] = curve_copy(invalid, (*curves)[i]);
+			if ((*curves)[i] == NULL && dvdis(invalid->order, primes[i])) {
+				// whoo we have a new invalid curve
+				if (!total && cfg->verbose) {
+					fprintf(
+					    debug,
+					    "we have a new one, calculating prime order points.\n");
 				}
-				output_o((*curves)[i], cfg);
-				ncurves++;
-				count++;
+				total++;
 			}
 		}
-		if (count > 0) {
+
+		if (total > 0) {
+			// only pass small primes that divide the curve order and those
+			// where we dont have a curve yet.
+			// this is passed to points_primet which uses trial division to find
+			// a point with given prime order.
+			size_t j = 0;
+			pari_ulong dprimes[total];
+			for (size_t i = 0; i < nprimes; ++i) {
+				if ((*curves)[i] == NULL && dvdis(invalid->order, primes[i])) {
+					if (cfg->verbose) {
+						fprintf(debug, "prime %lu divides curve order.\n",
+						        primes[i]);
+					}
+					dprimes[j++] = primes[i];
+				}
+			}
+			arg_t prime_divisors = {dprimes, total};
+			invalid_argss[OFFSET_POINTS] = &prime_divisors;
+
+			// generate prime order points, this is expensive (order needs to be
+			// factorised, so only do it if we want the curve)
+			exhaustive_gen(invalid, cfg, invalid_gen, invalid_argss,
+			               OFFSET_POINTS, OFFSET_END);
+
+			size_t count = 0;
+			for (size_t i = nprimes; i-- > 0;) {
+				if ((*curves)[i] == NULL && dvdis(invalid->order, primes[i])) {
+					if (count == 0) {
+						// save a copy on first prime divisor from range
+						(*curves)[i] = invalid;
+					} else {
+						// copy if pointer already assigned
+						(*curves)[i] = curve_new();
+						(*curves)[i] = curve_copy(invalid, (*curves)[i]);
+					}
+					output_o((*curves)[i], cfg);
+					ncurves++;
+					count++;
+				}
+			}
+
+			// copy the curve params that stay into a new curve, since this
+			// curve pointer got assigned
+			// this is for performance reasons. As it only copies the curve
+			// and mallocs memory if this curve is saved.
 			invalid = curve_new();
 			invalid->field = gcopy(curve->field);
 			invalid->a = gcopy(curve->a);
+
+			if (cfg->verbose) {
+				fprintf(debug,
+				        "curve saved: %lu primes from range divide order.\n",
+				        total);
+				fprintf(debug, "curves done: %lu out of %lu needed. %.0f%% \n",
+				        ncurves, nprimes, ((float)(ncurves) / nprimes) * 100);
+			}
 		} else {
+			// here, we generated the curve but didn't use it, because no
+			// primes from range divided order. Thus remove it
+			// like it never existed.
+
+			points_free_deep(&invalid->points, invalid->npoints);
 			avma = btop;
 		}
 	}
@@ -129,10 +190,11 @@ int invalid_do(config_t *cfg) {
 	// Either from input or random with -r
 	curve_t *curve = curve_new();
 	gen_t gen[OFFSET_END];
-	invalid_init(gen, cfg);
+	arg_t *argss[OFFSET_END];
+	invalid_ginit(gen, cfg);
 
 	// actually generate the curve
-	if (!exhaustive_gen(curve, cfg, gen, OFFSET_FIELD, OFFSET_POINTS)) {
+	if (!exhaustive_gen(curve, cfg, gen, argss, OFFSET_FIELD, OFFSET_POINTS)) {
 		curve_free(&curve);
 		return 1;
 	}
@@ -141,6 +203,11 @@ int invalid_do(config_t *cfg) {
 	// now, generate primes upto order^2
 	pari_ulong *primes;
 	size_t nprimes = invalid_primes(curve->order, &primes);
+
+	if (cfg->verbose) {
+		fprintf(debug, "primes upto: p_max = %lu, n = %lu\n",
+		        primes[nprimes - 1], nprimes);
+	}
 
 	curve_t **curves;
 	size_t ncurves = invalid_curves(curve, cfg, primes, nprimes, &curves);

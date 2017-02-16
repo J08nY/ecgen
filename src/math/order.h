@@ -17,10 +17,10 @@
  *
  * @param curve
  * @param cfg
- * @param ...
+ * @param args
  * @return state diff
  */
-int order_init(curve_t *curve, config_t *cfg, ...);
+int order_init(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -30,9 +30,9 @@ int order_init(curve_t *curve, config_t *cfg, ...);
  *
  * @param curve
  * @param cfg
- * @param ...
+ * @param args
  * @return state diff
  */
-int order_prime(curve_t *curve, config_t *cfg, ...);
+int order_prime(curve_t *curve, config_t *cfg, arg_t *args);
 
 #endif  // ECGEN_ORDER_H

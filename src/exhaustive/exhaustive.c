@@ -11,7 +11,7 @@
 #include "math/point.h"
 #include "seed.h"
 
-void exhaustive_init(gen_t generators[], config_t *config) {
+void exhaustive_ginit(gen_t *generators, config_t *config) {
 	if (config->from_seed) {
 		if (config->seed) {
 			generators[OFFSET_SEED] = &seed_argument;
@@ -55,14 +55,19 @@ void exhaustive_init(gen_t generators[], config_t *config) {
 		generators[OFFSET_FIELD] = &field_input;
 	}
 
-	generators[OFFSET_POINTS] = &points_generators;
+	generators[OFFSET_POINTS] = &points_prime;
+}
+
+void exhaustive_vinit(arg_t *argss[], config_t *config) {
+	// TODO implement when for example points_random is used...
 }
 
 int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
-                   int start_offset, int end_offset) {
+                   arg_t *argss[], int start_offset, int end_offset) {
 	int state = start_offset;
 	while (state != end_offset) {
-		int diff = generators[state](curve, config);
+		int diff =
+		    generators[state](curve, config, argss ? argss[state] : NULL);
 		if (diff == INT_MIN) {
 			fprintf(stderr, "Error generating a curve. %i\n", state);
 			return 0;
@@ -87,10 +92,13 @@ int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
 
 int exhaustive_do(config_t *cfg) {
 	gen_t generators[OFFSET_END];
-	exhaustive_init(generators, cfg);
+	arg_t *argss[OFFSET_END];
+	exhaustive_ginit(generators, cfg);
+	exhaustive_vinit(argss, cfg);
 
 	curve_t *curve = curve_new();
-	if (!exhaustive_gen(curve, cfg, generators, OFFSET_SEED, OFFSET_END)) {
+	if (!exhaustive_gen(curve, cfg, generators, argss, OFFSET_SEED,
+	                    OFFSET_END)) {
 		curve_free(&curve);
 		return 1;
 	}

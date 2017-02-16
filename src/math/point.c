@@ -52,7 +52,16 @@ void points_free(point_t ***points) {
 	}
 }
 
-int point_random(curve_t *curve, config_t *config, ...) {
+void points_free_deep(point_t ***points, size_t npoints) {
+	if (*points) {
+		for (size_t i = 0; i < npoints; ++i) {
+			point_free(&(*points)[i]);
+		}
+		points_free(points);
+	}
+}
+
+int point_random(curve_t *curve, config_t *config, arg_t *args) {
 	point_t *p = point_new();
 	p->point = genrand(curve->curve);
 	p->order = ellorder(curve->curve, p->point, NULL);
@@ -63,11 +72,12 @@ int point_random(curve_t *curve, config_t *config, ...) {
 	return 1;
 }
 
-int points_random(curve_t *curve, config_t *config, ...) {
-	va_list arg;
-	va_start(arg, config);
-	size_t npoints = va_arg(arg, size_t);
-	va_end(arg);
+int points_random(curve_t *curve, config_t *config, arg_t *args) {
+	if (!args) {
+		fprintf(stderr, "No args to an arged function. points_random");
+		return INT_MIN;
+	}
+	size_t npoints = *(size_t *)args->args;
 
 	curve->points = points_new(npoints);
 	curve->npoints = npoints;
@@ -80,7 +90,58 @@ int points_random(curve_t *curve, config_t *config, ...) {
 	return 1;
 }
 
-int points_prime(curve_t *curve, config_t *config, ...) {
+/*
+ * 			GEN o = utoi(dprimes[i]);
+            GEN mul = ellmul(curve->curve, rand, o);
+
+            if (gequal0(mul)) {
+                printf("Success! %lu\n", npoints);
+                curve->points[i] = point_new();
+
+                gerepileall(btop, 2, &rand, &o);
+                curve->points[i]->point = rand;
+                curve->points[i]->order = o;
+                npoints++;
+                break;
+            }
+ */
+
+int points_primet(curve_t *curve, config_t *config, arg_t *args) {
+	// TODO stack code!!!
+	if (!args) {
+		fprintf(stderr, "No args to an arged function. points_primet");
+		return INT_MIN;
+	}
+	pari_ulong *primes = (pari_ulong *)args->args;
+	size_t nprimes = args->nargs;
+
+	curve->points = points_new(nprimes);
+	curve->npoints = nprimes;
+
+	size_t npoints = 0;
+	while (npoints < nprimes) {
+		GEN rand = genrand(curve->curve);
+		GEN ord = ellorder(curve->curve, rand, NULL);
+
+		for (long i = 0; i < nprimes; ++i) {
+			if (curve->points[i] == NULL && dvdis(ord, primes[i])) {
+				GEN p = stoi(primes[i]);
+				GEN mul = divii(ord, p);
+				GEN point = ellmul(curve->curve, rand, mul);
+
+				curve->points[i] = point_new();
+				curve->points[i]->point = point;
+				curve->points[i]->order = p;
+				npoints++;
+			}
+		}
+	}
+
+	return 1;
+}
+
+int points_prime(curve_t *curve, config_t *config, arg_t *args) {
+	// TODO stack code!!!
 	GEN factors = Z_factor(curve->order);
 	GEN primes = gel(factors, 1);
 	long nprimes = glength(primes);
@@ -94,7 +155,7 @@ int points_prime(curve_t *curve, config_t *config, ...) {
 		// ord(rand) = ord
 
 		for (long i = 1; i <= nprimes; ++i) {
-			if (dvdii(ord, gel(primes, i)) && curve->points[i - 1] == NULL) {
+			if (curve->points[i - 1] == NULL && dvdii(ord, gel(primes, i))) {
 				// primes[i] divides ord
 				// mul = ord/primes[i]
 				GEN mul = divii(ord, gel(primes, i));
@@ -112,7 +173,8 @@ int points_prime(curve_t *curve, config_t *config, ...) {
 	return 1;
 }
 
-int points_generators(curve_t *curve, config_t *config, ...) {
+int points_generators(curve_t *curve, config_t *config, arg_t *args) {
+	// TODO stack code!!!
 	GEN generators = ellff_get_gens(curve->curve);
 	long len = glength(generators);
 	curve->points = points_new((size_t)len);

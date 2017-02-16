@@ -40,8 +40,13 @@ enum curve_offset {
 	OFFSET_END
 };
 
-typedef int (*gen_t)(curve_t *, config_t *, ...);
+typedef struct arg_t {
+	void *args;
+	size_t nargs;
+} arg_t;
 
-int gen_skip(curve_t *curve, config_t *config, ...);
+typedef int (*gen_t)(curve_t *, config_t *, arg_t *args);
+
+int gen_skip(curve_t *curve, config_t *config, arg_t *args);
 
 #endif  // ECGEN_TYPES_H

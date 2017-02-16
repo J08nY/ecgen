@@ -20,40 +20,57 @@ typedef enum PARAM {
 
 /**
  *
- * @param stream
  * @param prompt
  * @param bits
  * @return
  */
-GEN fread_prime(FILE *stream, const char *prompt, long bits);
+GEN input_prime(const char *prompt, long bits);
 
 /**
  *
- * @param stream
  * @param prompt
  * @param bits
  * @return
  */
-GEN fread_int(FILE *stream, const char *prompt, long bits);
+GEN input_int(const char *prompt, long bits);
 
 /**
  *
- * @param stream
  * @param prompt
  * @return
  */
-GEN fread_short(FILE *stream, const char *prompt);
+GEN input_short(const char *prompt);
 
-GEN fread_string(FILE *stream, const char *prompt);
+/**
+ *
+ * @param prompt
+ * @return
+ */
+GEN input_string(const char *prompt);
 
-GEN fread_param(param_t param, FILE *stream, const char *prompt, long bits);
+/**
+ *
+ * @param param
+ * @param prompt
+ * @param bits
+ * @return
+ */
+GEN input_param(param_t param, const char *prompt, long bits);
 
-GEN read_param(param_t param, const char *prompt, long bits);
-
+/**
+ *
+ */
 extern FILE *in;
 
+/**
+ *
+ * @param cfg
+ */
 void input_init(config_t *cfg);
 
+/**
+ *
+ */
 void input_quit(void);
 
 #endif  // ECGEN_INPUT_H

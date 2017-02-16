@@ -18,10 +18,10 @@
  *
  * @param curve
  * @param config
- * @param ... unused
+ * @param args unused
  * @return state diff
  */
-int field_random(curve_t *curve, config_t *config, ...);
+int field_random(curve_t *curve, config_t *config, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -31,10 +31,10 @@ int field_random(curve_t *curve, config_t *config, ...);
  *
  * @param curve
  * @param config
- * @param ... unused
+ * @param args unused
  * @return state diff
  */
-int field_input(curve_t *curve, config_t *config, ...);
+int field_input(curve_t *curve, config_t *config, arg_t *args);
 
 /**
  * Extract a field representation from a field.

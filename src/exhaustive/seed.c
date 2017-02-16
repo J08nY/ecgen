@@ -43,22 +43,22 @@ GEN seed_stoi(const char *cstr) {
 	return gerepilecopy(ltop, seed);
 }
 
-int seed_random(curve_t *curve, config_t *config, ...) {
+int seed_random(curve_t *curve, config_t *config, arg_t *args) {
 	curve->seed = seed_new();
 	curve->seed->seed = random_int(160);
 	return 1;
 }
 
-int seed_argument(curve_t *curve, config_t *config, ...) {
+int seed_argument(curve_t *curve, config_t *config, arg_t *args) {
 	curve->seed = seed_new();
 	curve->seed->seed = seed_stoi(config->seed);
 	return 1;
 }
 
-int seed_input(curve_t *curve, config_t *config, ...) {
+int seed_input(curve_t *curve, config_t *config, arg_t *args) {
 	pari_sp ltop = avma;
 
-	GEN str = fread_string(in, "seed:");
+	GEN str = input_string("seed:");
 	const char *cstr = GSTR(str);
 	if (strlen(cstr) < 20) {
 		fprintf(stderr, "SEED must be at least 160 bits(20 characters).\n");
@@ -67,9 +67,8 @@ int seed_input(curve_t *curve, config_t *config, ...) {
 	}
 
 	GEN seed = seed_stoi(cstr);
-	gerepileall(ltop, 1, &seed);
 
 	curve->seed = seed_new();
-	curve->seed->seed = seed;
+	curve->seed->seed = gerepilecopy(ltop, seed);
 	return 1;
 }

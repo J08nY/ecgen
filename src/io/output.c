@@ -5,12 +5,20 @@
 
 #include "output.h"
 #include <parson/parson.h>
-#include "math/field.h"
 #include "math/curve.h"
-
+#include "math/field.h"
 
 FILE *out;
 FILE *debug;
+
+int fprintff(FILE *stream, const char *fmt, ...) {
+	va_list arg;
+	va_start(arg, fmt);
+	int result = vfprintf(stream, fmt, arg);
+	fflush(stream);
+	va_end(arg);
+	return result;
+}
 
 char *output_scsv(curve_t *curve, config_t *config) {
 	pari_sp ltop = avma;
@@ -26,7 +34,7 @@ char *output_scsv(curve_t *curve, config_t *config) {
 		total += lengths[i];
 	}
 
-	char *result = (char *) malloc(total + len);
+	char *result = (char *)malloc(total + len);
 	if (!result) {
 		perror("Couldn't malloc.");
 		exit(1);
@@ -51,7 +59,7 @@ char *output_scsv(curve_t *curve, config_t *config) {
 
 void output_fcsv(FILE *out, curve_t *curve, config_t *config) {
 	char *string = output_scsv(curve, config);
-	fprintf(out, "%s\n", string);
+	fprintff(out, "%s\n", string);
 	free(string);
 }
 
@@ -74,10 +82,10 @@ JSON_Value *output_jjson(curve_t *curve, config_t *config) {
 		}
 		case FIELD_BINARY: {
 			GEN field = field_params(curve->field);
-			char *e1 = pari_sprintf("%P#x", gel(field, 1));
-			char *e2 = pari_sprintf("%P#x", gel(field, 2));
-			char *e3 = pari_sprintf("%P#x", gel(field, 3));
-			char *m = pari_sprintf("%#lx", config->bits); // maybe not?
+			char *m = pari_sprintf("%P#x", gel(field, 1));
+			char *e1 = pari_sprintf("%P#x", gel(field, 2));
+			char *e2 = pari_sprintf("%P#x", gel(field, 3));
+			char *e3 = pari_sprintf("%P#x", gel(field, 4));
 			json_object_dotset_string(root_object, "field.m", m);
 			json_object_dotset_string(root_object, "field.e1", e1);
 			json_object_dotset_string(root_object, "field.e2", e2);
@@ -110,10 +118,12 @@ JSON_Value *output_jjson(curve_t *curve, config_t *config) {
 			JSON_Value *point_value = json_value_init_object();
 			JSON_Object *point_object = json_value_get_object(point_value);
 
-			char *x = pari_sprintf("%P#x", field_elementi(gel(curve->points[i]->point, 1)));
+			char *x = pari_sprintf(
+			    "%P#x", field_elementi(gel(curve->points[i]->point, 1)));
 			json_object_set_string(point_object, "x", x);
 			pari_free(x);
-			char *y = pari_sprintf("%P#x", field_elementi(gel(curve->points[i]->point, 2)));
+			char *y = pari_sprintf(
+			    "%P#x", field_elementi(gel(curve->points[i]->point, 2)));
 			json_object_set_string(point_object, "y", y);
 			pari_free(y);
 			char *p_order = pari_sprintf("%P#x", curve->points[i]->order);
@@ -138,7 +148,7 @@ char *output_sjson(curve_t *curve, config_t *config) {
 
 void output_fjson(FILE *out, curve_t *curve, config_t *config) {
 	char *s = output_sjson(curve, config);
-	fprintf(out, "%s", s);
+	fprintff(out, "%s", s);
 	json_free_serialized_string(s);
 }
 
