@@ -3,8 +3,8 @@ project(ecgen)
 
 set(CMAKE_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/lib)
 
-SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -std=c11 -g -Wall -Werror -pedantic")
-SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -std=c11 -O3 -Wall")
+SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -g -Wall -Werror -pedantic")
+SET(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -O3 -Wall")
 
 add_custom_command(
         OUTPUT gp.c gp.h

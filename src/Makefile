@@ -8,10 +8,10 @@
 CC=gcc
 GP2C=gp2c
 
-CFLAGS=-O3 -Wall -std=c11
+CFLAGS=-O3 -Wall
 LDFLAGS=-L../lib
 
-GP_CFLAGS=-O3 -Wall -std=c11 -fomit-frame-pointer -fno-strict-aliasing -fPIC
+GP_CFLAGS=-O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC
 GPFLAGS=-g -i4
 
 INCLUDES=-I. -I../lib -Icm -Iinvalid -Iio -Irandom -Iexhaustive
