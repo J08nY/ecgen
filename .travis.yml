@@ -4,23 +4,23 @@ language: C
 
 matrix:
   include:
-    - compiler: gcc
+    - compiler: gcc-4.9
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
             - gcc-4.9
-      env: CC=gcc-4.9
-    - compiler: gcc
+      env: COMPILER=gcc-4.9
+    - compiler: gcc-5
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
             - gcc-5
-      env: CC=gcc-5
-    - compiler: clang
+      env: COMPILER=gcc-5
+    - compiler: clang-3.6
       addons:
         apt:
           sources:
@@ -28,8 +28,8 @@ matrix:
             - llvm-toolchain-precise-3.6
           packages:
             - clang-3.6
-      env: CC=clang-3.6
-    - compiler: clang
+      env: COMPILER=clang-3.6
+    - compiler: clang-3.7
       addons:
         apt:
           sources:
@@ -37,7 +37,7 @@ matrix:
             - llvm-toolchain-precise-3.7
           packages:
             - clang-3.7
-      env: CC=clang-3.7
+      env: COMPILER=clang-3.7
 
 before_install:
   - sudo apt-get -qq update
