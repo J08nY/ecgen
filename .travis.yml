@@ -12,7 +12,7 @@ before_install:
 
 script:
   - cd lib/parson
-  - make
+  - make libparson.a
   - cd ../..
   - mv lib/parson/libparson.a lib/libparson.a
   - make
