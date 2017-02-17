@@ -15,7 +15,7 @@ GP_CFLAGS = -O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC
 GPFLAGS = -g -i4
 
 INCLUDES = -I. -I../lib -Icm -Iinvalid -Iio -Irandom -Iexhaustive
-LIBS = -lpari -lparson
+LIBS = -lrt -lpari -lparson
 
 ####
 
