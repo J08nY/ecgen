@@ -1,4 +1,4 @@
-## ecgen
+## ecgen [![Build Status](https://travis-ci.org/J08nY/ecgen.svg?branch=master)](https://travis-ci.org/J08nY/ecgen)
 
 Tool for generating Elliptic curve domain parameters.
 
@@ -26,6 +26,10 @@ Tool for generating Elliptic curve domain parameters.
 ### Generation methods
 Three different EC curve parameters generation methods are implemented.
 
+[Efficient Algorithms for Generating Elliptic Curves over Finite Fields Suitable for Use in Cryptography - [Baier]](https://www.cdc.informatik.tu-darmstadt.de/reports/reports/harald_baier.diss.pdf)
+
+[Generation Methods of Elliptic Curves - [Baier, Buchmann]](https://www.ipa.go.jp/security/enc/CRYPTREC/fy15/doc/1030_Buchmann.evaluation.pdf)
+
 ##### Random approach
  - Generates field and equation parameters:
    - randomly
@@ -45,10 +49,11 @@ Three different EC curve parameters generation methods are implemented.
  - [Practical Invalid Curve Attacks on TLS-ECDH - [Jager, Schwenk, Somorovksy]](http://euklid.org/pdf/ECC_Invalid_Curve.pdf)
 
 ##### Complex multiplication
- - Capable of generating a curve of a given prime order.
+ - Capable of generating a curve of a given (prime) order.
  - Generates a subset of all Elliptic Curves over a given field.
  - Used with the `-n / --order` option
  - [Constructing elliptic curves of prime order - [Broker, Stevenhagen]](https://arxiv.org/abs/0712.2022)
+ - [Generating Elliptic Curves of Prime Order - [Savas, Schmidt, Koc]](http://people.oregonstate.edu/~schmidtt/ourPapers/SavasKoc/ches01curve.pdf)
 
 
 ### Build

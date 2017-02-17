@@ -25,6 +25,4 @@ add_executable(ecgen ${ECGEN_SRC})
 
 find_library(parson parson/libparson.a)
 
-target_link_libraries(ecgen pari)
-target_link_libraries(ecgen rt)
-target_link_libraries(ecgen ${parson})
+target_link_libraries(ecgen pari rt ${parson})
