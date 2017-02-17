@@ -1,0 +1,18 @@
+language: C
+
+compiler:
+  - clang
+  - gcc
+
+sudo: required
+
+before_install:
+  - sudo apt-get -qq update
+  - sudo apt-get install -y libpari-dev
+
+script:
+  - cd lib/parson
+  - make
+  - cd ../..
+  - mv lib/parson/libparson.a lib/libparson.a
+  - make
