@@ -5,17 +5,17 @@
 #
 ####
 
-CC=gcc
-GP2C=gp2c
+CC ?= gcc
+GP2C = gp2c
 
-CFLAGS=-O3 -Wall
-LDFLAGS=-L../lib
+CFLAGS = -O3 -Wall
+LDFLAGS = -L../lib
 
-GP_CFLAGS=-O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC
-GPFLAGS=-g -i4
+GP_CFLAGS = -O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC
+GPFLAGS = -g -i4
 
-INCLUDES=-I. -I../lib -Icm -Iinvalid -Iio -Irandom -Iexhaustive
-LIBS=-lpari -lparson
+INCLUDES = -I. -I../lib -Icm -Iinvalid -Iio -Irandom -Iexhaustive
+LIBS = -lpari -lparson
 
 ####
 
@@ -44,7 +44,7 @@ $(GPO): $(GPC) $(GPH)
 	$(CC) $(GP_CFLAGS) $(INCLUDES) -c -o $@ $< $(LDFLAGS) $(LIBS)
 
 %.o: %.c $(GPH)
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $< $(LDFLAGS) $(LIBS)
+	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
 %.h %.c: %.gp
 	$(GP2C) $(GPFLAGS) gp/$*.gp  2>/dev/null | clang-format | awk 'BEGIN{print "#ifndef GP_H" > "gp.h"; print "#define GP_H" >> "gp.h";} { if(found) print >> "gp.c"; else print >> "gp.h"} /End of prototype/{found=1; print "#include \"gp.h\"" > "gp.c"; print "#endif //GP_H" >> "gp.h"}'
