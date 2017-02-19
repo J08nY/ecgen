@@ -11,7 +11,11 @@ bool random_init(void) {
 	// Try urandom first
 	FILE *rand = fopen("/dev/urandom", "rb");
 	if (rand) {
-		fread(&seed, 1, sizeof(pari_ulong), rand);
+		size_t read = 0;
+		while (read < sizeof(pari_ulong)) {
+			read += fread(&seed + read, 1, sizeof(pari_ulong) - read, rand);
+		}
+
 		fclose(rand);
 	}
 	// Try worse methods later
