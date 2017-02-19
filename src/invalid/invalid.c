@@ -8,6 +8,7 @@
 #include "math/curve.h"
 #include "math/equation.h"
 #include "math/field.h"
+#include "math/gens.h"
 #include "math/order.h"
 #include "math/point.h"
 
@@ -76,6 +77,7 @@ size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 	invalid_gen[OFFSET_B] = &b_random;
 	invalid_gen[OFFSET_CURVE] = &curve_nonzero;
 	invalid_gen[OFFSET_ORDER] = &order_init;
+	invalid_gen[OFFSET_GENERATORS] = &gens_init;
 	invalid_gen[OFFSET_POINTS] = &points_primet;
 
 	arg_t *invalid_argss[OFFSET_END];
@@ -100,7 +102,7 @@ size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 		pari_sp btop = avma;
 		// generate a curve with random b
 		exhaustive_gen(invalid, cfg, invalid_gen, NULL, OFFSET_B,
-		               OFFSET_POINTS);
+		               OFFSET_GENERATORS);
 
 		// does some small prime from our array divide the curve order?
 		// if so how many?
@@ -139,7 +141,7 @@ size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 			// generate prime order points, this is expensive (order needs to be
 			// factorised, so only do it if we want the curve)
 			exhaustive_gen(invalid, cfg, invalid_gen, invalid_argss,
-			               OFFSET_POINTS, OFFSET_END);
+			               OFFSET_GENERATORS, OFFSET_END);
 
 			size_t count = 0;
 			for (size_t i = nprimes; i-- > 0;) {

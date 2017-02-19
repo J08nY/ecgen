@@ -16,6 +16,7 @@ typedef struct seed_t { GEN seed; } seed_t;
 typedef struct point_t {
 	GEN point;
 	GEN order;
+	GEN cofactor;
 } point_t;
 
 typedef struct curve_t {
@@ -25,6 +26,8 @@ typedef struct curve_t {
 	GEN b;
 	GEN curve;
 	GEN order;
+	point_t **generators;
+	size_t ngens;
 	point_t **points;
 	size_t npoints;
 } curve_t;
@@ -36,6 +39,7 @@ enum curve_offset {
 	OFFSET_B,
 	OFFSET_CURVE,
 	OFFSET_ORDER,
+	OFFSET_GENERATORS,
 	OFFSET_POINTS,
 	OFFSET_END
 };
@@ -45,7 +49,7 @@ typedef struct arg_t {
 	size_t nargs;
 } arg_t;
 
-typedef int (*gen_t)(curve_t *, config_t *, arg_t *args);
+typedef int (*gen_t)(curve_t *, config_t *, arg_t *);
 
 int gen_skip(curve_t *curve, config_t *config, arg_t *args);
 

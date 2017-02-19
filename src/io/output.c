@@ -11,15 +11,6 @@
 FILE *out;
 FILE *debug;
 
-int fprintff(FILE *stream, const char *fmt, ...) {
-	va_list arg;
-	va_start(arg, fmt);
-	int result = vfprintf(stream, fmt, arg);
-	fflush(stream);
-	va_end(arg);
-	return result;
-}
-
 char *output_scsv(curve_t *curve, config_t *config) {
 	pari_sp ltop = avma;
 	GEN vector = curve_params(curve);
@@ -59,7 +50,7 @@ char *output_scsv(curve_t *curve, config_t *config) {
 
 void output_fcsv(FILE *out, curve_t *curve, config_t *config) {
 	char *string = output_scsv(curve, config);
-	fprintff(out, "%s\n", string);
+	fprintf(out, "%s\n", string);
 	free(string);
 }
 
@@ -96,8 +87,7 @@ JSON_Value *output_jjson(curve_t *curve, config_t *config) {
 			pari_free(e3);
 			break;
 		}
-		default:
-			fprintf(stderr, "Error, field has unknown amount of elements.\n");
+		default: fprintf(stderr, "Error, field has unknown amount of elements.\n");
 			exit(1);
 	}
 
@@ -110,6 +100,37 @@ JSON_Value *output_jjson(curve_t *curve, config_t *config) {
 	char *order = pari_sprintf("%P#x", curve->order);
 	json_object_set_string(root_object, "order", order);
 	pari_free(order);
+	if (curve->generators) {
+		JSON_Value *gens_value = json_value_init_array();
+		JSON_Array *gens_array = json_value_get_array(gens_value);
+
+		for (size_t i = 0; i < curve->ngens; ++i) {
+			JSON_Value *point_value = json_value_init_object();
+			JSON_Object *point_object = json_value_get_object(point_value);
+
+			char *x = pari_sprintf(
+				"%P#x", field_elementi(gel(curve->generators[i]->point, 1)));
+			json_object_set_string(point_object, "x", x);
+			pari_free(x);
+			char *y = pari_sprintf(
+				"%P#x", field_elementi(gel(curve->generators[i]->point, 2)));
+			json_object_set_string(point_object, "y", y);
+			pari_free(y);
+			char *p_order = pari_sprintf("%P#x", curve->generators[i]->order);
+			json_object_set_string(point_object, "order", p_order);
+			pari_free(p_order);
+			if (curve->generators[i]->cofactor) {
+				char *cofactor = pari_sprintf("%P#x", curve->generators[i]->cofactor);
+				json_object_set_string(point_object, "cofactor", cofactor);
+				pari_free(p_order);
+			}
+
+			json_array_append_value(gens_array, point_value);
+		}
+
+		json_object_set_value(root_object, "generators", gens_value);
+	}
+
 	if (curve->npoints) {
 		JSON_Value *points_value = json_value_init_array();
 		JSON_Array *points_array = json_value_get_array(points_value);
@@ -119,16 +140,22 @@ JSON_Value *output_jjson(curve_t *curve, config_t *config) {
 			JSON_Object *point_object = json_value_get_object(point_value);
 
 			char *x = pari_sprintf(
-			    "%P#x", field_elementi(gel(curve->points[i]->point, 1)));
+				"%P#x", field_elementi(gel(curve->points[i]->point, 1)));
 			json_object_set_string(point_object, "x", x);
 			pari_free(x);
 			char *y = pari_sprintf(
-			    "%P#x", field_elementi(gel(curve->points[i]->point, 2)));
+				"%P#x", field_elementi(gel(curve->points[i]->point, 2)));
 			json_object_set_string(point_object, "y", y);
 			pari_free(y);
 			char *p_order = pari_sprintf("%P#x", curve->points[i]->order);
 			json_object_set_string(point_object, "order", p_order);
 			pari_free(p_order);
+			if (curve->points[i]->cofactor) {
+				char *cofactor = pari_sprintf("%P#x", curve->points[i]->cofactor);
+				json_object_set_string(point_object, "cofactor", cofactor);
+				pari_free(p_order);
+			}
+
 			json_array_append_value(points_array, point_value);
 		}
 
@@ -148,7 +175,7 @@ char *output_sjson(curve_t *curve, config_t *config) {
 
 void output_fjson(FILE *out, curve_t *curve, config_t *config) {
 	char *s = output_sjson(curve, config);
-	fprintff(out, "%s", s);
+	fprintf(out, "%s\n", s);
 	json_free_serialized_string(s);
 }
 
@@ -169,6 +196,7 @@ void output_init(config_t *cfg) {
 	} else {
 		out = stdout;
 	}
+	setvbuf(out, NULL, _IONBF, 0);
 	if (cfg->debug) {
 		debug = fopen(cfg->debug, "w");
 		if (!debug) {
@@ -178,15 +206,14 @@ void output_init(config_t *cfg) {
 	} else {
 		debug = stdout;
 	}
+	setvbuf(debug, NULL, _IONBF, 0);
 
 	switch (cfg->format) {
-		case FORMAT_JSON:
-			output_s = &output_sjson;
+		case FORMAT_JSON: output_s = &output_sjson;
 			output_f = &output_fjson;
 			output_o = &output_json;
 			break;
-		case FORMAT_CSV:
-			output_s = &output_scsv;
+		case FORMAT_CSV: output_s = &output_scsv;
 			output_f = &output_fcsv;
 			output_o = &output_csv;
 			break;

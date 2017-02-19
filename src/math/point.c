@@ -91,19 +91,19 @@ int points_random(curve_t *curve, config_t *config, arg_t *args) {
 }
 
 /*
- * 			GEN o = utoi(dprimes[i]);
-            GEN mul = ellmul(curve->curve, rand, o);
+ 	GEN o = utoi(dprimes[i]);
+    GEN mul = ellmul(curve->curve, rand, o);
 
-            if (gequal0(mul)) {
-                printf("Success! %lu\n", npoints);
-                curve->points[i] = point_new();
+    if (gequal0(mul)) {
+    	printf("Success! %lu\n", npoints);
+        curve->points[i] = point_new();
 
-                gerepileall(btop, 2, &rand, &o);
-                curve->points[i]->point = rand;
-                curve->points[i]->order = o;
-                npoints++;
-                break;
-            }
+        gerepileall(btop, 2, &rand, &o);
+        curve->points[i]->point = rand;
+        curve->points[i]->order = o;
+        npoints++;
+        break;
+    }
  */
 
 int points_primet(curve_t *curve, config_t *config, arg_t *args) {
@@ -125,11 +125,14 @@ int points_primet(curve_t *curve, config_t *config, arg_t *args) {
 
 		for (long i = 0; i < nprimes; ++i) {
 			if (curve->points[i] == NULL && dvdis(ord, primes[i])) {
+				pari_sp ftop = avma;
+
 				GEN p = stoi(primes[i]);
 				GEN mul = divii(ord, p);
 				GEN point = ellmul(curve->curve, rand, mul);
 
 				curve->points[i] = point_new();
+				gerepileall(ftop, 2, &point, &p);
 				curve->points[i]->point = point;
 				curve->points[i]->order = p;
 				npoints++;
@@ -156,35 +159,21 @@ int points_prime(curve_t *curve, config_t *config, arg_t *args) {
 
 		for (long i = 1; i <= nprimes; ++i) {
 			if (curve->points[i - 1] == NULL && dvdii(ord, gel(primes, i))) {
+				pari_sp ftop = avma;
+
 				// primes[i] divides ord
 				// mul = ord/primes[i]
-				GEN mul = divii(ord, gel(primes, i));
+				GEN p = gcopy(gel(primes, i));
+				GEN mul = divii(ord, p);
 				GEN point = ellmul(curve->curve, rand, mul);
 
-				point_t *p = point_new();
-				p->point = point;
-				p->order = gel(primes, i);
-				curve->points[i - 1] = p;
+				curve->points[i - 1] = point_new();
+				gerepileall(ftop, 2, &point, &p);
+				curve->points[i - 1]->point = point;
+				curve->points[i - 1]->order = p;
 				npoints++;
 			}
 		}
-	}
-
-	return 1;
-}
-
-int points_generators(curve_t *curve, config_t *config, arg_t *args) {
-	// TODO stack code!!!
-	GEN generators = ellff_get_gens(curve->curve);
-	long len = glength(generators);
-	curve->points = points_new((size_t)len);
-	curve->npoints = (size_t)len;
-
-	for (long i = 1; i <= len; ++i) {
-		point_t *p = point_new();
-		p->point = gel(generators, i);
-		p->order = ellorder(curve->curve, p->point, NULL);
-		curve->points[i - 1] = p;
 	}
 
 	return 1;

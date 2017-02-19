@@ -9,6 +9,22 @@ int order_init(curve_t *curve, config_t *cfg, arg_t *args) {
 	return 1;
 }
 
+int order_smallfact(curve_t *curve, config_t *cfg, arg_t *args) {
+	if (!args) {
+		fprintf(stderr, "No args to an arged function. points_random");
+		return INT_MIN;
+	}
+	pari_ulong smallfact = *(pari_ulong *)args->args;
+	pari_sp ltop = avma;
+	curve->order = ellsea(curve->curve, smallfact);
+	if (gequal0(curve->order)) {
+		avma = ltop;
+		return -4;
+	} else {
+		return 1;
+	}
+}
+
 int order_prime(curve_t *curve, config_t *cfg, arg_t *args) {
 	pari_sp ltop = avma;
 	curve->order = ellsea(curve->curve, 1);

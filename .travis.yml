@@ -11,7 +11,6 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - gcc-6
-      env: COMPILER=gcc-6
     - compiler: clang-3.9
       addons:
         apt:
@@ -20,7 +19,6 @@ matrix:
             - llvm-toolchain-precise-3.9
           packages:
             - clang-3.9
-      env: COMPILER=clang-3.9
 
 before_install:
   - wget mirrors.kernel.org/ubuntu/pool/universe/p/pari/libpari-gmp-tls5_2.9.1-1_amd64.deb

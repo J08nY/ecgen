@@ -9,6 +9,7 @@
 #include "math/field.h"
 #include "math/order.h"
 #include "math/point.h"
+#include "math/gens.h"
 #include "seed.h"
 
 void exhaustive_ginit(gen_t *generators, config_t *config) {
@@ -48,6 +49,7 @@ void exhaustive_ginit(gen_t *generators, config_t *config) {
 			generators[OFFSET_ORDER] = &order_init;
 		}
 	}
+	generators[OFFSET_GENERATORS] = &gens_init;
 
 	if (config->random) {
 		generators[OFFSET_FIELD] = &field_random;

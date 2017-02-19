@@ -45,19 +45,16 @@ int curve_init(curve_t *curve, config_t *config, arg_t *args) {
 	pari_sp ltop = avma;
 	GEN v = gen_0;
 	switch (typ(curve->field)) {
-		case t_INT:
-			v = gtovec0(gen_0, 2);
+		case t_INT: v = gtovec0(gen_0, 2);
 			gel(v, 1) = curve->a;
 			gel(v, 2) = curve->b;
 			break;
-		case t_FFELT:
-			v = gtovec0(gen_0, 5);
+		case t_FFELT: v = gtovec0(gen_0, 5);
 			gel(v, 1) = gen_1;
 			gel(v, 4) = curve->a;
 			gel(v, 5) = curve->b;
 			break;
-		default:
-			pari_err_TYPE("curve_init", curve->field);
+		default: pari_err_TYPE("curve_init", curve->field);
 	}
 
 	curve->curve = gerepilecopy(ltop, ellinit(v, curve->field, -1));
@@ -87,12 +84,9 @@ int curve_seed_f2m(curve_t *curve, config_t *config, arg_t *args) {
 
 int curve_seed(curve_t *curve, config_t *config, arg_t *args) {
 	switch (typ(curve->field)) {
-		case t_INT:
-			return curve_seed_fp(curve, config, args);
-		case t_FFELT:
-			return curve_seed_f2m(curve, config, args);
-		default:
-			pari_err_TYPE("curve_seed", curve->field);
+		case t_INT: return curve_seed_fp(curve, config, args);
+		case t_FFELT: return curve_seed_f2m(curve, config, args);
+		default: pari_err_TYPE("curve_seed", curve->field);
 			return INT_MIN; /* NOT REACHABLE */
 	}
 }
@@ -103,14 +97,35 @@ GEN curve_params(curve_t *curve) {
 	GEN result = field_params(curve->field);
 	if (curve->a) result = gconcat(result, field_elementi(curve->a));
 	if (curve->b) result = gconcat(result, field_elementi(curve->b));
+	if (curve->generators) {
+		for (size_t i = 0; i < curve->ngens; ++i) {
+			GEN point =
+				gconcat(field_elementi(gel(curve->generators[i]->point, 1)),
+						field_elementi(gel(curve->generators[i]->point, 2)));
+			GEN x = field_elementi(gel(point, 1));
+			GEN y = field_elementi(gel(point, 2));
+			result = gconcat(result, x);
+			result = gconcat(result, y);
+			result = gconcat(result, curve->generators[i]->order);
+			if (curve->generators[i]->cofactor) {
+				result = gconcat(result, curve->generators[i]->cofactor);
+			}
+		}
+	}
 	if (curve->order) result = gconcat(result, gtovec(curve->order));
 	if (curve->points) {
 		for (size_t i = 0; i < curve->npoints; ++i) {
 			GEN point =
-			    gconcat(field_elementi(gel(curve->points[i]->point, 1)),
-			            field_elementi(gel(curve->points[i]->point, 2)));
-			result = gconcat(result, point);
+				gconcat(field_elementi(gel(curve->points[i]->point, 1)),
+						field_elementi(gel(curve->points[i]->point, 2)));
+			GEN x = field_elementi(gel(point, 1));
+			GEN y = field_elementi(gel(point, 2));
+			result = gconcat(result, x);
+			result = gconcat(result, y);
 			result = gconcat(result, curve->points[i]->order);
+			if (curve->points[i]->cofactor) {
+				result = gconcat(result, curve->points[i]->cofactor);
+			}
 		}
 	}
 

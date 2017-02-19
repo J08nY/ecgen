@@ -112,16 +112,4 @@ int points_primet(curve_t *curve, config_t *config, arg_t *args);
  */
 int points_prime(curve_t *curve, config_t *config, arg_t *args);
 
-/**
- * GENERATOR(gen_t)
- * Calculates the minimal set of generators of the curve.(one or two points).
- * Always succeeds.
- *
- * @param curve
- * @param config
- * @param args unused
- * @return state diff
- */
-int points_generators(curve_t *curve, config_t *config, arg_t *args);
-
 #endif  // ECGEN_POINT_H

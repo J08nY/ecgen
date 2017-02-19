@@ -24,6 +24,16 @@ int order_init(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
+ *
+ * @param curve
+ * @param cfg
+ * @param args
+ * @return
+ */
+int order_smallfact(curve_t *curve, config_t *cfg, arg_t *args);
+
+/**
+ * GENERATOR(gen_t)
  * Calculates the curve order, always using the SEA algorithm,
  * gives up early in case the order is divisible by "something".
  * Succeeds if the curve has a prime order.
