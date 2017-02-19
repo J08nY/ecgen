@@ -20,7 +20,7 @@
 /**
  * @file ecgen.c
  * @author J08nY <johny@neuromancer.sk>
- * @version 0.2
+ * @version 0.3.0
  * @copyright GPL v2.0
  */
 #include <pari/pari.h>
@@ -31,7 +31,7 @@
 #include "io/output.h"
 
 const char *argp_program_version =
-    "ecgen 0.2\n"
+    "ecgen 0.3.0\n"
     "Copyright (C) 2017 J08nY\n"
     "License GPLv2: GNU GPL version 2 (or later) "
     "<http://gnu.org/licenses/gpl.html>\n"
@@ -74,14 +74,23 @@ int quit(int status) {
 
 /**
  * @mainpage
+ *
  * Three fundamentally different Elliptic curve generation approaches can be
  * taken.
+ *
+ * [Baier] -
+ * https://www.cdc.informatik.tu-darmstadt.de/reports/reports/harald_baier.diss.pdf
+ * [Baier, Buchmann] -
+ * https://www.ipa.go.jp/security/enc/CRYPTREC/fy15/doc/1030_Buchmann.evaluation.pdf
+ *
  *   - Complex Multiplication:
- *     - Capable of generating a curve of a given prime order.
+ *     - Capable of generating a curve of a given (prime) order.
  *     - Generates a subset of all Elliptic Curves over a given field.
  *     - Used with the -n / --order option
  *
  *     - [Broker, Stevenhagen] - https://arxiv.org/abs/0712.2022
+ *     - [Savas, Schmidt, Koc] -
+ * http://people.oregonstate.edu/~schmidtt/ourPapers/SavasKoc/ches01curve.pdf
  *
  *   - Invalid curve generation:
  *     - Generates *invalid* curves for a given curve.

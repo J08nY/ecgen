@@ -87,7 +87,8 @@ JSON_Value *output_jjson(curve_t *curve, config_t *config) {
 			pari_free(e3);
 			break;
 		}
-		default: fprintf(stderr, "Error, field has unknown amount of elements.\n");
+		default:
+			fprintf(stderr, "Error, field has unknown amount of elements.\n");
 			exit(1);
 	}
 
@@ -109,18 +110,19 @@ JSON_Value *output_jjson(curve_t *curve, config_t *config) {
 			JSON_Object *point_object = json_value_get_object(point_value);
 
 			char *x = pari_sprintf(
-				"%P#x", field_elementi(gel(curve->generators[i]->point, 1)));
+			    "%P#x", field_elementi(gel(curve->generators[i]->point, 1)));
 			json_object_set_string(point_object, "x", x);
 			pari_free(x);
 			char *y = pari_sprintf(
-				"%P#x", field_elementi(gel(curve->generators[i]->point, 2)));
+			    "%P#x", field_elementi(gel(curve->generators[i]->point, 2)));
 			json_object_set_string(point_object, "y", y);
 			pari_free(y);
 			char *p_order = pari_sprintf("%P#x", curve->generators[i]->order);
 			json_object_set_string(point_object, "order", p_order);
 			pari_free(p_order);
 			if (curve->generators[i]->cofactor) {
-				char *cofactor = pari_sprintf("%P#x", curve->generators[i]->cofactor);
+				char *cofactor =
+				    pari_sprintf("%P#x", curve->generators[i]->cofactor);
 				json_object_set_string(point_object, "cofactor", cofactor);
 				pari_free(p_order);
 			}
@@ -140,18 +142,19 @@ JSON_Value *output_jjson(curve_t *curve, config_t *config) {
 			JSON_Object *point_object = json_value_get_object(point_value);
 
 			char *x = pari_sprintf(
-				"%P#x", field_elementi(gel(curve->points[i]->point, 1)));
+			    "%P#x", field_elementi(gel(curve->points[i]->point, 1)));
 			json_object_set_string(point_object, "x", x);
 			pari_free(x);
 			char *y = pari_sprintf(
-				"%P#x", field_elementi(gel(curve->points[i]->point, 2)));
+			    "%P#x", field_elementi(gel(curve->points[i]->point, 2)));
 			json_object_set_string(point_object, "y", y);
 			pari_free(y);
 			char *p_order = pari_sprintf("%P#x", curve->points[i]->order);
 			json_object_set_string(point_object, "order", p_order);
 			pari_free(p_order);
 			if (curve->points[i]->cofactor) {
-				char *cofactor = pari_sprintf("%P#x", curve->points[i]->cofactor);
+				char *cofactor =
+				    pari_sprintf("%P#x", curve->points[i]->cofactor);
 				json_object_set_string(point_object, "cofactor", cofactor);
 				pari_free(p_order);
 			}
@@ -209,11 +212,13 @@ void output_init(config_t *cfg) {
 	setvbuf(debug, NULL, _IONBF, 0);
 
 	switch (cfg->format) {
-		case FORMAT_JSON: output_s = &output_sjson;
+		case FORMAT_JSON:
+			output_s = &output_sjson;
 			output_f = &output_fjson;
 			output_o = &output_json;
 			break;
-		case FORMAT_CSV: output_s = &output_scsv;
+		case FORMAT_CSV:
+			output_s = &output_scsv;
 			output_f = &output_fcsv;
 			output_o = &output_csv;
 			break;

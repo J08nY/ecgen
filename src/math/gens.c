@@ -2,7 +2,6 @@
 #include "gens.h"
 #include "point.h"
 
-
 int gens_init(curve_t *curve, config_t *config, arg_t *args) {
 	// TODO stack code!!!
 	GEN generators = ellff_get_gens(curve->curve);
@@ -20,4 +19,3 @@ int gens_init(curve_t *curve, config_t *config, arg_t *args) {
 
 	return 1;
 }
-

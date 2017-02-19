@@ -20,7 +20,7 @@
 /**
  * @file econvert.c
  * @author J08nY <johny@neuromancer.sk>
- * @version 0.2
+ * @version 0.3.0
  * @copyright GPL v2.0
  */
 

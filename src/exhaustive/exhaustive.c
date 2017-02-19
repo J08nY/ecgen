@@ -7,9 +7,9 @@
 #include "math/curve.h"
 #include "math/equation.h"
 #include "math/field.h"
+#include "math/gens.h"
 #include "math/order.h"
 #include "math/point.h"
-#include "math/gens.h"
 #include "seed.h"
 
 void exhaustive_ginit(gen_t *generators, config_t *config) {

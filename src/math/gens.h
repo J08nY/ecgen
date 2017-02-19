@@ -6,4 +6,4 @@
 
 int gens_init(curve_t *curve, config_t *config, arg_t *args);
 
-#endif //ECGEN_GENS_H
+#endif  // ECGEN_GENS_H

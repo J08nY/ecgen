@@ -4,7 +4,4 @@
  */
 #include "cm.h"
 
-int cm_do(config_t *cfg) {
-	// TODO implement
-	return INT_MIN;
-}
+int cm_do(config_t *cfg) { return INT_MIN; }

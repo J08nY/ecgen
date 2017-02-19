@@ -1,4 +1,4 @@
-## ecgen [![Build Status](https://travis-ci.org/J08nY/ecgen.svg?branch=master)](https://travis-ci.org/J08nY/ecgen)
+## ecgen [![Build Status](https://travis-ci.org/J08nY/ecgen.svg?branch=master)](https://travis-ci.org/J08nY/ecgen) [![Version](https://badge.fury.io/gh/J08nY%2Fecgen.svg)](https://badge.fury.io/gh/J08nY%2Fecgen)
 
 Tool for generating Elliptic curve domain parameters.
 

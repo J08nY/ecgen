@@ -91,11 +91,11 @@ int points_random(curve_t *curve, config_t *config, arg_t *args) {
 }
 
 /*
- 	GEN o = utoi(dprimes[i]);
+    GEN o = utoi(dprimes[i]);
     GEN mul = ellmul(curve->curve, rand, o);
 
     if (gequal0(mul)) {
-    	printf("Success! %lu\n", npoints);
+        printf("Success! %lu\n", npoints);
         curve->points[i] = point_new();
 
         gerepileall(btop, 2, &rand, &o);
