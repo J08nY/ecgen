@@ -51,6 +51,13 @@ typedef struct arg_t {
 
 typedef int (*gen_t)(curve_t *, config_t *, arg_t *);
 
+/**
+ * @brief
+ * @param curve
+ * @param config
+ * @param args
+ * @return
+ */
 int gen_skip(curve_t *curve, config_t *config, arg_t *args);
 
 #endif  // ECGEN_TYPES_H

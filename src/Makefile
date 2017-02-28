@@ -14,7 +14,7 @@ LDFLAGS = -L../lib
 GP_CFLAGS = -O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC
 GPFLAGS = -g -i4
 
-INCLUDES = -I. -I../lib -Icm -Iinvalid -Iio -Irandom -Iexhaustive
+INCLUDES = -I. -I../lib -Icm -Iinvalid -Iio -Irandom -Iexhaustive -Imath
 LIBS = -lrt -lpari -lparson
 
 ####
@@ -54,27 +54,14 @@ $(GPO): $(GPC) $(GPH)
 clean-all: clean clean-gp
 
 clean:
-	rm -f ecgen
 	find . -type f -name '*.o' -exec rm {} +
 
 clean-gp:
 	rm -f $(GPH)
 	rm -f $(GPC)
 
-help:
-	@echo "ecgen, tool for generating Elliptic curve domain parameters"
-	@echo
-	@echo "Available targets:"
-	@echo " - all : builds all"
-	@echo " - ecgen : builds the main binary"
-	@echo " - gp2c : generates the .c and .h files from gp code"
-	@echo " - clean : cleans up after a build"
-	@echo " - clean-gp : cleans up after gp2c generation"
-	@echo " - clean-all : cleans all"
-	@echo " - format : run clang-format on source files"
-
 format:
 	clang-format -i $(SRC)
 	clang-format -i $(HDR)
 
-.PHONY: all gp2c clean-all clean clean-gp help format
+.PHONY: all gp2c clean-all clean clean-gp format

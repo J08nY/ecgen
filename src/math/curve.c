@@ -41,7 +41,7 @@ void curve_free(curve_t **curve) {
 	}
 }
 
-int curve_init(curve_t *curve, config_t *config, arg_t *args) {
+int curve_any(curve_t *curve, config_t *config, arg_t *args) {
 	pari_sp ltop = avma;
 	GEN v = gen_0;
 	switch (typ(curve->field)) {
@@ -57,7 +57,7 @@ int curve_init(curve_t *curve, config_t *config, arg_t *args) {
 			gel(v, 5) = curve->b;
 			break;
 		default:
-			pari_err_TYPE("curve_init", curve->field);
+			pari_err_TYPE("curve_any", curve->field);
 	}
 
 	curve->curve = gerepilecopy(ltop, ellinit(v, curve->field, -1));
@@ -66,7 +66,7 @@ int curve_init(curve_t *curve, config_t *config, arg_t *args) {
 
 int curve_nonzero(curve_t *curve, config_t *config, arg_t *args) {
 	pari_sp ltop = avma;
-	curve_init(curve, config, args);
+	curve_any(curve, config, args);
 	if (gequal0(ell_get_disc(curve->curve))) {
 		avma = ltop;
 		return -3;

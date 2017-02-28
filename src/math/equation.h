@@ -68,6 +68,13 @@ int a_zero(curve_t *curve, config_t *config, arg_t *args);
  */
 int a_one(curve_t *curve, config_t *config, arg_t *args);
 
+/**
+ * @brief
+ * @param curve
+ * @param config
+ * @param args
+ * @return
+ */
 int a_seed(curve_t *curve, config_t *config, arg_t *args);
 
 /**
@@ -126,6 +133,18 @@ int b_zero(curve_t *curve, config_t *config, arg_t *args);
  */
 int b_one(curve_t *curve, config_t *config, arg_t *args);
 
+/**
+ * @brief
+ * @param curve
+ * @param config
+ * @param args
+ * @return
+ */
 int b_seed(curve_t *curve, config_t *config, arg_t *args);
+
+/**
+ *
+ */
+void equation_quit(void);
 
 #endif  // ECGEN_EQUATION_H

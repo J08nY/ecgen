@@ -24,7 +24,7 @@ void invalid_ginit(gen_t *generators, config_t *cfg) {
 		generators[OFFSET_B] = &b_input;
 	}
 	generators[OFFSET_CURVE] = &curve_nonzero;
-	generators[OFFSET_ORDER] = &order_init;
+	generators[OFFSET_ORDER] = &order_any;
 }
 
 size_t invalid_primes(GEN order, pari_ulong **primes) {
@@ -76,8 +76,8 @@ size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 	invalid_gen[OFFSET_A] = &gen_skip;
 	invalid_gen[OFFSET_B] = &b_random;
 	invalid_gen[OFFSET_CURVE] = &curve_nonzero;
-	invalid_gen[OFFSET_ORDER] = &order_init;
-	invalid_gen[OFFSET_GENERATORS] = &gens_init;
+	invalid_gen[OFFSET_ORDER] = &order_any;
+	invalid_gen[OFFSET_GENERATORS] = &gens_any;
 	invalid_gen[OFFSET_POINTS] = &points_primet;
 
 	arg_t *invalid_argss[OFFSET_END];

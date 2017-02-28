@@ -1,11 +1,11 @@
-
+/*
+ * ecgen, tool for generating Elliptic curve domain parameters
+ * Copyright (C) 2017 J08nY
+ */
 #include "gens.h"
 #include "point.h"
 
-int gens_init(curve_t *curve, config_t *config, arg_t *args) {
-	// TODO stack code!!!
-	GEN generators = ellff_get_gens(curve->curve);
-	long len = glength(generators);
+int gens_put(curve_t *curve, GEN generators, long len) {
 	curve->generators = points_new((size_t)len);
 	curve->ngens = (size_t)len;
 
@@ -18,4 +18,21 @@ int gens_init(curve_t *curve, config_t *config, arg_t *args) {
 	}
 
 	return 1;
+}
+
+int gens_any(curve_t *curve, config_t *config, arg_t *args) {
+	GEN generators = ellff_get_gens(curve->curve);
+	long len = glength(generators);
+	return gens_put(curve, generators, len);
+}
+
+int gens_one(curve_t *curve, config_t *config, arg_t *args) {
+	pari_sp ltop = avma;
+	GEN generators = ellff_get_gens(curve->curve);
+	long len = glength(generators);
+	if (len == 2) {
+		avma = ltop;
+		return -5;
+	}
+	return gens_put(curve, generators, len);
 }

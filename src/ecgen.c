@@ -80,6 +80,7 @@ int quit(int status) {
  *
  * [Baier] -
  * https://www.cdc.informatik.tu-darmstadt.de/reports/reports/harald_baier.diss.pdf
+ *
  * [Baier, Buchmann] -
  * https://www.ipa.go.jp/security/enc/CRYPTREC/fy15/doc/1030_Buchmann.evaluation.pdf
  *

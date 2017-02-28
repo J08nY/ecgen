@@ -102,3 +102,12 @@ int b_seed(curve_t *curve, config_t *config, arg_t *args) {
 	// TODO implement
 	return INT_MIN;
 }
+
+void equation_quit(void) {
+	if (a && isclone(a)) {
+		gunclone(a);
+	}
+	if (b && isclone(b)) {
+		gunclone(b);
+	}
+}

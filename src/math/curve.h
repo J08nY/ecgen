@@ -22,7 +22,7 @@
  * @param args unused
  * @return state diff
  */
-int curve_init(curve_t *curve, config_t *config, arg_t *args);
+int curve_any(curve_t *curve, config_t *config, arg_t *args);
 
 /**
  * GENERATOR(gen_t)

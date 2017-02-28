@@ -20,7 +20,7 @@
  * @param args
  * @return state diff
  */
-int order_init(curve_t *curve, config_t *cfg, arg_t *args);
+int order_any(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)

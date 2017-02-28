@@ -46,10 +46,10 @@ void exhaustive_ginit(gen_t *generators, config_t *config) {
 		if (config->prime) {
 			generators[OFFSET_ORDER] = &order_prime;
 		} else {
-			generators[OFFSET_ORDER] = &order_init;
+			generators[OFFSET_ORDER] = &order_any;
 		}
 	}
-	generators[OFFSET_GENERATORS] = &gens_init;
+	generators[OFFSET_GENERATORS] = &gens_any;
 
 	if (config->random) {
 		generators[OFFSET_FIELD] = &field_random;
@@ -92,6 +92,10 @@ int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
 	return 1;
 }
 
+void exhaustive_quit(void) {
+	equation_quit();
+}
+
 int exhaustive_do(config_t *cfg) {
 	gen_t generators[OFFSET_END];
 	arg_t *argss[OFFSET_END];
@@ -106,5 +110,7 @@ int exhaustive_do(config_t *cfg) {
 	}
 	output_o(curve, cfg);
 	curve_free(&curve);
+
+	exhaustive_quit();
 	return 0;
 }
