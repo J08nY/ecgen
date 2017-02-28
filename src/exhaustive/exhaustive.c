@@ -65,15 +65,32 @@ void exhaustive_vinit(arg_t *argss[], config_t *config) {
 }
 
 int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
-                   arg_t *argss[], int start_offset, int end_offset) {
+				   arg_t *argss[], int start_offset, int end_offset) {
+	if (start_offset == end_offset) {
+		return 1;
+	}
+	if (start_offset > end_offset) {
+		return 0;
+	}
+	pari_sp tops[end_offset - start_offset];
+
 	int state = start_offset;
-	while (state != end_offset) {
+	while (state < end_offset) {
+		tops[state - start_offset] = avma;
+
 		int diff =
-		    generators[state](curve, config, argss ? argss[state] : NULL);
+			generators[state](curve, config, argss ? argss[state] : NULL);
+		state += diff;
+
 		if (diff == INT_MIN) {
 			fprintf(stderr, "Error generating a curve. %i\n", state);
 			return 0;
 		}
+
+		if (diff <= 0) {
+			avma = tops[state - start_offset];
+		}
+
 		if (config->verbose) {
 			if (diff > 0) {
 				fprintf(debug, "+");
@@ -84,7 +101,7 @@ int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
 			}
 			fflush(debug);
 		}
-		state += diff;
+
 	}
 
 	if (config->verbose) fprintf(debug, "\n");
@@ -104,7 +121,7 @@ int exhaustive_do(config_t *cfg) {
 
 	curve_t *curve = curve_new();
 	if (!exhaustive_gen(curve, cfg, generators, argss, OFFSET_SEED,
-	                    OFFSET_END)) {
+						OFFSET_END)) {
 		curve_free(&curve);
 		return 1;
 	}
