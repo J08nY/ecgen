@@ -124,7 +124,7 @@ JSON_Value *output_jjson(curve_t *curve, config_t *config) {
 				char *cofactor =
 				    pari_sprintf("%P#x", curve->generators[i]->cofactor);
 				json_object_set_string(point_object, "cofactor", cofactor);
-				pari_free(p_order);
+				pari_free(cofactor);
 			}
 
 			json_array_append_value(gens_array, point_value);
@@ -156,7 +156,7 @@ JSON_Value *output_jjson(curve_t *curve, config_t *config) {
 				char *cofactor =
 				    pari_sprintf("%P#x", curve->points[i]->cofactor);
 				json_object_set_string(point_object, "cofactor", cofactor);
-				pari_free(p_order);
+				pari_free(cofactor);
 			}
 
 			json_array_append_value(points_array, point_value);
