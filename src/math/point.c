@@ -62,6 +62,8 @@ void points_free_deep(point_t ***points, size_t npoints) {
 }
 
 int point_random(curve_t *curve, config_t *config, arg_t *args) {
+	points_free_deep(&curve->points, curve->npoints);
+
 	point_t *p = point_new();
 	p->point = genrand(curve->curve);
 	p->order = ellorder(curve->curve, p->point, NULL);
@@ -77,6 +79,8 @@ int points_random(curve_t *curve, config_t *config, arg_t *args) {
 		fprintf(stderr, "No args to an arged function. points_random");
 		return INT_MIN;
 	}
+	points_free_deep(&curve->points, curve->npoints);
+
 	size_t npoints = *(size_t *)args->args;
 
 	curve->points = points_new(npoints);
@@ -112,6 +116,8 @@ int points_primet(curve_t *curve, config_t *config, arg_t *args) {
 		fprintf(stderr, "No args to an arged function. points_primet");
 		return INT_MIN;
 	}
+	points_free_deep(&curve->points, curve->npoints);
+
 	pari_ulong *primes = (pari_ulong *)args->args;
 	size_t nprimes = args->nargs;
 
@@ -145,6 +151,8 @@ int points_primet(curve_t *curve, config_t *config, arg_t *args) {
 
 int points_prime(curve_t *curve, config_t *config, arg_t *args) {
 	// TODO stack code!!!
+	points_free_deep(&curve->points, curve->npoints);
+
 	GEN factors = Z_factor(curve->order);
 	GEN primes = gel(factors, 1);
 	long nprimes = glength(primes);
