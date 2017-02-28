@@ -77,7 +77,11 @@ size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 	invalid_gen[OFFSET_B] = &b_random;
 	invalid_gen[OFFSET_CURVE] = &curve_nonzero;
 	invalid_gen[OFFSET_ORDER] = &order_any;
-	invalid_gen[OFFSET_GENERATORS] = &gens_any;
+	if (cfg->unique) {
+		invalid_gen[OFFSET_GENERATORS] = &gens_one;
+	} else {
+		invalid_gen[OFFSET_GENERATORS] = &gens_any;
+	}
 	invalid_gen[OFFSET_POINTS] = &points_primet;
 
 	arg_t *invalid_argss[OFFSET_END];

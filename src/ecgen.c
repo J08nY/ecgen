@@ -39,7 +39,7 @@ const char *argp_program_version =
     "There is NO WARRANTY, to the extent permitted by law.";
 const char *argp_program_bug_address = "<johny@neuromancer.sk>";
 
-static struct argp argp = {options, parse_opt, args_doc, doc};
+static struct argp argp = {options, cli_parse, args_doc, doc, 0, cli_filter};
 static struct config_t cfg;
 
 bool init(void) {

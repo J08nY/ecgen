@@ -23,6 +23,7 @@ typedef struct config_t {
 	enum field_e field;
 	bool binary_field;
 	bool prime_field;
+
 	long count;
 	bool random;
 	bool prime;
@@ -32,17 +33,23 @@ typedef struct config_t {
 	bool koblitz;
 	bool from_seed;
 	char *seed;
+	bool unique;
+
 	char *datadir;
 	enum format_e format;
 	char *output;
 	char *input;
 	bool append;
+
 	long verbose;
 	char *debug;
+
 	long bits;
 
 } config_t;
 
-error_t parse_opt(int key, char *arg, struct argp_state *state);
+error_t cli_parse(int key, char *arg, struct argp_state *state);
+
+char *cli_filter(int key, const char *text, void *input);
 
 #endif  // ECGEN_CLI_H

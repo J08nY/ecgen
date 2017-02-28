@@ -49,7 +49,11 @@ void exhaustive_ginit(gen_t *generators, config_t *config) {
 			generators[OFFSET_ORDER] = &order_any;
 		}
 	}
-	generators[OFFSET_GENERATORS] = &gens_any;
+	if (config->unique) {
+		generators[OFFSET_GENERATORS] = &gens_one;
+	} else {
+		generators[OFFSET_GENERATORS] = &gens_any;
+	}
 
 	if (config->random) {
 		generators[OFFSET_FIELD] = &field_random;
@@ -65,7 +69,7 @@ void exhaustive_vinit(arg_t *argss[], config_t *config) {
 }
 
 int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
-				   arg_t *argss[], int start_offset, int end_offset) {
+                   arg_t *argss[], int start_offset, int end_offset) {
 	if (start_offset == end_offset) {
 		return 1;
 	}
@@ -79,7 +83,7 @@ int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
 		tops[state - start_offset] = avma;
 
 		int diff =
-			generators[state](curve, config, argss ? argss[state] : NULL);
+		    generators[state](curve, config, argss ? argss[state] : NULL);
 		state += diff;
 
 		if (diff == INT_MIN) {
@@ -101,7 +105,6 @@ int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
 			}
 			fflush(debug);
 		}
-
 	}
 
 	if (config->verbose) fprintf(debug, "\n");
@@ -109,9 +112,7 @@ int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
 	return 1;
 }
 
-void exhaustive_quit(void) {
-	equation_quit();
-}
+void exhaustive_quit(void) { equation_quit(); }
 
 int exhaustive_do(config_t *cfg) {
 	gen_t generators[OFFSET_END];
@@ -121,7 +122,7 @@ int exhaustive_do(config_t *cfg) {
 
 	curve_t *curve = curve_new();
 	if (!exhaustive_gen(curve, cfg, generators, argss, OFFSET_SEED,
-						OFFSET_END)) {
+	                    OFFSET_END)) {
 		curve_free(&curve);
 		return 1;
 	}
