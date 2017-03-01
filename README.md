@@ -4,7 +4,7 @@ Tool for generating Elliptic curve domain parameters.
 
 ### Usage
 
-	ecgen --fp/--f2m -r -p BITS
+	ecgen --fp/--f2m BITS
 
  - `--fp`/`--f2m` specifies the field type (prime/binary).
 <br/><br/>
@@ -14,6 +14,9 @@ Tool for generating Elliptic curve domain parameters.
  - `-p/--prime` requests the curve order to be prime.
  - `-n/--order=ORDER` requests the curve to have a (prime) order `ORDER`.
  - `-i/--invalid` requests that invalid curves of small prime orders be generated.
+ - `-c/--count=COUNT` requests multiple curves to be generated.
+ - `--points=TYPE` requests points of given type (prime/random).
+ - `-u/--unique` requests the curve to be uniquely generated (have one generator).
 <br/><br/>
  - `-v/--verbose=[FILE]` turns on verbose output (to file).
  - `-t/--format=[FORMAT]` sets format to output in. One of \[csv,json\], default is json.
@@ -22,6 +25,24 @@ Tool for generating Elliptic curve domain parameters.
  - `-a/--append` appends to output file (doesn't overwrite it).
 <br/><br/>
  - `-d/--datadir=DIR` specifies the PARI/GP datadir containing the `seadata` package.
+ 
+#### Examples
+
+Generate a prime field, prime order, uniquely generated 192-bit curve, don't ask for input try random values:
+
+    > ecgen --fp -r -p -u 192
+    
+Generate 5 random, binary field, 163-bit koblitz curves:
+
+    > ecgen --f2m -r -k -c5 163
+    
+Generate invalid curves to a file, for a given prime field 192-bit curve:
+
+    > ecgen --fp -i --output=invalid.json 192
+    p: <input prime>
+    a: <input a param>
+    b: <input b param>
+
 
 ### Generation methods
 Three different EC curve parameters generation methods are implemented.
@@ -38,6 +59,7 @@ Three different EC curve parameters generation methods are implemented.
  - Can generate curves repeatedly until one satisfies requested properties:
    - `-p/--prime` generates curves until a prime order curve is found.
    - `-k/--koblitz` generates a curve with fixed *A = 0* parameter.
+   - `-u/--unique` generates a uniquely generated curve (with one generator/cyclic group).
 
 ##### Invalid curve generation
  - Generates *invalid* curves for a given curve.
