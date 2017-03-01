@@ -37,6 +37,15 @@ int field_random(curve_t *curve, config_t *config, arg_t *args);
 int field_input(curve_t *curve, config_t *config, arg_t *args);
 
 /**
+ *
+ * @param curve
+ * @param cfg
+ * @param args
+ * @return
+ */
+int field_once(curve_t *curve, config_t *cfg, arg_t *args);
+
+/**
  * Extract a field representation from a field.
  *  - char(field) == 2:
  *    returns the vector of powers of middle coefficients of the reduction

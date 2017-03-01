@@ -18,6 +18,11 @@ extern struct argp_option options[];
 
 enum field_e { FIELD_PRIME, FIELD_BINARY };
 enum format_e { FORMAT_JSON, FORMAT_CSV };
+enum points_e { POINTS_RANDOM, POINTS_PRIME };
+struct points_s {
+	enum points_e type;
+	size_t amount;
+};
 
 typedef struct config_t {
 	enum field_e field;
@@ -34,6 +39,7 @@ typedef struct config_t {
 	bool from_seed;
 	char *seed;
 	bool unique;
+	struct points_s points;
 
 	char *datadir;
 	enum format_e format;

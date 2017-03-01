@@ -96,7 +96,7 @@ int points_random(curve_t *curve, config_t *config, arg_t *args);
  * @param args
  * @return state diff
  */
-int points_primet(curve_t *curve, config_t *config, arg_t *args);
+int points_trial(curve_t *curve, config_t *config, arg_t *args);
 
 /**
  * GENERATOR(gen_t)

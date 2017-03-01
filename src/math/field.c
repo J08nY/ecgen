@@ -90,6 +90,25 @@ int field_input(curve_t *curve, config_t *config, arg_t *args) {
 	}
 }
 
+static GEN field = NULL;
+static curve_t *curve_field = NULL;
+
+int field_once(curve_t *curve, config_t *cfg, arg_t *args) {
+	if (field && curve_field == curve) {
+		curve->field = gcopy(field);
+		return 1;
+	}
+
+	int inp = field_input(curve, cfg, args);
+	if (inp > 0) {
+		field = gclone(curve->field);
+		curve_field = curve;
+		return 1;
+	} else {
+		return 0;
+	}
+}
+
 GEN field_params(GEN field) {
 	pari_sp ltop = avma;
 

@@ -110,10 +110,10 @@ int points_random(curve_t *curve, config_t *config, arg_t *args) {
     }
  */
 
-int points_primet(curve_t *curve, config_t *config, arg_t *args) {
+int points_trial(curve_t *curve, config_t *config, arg_t *args) {
 	// TODO stack code!!!
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. points_primet");
+		fprintf(stderr, "No args to an arged function. points_trial");
 		return INT_MIN;
 	}
 	points_free_deep(&curve->points, curve->npoints);

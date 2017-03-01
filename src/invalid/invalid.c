@@ -82,7 +82,7 @@ size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 	} else {
 		invalid_gen[OFFSET_GENERATORS] = &gens_any;
 	}
-	invalid_gen[OFFSET_POINTS] = &points_primet;
+	invalid_gen[OFFSET_POINTS] = &points_trial;
 
 	arg_t *invalid_argss[OFFSET_END];
 
@@ -126,7 +126,7 @@ size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 		if (total > 0) {
 			// only pass small primes that divide the curve order and those
 			// where we dont have a curve yet.
-			// this is passed to points_primet which uses trial division to find
+			// this is passed to points_trial which uses trial division to find
 			// a point with given prime order.
 			size_t j = 0;
 			pari_ulong dprimes[total];

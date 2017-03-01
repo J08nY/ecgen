@@ -22,8 +22,7 @@ GEN input_i(const char *prompt, long bits) {
 		free(line);
 		return gen_m1;
 	}
-	for (size_t i = 0, j = 0; (line[j] = line[i]); j += !isspace(line[i++]))
-		;
+	for (size_t i = 0, j = 0; (line[j] = line[i]); j += !isspace(line[i++]));
 
 	pari_sp ltop = avma;
 	GEN in = strtoi(line);
