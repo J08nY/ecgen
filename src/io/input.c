@@ -11,7 +11,7 @@ FILE *in;
 int delim;
 
 GEN input_i(const char *prompt, long bits) {
-	if (prompt && out == stdout) {
+	if (prompt && in == stdin) {
 		fprintf(out, "%s ", prompt);
 	}
 	char *line = NULL;
@@ -58,7 +58,7 @@ GEN input_int(const char *prompt, long bits) { return input_i(prompt, bits); }
 GEN input_short(const char *prompt) { return input_i(prompt, 16); }
 
 GEN input_string(const char *prompt) {
-	if (prompt && out == stdout) {
+	if (prompt && in == stdin) {
 		fprintf(out, "%s ", prompt);
 	}
 	char *line = NULL;
