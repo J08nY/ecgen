@@ -23,6 +23,7 @@ void invalid_ginit(gen_t *generators, config_t *cfg) {
 		generators[OFFSET_A] = &a_input;
 		generators[OFFSET_B] = &b_input;
 	}
+	generators[OFFSET_GENERATORS] = &gens_any;
 	generators[OFFSET_CURVE] = &curve_nonzero;
 	generators[OFFSET_ORDER] = &order_any;
 }
