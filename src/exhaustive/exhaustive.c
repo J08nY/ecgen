@@ -4,21 +4,21 @@
  */
 #include "exhaustive.h"
 #include "io/output.h"
+#include "math/arg.h"
 #include "math/curve.h"
 #include "math/equation.h"
 #include "math/field.h"
 #include "math/gens.h"
 #include "math/order.h"
 #include "math/point.h"
-#include "math/arg.h"
 #include "seed.h"
 
-void exhaustive_ginit(gen_t *generators, config_t *config) {
-	if (config->from_seed) {
-		if (config->seed) {
+void exhaustive_ginit(gen_t *generators, config_t *cfg) {
+	if (cfg->from_seed) {
+		if (cfg->seed) {
 			generators[OFFSET_SEED] = &seed_argument;
 		} else {
-			if (config->random) {
+			if (cfg->random) {
 				generators[OFFSET_SEED] = &seed_random;
 			} else {
 				generators[OFFSET_SEED] = &seed_input;
@@ -30,7 +30,7 @@ void exhaustive_ginit(gen_t *generators, config_t *config) {
 	} else {
 		generators[OFFSET_SEED] = &gen_skip;
 
-		if (config->random) {
+		if (cfg->random) {
 			generators[OFFSET_A] = &a_random;
 			generators[OFFSET_B] = &b_random;
 		} else {
@@ -38,57 +38,66 @@ void exhaustive_ginit(gen_t *generators, config_t *config) {
 			generators[OFFSET_B] = &b_input;
 		}
 
-		if (config->koblitz) {
+		if (cfg->koblitz) {
 			generators[OFFSET_A] = &a_zero;
 		}
 
 		generators[OFFSET_CURVE] = &curve_nonzero;
 
-		if (config->prime) {
+		if (cfg->prime) {
 			generators[OFFSET_ORDER] = &order_prime;
+		} else if (cfg->cofactor) {
+			generators[OFFSET_ORDER] = &order_smallfact;
 		} else {
 			generators[OFFSET_ORDER] = &order_any;
 		}
 	}
-	if (config->unique) {
+	if (cfg->unique) {
 		generators[OFFSET_GENERATORS] = &gens_one;
 	} else {
 		generators[OFFSET_GENERATORS] = &gens_any;
 	}
 
-	if (config->random) {
+	if (cfg->random) {
 		generators[OFFSET_FIELD] = &field_random;
 	} else {
 		generators[OFFSET_FIELD] = &field_input;
 	}
 
-	switch (config->points.type) {
+	switch (cfg->points.type) {
 		case POINTS_RANDOM:
-			if (config->points.amount) {
+			if (cfg->points.amount) {
 				generators[OFFSET_POINTS] = &points_random;
 			} else {
 				generators[OFFSET_POINTS] = &point_random;
 			}
 			break;
-		case POINTS_PRIME: generators[OFFSET_POINTS] = &points_prime;
+		case POINTS_PRIME:
+			generators[OFFSET_POINTS] = &points_prime;
 			break;
 	}
 }
 
-void exhaustive_ainit(arg_t **argss, config_t *config) {
+void exhaustive_ainit(arg_t **argss, config_t *cfg) {
 	for (size_t i = 0; i < OFFSET_END; ++i) {
 		argss[i] = NULL;
 	}
-	if (config->points.type == POINTS_RANDOM) {
+	if (cfg->points.type == POINTS_RANDOM) {
 		arg_t *points_arg = arg_new();
-		points_arg->args = &config->points.amount;
+		points_arg->args = &cfg->points.amount;
 		points_arg->nargs = 1;
 		argss[OFFSET_POINTS] = points_arg;
 	}
+	if (cfg->cofactor) {
+		arg_t *order_arg = arg_new();
+		order_arg->args = &cfg->cofactor_bound;
+		order_arg->nargs = 1;
+		argss[OFFSET_ORDER] = order_arg;
+	}
 }
 
-int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
-				   arg_t *argss[], int start_offset, int end_offset) {
+int exhaustive_gen(curve_t *curve, config_t *cfg, gen_t generators[],
+                   arg_t *argss[], int start_offset, int end_offset) {
 	if (start_offset == end_offset) {
 		return 1;
 	}
@@ -101,8 +110,7 @@ int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
 	while (state < end_offset) {
 		tops[state - start_offset] = avma;
 
-		int diff =
-			generators[state](curve, config, argss ? argss[state] : NULL);
+		int diff = generators[state](curve, cfg, argss ? argss[state] : NULL);
 		state += diff;
 
 		if (diff == INT_MIN) {
@@ -114,7 +122,7 @@ int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
 			avma = tops[state - start_offset];
 		}
 
-		if (config->verbose) {
+		if (cfg->verbose) {
 			if (diff > 0) {
 				fprintf(debug, "+");
 			} else if (diff < 0) {
@@ -126,7 +134,7 @@ int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
 		}
 	}
 
-	if (config->verbose) fprintf(debug, "\n");
+	if (cfg->verbose) fprintf(debug, "\n");
 
 	return 1;
 }
@@ -149,7 +157,7 @@ int exhaustive_do(config_t *cfg) {
 	for (long i = 0; i < cfg->count; ++i) {
 		curve_t *curve = curve_new();
 		if (!exhaustive_gen(curve, cfg, generators, argss, OFFSET_SEED,
-							OFFSET_END)) {
+		                    OFFSET_END)) {
 			curve_free(&curve);
 			return 1;
 		}

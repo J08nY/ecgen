@@ -4,7 +4,6 @@
  */
 #include "arg.h"
 
-
 arg_t *arg_new() {
 	arg_t *arg = pari_malloc(sizeof(arg_t));
 	if (!arg) {

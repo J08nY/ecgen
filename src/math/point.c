@@ -61,7 +61,7 @@ void points_free_deep(point_t ***points, size_t npoints) {
 	}
 }
 
-int point_random(curve_t *curve, config_t *config, arg_t *args) {
+int point_random(curve_t *curve, config_t *cfg, arg_t *args) {
 	points_free_deep(&curve->points, curve->npoints);
 
 	point_t *p = point_new();
@@ -74,7 +74,7 @@ int point_random(curve_t *curve, config_t *config, arg_t *args) {
 	return 1;
 }
 
-int points_random(curve_t *curve, config_t *config, arg_t *args) {
+int points_random(curve_t *curve, config_t *cfg, arg_t *args) {
 	if (!args) {
 		fprintf(stderr, "No args to an arged function. points_random");
 		return INT_MIN;
@@ -110,7 +110,7 @@ int points_random(curve_t *curve, config_t *config, arg_t *args) {
     }
  */
 
-int points_trial(curve_t *curve, config_t *config, arg_t *args) {
+int points_trial(curve_t *curve, config_t *cfg, arg_t *args) {
 	// TODO stack code!!!
 	if (!args) {
 		fprintf(stderr, "No args to an arged function. points_trial");
@@ -149,7 +149,7 @@ int points_trial(curve_t *curve, config_t *config, arg_t *args) {
 	return 1;
 }
 
-int points_prime(curve_t *curve, config_t *config, arg_t *args) {
+int points_prime(curve_t *curve, config_t *cfg, arg_t *args) {
 	// TODO stack code!!!
 	points_free_deep(&curve->points, curve->npoints);
 

@@ -21,7 +21,7 @@
  * @param args unused
  * @return state diff
  */
-int field_random(curve_t *curve, config_t *config, arg_t *args);
+int field_random(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -34,7 +34,7 @@ int field_random(curve_t *curve, config_t *config, arg_t *args);
  * @param args unused
  * @return state diff
  */
-int field_input(curve_t *curve, config_t *config, arg_t *args);
+int field_input(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  *

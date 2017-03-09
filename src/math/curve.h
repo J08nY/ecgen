@@ -22,7 +22,7 @@
  * @param args unused
  * @return state diff
  */
-int curve_any(curve_t *curve, config_t *config, arg_t *args);
+int curve_any(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -34,7 +34,7 @@ int curve_any(curve_t *curve, config_t *config, arg_t *args);
  * @param args unused
  * @return state diff
  */
-int curve_nonzero(curve_t *curve, config_t *config, arg_t *args);
+int curve_nonzero(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -47,7 +47,7 @@ int curve_nonzero(curve_t *curve, config_t *config, arg_t *args);
  * @param args unused
  * @return state diff
  */
-int curve_seed(curve_t *curve, config_t *config, arg_t *args);
+int curve_seed(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  * Serializes curve parameters into a t_VEC:

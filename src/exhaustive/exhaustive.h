@@ -20,7 +20,7 @@
  * @param end_offset
  * @return
  */
-int exhaustive_gen(curve_t *curve, config_t *config, gen_t generators[],
+int exhaustive_gen(curve_t *curve, config_t *cfg, gen_t generators[],
                    arg_t *argss[], int start_offset, int end_offset);
 
 /**

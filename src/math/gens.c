@@ -22,13 +22,13 @@ int gens_put(curve_t *curve, GEN generators, long len) {
 	return 1;
 }
 
-int gens_any(curve_t *curve, config_t *config, arg_t *args) {
+int gens_any(curve_t *curve, config_t *cfg, arg_t *args) {
 	GEN generators = ellff_get_gens(curve->curve);
 	long len = glength(generators);
 	return gens_put(curve, generators, len);
 }
 
-int gens_one(curve_t *curve, config_t *config, arg_t *args) {
+int gens_one(curve_t *curve, config_t *cfg, arg_t *args) {
 	pari_sp ltop = avma;
 	GEN generators = ellff_get_gens(curve->curve);
 	long len = glength(generators);

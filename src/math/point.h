@@ -68,7 +68,7 @@ void points_free_deep(point_t ***points, size_t npoints);
  * @param args unused
  * @return state diff
  */
-int point_random(curve_t *curve, config_t *config, arg_t *args);
+int point_random(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -78,7 +78,7 @@ int point_random(curve_t *curve, config_t *config, arg_t *args);
  * @param args size_t number of points to generate
  * @return state diff
  */
-int points_random(curve_t *curve, config_t *config, arg_t *args);
+int points_random(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -96,7 +96,7 @@ int points_random(curve_t *curve, config_t *config, arg_t *args);
  * @param args
  * @return state diff
  */
-int points_trial(curve_t *curve, config_t *config, arg_t *args);
+int points_trial(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -110,6 +110,6 @@ int points_trial(curve_t *curve, config_t *config, arg_t *args);
  * @param args
  * @return state diff
  */
-int points_prime(curve_t *curve, config_t *config, arg_t *args);
+int points_prime(curve_t *curve, config_t *cfg, arg_t *args);
 
 #endif  // ECGEN_POINT_H

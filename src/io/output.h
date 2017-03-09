@@ -18,7 +18,7 @@
  * @param config
  * @return
  */
-char *output_scsv(curve_t *curve, config_t *config);
+char *output_scsv(curve_t *curve, config_t *cfg);
 
 /**
  *
@@ -26,14 +26,14 @@ char *output_scsv(curve_t *curve, config_t *config);
  * @param curve
  * @param config
  */
-void output_fcsv(FILE *out, curve_t *curve, config_t *config);
+void output_fcsv(FILE *out, curve_t *curve, config_t *cfg);
 
 /**
  *
  * @param curve
  * @param config
  */
-void output_csv(curve_t *curve, config_t *config);
+void output_csv(curve_t *curve, config_t *cfg);
 
 /**
  *
@@ -41,7 +41,7 @@ void output_csv(curve_t *curve, config_t *config);
  * @param config
  * @return
  */
-char *output_sjson(curve_t *curve, config_t *config);
+char *output_sjson(curve_t *curve, config_t *cfg);
 
 /**
  *
@@ -49,14 +49,14 @@ char *output_sjson(curve_t *curve, config_t *config);
  * @param curve
  * @param config
  */
-void output_fjson(FILE *out, curve_t *curve, config_t *config);
+void output_fjson(FILE *out, curve_t *curve, config_t *cfg);
 
 /**
  *
  * @param curve
  * @param config
  */
-void output_json(curve_t *curve, config_t *config);
+void output_json(curve_t *curve, config_t *cfg);
 
 /**
  *
@@ -64,7 +64,7 @@ void output_json(curve_t *curve, config_t *config);
  * @param config
  * @return
  */
-char *(*output_s)(curve_t *curve, config_t *config);
+char *(*output_s)(curve_t *curve, config_t *cfg);
 
 /**
  *
@@ -72,14 +72,14 @@ char *(*output_s)(curve_t *curve, config_t *config);
  * @param curve
  * @param config
  */
-void (*output_f)(FILE *out, curve_t *curve, config_t *config);
+void (*output_f)(FILE *out, curve_t *curve, config_t *cfg);
 
 /**
  *
  * @param curve
  * @param config
  */
-void (*output_o)(curve_t *curve, config_t *config);
+void (*output_o)(curve_t *curve, config_t *cfg);
 
 /**
  *

@@ -43,19 +43,19 @@ GEN seed_stoi(const char *cstr) {
 	return gerepilecopy(ltop, seed);
 }
 
-int seed_random(curve_t *curve, config_t *config, arg_t *args) {
+int seed_random(curve_t *curve, config_t *cfg, arg_t *args) {
 	curve->seed = seed_new();
 	curve->seed->seed = random_int(160);
 	return 1;
 }
 
-int seed_argument(curve_t *curve, config_t *config, arg_t *args) {
+int seed_argument(curve_t *curve, config_t *cfg, arg_t *args) {
 	curve->seed = seed_new();
-	curve->seed->seed = seed_stoi(config->seed);
+	curve->seed->seed = seed_stoi(cfg->seed);
 	return 1;
 }
 
-int seed_input(curve_t *curve, config_t *config, arg_t *args) {
+int seed_input(curve_t *curve, config_t *cfg, arg_t *args) {
 	pari_sp ltop = avma;
 
 	GEN str = input_string("seed:");

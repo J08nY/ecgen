@@ -11,7 +11,7 @@
 FILE *out;
 FILE *debug;
 
-char *output_scsv(curve_t *curve, config_t *config) {
+char *output_scsv(curve_t *curve, config_t *cfg) {
 	pari_sp ltop = avma;
 	GEN vector = curve_params(curve);
 
@@ -48,23 +48,21 @@ char *output_scsv(curve_t *curve, config_t *config) {
 	return result;
 }
 
-void output_fcsv(FILE *out, curve_t *curve, config_t *config) {
-	char *string = output_scsv(curve, config);
+void output_fcsv(FILE *out, curve_t *curve, config_t *cfg) {
+	char *string = output_scsv(curve, cfg);
 	fprintf(out, "%s\n", string);
 	free(string);
 }
 
-void output_csv(curve_t *curve, config_t *config) {
-	output_fcsv(out, curve, config);
-}
+void output_csv(curve_t *curve, config_t *cfg) { output_fcsv(out, curve, cfg); }
 
-JSON_Value *output_jjson(curve_t *curve, config_t *config) {
+JSON_Value *output_jjson(curve_t *curve, config_t *cfg) {
 	pari_sp ltop = avma;
 	// root object/value is curve
 	JSON_Value *root_value = json_value_init_object();
 	JSON_Object *root_object = json_value_get_object(root_value);
 
-	switch (config->field) {
+	switch (cfg->field) {
 		case FIELD_PRIME: {
 			char *prime = pari_sprintf("%P#x", curve->field);
 			json_object_dotset_string(root_object, "field.p", prime);
@@ -168,22 +166,22 @@ JSON_Value *output_jjson(curve_t *curve, config_t *config) {
 	return root_value;
 }
 
-char *output_sjson(curve_t *curve, config_t *config) {
-	JSON_Value *root_value = output_jjson(curve, config);
+char *output_sjson(curve_t *curve, config_t *cfg) {
+	JSON_Value *root_value = output_jjson(curve, cfg);
 	char *result = json_serialize_to_string_pretty(root_value);
 	json_value_free(root_value);
 
 	return result;
 }
 
-void output_fjson(FILE *out, curve_t *curve, config_t *config) {
-	char *s = output_sjson(curve, config);
+void output_fjson(FILE *out, curve_t *curve, config_t *cfg) {
+	char *s = output_sjson(curve, cfg);
 	fprintf(out, "%s\n", s);
 	json_free_serialized_string(s);
 }
 
-void output_json(curve_t *curve, config_t *config) {
-	output_fjson(out, curve, config);
+void output_json(curve_t *curve, config_t *cfg) {
+	output_fjson(out, curve, cfg);
 }
 
 void output_init(config_t *cfg) {

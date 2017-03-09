@@ -11,7 +11,7 @@ int order_any(curve_t *curve, config_t *cfg, arg_t *args) {
 
 int order_smallfact(curve_t *curve, config_t *cfg, arg_t *args) {
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. points_random");
+		fprintf(stderr, "No args to an arged function. order_smallfact");
 		return INT_MIN;
 	}
 	pari_ulong smallfact = *(pari_ulong *)args->args;

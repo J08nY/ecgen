@@ -36,6 +36,8 @@ typedef struct config_t {
 	bool cm;
 	char *order;
 	bool koblitz;
+	bool cofactor;
+	long cofactor_bound;
 	bool from_seed;
 	char *seed;
 	bool unique;

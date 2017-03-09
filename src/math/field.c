@@ -19,24 +19,24 @@ GEN field_binaryr(long bits) {
 	}
 }
 
-int field_random(curve_t *curve, config_t *config, arg_t *args) {
-	switch (config->field) {
+int field_random(curve_t *curve, config_t *cfg, arg_t *args) {
+	switch (cfg->field) {
 		case FIELD_PRIME:
-			curve->field = field_primer(config->bits);
+			curve->field = field_primer(cfg->bits);
 			return 1;
 		case FIELD_BINARY:
-			curve->field = field_binaryr(config->bits);
+			curve->field = field_binaryr(cfg->bits);
 			return 1;
 		default:
 			return INT_MIN; /* NOT REACHABLE */
 	}
 }
 
-int field_input(curve_t *curve, config_t *config, arg_t *args) {
+int field_input(curve_t *curve, config_t *cfg, arg_t *args) {
 	pari_sp ltop = avma;
-	switch (config->field) {
+	switch (cfg->field) {
 		case FIELD_PRIME: {
-			GEN p = input_prime("p:", config->bits);
+			GEN p = input_prime("p:", cfg->bits);
 			if (equalii(p, gen_m1)) {
 				avma = ltop;
 				return 0;
@@ -67,8 +67,8 @@ int field_input(curve_t *curve, config_t *config, arg_t *args) {
 				return 0;
 			}
 
-			GEN v = gtovec0(gen_0, config->bits + 1);
-			gel(v, config->bits + 1) = gen_1;
+			GEN v = gtovec0(gen_0, cfg->bits + 1);
+			gel(v, cfg->bits + 1) = gen_1;
 			if (gsigne(e1) == 1) gel(v, itos(e1) + 1) = gen_1;
 			if (gsigne(e2) == 1) gel(v, itos(e2) + 1) = gen_1;
 			if (gsigne(e3) == 1) gel(v, itos(e3) + 1) = gen_1;

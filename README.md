@@ -28,7 +28,7 @@ Tool for generating Elliptic curve domain parameters.
  
 #### Examples
 
-Generate a prime field, prime order, uniquely generated 192-bit curve, don't ask for input try random values:
+Generate a prime field, uniquely generated 192-bit curve, don't ask for input try random values:
 
     > ecgen --fp -r -p -u 192
     
@@ -42,6 +42,34 @@ Generate invalid curves to a file, for a given prime field 192-bit curve:
     p: <input prime>
     a: <input a param>
     b: <input b param>
+
+Generate a prime field, uniquely generated, prime order curve, don't ask for input try random values, verbose output *(show with example output here)*:
+
+    > ecgen --fp -r -p -u -v 128
+    +++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-+++++++
+    {
+        "field": {
+            "p": "0xa5393890f26881d94ad670171ce67b79"
+        },
+        "a": "0x9c083973bdca36ea71078bbaabab4947",
+        "b": "0x3d986a0206bfbe1ba62c858df54385e9",
+        "order": "0xa5393890f26881d9394aece3bc2d9b47",
+        "generators": [
+            {
+                "x": "0x5acc17d6a44e8f8d30e877f4fef8712f",
+                "y": "0x6864dd64e80609abd1797c8de1febb9f",
+                "order": "0xa5393890f26881d9394aece3bc2d9b47",
+                "cofactor": "0x1"
+            }
+        ],
+        "points": [
+            {
+                "x": "0x9c7878930ddf5bfb705102f652754e7",
+                "y": "0x4b15a7bb808cb3579fd4c2ce42f628de",
+                "order": "0xa5393890f26881d9394aece3bc2d9b47"
+            }
+        ]
+    }
 
 
 ### Generation methods

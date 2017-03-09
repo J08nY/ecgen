@@ -20,6 +20,6 @@ arg_t *arg_new();
  * @brief
  * @param arg
  */
-void arg_free (arg_t **arg);
+void arg_free(arg_t **arg);
 
 #endif  // ECGEN_ARG_H

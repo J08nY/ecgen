@@ -38,7 +38,7 @@ void seed_free(seed_t **seed);
  * @param args
  * @return
  */
-int seed_random(curve_t *curve, config_t *config, arg_t *args);
+int seed_random(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  *
@@ -47,7 +47,7 @@ int seed_random(curve_t *curve, config_t *config, arg_t *args);
  * @param args
  * @return
  */
-int seed_argument(curve_t *curve, config_t *config, arg_t *args);
+int seed_argument(curve_t *curve, config_t *cfg, arg_t *args);
 
 /**
  *
@@ -56,6 +56,6 @@ int seed_argument(curve_t *curve, config_t *config, arg_t *args);
  * @param args
  * @return
  */
-int seed_input(curve_t *curve, config_t *config, arg_t *args);
+int seed_input(curve_t *curve, config_t *cfg, arg_t *args);
 
 #endif  // ECGEN_SEED_H
