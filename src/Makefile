@@ -9,7 +9,7 @@ CC ?= gcc
 GP2C = gp2c
 
 CFLAGS = -O3 -Wall
-LDFLAGS = -L../lib
+LDFLAGS = -L../lib/parson -L../lib/sha1
 
 GP_CFLAGS = -O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC
 GPFLAGS = -g -i4

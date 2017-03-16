@@ -5,7 +5,12 @@
 
 # Default target first
 all:
+	+$(MAKE) -C lib all
 	+$(MAKE) -C src all
+
+clean:
+	+$(MAKE) -C lib clean
+	+$(MAKE) -C src clean
 
 docs:
 	doxygen Doxyfile
@@ -26,7 +31,7 @@ help:
 
 .PHONY: all docs help
 
-ifeq (, $(filter all docs help, $(MAKECMDGOALS)))
+ifeq (, $(filter all clean docs help, $(MAKECMDGOALS)))
 # Just pass all targets to a Makefile in src
 $(MAKECMDGOALS):
 	+$(MAKE) -C src $@
