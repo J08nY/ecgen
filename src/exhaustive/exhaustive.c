@@ -111,12 +111,11 @@ int exhaustive_gen(curve_t *curve, config_t *cfg, gen_t generators[],
 		tops[state - start_offset] = avma;
 
 		int diff = generators[state](curve, cfg, argss ? argss[state] : NULL);
-		state += diff;
-
 		if (diff == INT_MIN) {
 			fprintf(stderr, "Error generating a curve. %i\n", state);
 			return 0;
 		}
+		state += diff;
 
 		if (diff <= 0) {
 			avma = tops[state - start_offset];

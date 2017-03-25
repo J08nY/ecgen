@@ -114,6 +114,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			if (arg) {
 				cfg->cofactor_bound = strtol(arg, NULL, 10);
 			}
+			break;
 		case OPT_INVALID:
 			cfg->invalid = true;
 			break;

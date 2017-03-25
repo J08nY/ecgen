@@ -16,24 +16,32 @@ int order_smallfact(curve_t *curve, config_t *cfg, arg_t *args) {
 	}
 	pari_ulong smallfact = *(pari_ulong *)args->args;
 	pari_sp ltop = avma;
-	curve->order = ellsea(curve->curve, smallfact);
-	obj_insert_shallow(curve->curve, 1, curve->order);
-	if (gequal0(curve->order)) {
+	GEN fact = mpfact(smallfact);
+	if (lgefint(fact) > 3) {
+		fprintf(stderr, "Cofactor too large.");
+		return INT_MIN;
+	}
+
+	GEN order = ellsea(curve->curve, itou(fact));
+	if (gequal0(order) || gequal1(gcdii(order, fact))) {
 		avma = ltop;
 		return -4;
 	} else {
+		curve->order = order;
+		obj_insert_shallow(curve->curve, 1, curve->order);
 		return 1;
 	}
 }
 
 int order_prime(curve_t *curve, config_t *cfg, arg_t *args) {
 	pari_sp ltop = avma;
-	curve->order = ellsea(curve->curve, 1);
-	obj_insert_shallow(curve->curve, 1, curve->order);
-	if (gequal0(curve->order) || !(isprime(curve->order))) {
+	GEN order = ellsea(curve->curve, 1);
+	if (gequal0(order) || !(isprime(order))) {
 		avma = ltop;
 		return -4;
 	} else {
+		curve->order = order;
+		obj_insert_shallow(curve->curve, 1, curve->order);
 		return 1;
 	}
 }
