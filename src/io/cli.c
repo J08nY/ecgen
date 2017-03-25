@@ -45,7 +45,7 @@ struct argp_option options[] = {
 	{"order",    OPT_ORDER,    "ORDER",  0,                 "Generate a curve with given order (using Complex Multiplication).",                    2},
 	{"koblitz",  OPT_KOBLITZ,  0,        0,                 "Generate a Koblitz curve (a = 0).",                                                    2},
 	{"unique",   OPT_UNIQUE,   0,        0,                 "Generate a curve with only one generator.",                                            2},
-	{"points",   OPT_POINTS,   "TYPE",   0,                 "Generate points of given type (random/prime).",                                        2},
+	{"points",   OPT_POINTS,   "TYPE",   0,                 "Generate points of given type (random/prime/none).",                                        2},
 	{"count",    OPT_COUNT,    "COUNT",  0,                 "Generate multiple curves.",                                                            2},
 	{0,          0,            0,        0,                 "Input/Output options:",                                                                3},
 	{"format",   OPT_FORMAT,   "FORMAT", 0,                 "Format to output in. One of [csv,json], default is json.",                             3},
@@ -138,6 +138,8 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 					cfg->points.amount = (size_t)pts;
 				} else if (strstr(arg, "prime")) {
 					cfg->points.type = POINTS_PRIME;
+				} else if (strstr(arg, "none")) {
+					cfg->points.type = POINTS_NONE;
 				} else {
 					argp_failure(state, 1, 0, "Unknow point type");
 				}

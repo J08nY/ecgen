@@ -75,6 +75,9 @@ void exhaustive_ginit(gen_t *generators, config_t *cfg) {
 		case POINTS_PRIME:
 			generators[OFFSET_POINTS] = &points_prime;
 			break;
+		case POINTS_NONE:
+			generators[OFFSET_POINTS] = &gen_skip;
+			break;
 	}
 }
 
