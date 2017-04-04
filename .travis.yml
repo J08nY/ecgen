@@ -24,10 +24,6 @@ before_install:
   - sudo dpkg --force-all -i libpari-gmp-tls5_2.9.1-1_amd64.deb libpari-dev_2.9.1-1_amd64.deb
 
 script:
-  - cd lib/parson
-  - make libparson.a
-  - cd ../..
-  - mv lib/parson/libparson.a lib/libparson.a
   - make
 
 deploy:
