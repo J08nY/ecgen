@@ -26,6 +26,17 @@ GEN input_i(const char *prompt, long bits) {
 		;
 
 	pari_sp ltop = avma;
+	if (len <= 3 || line[0] != '0' && (line[1] != 'x' || line[1] != 'X')) {
+		char *new_line = realloc(line, (size_t)(len + 2));
+		if (!new_line) {
+			perror("Couldn't alloc.");
+			exit(1);
+		}
+		memmove(new_line + 2, new_line, (size_t)len);
+		new_line[0] = '0';
+		new_line[1] = 'x';
+		line = new_line;
+	}
 	GEN in = strtoi(line);
 	free(line);
 
