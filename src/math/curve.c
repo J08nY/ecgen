@@ -24,6 +24,12 @@ curve_t *curve_copy(curve_t *src, curve_t *dest) {
 	if (src->b) dest->b = gcopy(src->b);
 	if (src->curve) dest->curve = gcopy(src->curve);
 	if (src->order) dest->order = gcopy(src->order);
+	if (src->generators) {
+		dest->generators = points_new(src->ngens);
+		dest->generators =
+		    points_copy(src->generators, dest->generators, src->ngens);
+		dest->ngens = src->ngens;
+	}
 	if (src->points) {
 		dest->points = points_new(src->npoints);
 		dest->points = points_copy(src->points, dest->points, src->npoints);
