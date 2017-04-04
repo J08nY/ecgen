@@ -201,7 +201,8 @@ int invalid_do(config_t *cfg) {
 	invalid_ginit(gen, cfg);
 
 	// actually generate the curve
-	if (!exhaustive_gen(curve, cfg, gen, argss, OFFSET_FIELD, OFFSET_POINTS)) {
+	if (!exhaustive_gen_retry(curve, cfg, gen, argss, OFFSET_FIELD,
+	                          OFFSET_POINTS, 1)) {
 		curve_free(&curve);
 		return 1;
 	}

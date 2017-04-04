@@ -99,15 +99,19 @@ void exhaustive_ainit(arg_t **argss, config_t *cfg) {
 	}
 }
 
-int exhaustive_gen(curve_t *curve, config_t *cfg, gen_t generators[],
-                   arg_t *argss[], int start_offset, int end_offset) {
+int exhaustive_gen_retry(curve_t *curve, config_t *cfg, gen_t generators[],
+                         arg_t *argss[], int start_offset, int end_offset,
+                         int retry) {
 	if (start_offset == end_offset) {
 		return 1;
 	}
 	if (start_offset > end_offset) {
-		return 0;
+		return -1;
 	}
-	pari_sp tops[end_offset - start_offset];
+	int num_gens = end_offset - start_offset;
+	pari_sp tops[num_gens];
+	int tries[num_gens];
+	memset(tries, 0, sizeof(int) * num_gens);
 
 	int state = start_offset;
 	while (state < end_offset) {
@@ -115,8 +119,18 @@ int exhaustive_gen(curve_t *curve, config_t *cfg, gen_t generators[],
 
 		int diff = generators[state](curve, cfg, argss ? argss[state] : NULL);
 		if (diff == INT_MIN) {
-			fprintf(stderr, "Error generating a curve. %i\n", state);
+			fprintf(stderr, "Error generating a curve. state = %i\n", state);
 			return 0;
+		}
+		if (diff == 0) {
+			int tried = ++tries[state - start_offset];
+			if (retry && tried >= retry) {
+				fprintf(stderr, "Reached retry limit: %i, state = %i\n", retry,
+				        state);
+				return 0;
+			}
+		} else if (diff > 0) {
+			tries[state - start_offset] = 0;
 		}
 		state += diff;
 
@@ -141,6 +155,12 @@ int exhaustive_gen(curve_t *curve, config_t *cfg, gen_t generators[],
 	return 1;
 }
 
+int exhaustive_gen(curve_t *curve, config_t *cfg, gen_t generators[],
+                   arg_t *argss[], int start_offset, int end_offset) {
+	return exhaustive_gen_retry(curve, cfg, generators, argss, start_offset,
+	                            end_offset, 0);
+}
+
 void exhaustive_quit(arg_t *argss[]) {
 	equation_quit();
 	for (size_t i = 0; i < OFFSET_END; ++i) {
@@ -158,8 +178,8 @@ int exhaustive_do(config_t *cfg) {
 
 	for (long i = 0; i < cfg->count; ++i) {
 		curve_t *curve = curve_new();
-		if (!exhaustive_gen(curve, cfg, generators, argss, OFFSET_SEED,
-		                    OFFSET_END)) {
+		if (!exhaustive_gen_retry(curve, cfg, generators, argss, OFFSET_SEED,
+		                          OFFSET_END, 10)) {
 			curve_free(&curve);
 			return 1;
 		}

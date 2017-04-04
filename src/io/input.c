@@ -18,6 +18,9 @@ GEN input_i(const char *prompt, long bits) {
 	size_t n = 0;
 
 	ssize_t len = getdelim(&line, &n, delim, in);
+	if (len <= 0) {
+		return gen_m1;
+	}
 	if (len == 1) {
 		free(line);
 		return gen_m1;
@@ -26,7 +29,7 @@ GEN input_i(const char *prompt, long bits) {
 		;
 
 	pari_sp ltop = avma;
-	if (len <= 3 || line[0] != '0' && (line[1] != 'x' || line[1] != 'X')) {
+	if (len <= 3 || (line[0] != '0' && (line[1] != 'x' || line[1] != 'X'))) {
 		char *new_line = realloc(line, (size_t)(len + 2));
 		if (!new_line) {
 			perror("Couldn't alloc.");

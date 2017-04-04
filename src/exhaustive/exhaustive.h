@@ -13,6 +13,21 @@
 /**
  *
  * @param curve
+ * @param cfg
+ * @param generators
+ * @param argss
+ * @param start_offset
+ * @param end_offset
+ * @param retry
+ * @return
+ */
+int exhaustive_gen_retry(curve_t *curve, config_t *cfg, gen_t generators[],
+                         arg_t *argss[], int start_offset, int end_offset,
+                         int retry);
+
+/**
+ *
+ * @param curve
  * @param config
  * @param generators
  * @param argss

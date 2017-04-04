@@ -17,7 +17,7 @@ int order_smallfact(curve_t *curve, config_t *cfg, arg_t *args) {
 	pari_ulong smallfact = *(pari_ulong *)args->args;
 	pari_sp ltop = avma;
 	GEN fact = mpfact(smallfact);
-	if  (lgefint(fact) > 3) {
+	if (lgefint(fact) > 3) {
 		smallfact = 0;
 	} else {
 		smallfact = itou(fact);
