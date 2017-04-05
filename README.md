@@ -6,26 +6,37 @@ Tool for generating Elliptic curve domain parameters.
 
 	ecgen --fp/--f2m BITS
 
- - `--fp`/`--f2m` specifies the field type (prime/binary).
-<br/><br/>
- - `-r/--random` requests a random curve to be generated.
- - `-s/--seed=[SEED]` requests to generate a curve based on the ANSI X9.62 generation process and seed `SEED`.
- - `-k/--koblitz` requests to generate a Koblitz curve.
- - `-p/--prime` requests the curve order to be prime.
- - `-n/--order=ORDER` requests the curve to have a (prime) order `ORDER`.
- - `-i/--invalid` requests that invalid curves of small prime orders be generated.
- - `-c/--count=COUNT` requests multiple curves to be generated.
- - `--points=TYPE` requests points of given type (prime/random).
- - `-u/--unique` requests the curve to be uniquely generated (have one generator).
-<br/><br/>
- - `-v/--verbose=[FILE]` turns on verbose output (to file).
- - `-t/--format=[FORMAT]` sets format to output in. One of \[csv,json\], default is json.
- - `-f/--input=FILE` reads input from `FILE`.
- - `-o/--output=FILE` writes output to `FILE`.
- - `-a/--append` appends to output file (doesn't overwrite it).
-<br/><br/>
- - `-d/--datadir=DIR` specifies the PARI/GP datadir containing the `seadata` package.
- 
+#### Field specification
+
+ - `--f2m`                  Binary field.
+ - `--fp`                   Prime field.
+
+#### Generation options
+
+ - `-c`, `--count=COUNT`    Generate multiple curves.
+ - `-i`, `--invalid`        Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).
+ - `-k`, `--cofactor=BOUND` Generate a curve with cofactor up to `BOUND`
+ - `-K`, `--koblitz`        Generate a Koblitz curve (a = 0).
+ - `-n`, `--order=ORDER`    Generate a curve with given `ORDER` (using Complex Multiplication).
+ - `-p`, `--prime`          Generate a curve with prime order.
+ - `--points=TYPE`          Generate points of given `TYPE` (random/prime/none).
+ -`r`, `--random`           Generate a random curve (using Random approach).
+ -`s`, `--seed[=SEED]`      Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
+ -`u`, `--unique`           Generate a curve with only one generator.
+
+#### IO options
+
+ - `-a`, `--append`         Append to output file (don't overwrite).
+ - `-f`, `--input=FILE`     Input from `FILE`.
+ - `-o`, `--output=FILE`    Output into `FILE`. Overwrites any existing file!
+ - `-t`, `--format=FORMAT`  Format to output in. One of [csv,json], default is json.
+ - `-v`, `--verbose[=FILE]` Verbose logging (to stdout or `FILE`).
+
+#### Other
+
+ - `-d`, `--data-dir=DIR`   Set PARI/GP data directory (containing seadata package).
+ - `-m`, `--memory=SIZE`    Use PARI stack of `SIZE` (can have suffix k/m/g).
+
 #### Examples
 
 Generate a prime field, uniquely generated 192-bit curve, don't ask for input try random values:
@@ -73,6 +84,7 @@ Generate a prime field, uniquely generated, prime order curve, don't ask for inp
 
 
 ### Generation methods
+
 Three different EC curve parameters generation methods are implemented.
 
 [Efficient Algorithms for Generating Elliptic Curves over Finite Fields Suitable for Use in Cryptography - [Baier]](https://www.cdc.informatik.tu-darmstadt.de/reports/reports/harald_baier.diss.pdf)
@@ -80,6 +92,7 @@ Three different EC curve parameters generation methods are implemented.
 [Generation Methods of Elliptic Curves - [Baier, Buchmann]](https://www.ipa.go.jp/security/enc/CRYPTREC/fy15/doc/1030_Buchmann.evaluation.pdf)
 
 ##### Random approach
+
  - Generates field and equation parameters:
    - randomly
    - using ANSI X9.62 verifiably random method(from seed), until a curve with requested properties appears.
@@ -90,6 +103,7 @@ Three different EC curve parameters generation methods are implemented.
    - `-u/--unique` generates a uniquely generated curve (with one generator/cyclic group).
 
 ##### Invalid curve generation
+
  - Generates *invalid* curves for a given curve.
  - These curves have the same field, and *A* parameter in the short Weierstrass equation.
  - Multiplication using some(most?) scalar multiplication algorithm proceeds the same way multiplication on the input curve would.
@@ -99,6 +113,7 @@ Three different EC curve parameters generation methods are implemented.
  - [Practical Invalid Curve Attacks on TLS-ECDH - [Jager, Schwenk, Somorovksy]](http://euklid.org/pdf/ECC_Invalid_Curve.pdf)
 
 ##### Complex multiplication
+
  - Capable of generating a curve of a given (prime) order.
  - Generates a subset of all Elliptic Curves over a given field.
  - Used with the `-n / --order` option
@@ -108,7 +123,6 @@ Three different EC curve parameters generation methods are implemented.
 
 ### Build
 
-
 	git clone https://github.com/J08nY/ecgen.git
 	cd ecgen
 	make
@@ -116,13 +130,11 @@ Three different EC curve parameters generation methods are implemented.
 ### Requirements
 
  - PARI/GP
- - parson
 
 ecgen uses the [PARI/GP](http://pari.math.u-bordeaux.fr/) library for elliptic
 curve arithmetic and it's SEA point counting algorithm implementation. It also requires the 
 additional [seadata](http://pari.math.u-bordeaux.fr/packages.html) package (seadata and seadata-big recommended for large curves).
 
-[parson](https://github.com/kgabis/parson) is used to output curve parameters in JSON format.
 
 ### License
 

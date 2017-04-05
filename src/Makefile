@@ -7,8 +7,14 @@
 
 CC ?= gcc
 
-CFLAGS = -O3 -Wall
-LDFLAGS = -L../lib/parson -L../lib/sha1
+CFLAGS = -Wall
+DEBUG ?= 1
+ifeq (DEBUG, 1)
+    CFLAGS += -g -DDEBUG
+else
+    CFLAGS += -O3 -DNDEBUG
+endif
+LDFLAGS = -L../lib/parson -L../lib/sha1 -L../lib/pari
 
 INCLUDES = -I. -I../lib
 LIBS = -lrt -lpari -lparson
