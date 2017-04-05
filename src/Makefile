@@ -23,12 +23,12 @@ ECGEN_OBJ = $(patsubst %.c,%.o, $(ECGEN_SRC))
 ECONVERT_SRC = econvert.c $(wildcard */*.c)
 ECONVERT_OBJ = $(patsubst %.c,%.o, $(ECONVERT_SRC))
 
-SRC = $(ECGEN_SRC) $(ECONVERT_SRC)
+SRC = $(wildcard *.c) $(wildcard */*.c)
 HDR = $(wildcard */*.h)
 
 ####
 
-all: ecgen
+all: ecgen econvert
 
 ecgen: ecgen.o $(ECGEN_OBJ)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) $(LIBS)
@@ -44,6 +44,8 @@ econvert: econvert.o $(ECONVERT_OBJ)
 ####
 
 clean-all: clean
+	rm ../ecgen
+	rm ../econvert
 
 clean:
 	find . -type f -name '*.o' -exec rm {} +
