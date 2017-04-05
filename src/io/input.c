@@ -21,14 +21,13 @@ static GEN input_i(const char *prompt, long bits) {
 	if (len <= 0) {
 		return gen_m1;
 	}
-	if (len == 1) {
+	if (len == 1 && !feof(in)) {
 		free(line);
 		return gen_m1;
 	}
 	for (size_t i = 0, j = 0; (line[j] = line[i]); j += !isspace(line[i++]))
 		;
 
-	pari_sp ltop = avma;
 	if (len <= 3 || (line[0] != '0' && (line[1] != 'x' || line[1] != 'X'))) {
 		char *new_line = realloc(line, (size_t)(len + 2));
 		if (!new_line) {
@@ -38,8 +37,15 @@ static GEN input_i(const char *prompt, long bits) {
 		memmove(new_line + 2, new_line, (size_t)len);
 		new_line[0] = '0';
 		new_line[1] = 'x';
+		if (!feof(in)) {
+			new_line[len + 1] = 0;
+		} else {
+			new_line[len + 2] = 0;
+		}
 		line = new_line;
 	}
+
+	pari_sp ltop = avma;
 	GEN in = strtoi(line);
 	free(line);
 
