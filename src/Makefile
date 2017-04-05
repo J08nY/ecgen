@@ -6,13 +6,9 @@
 ####
 
 CC ?= gcc
-GP2C = gp2c
 
 CFLAGS = -O3 -Wall
 LDFLAGS = -L../lib/parson -L../lib/sha1
-
-GP_CFLAGS = -O3 -Wall -fomit-frame-pointer -fno-strict-aliasing -fPIC
-GPFLAGS = -g -i4
 
 INCLUDES = -I. -I../lib
 LIBS = -lrt -lpari -lparson
@@ -21,44 +17,36 @@ LIBS = -lrt -lpari -lparson
 
 VPATH = cm:invalid:io:exhaustive:math
 
-GP =
-GPC = $(addsuffix .c, $(GP))
-GPO = $(addsuffix .o, $(GP))
-GPH = $(addsuffix .h, $(GP))
+ECGEN_SRC = ecgen.c $(wildcard */*.c)
+ECGEN_OBJ = $(patsubst %.c,%.o, $(ECGEN_SRC))
 
-SRC = ecgen.c $(wildcard */*.c)
-OBJ = $(patsubst %.c,%.o, $(SRC))
-HDR = $(wildcard *.h) $(wildcard */*.h)
+ECONVERT_SRC = econvert.c $(wildcard */*.c)
+ECONVERT_OBJ = $(patsubst %.c,%.o, $(ECONVERT_SRC))
+
+SRC = $(ECGEN_SRC) $(ECONVERT_SRC)
+HDR = $(wildcard */*.h)
 
 ####
 
 all: ecgen
 
-ecgen: ecgen.o $(GPO) $(OBJ)
+ecgen: ecgen.o $(ECGEN_OBJ)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) $(LIBS)
 	mv ecgen ..
 
-gp2c: $(GPC) $(GPH)
+econvert: econvert.o $(ECONVERT_OBJ)
+	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) $(LIBS)
+	mv econvert ..
 
-$(GPO): $(GPC) $(GPH)
-	$(CC) $(GP_CFLAGS) $(INCLUDES) -c -o $@ $< $(LDFLAGS) $(LIBS)
-
-%.o: %.c $(GPH)
+%.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
-
-%.h %.c: %.gp
-	$(GP2C) $(GPFLAGS) gp/$*.gp  2>/dev/null | clang-format | awk 'BEGIN{print "#ifndef GP_H" > "gp.h"; print "#define GP_H" >> "gp.h";} { if(found) print >> "gp.c"; else print >> "gp.h"} /End of prototype/{found=1; print "#include \"gp.h\"" > "gp.c"; print "#endif //GP_H" >> "gp.h"}'
 
 ####
 
-clean-all: clean clean-gp
+clean-all: clean
 
 clean:
 	find . -type f -name '*.o' -exec rm {} +
-
-clean-gp:
-	rm -f $(GPH)
-	rm -f $(GPC)
 
 format:
 	clang-format -i $(SRC)
