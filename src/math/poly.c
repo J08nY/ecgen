@@ -2706,7 +2706,7 @@ static polynomial_t ansi_pentanomials[] = {
     {1995, 1, 2, 37},   {1997, 1, 2, 835},  {1998, 1, 3, 1290},
     {2000, 1, 2, 981}};
 
-int compare_poly(const void *a, const void *b) {
+static int compare_poly(const void *a, const void *b) {
 	const polynomial_t *one = a;
 	const polynomial_t *other = b;
 	return (one->m - other->m);

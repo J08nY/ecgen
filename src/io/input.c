@@ -10,7 +10,7 @@
 FILE *in;
 int delim;
 
-GEN input_i(const char *prompt, long bits) {
+static GEN input_i(const char *prompt, long bits) {
 	if (prompt && in == stdin) {
 		fprintf(out, "%s ", prompt);
 	}

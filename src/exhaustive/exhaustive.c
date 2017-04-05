@@ -13,7 +13,7 @@
 #include "math/point.h"
 #include "seed.h"
 
-void exhaustive_ginit(gen_t *generators, config_t *cfg) {
+static void exhaustive_ginit(gen_t *generators, config_t *cfg) {
 	if (cfg->from_seed) {
 		if (cfg->seed) {
 			generators[OFFSET_SEED] = &seed_argument;
@@ -81,7 +81,7 @@ void exhaustive_ginit(gen_t *generators, config_t *cfg) {
 	}
 }
 
-void exhaustive_ainit(arg_t **argss, config_t *cfg) {
+static void exhaustive_ainit(arg_t **argss, config_t *cfg) {
 	for (size_t i = 0; i < OFFSET_END; ++i) {
 		argss[i] = NULL;
 	}
@@ -161,7 +161,7 @@ int exhaustive_gen(curve_t *curve, config_t *cfg, gen_t generators[],
 	                            end_offset, 0);
 }
 
-void exhaustive_quit(arg_t *argss[]) {
+static void exhaustive_quit(arg_t *argss[]) {
 	equation_quit();
 	for (size_t i = 0; i < OFFSET_END; ++i) {
 		if (argss[i]) {

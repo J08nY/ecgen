@@ -81,12 +81,12 @@ int curve_nonzero(curve_t *curve, config_t *cfg, arg_t *args) {
 	}
 }
 
-int curve_seed_fp(curve_t *curve, config_t *cfg, arg_t *args) {
+static int curve_seed_fp(curve_t *curve, config_t *cfg, arg_t *args) {
 	// TODO implement
 	return INT_MIN;
 }
 
-int curve_seed_f2m(curve_t *curve, config_t *cfg, arg_t *args) {
+static int curve_seed_f2m(curve_t *curve, config_t *cfg, arg_t *args) {
 	// TODO implement
 	return INT_MIN;
 }

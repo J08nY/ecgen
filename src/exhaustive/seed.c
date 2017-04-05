@@ -27,7 +27,7 @@ void seed_free(seed_t **seed) {
 	}
 }
 
-GEN seed_stoi(const char *cstr) {
+static GEN seed_stoi(const char *cstr) {
 	pari_sp ltop = avma;
 	GEN seed = gen_0;
 

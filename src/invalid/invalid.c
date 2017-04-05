@@ -12,7 +12,7 @@
 #include "math/order.h"
 #include "math/point.h"
 
-void invalid_ginit(gen_t *generators, config_t *cfg) {
+static void invalid_ginit(gen_t *generators, config_t *cfg) {
 	generators[OFFSET_SEED] = &gen_skip;
 	if (cfg->random) {
 		generators[OFFSET_FIELD] = &field_random;
@@ -28,7 +28,7 @@ void invalid_ginit(gen_t *generators, config_t *cfg) {
 	generators[OFFSET_ORDER] = &order_any;
 }
 
-size_t invalid_primes(GEN order, pari_ulong **primes) {
+static size_t invalid_primes(GEN order, pari_ulong **primes) {
 	pari_sp ltop = avma;
 
 	GEN bound = sqri(order);
@@ -70,8 +70,8 @@ size_t invalid_primes(GEN order, pari_ulong **primes) {
 	return nprimes;
 }
 
-size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
-                      size_t nprimes, curve_t ***curves) {
+static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
+                             size_t nprimes, curve_t ***curves) {
 	gen_t invalid_gen[OFFSET_END];
 	invalid_gen[OFFSET_FIELD] = &gen_skip;
 	invalid_gen[OFFSET_A] = &gen_skip;

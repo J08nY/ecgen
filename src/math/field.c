@@ -7,9 +7,9 @@
 #include "poly.h"
 #include "random.h"
 
-GEN field_primer(long bits) { return random_prime(bits); }
+static GEN field_primer(long bits) { return random_prime(bits); }
 
-GEN field_binaryr(long bits) {
+static GEN field_binaryr(long bits) {
 	if (poly_exists(bits)) {
 		return poly_find_gen(bits);
 	} else {

@@ -56,7 +56,7 @@ void output_fcsv(FILE *out, curve_t *curve, config_t *cfg) {
 
 void output_csv(curve_t *curve, config_t *cfg) { output_fcsv(out, curve, cfg); }
 
-JSON_Value *output_jjson(curve_t *curve, config_t *cfg) {
+static JSON_Value *output_jjson(curve_t *curve, config_t *cfg) {
 	pari_sp ltop = avma;
 	// root object/value is curve
 	JSON_Value *root_value = json_value_init_object();
