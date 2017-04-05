@@ -44,7 +44,7 @@ static struct config_t cfg;
 
 bool init(void) {
 	// Init PARI, 1GB stack, 1M primes
-	pari_init(1000000000, 1000000);
+	pari_init(cfg.memory, 1000000);
 
 	// Init PARI PRNG
 	if (!random_init()) return false;

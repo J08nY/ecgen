@@ -185,10 +185,11 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 			// primes from range divided order. Thus remove it
 			// like it never existed.
 
-			points_free_deep(&invalid->points, invalid->npoints);
 			avma = btop;
 		}
 	}
+	curve_free(&invalid);
+
 	return ncurves;
 }
 

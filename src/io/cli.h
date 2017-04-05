@@ -29,7 +29,7 @@ typedef struct config_t {
 	bool binary_field;
 	bool prime_field;
 
-	long count;
+	unsigned long count;
 	bool random;
 	bool prime;
 	bool invalid;
@@ -44,6 +44,7 @@ typedef struct config_t {
 	struct points_s points;
 
 	char *datadir;
+	unsigned long memory;
 	enum format_e format;
 	char *output;
 	char *input;

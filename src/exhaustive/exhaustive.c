@@ -115,6 +115,7 @@ int exhaustive_gen_retry(curve_t *curve, config_t *cfg, gen_t generators[],
 
 	int state = start_offset;
 	while (state < end_offset) {
+		// remember pari stack
 		tops[state - start_offset] = avma;
 
 		int diff = generators[state](curve, cfg, argss ? argss[state] : NULL);
@@ -122,6 +123,15 @@ int exhaustive_gen_retry(curve_t *curve, config_t *cfg, gen_t generators[],
 			fprintf(stderr, "Error generating a curve. state = %i\n", state);
 			return 0;
 		}
+
+		if (state + diff < start_offset) {
+			// what now?
+			// TODO
+		} else if (diff <= 0) {
+			// rewind pari stack
+			avma = tops[state + diff - start_offset];
+		}
+
 		if (diff == 0) {
 			int tried = ++tries[state - start_offset];
 			if (retry && tried >= retry) {
@@ -133,10 +143,6 @@ int exhaustive_gen_retry(curve_t *curve, config_t *cfg, gen_t generators[],
 			tries[state - start_offset] = 0;
 		}
 		state += diff;
-
-		if (diff <= 0) {
-			avma = tops[state - start_offset];
-		}
 
 		if (cfg->verbose) {
 			if (diff > 0) {
@@ -176,7 +182,7 @@ int exhaustive_do(config_t *cfg) {
 	exhaustive_ginit(generators, cfg);
 	exhaustive_ainit(argss, cfg);
 
-	for (long i = 0; i < cfg->count; ++i) {
+	for (unsigned long i = 0; i < cfg->count; ++i) {
 		curve_t *curve = curve_new();
 		if (!exhaustive_gen_retry(curve, cfg, generators, argss, OFFSET_SEED,
 		                          OFFSET_END, 10)) {

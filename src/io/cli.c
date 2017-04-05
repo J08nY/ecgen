@@ -26,6 +26,7 @@ enum opt_keys {
 	OPT_INPUT = 'f',
 	OPT_APPEND = 'a',
 	OPT_VERBOSE = 'v',
+	OPT_MEMORY = 'm',
 	OPT_FP = 1,
 	OPT_F2M,
 	OPT_POINTS
@@ -45,7 +46,7 @@ struct argp_option options[] = {
 	{"order",    OPT_ORDER,    "ORDER",  0,                 "Generate a curve with given order (using Complex Multiplication).",                    2},
 	{"koblitz",  OPT_KOBLITZ,  0,        0,                 "Generate a Koblitz curve (a = 0).",                                                    2},
 	{"unique",   OPT_UNIQUE,   0,        0,                 "Generate a curve with only one generator.",                                            2},
-	{"points",   OPT_POINTS,   "TYPE",   0,                 "Generate points of given type (random/prime/none).",                                        2},
+	{"points",   OPT_POINTS,   "TYPE",   0,                 "Generate points of given type (random/prime/none).",                                   2},
 	{"count",    OPT_COUNT,    "COUNT",  0,                 "Generate multiple curves.",                                                            2},
 	{0,          0,            0,        0,                 "Input/Output options:",                                                                3},
 	{"format",   OPT_FORMAT,   "FORMAT", 0,                 "Format to output in. One of [csv,json], default is json.",                             3},
@@ -54,7 +55,8 @@ struct argp_option options[] = {
 	{"append",   OPT_APPEND,   0,        0,                 "Append to output file (don't overwrite).",                                             3},
 	{"verbose",  OPT_VERBOSE,  "FILE", OPTION_ARG_OPTIONAL, "Verbose logging (to stdout or file).",                                                 3},
 	{0,          0,            0,        0,                 "Other:",                                                                               4},
-	{"data-dir", OPT_DATADIR,  "DIR",    0,                 "PARI/GP data directory (containing seadata package).",                                 4},
+	{"data-dir", OPT_DATADIR,  "DIR",    0,                 "Set PARI/GP data directory (containing seadata package).",                             4},
+	{"memory",   OPT_MEMORY,   "SIZE",   0,                 "Use PARI stack of SIZE (can have suffix k/m/g).",                                      4},
 	{0}
 };
 // clang-format on
@@ -66,9 +68,24 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 		case OPT_DATADIR:
 			cfg->datadir = arg;
 			break;
+		case OPT_MEMORY:
+			if (arg) {
+				char *suffix = NULL;
+				unsigned long read = strtoul(arg, &suffix, 10);
+				if (suffix) {
+					if (*suffix == 'k' || *suffix == 'K') {
+						read *= 1000;
+					} else if (*suffix == 'm' || *suffix == 'M') {
+						read *= 1000000;
+					} else if (*suffix == 'g' || *suffix == 'G') {
+						read *= 1000000000;
+					}
+				}
+				cfg->memory = read;
+			}
 		case OPT_COUNT:
 			if (arg) {
-				cfg->count = strtol(arg, NULL, 10);
+				cfg->count = strtoul(arg, NULL, 10);
 			}
 			break;
 		case OPT_FORMAT:
@@ -202,6 +219,9 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			// default values
 			if (!cfg->count) {
 				cfg->count = 1;
+			}
+			if (!cfg->memory) {
+				cfg->memory = 1000000000;
 			}
 			break;
 		case ARGP_KEY_NO_ARGS:

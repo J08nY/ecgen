@@ -128,7 +128,7 @@ GEN field_params(GEN field) {
 				gel(out, j) = stoi(i);
 				j++;
 			}
-			if (gc_needed(btop, 1)) gerepileall(btop, 2, &out, &c);
+			gerepileall(btop, 2, &out, &c);
 		}
 	}
 	return gerepilecopy(ltop, out);

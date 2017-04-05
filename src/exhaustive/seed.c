@@ -37,7 +37,7 @@ static GEN seed_stoi(const char *cstr) {
 		GEN s = stoi(cstr[i]);
 		s = shifti(s, (len - i - 1) * 8);
 		seed = addii(seed, s);
-		if (gc_needed(btop, 1)) gerepileall(btop, 1, seed);
+		gerepileall(btop, 1, &seed);
 	}
 
 	return gerepilecopy(ltop, seed);

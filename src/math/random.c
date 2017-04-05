@@ -47,7 +47,7 @@ GEN random_prime(long bits) {
 		pari_sp btop = avma;
 		do {
 			p = randomprime(range);
-			if (gc_needed(btop, 1)) p = gerepilecopy(btop, p);
+			p = gerepileupto(btop, p);
 		} while (!isprime(p));
 	}
 
