@@ -17,7 +17,7 @@ endif
 LDFLAGS = -L../lib/parson -L../lib/sha1 -L../lib/pari
 
 INCLUDES = -I. -I../lib
-LIBS = -lrt -lpari -lparson
+LIBS = -lrt -lpthread -lparson -lsha1 -lpari
 
 ####
 
@@ -50,8 +50,8 @@ econvert: econvert.o $(ECONVERT_OBJ)
 ####
 
 clean-all: clean
-	rm ../ecgen
-	rm ../econvert
+	rm -f ../ecgen
+	rm -f ../econvert
 
 clean:
 	find . -type f -name '*.o' -exec rm {} +
@@ -60,4 +60,4 @@ format:
 	clang-format -i $(SRC)
 	clang-format -i $(HDR)
 
-.PHONY: all gp2c clean-all clean clean-gp format
+.PHONY: all clean-all clean format

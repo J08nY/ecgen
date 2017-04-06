@@ -41,6 +41,9 @@ curve_t *curve_copy(curve_t *src, curve_t *dest) {
 void curve_free(curve_t **curve) {
 	if (*curve) {
 		seed_free(&(*curve)->seed);
+		if ((*curve)->curve) {
+			obj_free((*curve)->curve);
+		}
 		points_free_deep(&(*curve)->generators, (*curve)->ngens);
 		points_free_deep(&(*curve)->points, (*curve)->npoints);
 		pari_free(*curve);
@@ -49,6 +52,11 @@ void curve_free(curve_t **curve) {
 }
 
 int curve_any(curve_t *curve, config_t *cfg, arg_t *args) {
+	if (curve->curve) {
+		obj_free(curve->curve);
+		curve->curve = NULL;
+	}
+
 	pari_sp ltop = avma;
 	GEN v = gen_0;
 	switch (typ(curve->field)) {
