@@ -11,15 +11,15 @@
 #include <pari/pari.h>
 #include "io/cli.h"
 
-typedef struct seed_t { GEN seed; } seed_t;
+typedef struct { GEN seed; } seed_t;
 
-typedef struct point_t {
+typedef struct {
 	GEN point;
 	GEN order;
 	GEN cofactor;
 } point_t;
 
-typedef struct curve_t {
+typedef struct  {
 	seed_t *seed;
 	GEN field;
 	GEN a;
@@ -44,7 +44,7 @@ enum curve_offset {
 	OFFSET_END
 };
 
-typedef struct arg_t {
+typedef struct {
 	void *args;
 	size_t nargs;
 } arg_t;

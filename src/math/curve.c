@@ -6,6 +6,7 @@
 #include "exhaustive/seed.h"
 #include "field.h"
 #include "point.h"
+#include "types.h"
 
 curve_t *curve_new(void) {
 	curve_t *curve = pari_malloc(sizeof(curve_t));
@@ -68,8 +69,8 @@ int curve_any(curve_t *curve, config_t *cfg, arg_t *args) {
 		case t_FFELT:
 			v = gtovec0(gen_0, 5);
 			gel(v, 1) = gen_1;
-			gel(v, 4) = curve->a;
-			gel(v, 5) = curve->b;
+			gel(v, 2) = curve->a;
+			gel(v, 4) = curve->b;
 			break;
 		default:
 			pari_err_TYPE("curve_any", curve->field);

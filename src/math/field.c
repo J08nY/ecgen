@@ -2,6 +2,7 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+#include <io/cli.h>
 #include "field.h"
 #include "io/input.h"
 #include "poly.h"
@@ -45,6 +46,12 @@ int field_input(curve_t *curve, config_t *cfg, arg_t *args) {
 			return 1;
 		}
 		case FIELD_BINARY: {
+			GEN m = input_short("m:");
+			if (!equalis(m, cfg->bits)) {
+				avma = ltop;
+				return 0;
+			}
+
 			GEN e1 = input_short("e1:");
 			if (equalii(e1, gen_m1)) {
 				avma = ltop;
@@ -68,7 +75,7 @@ int field_input(curve_t *curve, config_t *cfg, arg_t *args) {
 			}
 
 			GEN v = gtovec0(gen_0, cfg->bits + 1);
-			gel(v, cfg->bits + 1) = gen_1;
+			gel(v, itos(m) + 1) = gen_1;
 			if (gsigne(e1) == 1) gel(v, itos(e1) + 1) = gen_1;
 			if (gsigne(e2) == 1) gel(v, itos(e2) + 1) = gen_1;
 			if (gsigne(e3) == 1) gel(v, itos(e3) + 1) = gen_1;
@@ -81,8 +88,7 @@ int field_input(curve_t *curve, config_t *cfg, arg_t *args) {
 				return 0;
 			}
 
-			GEN field = gerepilecopy(ltop, ffgen(poly, -1));
-			curve->field = field;
+			curve->field = gerepilecopy(ltop, ffgen(poly, -1));
 			return 1;
 		}
 		default:

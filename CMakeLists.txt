@@ -18,5 +18,5 @@ set(ECONVERT_SRC "src/econvert.c" ${SRC})
 add_executable(ecgen ${ECGEN_SRC})
 add_executable(econvert ${ECONVERT_SRC})
 
-target_link_libraries(ecgen pari rt ${parson} ${sha1})
-target_link_libraries(econvert pari rt ${parson} ${sha1})
+target_link_libraries(ecgen pthread rt pari ${parson} ${sha1})
+target_link_libraries(econvert pthread rt pari ${parson} ${sha1})

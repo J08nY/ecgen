@@ -24,7 +24,7 @@ struct points_s {
 	size_t amount;
 };
 
-typedef struct config_t {
+typedef struct{
 	enum field_e field;
 	bool binary_field;
 	bool prime_field;

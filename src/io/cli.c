@@ -62,7 +62,7 @@ struct argp_option options[] = {
 // clang-format on
 
 error_t cli_parse(int key, char *arg, struct argp_state *state) {
-	struct config_t *cfg = state->input;
+	config_t *cfg = state->input;
 
 	switch (key) {
 		case OPT_DATADIR:

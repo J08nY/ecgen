@@ -24,6 +24,7 @@
  * @copyright GPL v2.0
  */
 #include <pari/pari.h>
+#include "io/cli.h"
 #include "cm/cm.h"
 #include "exhaustive/exhaustive.h"
 #include "invalid/invalid.h"
@@ -40,7 +41,7 @@ const char *argp_program_version =
 const char *argp_program_bug_address = "<johny@neuromancer.sk>";
 
 static struct argp argp = {options, cli_parse, args_doc, doc, 0, cli_filter};
-static struct config_t cfg;
+static config_t cfg;
 
 bool init(void) {
 	// Init PARI, 1GB stack, 1M primes

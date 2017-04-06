@@ -11,7 +11,7 @@
 #include <pari/pari.h>
 #include <stdbool.h>
 
-typedef struct polynomial_t {
+typedef struct {
 	int m;
 	int e1;
 	int e2;
