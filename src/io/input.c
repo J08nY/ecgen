@@ -28,7 +28,7 @@ static GEN input_i(const char *prompt, long bits) {
 	for (size_t i = 0, j = 0; (line[j] = line[i]); j += !isspace(line[i++]))
 		;
 
-	if (len <= 3 || (line[0] != '0' && (line[1] != 'x' || line[1] != 'X'))) {
+	if (len <= 3 || !(line[0] == '0' && (line[1] == 'x' || line[1] == 'X'))) {
 		char *new_line = realloc(line, (size_t)(len + 2));
 		if (!new_line) {
 			perror("Couldn't alloc.");
