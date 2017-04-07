@@ -20,7 +20,7 @@
 /**
  * @file ecgen.c
  * @author J08nY <johny@neuromancer.sk>
- * @version 0.3.0
+ * @version 0.4.0
  * @copyright GPL v2.0
  */
 #include <pari/pari.h>
@@ -33,7 +33,7 @@
 #include "io/output.h"
 
 const char *argp_program_version =
-    "ecgen 0.3.0\n"
+    "ecgen 0.4.0\n"
     "Copyright (C) 2017 J08nY\n"
     "License GPLv2: GNU GPL version 2 (or later) "
     "<http://gnu.org/licenses/gpl.html>\n"
