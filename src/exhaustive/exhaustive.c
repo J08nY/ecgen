@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "exhaustive.h"
+#include <math/types.h>
 #include "io/config.h"
 #include "io/output.h"
 #include "math/arg.h"
@@ -130,7 +131,11 @@ int exhaustive_gen_retry(curve_t *curve, config_t *cfg, gen_t generators[],
 			// TODO
 		} else if (diff <= 0) {
 			// rewind pari stack
-			avma = tops[state + diff - start_offset];
+			int new_state = state + diff - start_offset;
+			if (new_state <= OFFSET_CURVE) {
+				obj_free(curve->curve);
+			}
+			avma = tops[new_state];
 		}
 
 		if (diff == 0) {
