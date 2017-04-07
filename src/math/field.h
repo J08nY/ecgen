@@ -67,4 +67,12 @@ GEN field_params(GEN field);
  */
 GEN field_elementi(GEN element);
 
+/**
+ *
+ * @param field
+ * @param in
+ * @return
+ */
+GEN field_ielement(GEN field, GEN in);
+
 #endif  // ECGEN_FIELD_H

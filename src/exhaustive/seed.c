@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "seed.h"
+#include "io/config.h"
 #include "io/input.h"
 
 seed_t *seed_new(void) {

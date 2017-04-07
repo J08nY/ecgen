@@ -4,6 +4,7 @@
  */
 #include "cli.h"
 #include <string.h>
+#include "io/config.h"
 
 char doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "

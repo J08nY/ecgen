@@ -3,7 +3,9 @@
  * Copyright (C) 2017 J08nY
  */
 #include "equation.h"
+#include "io/cli.h"
 #include "io/input.h"
+#include "math/field.h"
 
 int a_random(curve_t *curve, config_t *cfg, arg_t *args) {
 	curve->a = genrand(curve->field);
@@ -17,8 +19,12 @@ int a_input(curve_t *curve, config_t *cfg, arg_t *args) {
 		avma = ltop;
 		return 0;
 	}
-	curve->a = inp;
-	// TODO change a to a field element here?. a t_INTMOD or a t_FFELT.
+	GEN elem = field_ielement(curve->field, inp);
+	if (!elem) {
+		avma = ltop;
+		return 0;
+	}
+	curve->a = elem;
 	return 1;
 }
 
@@ -68,8 +74,12 @@ int b_input(curve_t *curve, config_t *cfg, arg_t *args) {
 		avma = ltop;
 		return 0;
 	}
-	curve->b = inp;
-	// TODO change b to a field element here?. a t_INTMOD or a t_FFELT.
+	GEN elem = field_ielement(curve->field, inp);
+	if (!elem) {
+		avma = ltop;
+		return 0;
+	}
+	curve->b = elem;
 	return 1;
 }
 

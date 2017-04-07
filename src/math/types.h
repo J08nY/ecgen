@@ -10,6 +10,7 @@
 
 #include <pari/pari.h>
 #include "io/cli.h"
+#include "io/config.h"
 
 typedef struct { GEN seed; } seed_t;
 
@@ -19,7 +20,7 @@ typedef struct {
 	GEN cofactor;
 } point_t;
 
-typedef struct  {
+typedef struct {
 	seed_t *seed;
 	GEN field;
 	GEN a;

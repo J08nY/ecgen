@@ -117,10 +117,8 @@ void input_init(config_t *cfg) {
 		in = fopen(cfg->input, "r");
 		delim = ',';
 		if (!in) {
-			// fallback to stdin or quit?
-			in = stdin;
-			delim = '\n';
 			perror("Failed to open input file.");
+			exit(1);
 		}
 	} else {
 		in = stdin;

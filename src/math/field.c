@@ -2,11 +2,12 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-#include <io/cli.h>
 #include "field.h"
+#include <io/cli.h>
 #include "io/input.h"
 #include "poly.h"
 #include "random.h"
+#include "types.h"
 
 static GEN field_primer(long bits) { return random_prime(bits); }
 
@@ -156,5 +157,21 @@ GEN field_elementi(GEN element) {
 		default:
 			pari_err_TYPE("field_elementi", element);
 			return NULL; /* NOT REACHABLE */
+	}
+}
+
+GEN field_ielement(GEN field, GEN in) {
+	switch (typ(field)) {
+		case t_INT:
+			return Fp_to_mod(in, field);
+		case t_FFELT: {
+			pari_sp ltop = avma;
+			GEN coeffs = digits(in, gen_2);
+			GEN poly = gtopoly(coeffs, -1);
+			return gerepilecopy(ltop, Fq_to_FF(poly, field));
+		}
+		default:
+			pari_err_TYPE("field_ielement, field is unknown type. ", field);
+			return gen_m1; /* NOT REACHABLE */
 	}
 }

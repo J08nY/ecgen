@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "exhaustive.h"
+#include "io/config.h"
 #include "io/output.h"
 #include "math/arg.h"
 #include "math/curve.h"

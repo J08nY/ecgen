@@ -6,6 +6,7 @@
  * @file invalid.h
  */
 #include "io/cli.h"
+#include "io/config.h"
 
 #ifndef ECGEN_INVALID_H
 #define ECGEN_INVALID_H

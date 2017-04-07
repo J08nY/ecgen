@@ -185,7 +185,7 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 			// primes from range divided order. Thus remove it
 			// like it never existed.
 
-			obj_free(invalid->curve); //necessary to free the ellinit
+			obj_free(invalid->curve);  // necessary to free the ellinit
 			avma = btop;
 		}
 	}

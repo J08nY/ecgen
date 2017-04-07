@@ -24,10 +24,11 @@
  * @copyright GPL v2.0
  */
 #include <pari/pari.h>
-#include "io/cli.h"
 #include "cm/cm.h"
 #include "exhaustive/exhaustive.h"
 #include "invalid/invalid.h"
+#include "io/cli.h"
+#include "io/config.h"
 #include "io/input.h"
 #include "io/output.h"
 
