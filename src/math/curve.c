@@ -53,11 +53,6 @@ void curve_free(curve_t **curve) {
 }
 
 int curve_any(curve_t *curve, config_t *cfg, arg_t *args) {
-	if (curve->curve) {
-		obj_free(curve->curve);
-		curve->curve = NULL;
-	}
-
 	pari_sp ltop = avma;
 	GEN v = gen_0;
 	switch (typ(curve->field)) {
