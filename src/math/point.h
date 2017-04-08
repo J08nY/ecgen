@@ -23,7 +23,7 @@ point_t *point_new(void);
  * @param dest
  * @return
  */
-point_t *point_copy(point_t *src, point_t *dest);
+point_t *point_copy(const point_t *src, point_t *dest);
 
 /**
  *

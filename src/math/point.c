@@ -14,9 +14,10 @@ point_t *point_new(void) {
 	return point;
 }
 
-point_t *point_copy(point_t *src, point_t *dest) {
+point_t *point_copy(const point_t *src, point_t *dest) {
 	if (src->point) dest->point = gcopy(src->point);
-	if (dest->point) dest->order = gcopy(src->order);
+	if (src->order) dest->order = gcopy(src->order);
+	if (src->cofactor) dest->cofactor = gcopy(src->cofactor);
 	return dest;
 }
 
