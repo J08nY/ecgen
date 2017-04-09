@@ -3,6 +3,9 @@
  * Copyright (C) 2017 J08nY
  */
 #include "cm.h"
-#include "io/config.h"
+#include "io/output.h"
 
-int cm_do(config_t *cfg) { return INT_MIN; }
+int cm_do(config_t *cfg) {
+	debug("# Starting Complex Multiplication method\n");
+	return INT_MIN;
+}

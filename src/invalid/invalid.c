@@ -265,6 +265,8 @@ static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
 }
 
 int invalid_do(config_t *cfg) {
+	debug("# Starting Invalid curve method\n");
+
 	gen_t gen[OFFSET_END];
 	arg_t *argss[OFFSET_END];
 	invalid_original_ginit(gen, cfg);

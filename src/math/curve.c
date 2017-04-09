@@ -114,14 +114,23 @@ int curve_any(curve_t *curve, const config_t *cfg, arg_t *args) {
 		default:
 			pari_err_TYPE("curve_any", curve->field);
 	}
+	GEN crv = ellinit(v, curve->field, -1);
 
-	curve->curve = gerepilecopy(ltop, ellinit(v, curve->field, -1));
-	return 1;
+	if (glength(crv) == 0) {
+		avma = ltop;
+		return -3;
+	} else {
+		curve->curve = gerepilecopy(ltop, crv);
+		return 1;
+	}
 }
 
 int curve_nonzero(curve_t *curve, const config_t *cfg, arg_t *args) {
 	pari_sp ltop = avma;
-	curve_any(curve, cfg, args);
+	int any = curve_any(curve, cfg, args);
+	if (any <= 0) {
+		return any;
+	}
 	if (gequal0(ell_get_disc(curve->curve))) {
 		avma = ltop;
 		return -3;

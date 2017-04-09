@@ -132,7 +132,7 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 			// rewind pari stack
 			int new_state = state + diff - start_offset;
 			if (new_state <= OFFSET_CURVE) {
-				obj_free(curve->curve);
+				// obj_free(curve->curve);
 			}
 			avma = tops[new_state];
 		}
@@ -181,6 +181,8 @@ static void exhaustive_quit(arg_t *argss[]) {
 }
 
 int exhaustive_do(config_t *cfg) {
+	debug("# Starting Exhaustive method\n");
+
 	gen_t generators[OFFSET_END];
 	arg_t *argss[OFFSET_END];
 	exhaustive_ginit(generators, cfg);
