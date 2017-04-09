@@ -22,7 +22,7 @@
  * @param args unused
  * @return state diff
  */
-int curve_any(curve_t *curve, config_t *cfg, arg_t *args);
+int curve_any(curve_t *curve, const config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -34,7 +34,7 @@ int curve_any(curve_t *curve, config_t *cfg, arg_t *args);
  * @param args unused
  * @return state diff
  */
-int curve_nonzero(curve_t *curve, config_t *cfg, arg_t *args);
+int curve_nonzero(curve_t *curve, const config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -47,7 +47,7 @@ int curve_nonzero(curve_t *curve, config_t *cfg, arg_t *args);
  * @param args unused
  * @return state diff
  */
-int curve_seed(curve_t *curve, config_t *cfg, arg_t *args);
+int curve_seed(curve_t *curve, const config_t *cfg, arg_t *args);
 
 /**
  * Serializes curve parameters into a t_VEC:
@@ -59,7 +59,7 @@ int curve_seed(curve_t *curve, config_t *cfg, arg_t *args);
  * @param curve to serialize
  * @return a t_VEC of curve parameters
  */
-GEN curve_params(curve_t *curve);
+GEN curve_params(const curve_t *curve);
 
 /**
  * Allocates and zeros out a new curve_t object.
@@ -75,7 +75,29 @@ curve_t *curve_new(void);
  * @param dest destination curve
  * @return destination curve
  */
-curve_t *curve_copy(curve_t *src, curve_t *dest);
+curve_t *curve_copy(const curve_t *src, curve_t *dest);
+
+/**
+ *
+ * @param src
+ * @return
+ */
+curve_t *curve_new_copy(const curve_t *src);
+
+/**
+ *
+ * @param src
+ * @param dest
+ * @return
+ */
+curve_t *curve_clone(const curve_t *src, curve_t *dest);
+
+/**
+ *
+ * @param src
+ * @return
+ */
+curve_t *curve_new_clone(const curve_t *src);
 
 /**
  * Free a curve_t along with it's seed_t and point_ts.

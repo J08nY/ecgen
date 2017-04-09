@@ -2712,9 +2712,9 @@ static int compare_poly(const void *a, const void *b) {
 	return (one->m - other->m);
 }
 
-bool poly_exists(long m) { return m >= 2 && m <= 10000; }
+bool poly_exists(unsigned long m) { return m >= 2 && m <= 10000; }
 
-polynomial_t *poly_find(long m) {
+polynomial_t *poly_find(unsigned long m) {
 	if (!poly_exists(m)) {
 		return NULL;
 	}
@@ -2740,9 +2740,9 @@ polynomial_t *poly_find(long m) {
 	}
 }
 
-GEN poly_find_gen(long m) { return poly_gen(poly_find(m)); }
+GEN poly_find_gen(unsigned long m) { return poly_gen(poly_find(m)); }
 
-GEN poly_gen(polynomial_t *polynomial) {
+GEN poly_gen(const polynomial_t *polynomial) {
 	pari_sp ltop = avma;
 
 	GEN coeffs = gtovec0(gen_0, polynomial->m + 1);

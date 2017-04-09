@@ -24,7 +24,7 @@ typedef enum PARAM {
  * @param bits
  * @return
  */
-GEN input_prime(const char *prompt, long bits);
+GEN input_prime(const char *prompt, unsigned long bits);
 
 /**
  *
@@ -32,7 +32,7 @@ GEN input_prime(const char *prompt, long bits);
  * @param bits
  * @return
  */
-GEN input_int(const char *prompt, long bits);
+GEN input_int(const char *prompt, unsigned long bits);
 
 /**
  *
@@ -55,7 +55,7 @@ GEN input_string(const char *prompt);
  * @param bits
  * @return
  */
-GEN input_param(param_t param, const char *prompt, long bits);
+GEN input_param(param_t param, const char *prompt, unsigned long bits);
 
 /**
  *
@@ -66,7 +66,7 @@ extern FILE *in;
  *
  * @param cfg
  */
-void input_init(config_t *cfg);
+void input_init(const config_t *cfg);
 
 /**
  *

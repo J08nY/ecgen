@@ -4,6 +4,8 @@
  */
 #include "cli.h"
 #include <string.h>
+#include <unistd.h>
+#include "config.h"
 #include "io/config.h"
 
 char doc[] =
@@ -30,7 +32,9 @@ enum opt_keys {
 	OPT_MEMORY = 'm',
 	OPT_FP = 1,
 	OPT_F2M,
-	OPT_POINTS
+	OPT_POINTS,
+	OPT_THREADS,
+	OPT_TSTACK
 };
 
 // clang-format off
@@ -58,9 +62,26 @@ struct argp_option options[] = {
 	{0,          0,            0,        0,                 "Other:",                                                                               4},
 	{"data-dir", OPT_DATADIR,  "DIR",    0,                 "Set PARI/GP data directory (containing seadata package).",                             4},
 	{"memory",   OPT_MEMORY,   "SIZE",   0,                 "Use PARI stack of SIZE (can have suffix k/m/g).",                                      4},
+	{"threads",  OPT_THREADS,  "NUM",    0,                 "Use NUM threads.",                                                                     4},
+	{"thread-stack",OPT_TSTACK,"SIZE",   0,           		"Use PARI stack of SIZE (per thread, can have suffix k/m/g).",							4},
 	{0}
 };
 // clang-format on
+
+static unsigned long cli_parse_memory(const char *str) {
+	char *suffix = NULL;
+	unsigned long read = strtoul(str, &suffix, 10);
+	if (suffix) {
+		if (*suffix == 'k' || *suffix == 'K') {
+			read *= 1000;
+		} else if (*suffix == 'm' || *suffix == 'M') {
+			read *= 1000000;
+		} else if (*suffix == 'g' || *suffix == 'G') {
+			read *= 1000000000;
+		}
+	}
+	return read;
+}
 
 error_t cli_parse(int key, char *arg, struct argp_state *state) {
 	config_t *cfg = state->input;
@@ -71,18 +92,28 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			break;
 		case OPT_MEMORY:
 			if (arg) {
-				char *suffix = NULL;
-				unsigned long read = strtoul(arg, &suffix, 10);
-				if (suffix) {
-					if (*suffix == 'k' || *suffix == 'K') {
-						read *= 1000;
-					} else if (*suffix == 'm' || *suffix == 'M') {
-						read *= 1000000;
-					} else if (*suffix == 'g' || *suffix == 'G') {
-						read *= 1000000000;
+				cfg->memory = cli_parse_memory(arg);
+			}
+			break;
+		case OPT_TSTACK:
+			if (arg) {
+				cfg->thread_memory = cli_parse_memory(arg);
+			}
+			break;
+		case OPT_THREADS:
+			if (arg) {
+				if (!strcmp(arg, "auto") || !strcmp(arg, "AUTO")) {
+					long nprocs = sysconf(_SC_NPROCESSORS_ONLN);
+					if (nprocs > 0) {
+						cfg->threads = (unsigned long)nprocs;
+					}
+				} else {
+					cfg->threads = strtoul(arg, NULL, 10);
+					if (!cfg->threads) {
+						argp_failure(state, 1, 0,
+						             "Invalid number of threads specified.");
 					}
 				}
-				cfg->memory = read;
 			}
 		case OPT_COUNT:
 			if (arg) {
@@ -191,7 +222,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				argp_usage(state);
 			}
 
-			cfg->bits = strtol(arg, NULL, 10);
+			cfg->bits = strtoul(arg, NULL, 10);
 			break;
 		case ARGP_KEY_END:
 			// validate all option states here.
@@ -223,6 +254,12 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			}
 			if (!cfg->memory) {
 				cfg->memory = 1000000000;
+			}
+			if (!cfg->threads) {
+				cfg->threads = 1;
+			}
+			if (!cfg->thread_memory) {
+				cfg->thread_memory = cfg->bits * 2000000;
 			}
 			break;
 		case ARGP_KEY_NO_ARGS:

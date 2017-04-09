@@ -27,6 +27,28 @@ point_t *point_copy(const point_t *src, point_t *dest);
 
 /**
  *
+ * @param src
+ * @return
+ */
+point_t *point_new_copy(const point_t *src);
+
+/**
+ *
+ * @param src
+ * @param dest
+ * @return
+ */
+point_t *point_clone(const point_t *src, point_t *dest);
+
+/**
+ *
+ * @param src
+ * @return
+ */
+point_t *point_new_clone(const point_t *src);
+
+/**
+ *
  * @param point
  */
 void point_free(point_t **point);
@@ -45,7 +67,32 @@ point_t **points_new(size_t num);
  * @param num
  * @return
  */
-point_t **points_copy(point_t **src, point_t **dest, size_t num);
+point_t **points_copy(point_t **const src, point_t **dest, size_t num);
+
+/**
+ *
+ * @param src
+ * @param num
+ * @return
+ */
+point_t **points_new_copy(point_t **const src, size_t num);
+
+/**
+ *
+ * @param src
+ * @param dest
+ * @param num
+ * @return
+ */
+point_t **points_clone(point_t **const src, point_t **dest, size_t num);
+
+/**
+ *
+ * @param src
+ * @param num
+ * @return
+ */
+point_t **points_new_clone(point_t **const src, size_t num);
 
 /**
  *
@@ -68,7 +115,7 @@ void points_free_deep(point_t ***points, size_t npoints);
  * @param args unused
  * @return state diff
  */
-int point_random(curve_t *curve, config_t *cfg, arg_t *args);
+int point_random(curve_t *curve, const config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -78,7 +125,7 @@ int point_random(curve_t *curve, config_t *cfg, arg_t *args);
  * @param args size_t number of points to generate
  * @return state diff
  */
-int points_random(curve_t *curve, config_t *cfg, arg_t *args);
+int points_random(curve_t *curve, const config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -96,7 +143,7 @@ int points_random(curve_t *curve, config_t *cfg, arg_t *args);
  * @param args
  * @return state diff
  */
-int points_trial(curve_t *curve, config_t *cfg, arg_t *args);
+int points_trial(curve_t *curve, const config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
@@ -110,6 +157,6 @@ int points_trial(curve_t *curve, config_t *cfg, arg_t *args);
  * @param args
  * @return state diff
  */
-int points_prime(curve_t *curve, config_t *cfg, arg_t *args);
+int points_prime(curve_t *curve, const config_t *cfg, arg_t *args);
 
 #endif  // ECGEN_POINT_H

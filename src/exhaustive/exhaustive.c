@@ -3,8 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include "exhaustive.h"
-#include <math/types.h>
-#include "io/config.h"
 #include "io/output.h"
 #include "math/arg.h"
 #include "math/curve.h"
@@ -101,8 +99,9 @@ static void exhaustive_ainit(arg_t **argss, config_t *cfg) {
 	}
 }
 
-int exhaustive_gen_retry(curve_t *curve, config_t *cfg, gen_t generators[],
-                         arg_t *argss[], int start_offset, int end_offset,
+int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
+                         gen_t generators[], arg_t *argss[],
+                         offset_e start_offset, offset_e end_offset,
                          int retry) {
 	if (start_offset == end_offset) {
 		return 1;
@@ -167,8 +166,8 @@ int exhaustive_gen_retry(curve_t *curve, config_t *cfg, gen_t generators[],
 	return 1;
 }
 
-int exhaustive_gen(curve_t *curve, config_t *cfg, gen_t generators[],
-                   arg_t *argss[], int start_offset, int end_offset) {
+int exhaustive_gen(curve_t *curve, const config_t *cfg, gen_t generators[],
+                   arg_t *argss[], offset_e start_offset, offset_e end_offset) {
 	return exhaustive_gen_retry(curve, cfg, generators, argss, start_offset,
 	                            end_offset, 0);
 }

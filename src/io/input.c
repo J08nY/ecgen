@@ -10,7 +10,7 @@
 FILE *in;
 int delim;
 
-static GEN input_i(const char *prompt, long bits) {
+static GEN input_i(const char *prompt, unsigned long bits) {
 	if (prompt && in == stdin) {
 		fprintf(out, "%s ", prompt);
 	}
@@ -59,7 +59,7 @@ static GEN input_i(const char *prompt, long bits) {
 	}
 }
 
-GEN input_prime(const char *prompt, long bits) {
+GEN input_prime(const char *prompt, unsigned long bits) {
 	GEN read = input_i(prompt, bits);
 	if (equalii(read, gen_m1)) {
 		return read;
@@ -73,7 +73,9 @@ GEN input_prime(const char *prompt, long bits) {
 	}
 }
 
-GEN input_int(const char *prompt, long bits) { return input_i(prompt, bits); }
+GEN input_int(const char *prompt, unsigned long bits) {
+	return input_i(prompt, bits);
+}
 
 GEN input_short(const char *prompt) { return input_i(prompt, 16); }
 
@@ -96,7 +98,7 @@ GEN input_string(const char *prompt) {
 	return result;
 }
 
-GEN input_param(param_t param, const char *prompt, long bits) {
+GEN input_param(param_t param, const char *prompt, unsigned long bits) {
 	switch (param) {
 		case PARAM_PRIME:
 			return input_prime(prompt, bits);
@@ -110,7 +112,7 @@ GEN input_param(param_t param, const char *prompt, long bits) {
 	return gen_m1;
 }
 
-void input_init(config_t *cfg) {
+void input_init(const config_t *cfg) {
 	json_set_allocation_functions(pari_malloc, pari_free);
 
 	if (cfg->input) {

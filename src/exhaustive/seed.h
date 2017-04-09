@@ -23,7 +23,29 @@ seed_t *seed_new(void);
  * @param dest
  * @return
  */
-seed_t *seed_copy(seed_t *src, seed_t *dest);
+seed_t *seed_copy(const seed_t *src, seed_t *dest);
+
+/**
+ *
+ * @param src
+ * @return
+ */
+seed_t *seed_new_copy(const seed_t *src);
+
+/**
+ *
+ * @param src
+ * @param dest
+ * @return
+ */
+seed_t *seed_clone(const seed_t *src, seed_t *dest);
+
+/**
+ *
+ * @param src
+ * @return
+ */
+seed_t *seed_new_clone(const seed_t *src);
 
 /**
  *
@@ -38,7 +60,7 @@ void seed_free(seed_t **seed);
  * @param args
  * @return
  */
-int seed_random(curve_t *curve, config_t *cfg, arg_t *args);
+int seed_random(curve_t *curve, const config_t *cfg, arg_t *args);
 
 /**
  *
@@ -47,7 +69,7 @@ int seed_random(curve_t *curve, config_t *cfg, arg_t *args);
  * @param args
  * @return
  */
-int seed_argument(curve_t *curve, config_t *cfg, arg_t *args);
+int seed_argument(curve_t *curve, const config_t *cfg, arg_t *args);
 
 /**
  *
@@ -56,6 +78,6 @@ int seed_argument(curve_t *curve, config_t *cfg, arg_t *args);
  * @param args
  * @return
  */
-int seed_input(curve_t *curve, config_t *cfg, arg_t *args);
+int seed_input(curve_t *curve, const config_t *cfg, arg_t *args);
 
 #endif  // ECGEN_SEED_H

@@ -13,8 +13,8 @@
 
 bool random_init(void);
 
-GEN random_prime(long bits);
+GEN random_prime(unsigned long bits);
 
-GEN random_int(long bits);
+GEN random_int(unsigned long bits);
 
 #endif  // ECGEN_RANDOM_H

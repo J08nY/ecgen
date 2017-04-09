@@ -21,9 +21,9 @@
  * @param retry
  * @return
  */
-int exhaustive_gen_retry(curve_t *curve, config_t *cfg, gen_t generators[],
-                         arg_t *argss[], int start_offset, int end_offset,
-                         int retry);
+int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
+                         gen_t generators[], arg_t *argss[],
+                         offset_e start_offset, offset_e end_offset, int retry);
 
 /**
  *
@@ -35,8 +35,8 @@ int exhaustive_gen_retry(curve_t *curve, config_t *cfg, gen_t generators[],
  * @param end_offset
  * @return
  */
-int exhaustive_gen(curve_t *curve, config_t *cfg, gen_t generators[],
-                   arg_t *argss[], int start_offset, int end_offset);
+int exhaustive_gen(curve_t *curve, const config_t *cfg, gen_t generators[],
+                   arg_t *argss[], offset_e start_offset, offset_e end_offset);
 
 /**
  *

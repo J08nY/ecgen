@@ -18,7 +18,7 @@
  * @param args
  * @return
  */
-int gens_any(curve_t *curve, config_t *cfg, arg_t *args);
+int gens_any(curve_t *curve, const config_t *cfg, arg_t *args);
 
 /**
  * @brief
@@ -27,6 +27,6 @@ int gens_any(curve_t *curve, config_t *cfg, arg_t *args);
  * @param args
  * @return
  */
-int gens_one(curve_t *curve, config_t *cfg, arg_t *args);
+int gens_one(curve_t *curve, const config_t *cfg, arg_t *args);
 
 #endif  // ECGEN_GENS_H

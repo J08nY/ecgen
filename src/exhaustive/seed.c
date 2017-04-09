@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include "seed.h"
-#include "io/config.h"
 #include "io/input.h"
 
 seed_t *seed_new(void) {
@@ -16,13 +15,31 @@ seed_t *seed_new(void) {
 	return seed;
 }
 
-seed_t *seed_copy(seed_t *src, seed_t *dest) {
-	dest->seed = gcopy(src->seed);
+seed_t *seed_copy(const seed_t *src, seed_t *dest) {
+	if (src->seed) dest->seed = gcopy(src->seed);
 	return dest;
+}
+
+seed_t *seed_new_copy(const seed_t *src) {
+	seed_t *result = seed_new();
+	return seed_copy(src, result);
+}
+
+seed_t *seed_clone(const seed_t *src, seed_t *dest) {
+	if (src->seed) dest->seed = gclone(src->seed);
+	return dest;
+}
+
+seed_t *seed_new_clone(const seed_t *src) {
+	seed_t *result = seed_new();
+	return seed_clone(src, result);
 }
 
 void seed_free(seed_t **seed) {
 	if (*seed) {
+		if ((*seed)->seed && isclone((*seed)->seed)) {
+			gunclone((*seed)->seed);
+		}
 		pari_free(*seed);
 		*seed = NULL;
 	}
@@ -44,19 +61,19 @@ static GEN seed_stoi(const char *cstr) {
 	return gerepilecopy(ltop, seed);
 }
 
-int seed_random(curve_t *curve, config_t *cfg, arg_t *args) {
+int seed_random(curve_t *curve, const config_t *cfg, arg_t *args) {
 	curve->seed = seed_new();
 	curve->seed->seed = random_int(160);
 	return 1;
 }
 
-int seed_argument(curve_t *curve, config_t *cfg, arg_t *args) {
+int seed_argument(curve_t *curve, const config_t *cfg, arg_t *args) {
 	curve->seed = seed_new();
 	curve->seed->seed = seed_stoi(cfg->seed);
 	return 1;
 }
 
-int seed_input(curve_t *curve, config_t *cfg, arg_t *args) {
+int seed_input(curve_t *curve, const config_t *cfg, arg_t *args) {
 	pari_sp ltop = avma;
 
 	GEN str = input_string("seed:");

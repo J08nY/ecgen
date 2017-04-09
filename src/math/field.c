@@ -3,15 +3,12 @@
  * Copyright (C) 2017 J08nY
  */
 #include "field.h"
-#include <io/cli.h>
 #include "io/input.h"
 #include "poly.h"
-#include "random.h"
-#include "types.h"
 
-static GEN field_primer(long bits) { return random_prime(bits); }
+static GEN field_primer(unsigned long bits) { return random_prime(bits); }
 
-static GEN field_binaryr(long bits) {
+static GEN field_binaryr(unsigned long bits) {
 	if (poly_exists(bits)) {
 		return poly_find_gen(bits);
 	} else {
@@ -21,7 +18,7 @@ static GEN field_binaryr(long bits) {
 	}
 }
 
-int field_random(curve_t *curve, config_t *cfg, arg_t *args) {
+int field_random(curve_t *curve, const config_t *cfg, arg_t *args) {
 	switch (cfg->field) {
 		case FIELD_PRIME:
 			curve->field = field_primer(cfg->bits);
@@ -34,7 +31,7 @@ int field_random(curve_t *curve, config_t *cfg, arg_t *args) {
 	}
 }
 
-int field_input(curve_t *curve, config_t *cfg, arg_t *args) {
+int field_input(curve_t *curve, const config_t *cfg, arg_t *args) {
 	pari_sp ltop = avma;
 	switch (cfg->field) {
 		case FIELD_PRIME: {
@@ -100,7 +97,7 @@ int field_input(curve_t *curve, config_t *cfg, arg_t *args) {
 static GEN field = NULL;
 static curve_t *curve_field = NULL;
 
-int field_once(curve_t *curve, config_t *cfg, arg_t *args) {
+int field_once(curve_t *curve, const config_t *cfg, arg_t *args) {
 	if (field && curve_field == curve) {
 		curve->field = gcopy(field);
 		return 1;

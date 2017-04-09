@@ -40,6 +40,9 @@ typedef struct {
 
 	char *datadir;
 	unsigned long memory;
+	unsigned long threads;
+	unsigned long thread_memory;
+
 	enum format_e format;
 	char *output;
 	char *input;
@@ -48,7 +51,7 @@ typedef struct {
 	long verbose;
 	char *debug;
 
-	long bits;
+	unsigned long bits;
 
 } config_t;
 

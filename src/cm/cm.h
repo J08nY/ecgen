@@ -5,11 +5,11 @@
 /**
  * @file cm.h
  */
-#include "io/cli.h"
-#include "io/config.h"
-
 #ifndef ECGEN_CM_H
 #define ECGEN_CM_H
+
+#include "io/cli.h"
+#include "io/config.h"
 
 /**
  *

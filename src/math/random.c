@@ -35,7 +35,7 @@ bool random_init(void) {
 	return true;
 }
 
-GEN random_prime(long bits) {
+GEN random_prime(unsigned long bits) {
 	pari_sp ltop = avma;
 
 	GEN range = gtovec0(gen_0, 2);
@@ -54,7 +54,7 @@ GEN random_prime(long bits) {
 	return gerepilecopy(ltop, p);
 }
 
-GEN random_int(long bits) {
+GEN random_int(unsigned long bits) {
 	pari_sp ltop = avma;
 
 	GEN range = gtovec0(gen_0, 2);

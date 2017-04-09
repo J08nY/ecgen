@@ -14,7 +14,7 @@
  * @brief
  * @return
  */
-arg_t *arg_new();
+arg_t *arg_new(void);
 
 /**
  * @brief

@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "point.h"
+#include "types.h"
 
 point_t *point_new(void) {
 	point_t *point = pari_malloc(sizeof(point_t));
@@ -21,8 +22,34 @@ point_t *point_copy(const point_t *src, point_t *dest) {
 	return dest;
 }
 
+point_t *point_new_copy(const point_t *src) {
+	point_t *result = point_new();
+	return point_copy(src, result);
+}
+
+point_t *point_clone(const point_t *src, point_t *dest) {
+	if (src->point) dest->point = gclone(src->point);
+	if (src->order) dest->order = gclone(src->order);
+	if (src->cofactor) dest->cofactor = gclone(src->cofactor);
+	return dest;
+}
+
+point_t *point_new_clone(const point_t *src) {
+	point_t *result = point_new();
+	return point_clone(src, result);
+}
+
 void point_free(point_t **point) {
 	if (*point) {
+		if ((*point)->point && isclone((*point)->point)) {
+			gunclone((*point)->point);
+		}
+		if ((*point)->order && isclone((*point)->order)) {
+			gunclone((*point)->order);
+		}
+		if ((*point)->cofactor && isclone((*point)->cofactor)) {
+			gunclone((*point)->cofactor);
+		}
 		pari_free(*point);
 		*point = NULL;
 	}
@@ -38,12 +65,28 @@ point_t **points_new(size_t num) {
 	return points;
 }
 
-point_t **points_copy(point_t **src, point_t **dest, size_t num) {
+point_t **points_copy(point_t **const src, point_t **dest, size_t num) {
 	for (size_t i = 0; i < num; ++i) {
-		dest[i] = point_new();
-		dest[i] = point_copy(src[i], dest[i]);
+		dest[i] = point_new_copy(src[i]);
 	}
 	return dest;
+}
+
+point_t **points_new_copy(point_t **const src, size_t num) {
+	point_t **result = points_new(num);
+	return points_copy(src, result, num);
+}
+
+point_t **points_clone(point_t **const src, point_t **dest, size_t num) {
+	for (size_t i = 0; i < num; ++i) {
+		dest[i] = point_new_clone(src[i]);
+	}
+	return dest;
+}
+
+point_t **points_new_clone(point_t **const src, size_t num) {
+	point_t **result = points_new(num);
+	return points_clone(src, result, num);
 }
 
 void points_free(point_t ***points) {
@@ -62,7 +105,7 @@ void points_free_deep(point_t ***points, size_t npoints) {
 	}
 }
 
-int point_random(curve_t *curve, config_t *cfg, arg_t *args) {
+int point_random(curve_t *curve, const config_t *cfg, arg_t *args) {
 	points_free_deep(&curve->points, curve->npoints);
 
 	point_t *p = point_new();
@@ -75,7 +118,7 @@ int point_random(curve_t *curve, config_t *cfg, arg_t *args) {
 	return 1;
 }
 
-int points_random(curve_t *curve, config_t *cfg, arg_t *args) {
+int points_random(curve_t *curve, const config_t *cfg, arg_t *args) {
 	if (!args) {
 		fprintf(stderr, "No args to an arged function. points_random");
 		return INT_MIN;
@@ -111,7 +154,7 @@ int points_random(curve_t *curve, config_t *cfg, arg_t *args) {
     }
  */
 
-int points_trial(curve_t *curve, config_t *cfg, arg_t *args) {
+int points_trial(curve_t *curve, const config_t *cfg, arg_t *args) {
 	// TODO stack code!!!
 	if (!args) {
 		fprintf(stderr, "No args to an arged function. points_trial");
@@ -150,7 +193,7 @@ int points_trial(curve_t *curve, config_t *cfg, arg_t *args) {
 	return 1;
 }
 
-int points_prime(curve_t *curve, config_t *cfg, arg_t *args) {
+int points_prime(curve_t *curve, const config_t *cfg, arg_t *args) {
 	// TODO stack code!!!
 	points_free_deep(&curve->points, curve->npoints);
 

@@ -10,7 +10,7 @@ CC ?= gcc
 CFLAGS = -Wall
 DEBUG ?= 1
 ifeq (DEBUG, 1)
-    CFLAGS += -g -DDEBUG
+    CFLAGS += -g -DDEBUG -v
 else
     CFLAGS += -O3 -DNDEBUG
 endif
@@ -26,7 +26,7 @@ VPATH = cm:invalid:io:exhaustive:math
 ECGEN_SRC = ecgen.c $(wildcard */*.c)
 ECGEN_OBJ = $(patsubst %.c,%.o, $(ECGEN_SRC))
 
-ECONVERT_SRC = econvert.c $(wildcard */*.c)
+ECONVERT_SRC = econvert.c
 ECONVERT_OBJ = $(patsubst %.c,%.o, $(ECONVERT_SRC))
 
 SRC = $(wildcard *.c) $(wildcard */*.c)

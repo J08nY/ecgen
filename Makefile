@@ -14,6 +14,7 @@ clean:
 clean-all:
 	+$(MAKE) -C lib clean
 	+$(MAKE) -C src clean-all
+	rm -rf doc/*
 
 docs:
 	doxygen Doxyfile

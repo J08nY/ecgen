@@ -4,12 +4,17 @@
  */
 #include "order.h"
 
-int order_any(curve_t *curve, config_t *cfg, arg_t *args) {
-	curve->order = ellff_get_card(curve->curve);
+int order_any(curve_t *curve, const config_t *cfg, arg_t *args) {
+	GEN ord = ellff_get_card(curve->curve);
+	if (isclone(ord)) {
+		curve->order = gcopy(ord);
+	} else {
+		curve->order = ord;
+	}
 	return 1;
 }
 
-int order_smallfact(curve_t *curve, config_t *cfg, arg_t *args) {
+int order_smallfact(curve_t *curve, const config_t *cfg, arg_t *args) {
 	if (!args) {
 		fprintf(stderr, "No args to an arged function. order_smallfact");
 		return INT_MIN;
@@ -34,7 +39,7 @@ int order_smallfact(curve_t *curve, config_t *cfg, arg_t *args) {
 	}
 }
 
-int order_prime(curve_t *curve, config_t *cfg, arg_t *args) {
+int order_prime(curve_t *curve, const config_t *cfg, arg_t *args) {
 	pari_sp ltop = avma;
 	GEN order = ellsea(curve->curve, 1);
 	if (gequal0(order) || !(isprime(order))) {

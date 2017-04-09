@@ -11,7 +11,7 @@
 FILE *out;
 FILE *debug;
 
-char *output_scsv(curve_t *curve, config_t *cfg) {
+char *output_scsv(curve_t *curve, const config_t *cfg) {
 	pari_sp ltop = avma;
 	GEN vector = curve_params(curve);
 
@@ -48,15 +48,18 @@ char *output_scsv(curve_t *curve, config_t *cfg) {
 	return result;
 }
 
-void output_fcsv(FILE *out, curve_t *curve, config_t *cfg) {
+void output_fcsv(FILE *out, curve_t *curve, const config_t *cfg) {
 	char *string = output_scsv(curve, cfg);
 	fprintf(out, "%s\n", string);
+	fflush(out);
 	free(string);
 }
 
-void output_csv(curve_t *curve, config_t *cfg) { output_fcsv(out, curve, cfg); }
+void output_csv(curve_t *curve, const config_t *cfg) {
+	output_fcsv(out, curve, cfg);
+}
 
-static JSON_Value *output_jjson(curve_t *curve, config_t *cfg) {
+static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 	pari_sp ltop = avma;
 	// root object/value is curve
 	JSON_Value *root_value = json_value_init_object();
@@ -99,7 +102,7 @@ static JSON_Value *output_jjson(curve_t *curve, config_t *cfg) {
 	char *order = pari_sprintf("%P#x", curve->order);
 	json_object_set_string(root_object, "order", order);
 	pari_free(order);
-	if (curve->generators) {
+	if (curve->ngens) {
 		JSON_Value *gens_value = json_value_init_array();
 		JSON_Array *gens_array = json_value_get_array(gens_value);
 
@@ -166,7 +169,7 @@ static JSON_Value *output_jjson(curve_t *curve, config_t *cfg) {
 	return root_value;
 }
 
-char *output_sjson(curve_t *curve, config_t *cfg) {
+char *output_sjson(curve_t *curve, const config_t *cfg) {
 	JSON_Value *root_value = output_jjson(curve, cfg);
 	char *result = json_serialize_to_string_pretty(root_value);
 	json_value_free(root_value);
@@ -174,17 +177,18 @@ char *output_sjson(curve_t *curve, config_t *cfg) {
 	return result;
 }
 
-void output_fjson(FILE *out, curve_t *curve, config_t *cfg) {
+void output_fjson(FILE *out, curve_t *curve, const config_t *cfg) {
 	char *s = output_sjson(curve, cfg);
 	fprintf(out, "%s\n", s);
+	fflush(out);
 	json_free_serialized_string(s);
 }
 
-void output_json(curve_t *curve, config_t *cfg) {
+void output_json(curve_t *curve, const config_t *cfg) {
 	output_fjson(out, curve, cfg);
 }
 
-void output_init(config_t *cfg) {
+void output_init(const config_t *cfg) {
 	json_set_allocation_functions(pari_malloc, pari_free);
 
 	if (cfg->output) {

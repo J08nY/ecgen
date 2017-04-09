@@ -23,26 +23,26 @@ typedef struct {
  * @param m
  * @return
  */
-bool poly_exists(long m);
+bool poly_exists(unsigned long m);
 /**
  *
  * @param m
  * @return
  */
-polynomial_t *poly_find(long m);
+polynomial_t *poly_find(unsigned long m);
 
 /**
  *
  * @param m
  * @return
  */
-GEN poly_find_gen(long m);
+GEN poly_find_gen(unsigned long m);
 
 /**
  *
  * @param polynomial
  * @return
  */
-GEN poly_gen(polynomial_t *polynomial);
+GEN poly_gen(const polynomial_t *polynomial);
 
 #endif  // ECGEN_POLY_H

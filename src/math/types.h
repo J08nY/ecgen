@@ -33,7 +33,7 @@ typedef struct {
 	size_t npoints;
 } curve_t;
 
-enum curve_offset {
+typedef enum {
 	OFFSET_SEED,
 	OFFSET_FIELD,
 	OFFSET_A,
@@ -43,14 +43,14 @@ enum curve_offset {
 	OFFSET_GENERATORS,
 	OFFSET_POINTS,
 	OFFSET_END
-};
+} offset_e;
 
 typedef struct {
 	void *args;
 	size_t nargs;
 } arg_t;
 
-typedef int (*gen_t)(curve_t *, config_t *, arg_t *);
+typedef int (*gen_t)(curve_t *, const config_t *, arg_t *);
 
 /**
  * @brief
@@ -59,6 +59,6 @@ typedef int (*gen_t)(curve_t *, config_t *, arg_t *);
  * @param args
  * @return
  */
-int gen_skip(curve_t *curve, config_t *cfg, arg_t *args);
+int gen_skip(curve_t *curve, const config_t *cfg, arg_t *args);
 
 #endif  // ECGEN_TYPES_H
