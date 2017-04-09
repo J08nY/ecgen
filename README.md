@@ -20,9 +20,9 @@ Tool for generating Elliptic curve domain parameters.
  - `-n`, `--order=ORDER`	Generate a curve with given `ORDER` (using Complex Multiplication).
  - `-p`, `--prime`			Generate a curve with prime order.
  - `--points=TYPE`			Generate points of given `TYPE` (random/prime/none).
- - `r`, `--random`			Generate a random curve (using Random approach).
- - `s`, `--seed[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
- - `u`, `--unique`			Generate a curve with only one generator.
+ - `-r`, `--random`			Generate a random curve (using Random approach).
+ - `-s`, `--seed[=SEED]`	Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
+ - `-u`, `--unique`			Generate a curve with only one generator.
 
 #### IO options
 
@@ -36,6 +36,7 @@ Tool for generating Elliptic curve domain parameters.
 
  - `-d`, `--data-dir=DIR`	Set PARI/GP data directory (containing seadata package).
  - `-m`, `--memory=SIZE`	Use PARI stack of `SIZE` (can have suffix k/m/g).
+ - `--thread-stack=SIZE`	Use PARI stack of `SIZE` (per thread, can have suffix k/m/g).
  - `--threads=NUM`			Use `NUM` threads.
 
 #### Examples
