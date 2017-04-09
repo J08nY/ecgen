@@ -112,7 +112,7 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 				// whoo we have a new invalid curve
 				if (!total && cfg->verbose) {
 					fprintf(
-					    debug,
+					    verbose,
 					    "we have a new one, calculating prime order points.\n");
 				}
 				total++;
@@ -129,7 +129,7 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 			for (size_t i = 0; i < nprimes; ++i) {
 				if (curves[i] == NULL && dvdis(invalid->order, primes[i])) {
 					if (cfg->verbose) {
-						fprintf(debug, "prime %lu divides curve order.\n",
+						fprintf(verbose, "prime %lu divides curve order.\n",
 						        primes[i]);
 					}
 					dprimes[j++] = primes[i];
@@ -168,10 +168,11 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 			invalid->a = gcopy(curve->a);
 
 			if (cfg->verbose) {
-				fprintf(debug,
+				fprintf(verbose,
 				        "curve saved: %lu primes from range divide order.\n",
 				        total);
-				fprintf(debug, "curves done: %lu out of %lu needed. %.0f%% \n",
+				fprintf(verbose,
+				        "curves done: %lu out of %lu needed. %.0f%% \n",
 				        ncurves, nprimes, ((float)(ncurves) / nprimes) * 100);
 			}
 		} else {
@@ -199,12 +200,13 @@ static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
 
 	size_t generated = 0;
 	state_e states[nprimes];
+	state_e old_states[nprimes];
 	curve_t *local_curves[nprimes];
 	for (size_t i = 0; i < nprimes; ++i) {
 		states[i] = STATE_FREE;
+		old_states[i] = STATE_FREE;
 	}
 	pthread_mutex_t state_mutex = PTHREAD_MUTEX_INITIALIZER;
-	pthread_mutex_t curves_mutex = PTHREAD_MUTEX_INITIALIZER;
 	pthread_cond_t generated_cond = PTHREAD_COND_INITIALIZER;
 
 	for (size_t i = 0; i < cfg->threads; ++i) {
@@ -215,7 +217,6 @@ static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
 		threads[i].curves = local_curves;
 		threads[i].generated = &generated;
 		threads[i].mutex_state = &state_mutex;
-		threads[i].mutex_curves = &curves_mutex;
 		threads[i].cond_generated = &generated_cond;
 		threads[i].cfg = cfg;
 		threads[i].gens = invalid_gen;
@@ -224,10 +225,26 @@ static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
 		                  (GEN)&threads[i]);
 	}
 
+	pthread_mutex_lock(&state_mutex);
 	for (size_t i = 0; i < cfg->threads; ++i) {
 		pthread_create(&pthreads[i], NULL, &invalid_thread,
 		               (void *)&pari_threads[i]);
 	}
+
+	bool running = true;
+	do {
+		pthread_cond_wait(&generated_cond, &state_mutex);
+		debug("here %lu\n", generated);
+		for (size_t i = 0; i < nprimes; ++i) {
+			if (old_states[i] != states[i] && states[i] == STATE_GENERATED) {
+				output_o(local_curves[i], cfg);
+				old_states[i] = states[i];
+			}
+		}
+
+		if (generated == nprimes) running = false;
+		pthread_mutex_unlock(&state_mutex);
+	} while (running);
 
 	for (size_t i = 0; i < cfg->threads; ++i) {
 		pthread_join(pthreads[i], NULL);
@@ -241,6 +258,8 @@ static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
 	for (size_t i = 0; i < cfg->threads; ++i) {
 		pari_thread_free(&pari_threads[i]);
 	}
+	pthread_mutex_destroy(&state_mutex);
+	pthread_cond_destroy(&generated_cond);
 
 	return generated;
 }
@@ -265,7 +284,7 @@ int invalid_do(config_t *cfg) {
 	pari_ulong *primes;
 	size_t nprimes = invalid_primes(curve->order, &primes);
 	if (cfg->verbose) {
-		fprintf(debug, "primes upto: p_max = %lu, n = %lu\n",
+		fprintf(verbose, "primes upto: p_max = %lu, n = %lu\n",
 		        primes[nprimes - 1], nprimes);
 	}
 

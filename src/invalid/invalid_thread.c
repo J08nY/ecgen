@@ -31,9 +31,7 @@ void *invalid_thread(void *arg) {
 				ndivides++;
 			}
 		}
-#ifdef DEBUG
-		printf("ndivides = %lu\n", ndivides);
-#endif
+		debug("ndivides = %lu\n", ndivides);
 		if (ndivides > 0) {
 			pthread_mutex_lock(thread->mutex_state);
 			size_t nfree = 0;
@@ -48,9 +46,7 @@ void *invalid_thread(void *arg) {
 					nfree++;
 				}
 			}
-#ifdef DEBUG
-			printf("nfree = %lu\n", nfree);
-#endif
+			debug("nfree = %lu\n", nfree);
 			pthread_mutex_unlock(thread->mutex_state);
 
 			if (nfree > 0) {
@@ -59,33 +55,23 @@ void *invalid_thread(void *arg) {
 				exhaustive_gen(invalid, thread->cfg, thread->gens,
 				               invalid_argss, OFFSET_GENERATORS, OFFSET_END);
 
-				pthread_mutex_lock(thread->mutex_curves);
 				pthread_mutex_lock(thread->mutex_state);
 				size_t count = 0;
 				for (size_t i = thread->nprimes; i-- > 0;) {
 					if (count < nprimes && primes[count] == thread->primes[i]) {
-#ifdef DEBUG
-						printf("[i] = %lu, prime = %lu\n", i, primes[count]);
-						printf("state = %i\n", thread->states[i]);
-#endif
+						debug("[i] = %lu, prime = %lu\n", i, primes[count]);
+						debug("state = %i\n", thread->states[i]);
 						thread->states[i] = STATE_GENERATED;
 						thread->curves[i] = curve_new_copy(invalid);
-
-						output_o(thread->curves[i], thread->cfg);
 						count++;
 					}
 				}
-#ifdef DEBUG
-				printf("count = %lu, generated = %lu\n", count,
-				       *(thread->generated));
-#endif
+				debug("count = %lu, generated = %lu\n", count,
+				      *(thread->generated));
 				*(thread->generated) += count;
-#ifdef DEBUG
-				printf("generated = %lu\n", *(thread->generated));
-#endif
-				// pthread_cond_signal(thread->cond_generated);
+				debug("generated = %lu\n", *(thread->generated));
+				pthread_cond_signal(thread->cond_generated);
 				pthread_mutex_unlock(thread->mutex_state);
-				pthread_mutex_unlock(thread->mutex_curves);
 
 				invalid = curve_new();
 				invalid->field = gcopy(thread->original_curve->field);

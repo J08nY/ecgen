@@ -151,17 +151,16 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 
 		if (cfg->verbose) {
 			if (diff > 0) {
-				fprintf(debug, "+");
+				fprintf(verbose, "+");
 			} else if (diff < 0) {
-				fprintf(debug, "-");
+				fprintf(verbose, "-");
 			} else {
-				fprintf(debug, ".");
+				fprintf(verbose, ".");
 			}
-			fflush(debug);
 		}
 	}
 
-	if (cfg->verbose) fprintf(debug, "\n");
+	if (cfg->verbose) fprintf(verbose, "\n");
 
 	return 1;
 }

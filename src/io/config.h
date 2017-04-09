@@ -49,7 +49,7 @@ typedef struct {
 	bool append;
 
 	long verbose;
-	char *debug;
+	char *verbose_log;
 
 	unsigned long bits;
 

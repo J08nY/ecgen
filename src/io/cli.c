@@ -149,7 +149,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 		case OPT_VERBOSE:
 			cfg->verbose++;
 			if (arg) {
-				cfg->debug = arg;
+				cfg->verbose_log = arg;
 			}
 			break;
 		case OPT_RANDOM:

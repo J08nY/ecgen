@@ -89,7 +89,7 @@ extern FILE *out;
 /**
  *
  */
-extern FILE *debug;
+extern FILE *verbose;
 
 /**
  *
@@ -101,5 +101,11 @@ void output_init(const config_t *cfg);
  *
  */
 void output_quit(void);
+
+#ifdef DEBUG
+#define debug(fmt, ...) fprintf(out, fmt, ##__VA_ARGS__)
+#else
+#define debug(fmt, ...)
+#endif
 
 #endif  // ECGEN_OUTPUT_H

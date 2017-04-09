@@ -9,7 +9,7 @@
 #include "math/field.h"
 
 FILE *out;
-FILE *debug;
+FILE *verbose;
 
 char *output_scsv(curve_t *curve, const config_t *cfg) {
 	pari_sp ltop = avma;
@@ -51,7 +51,6 @@ char *output_scsv(curve_t *curve, const config_t *cfg) {
 void output_fcsv(FILE *out, curve_t *curve, const config_t *cfg) {
 	char *string = output_scsv(curve, cfg);
 	fprintf(out, "%s\n", string);
-	fflush(out);
 	free(string);
 }
 
@@ -180,7 +179,6 @@ char *output_sjson(curve_t *curve, const config_t *cfg) {
 void output_fjson(FILE *out, curve_t *curve, const config_t *cfg) {
 	char *s = output_sjson(curve, cfg);
 	fprintf(out, "%s\n", s);
-	fflush(out);
 	json_free_serialized_string(s);
 }
 
@@ -202,16 +200,16 @@ void output_init(const config_t *cfg) {
 		out = stdout;
 	}
 	setvbuf(out, NULL, _IONBF, 0);
-	if (cfg->debug) {
-		debug = fopen(cfg->debug, "w");
-		if (!debug) {
-			debug = stdout;
+	if (cfg->verbose_log) {
+		verbose = fopen(cfg->verbose_log, "w");
+		if (!verbose) {
+			verbose = stdout;
 			perror("Failed to open verbose output file.");
 		}
 	} else {
-		debug = stdout;
+		verbose = stdout;
 	}
-	setvbuf(debug, NULL, _IONBF, 0);
+	setvbuf(verbose, NULL, _IONBF, 0);
 
 	switch (cfg->format) {
 		case FORMAT_JSON:

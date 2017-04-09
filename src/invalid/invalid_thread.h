@@ -22,7 +22,6 @@ typedef struct {
 	curve_t **curves;
 	size_t *generated;
 	pthread_mutex_t *mutex_state;
-	pthread_mutex_t *mutex_curves;
 	pthread_cond_t *cond_generated;
 	config_t *cfg;
 	gen_t *gens;
