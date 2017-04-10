@@ -103,7 +103,7 @@ void output_init(const config_t *cfg);
 void output_quit(void);
 
 #ifdef DEBUG
-#define debug(...) fprintf(out, ##__VA_ARGS__)
+#define debug(...) fprintf(out, __VA_ARGS__)
 #else
 #define debug(...)
 #endif
