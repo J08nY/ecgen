@@ -178,11 +178,8 @@ GEN curve_params(const curve_t *curve) {
 	if (curve->b) result = gconcat(result, field_elementi(curve->b));
 	if (curve->generators) {
 		for (size_t i = 0; i < curve->ngens; ++i) {
-			GEN point =
-			    gconcat(field_elementi(gel(curve->generators[i]->point, 1)),
-			            field_elementi(gel(curve->generators[i]->point, 2)));
-			GEN x = field_elementi(gel(point, 1));
-			GEN y = field_elementi(gel(point, 2));
+			GEN x = field_elementi(gel(curve->generators[i]->point, 1));
+			GEN y = field_elementi(gel(curve->generators[i]->point, 2));
 			result = gconcat(result, x);
 			result = gconcat(result, y);
 			result = gconcat(result, curve->generators[i]->order);
@@ -194,11 +191,8 @@ GEN curve_params(const curve_t *curve) {
 	if (curve->order) result = gconcat(result, gtovec(curve->order));
 	if (curve->points) {
 		for (size_t i = 0; i < curve->npoints; ++i) {
-			GEN point =
-			    gconcat(field_elementi(gel(curve->points[i]->point, 1)),
-			            field_elementi(gel(curve->points[i]->point, 2)));
-			GEN x = field_elementi(gel(point, 1));
-			GEN y = field_elementi(gel(point, 2));
+			GEN x = field_elementi(gel(curve->points[i]->point, 1));
+			GEN y = field_elementi(gel(curve->points[i]->point, 2));
 			result = gconcat(result, x);
 			result = gconcat(result, y);
 			result = gconcat(result, curve->points[i]->order);
