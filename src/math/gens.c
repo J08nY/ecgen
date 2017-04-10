@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "gens.h"
+#include "io/output.h"
 #include "point.h"
 
 static int gens_put(curve_t *curve, GEN generators, long len) {
@@ -37,4 +38,11 @@ int gens_one(curve_t *curve, const config_t *cfg, arg_t *args) {
 		return -5;
 	}
 	return gens_put(curve, generators, len);
+}
+
+int gens_unroll(curve_t *curve, const config_t *cfg, pari_sp from, pari_sp to) {
+	if (curve->generators) {
+		points_free_deep(&curve->generators, curve->ngens);
+	}
+	return -1;
 }

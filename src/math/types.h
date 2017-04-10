@@ -46,19 +46,31 @@ typedef enum {
 } offset_e;
 
 typedef struct {
-	void *args;
+	const void *args;
 	size_t nargs;
 } arg_t;
 
 typedef int (*gen_t)(curve_t *, const config_t *, arg_t *);
 
+typedef int (*unroll_t)(curve_t *, const config_t *, pari_sp, pari_sp);
+
 /**
- * @brief
+ *
  * @param curve
  * @param config
  * @param args
  * @return
  */
 int gen_skip(curve_t *curve, const config_t *cfg, arg_t *args);
+
+/**
+ *
+ * @param curve
+ * @param cfg
+ * @param from
+ * @param to
+ * @return
+ */
+int unroll_skip(curve_t *curve, const config_t *cfg, pari_sp from, pari_sp to);
 
 #endif  // ECGEN_TYPES_H

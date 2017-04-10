@@ -34,7 +34,7 @@ int order_smallfact(curve_t *curve, const config_t *cfg, arg_t *args) {
 		return -4;
 	} else {
 		curve->order = order;
-		obj_insert_shallow(curve->curve, 1, curve->order);
+		obj_insert(curve->curve, 1, curve->order);
 		return 1;
 	}
 }
@@ -47,7 +47,7 @@ int order_prime(curve_t *curve, const config_t *cfg, arg_t *args) {
 		return -4;
 	} else {
 		curve->order = order;
-		obj_insert_shallow(curve->curve, 1, curve->order);
+		obj_insert(curve->curve, 1, curve->order);
 		return 1;
 	}
 }

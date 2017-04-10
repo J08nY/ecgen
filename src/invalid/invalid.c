@@ -101,7 +101,7 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 	while (ncurves < nprimes) {
 		pari_sp btop = avma;
 		// generate a curve with random b
-		exhaustive_gen(invalid, cfg, invalid_gen, NULL, OFFSET_B,
+		exhaustive_gen(invalid, cfg, invalid_gen, NULL, NULL, OFFSET_B,
 		               OFFSET_GENERATORS);
 
 		// does some small prime from our array divide the curve order?
@@ -140,7 +140,7 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 
 			// generate prime order points, this is expensive (order needs to be
 			// factorised, so only do it if we want the curve)
-			exhaustive_gen(invalid, cfg, invalid_gen, invalid_argss,
+			exhaustive_gen(invalid, cfg, invalid_gen, invalid_argss, NULL,
 			               OFFSET_GENERATORS, OFFSET_END);
 
 			size_t count = 0;
@@ -269,14 +269,16 @@ int invalid_do(config_t *cfg) {
 
 	gen_t gen[OFFSET_END];
 	arg_t *argss[OFFSET_END];
+	unroll_t unrolls[OFFSET_END];
 	invalid_original_ginit(gen, cfg);
+	exhaustive_uinit(unrolls, cfg);
 
 	// create the curve to invalidate
 	// Either from input or random with -
 	curve_t *curve = curve_new();
 	// actually generate the curve
-	if (!exhaustive_gen_retry(curve, cfg, gen, argss, OFFSET_FIELD,
-	                          OFFSET_POINTS, 1)) {
+	if (!exhaustive_gen(curve, cfg, gen, argss, NULL, OFFSET_FIELD,
+	                    OFFSET_POINTS)) {
 		curve_free(&curve);
 		return 1;
 	}

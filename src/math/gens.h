@@ -29,4 +29,14 @@ int gens_any(curve_t *curve, const config_t *cfg, arg_t *args);
  */
 int gens_one(curve_t *curve, const config_t *cfg, arg_t *args);
 
+/**
+ *
+ * @param curve
+ * @param cfg
+ * @param from
+ * @param to
+ * @return
+ */
+int gens_unroll(curve_t *curve, const config_t *cfg, pari_sp from, pari_sp to);
+
 #endif  // ECGEN_GENS_H

@@ -5,8 +5,8 @@
 #include "curve.h"
 #include "exhaustive/seed.h"
 #include "field.h"
+#include "io/output.h"
 #include "point.h"
-#include "types.h"
 
 curve_t *curve_new(void) {
 	curve_t *curve = pari_malloc(sizeof(curve_t));
@@ -159,6 +159,15 @@ int curve_seed(curve_t *curve, const config_t *cfg, arg_t *args) {
 			pari_err_TYPE("curve_seed", curve->field);
 			return INT_MIN; /* NOT REACHABLE */
 	}
+}
+
+int curve_unroll(curve_t *curve, const config_t *cfg, pari_sp from,
+                 pari_sp to) {
+	if (curve->curve) {
+		obj_free(curve->curve);
+		curve->curve = NULL;
+	}
+	return -1;
 }
 
 GEN curve_params(const curve_t *curve) {

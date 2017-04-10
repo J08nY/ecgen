@@ -22,8 +22,8 @@ void *invalid_thread(void *arg) {
 
 	while (*thread->generated < thread->nprimes) {
 		pari_sp btop = avma;
-		exhaustive_gen(invalid, thread->cfg, thread->gens, NULL, OFFSET_B,
-		               OFFSET_GENERATORS);
+		exhaustive_gen(invalid, thread->cfg, thread->gens, NULL,
+		               thread->unrolls, OFFSET_B, OFFSET_GENERATORS);
 		size_t ndivides = 0;
 		for (size_t i = thread->nprimes; i-- > 0;) {
 			if (dvdis(invalid->order, thread->primes[i])) {
@@ -53,7 +53,8 @@ void *invalid_thread(void *arg) {
 				arg_t prime_divisors = {primes, nprimes};
 				invalid_argss[OFFSET_POINTS] = &prime_divisors;
 				exhaustive_gen(invalid, thread->cfg, thread->gens,
-				               invalid_argss, OFFSET_GENERATORS, OFFSET_END);
+				               invalid_argss, thread->unrolls,
+				               OFFSET_GENERATORS, OFFSET_END);
 
 				pthread_mutex_lock(thread->mutex_state);
 				size_t count = 0;
@@ -77,11 +78,11 @@ void *invalid_thread(void *arg) {
 				invalid->field = gcopy(thread->original_curve->field);
 				invalid->a = gcopy(thread->original_curve->a);
 			} else {
-				obj_free(invalid->curve);  // necessary to free the ellinit
+				curve_unroll(invalid, thread->cfg, avma, btop);
 				avma = btop;
 			}
 		} else {
-			obj_free(invalid->curve);  // necessary to free the ellinit
+			curve_unroll(invalid, thread->cfg, avma, btop);
 			avma = btop;
 		}
 	}

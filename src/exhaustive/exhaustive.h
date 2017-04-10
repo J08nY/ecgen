@@ -12,17 +12,25 @@
 
 /**
  *
+ * @param unrolls
+ * @param cfg
+ */
+void exhaustive_uinit(unroll_t *unrolls, const config_t *cfg);
+
+/**
+ *
  * @param curve
  * @param cfg
  * @param generators
  * @param argss
+ * @param unrolls
  * @param start_offset
  * @param end_offset
  * @param retry
  * @return
  */
 int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
-                         gen_t generators[], arg_t *argss[],
+                         gen_t generators[], arg_t *argss[], unroll_t unrolls[],
                          offset_e start_offset, offset_e end_offset, int retry);
 
 /**
@@ -31,12 +39,14 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
  * @param config
  * @param generators
  * @param argss
+ * @param unrolls
  * @param start_offset
  * @param end_offset
  * @return
  */
 int exhaustive_gen(curve_t *curve, const config_t *cfg, gen_t generators[],
-                   arg_t *argss[], offset_e start_offset, offset_e end_offset);
+                   arg_t *argss[], unroll_t unrolls[], offset_e start_offset,
+                   offset_e end_offset);
 
 /**
  *

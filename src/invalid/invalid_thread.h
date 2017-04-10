@@ -25,6 +25,7 @@ typedef struct {
 	pthread_cond_t *cond_generated;
 	config_t *cfg;
 	gen_t *gens;
+	unroll_t *unrolls;
 } thread_t;
 
 /**

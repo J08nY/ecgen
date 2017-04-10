@@ -50,6 +50,16 @@ int curve_nonzero(curve_t *curve, const config_t *cfg, arg_t *args);
 int curve_seed(curve_t *curve, const config_t *cfg, arg_t *args);
 
 /**
+ *
+ * @param curve
+ * @param cfg
+ * @param from
+ * @param to
+ * @return
+ */
+int curve_unroll(curve_t *curve, const config_t *cfg, pari_sp from, pari_sp to);
+
+/**
  * Serializes curve parameters into a t_VEC:
  * - prime field:
  * 	p,a,b,order,(point.x, point.y, point.order)*
