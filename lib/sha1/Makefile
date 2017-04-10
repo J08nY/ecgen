@@ -1,12 +1,12 @@
-CC=gcc
-CCFLAGS=-Wall
-LDFLAGS=
+CC ?= gcc
+CCFLAGS = -Wall
+LDFLAGS =
 
-SOURCES=$(wildcard *.c)
-OBJECTS=$(SOURCES:.c=.o)
+SOURCES = $(wildcard *.c)
+OBJECTS = $(SOURCES:.c=.o)
 
-TARGET=sha1
-A=libsha1.a
+TARGET = sha1
+A = libsha1.a
 
 all: $(TARGET)
 
@@ -21,7 +21,6 @@ $(A): $(OBJECTS)
 
 %.o: %.c
 	$(CC) $(CCFLAGS) -c $<
-
 
 clean:
 	rm -f *.o *.a $(TARGET)
