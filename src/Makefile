@@ -9,10 +9,10 @@ CC ?= gcc
 
 CFLAGS = -Wall
 DEBUG ?= 1
-ifeq (DEBUG, 1)
-    CFLAGS += -g -DDEBUG -v
+ifeq ($(DEBUG), 1)
+    CFLAGS += -DDEBUG -g -Werror -pedantic
 else
-    CFLAGS += -O3 -DNDEBUG
+    CFLAGS += -DNDEBUG -O3
 endif
 LDFLAGS = -L../lib/parson -L../lib/sha1 -L../lib/pari
 
