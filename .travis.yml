@@ -25,6 +25,7 @@ before_install:
 
 script:
   - make -j2
+  - make test
 
 deploy:
   provider: releases

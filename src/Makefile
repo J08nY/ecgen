@@ -8,7 +8,7 @@
 CC ?= gcc
 
 CFLAGS = -Wall
-DEBUG ?= 1
+DEBUG ?= 0
 ifeq ($(DEBUG), 1)
     CFLAGS += -DDEBUG -g -Werror -pedantic
 else
