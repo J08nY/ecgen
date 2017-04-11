@@ -87,7 +87,7 @@ static size_t invalid_primes(GEN order, pari_ulong **primes) {
 
 static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
                              size_t nprimes, curve_t **curves,
-                             gen_t invalid_gen[OFFSET_END]) {
+                             gen_t invalid_gen[], unroll_t unrolls[]) {
 	arg_t *invalid_argss[OFFSET_END];
 
 	// Alloc a curve, and only alloc a new one when this pointer is saved into
@@ -101,7 +101,7 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 	while (ncurves < nprimes) {
 		pari_sp btop = avma;
 		// generate a curve with random b
-		exhaustive_gen(invalid, cfg, invalid_gen, NULL, NULL, OFFSET_B,
+		exhaustive_gen(invalid, cfg, invalid_gen, NULL, unrolls, OFFSET_B,
 		               OFFSET_GENERATORS);
 
 		// does some small prime from our array divide the curve order?
@@ -140,7 +140,7 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 
 			// generate prime order points, this is expensive (order needs to be
 			// factorised, so only do it if we want the curve)
-			exhaustive_gen(invalid, cfg, invalid_gen, invalid_argss, NULL,
+			exhaustive_gen(invalid, cfg, invalid_gen, invalid_argss, unrolls,
 			               OFFSET_GENERATORS, OFFSET_END);
 
 			size_t count = 0;
@@ -191,8 +191,8 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 
 static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
                                       pari_ulong *primes, size_t nprimes,
-                                      curve_t **curves,
-                                      gen_t invalid_gen[OFFSET_END]) {
+                                      curve_t **curves, gen_t invalid_gen[],
+                                      unroll_t unrolls[]) {
 	pthread_t pthreads[cfg->threads];
 	thread_t threads[cfg->threads];
 	struct pari_thread pari_threads[cfg->threads];
@@ -220,6 +220,7 @@ static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
 		threads[i].cond_generated = &generated_cond;
 		threads[i].cfg = cfg;
 		threads[i].gens = invalid_gen;
+		threads[i].unrolls = unrolls;
 
 		pari_thread_alloc(&pari_threads[i], cfg->thread_memory,
 		                  (GEN)&threads[i]);
@@ -277,7 +278,7 @@ int invalid_do(config_t *cfg) {
 	// Either from input or random with -
 	curve_t *curve = curve_new();
 	// actually generate the curve
-	if (!exhaustive_gen(curve, cfg, gen, argss, NULL, OFFSET_FIELD,
+	if (!exhaustive_gen(curve, cfg, gen, argss, unrolls, OFFSET_FIELD,
 	                    OFFSET_POINTS)) {
 		curve_free(&curve);
 		return 1;
@@ -307,11 +308,11 @@ int invalid_do(config_t *cfg) {
 	// now, generate the invalid curves for all primes
 	size_t ncurves;
 	if (cfg->threads == 1) {
-		ncurves =
-		    invalid_curves(curve, cfg, primes, nprimes, curves, invalid_gen);
+		ncurves = invalid_curves(curve, cfg, primes, nprimes, curves,
+		                         invalid_gen, unrolls);
 	} else {
 		ncurves = invalid_curves_threaded(curve, cfg, primes, nprimes, curves,
-		                                  invalid_gen);
+		                                  invalid_gen, unrolls);
 	}
 
 	for (size_t i = 0; i < ncurves; ++i) {

@@ -17,7 +17,7 @@ endif
 LDFLAGS = -L../lib/parson -L../lib/sha1 -L../lib/pari
 
 INCLUDES = -I. -I../lib
-LIBS = -lrt -lpthread -lparson -lsha1 -lpari
+LIBS = -lrt -lpari -lpthread -lparson -lsha1
 
 ####
 
