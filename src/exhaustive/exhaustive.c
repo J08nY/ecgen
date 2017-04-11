@@ -143,7 +143,6 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 			int new_state = state + diff;
 			for (int i = state; i > new_state;) {
 				if (unrolls && unrolls[i]) {
-					debug("Unroll from state %i to state %i\n", i, i - 1);
 					i += unrolls[i](curve, cfg, tops[i], tops[i - 1]);
 				} else {
 					--i;
