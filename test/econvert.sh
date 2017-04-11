@@ -1,10 +1,12 @@
 #!/usr/bin/env bash
 
+. lib/assert.sh
 econvert="../econvert"
 
 function runs() {
-	${econvert} --help
-	${econvert} --version
+	assert_raises "${econvert} --help"
+	assert_raises "${econvert} --version"
 }
 
-runs >/dev/null
+runs
+assert_end econvert

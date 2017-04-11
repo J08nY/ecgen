@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 2.8.11)
-project(ecgen)
+project(ecgen C)
 
 set(CMAKE_LIBRARY_PATH ${CMAKE_SOURCE_DIR}/lib)
 SET(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG -g -Wall -Werror -pedantic")
