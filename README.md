@@ -13,29 +13,29 @@ Tool for generating Elliptic curve domain parameters.
 
 #### Generation options
 
- - `-c`, `--count=COUNT`	Generate multiple curves.
- - `-i`, `--invalid`		Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).
- - `-k`, `--cofactor=BOUND`	Generate a curve with cofactor up to `BOUND`
- - `-K`, `--koblitz`		Generate a Koblitz curve (a = 0).
- - `-n`, `--order=ORDER`	Generate a curve with given `ORDER` (using Complex Multiplication).
- - `-p`, `--prime`			Generate a curve with prime order.
+ - `-c / --count=COUNT`		Generate multiple curves.
+ - `-i / --invalid`			Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).
+ - `-k / --cofactor=BOUND`	Generate a curve with cofactor up to `BOUND`
+ - `-K / --koblitz`			Generate a Koblitz curve (a = 0).
+ - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication).
+ - `-p / --prime`			Generate a curve with prime order.
  - `--points=TYPE`			Generate points of given `TYPE` (random/prime/none).
- - `-r`, `--random`			Generate a random curve (using Random approach).
- - `-s`, `--seed[=SEED]`	Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
- - `-u`, `--unique`			Generate a curve with only one generator.
+ - `-r / --random`			Generate a random curve (using Random approach).
+ - `-s / --seed[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
+ - `-u / --unique`			Generate a curve with only one generator.
 
 #### IO options
 
- - `-a`, `--append`			Append to output file (don't overwrite).
- - `-f`, `--input=FILE`		Input from `FILE`.
- - `-o`, `--output=FILE`	Output into `FILE`. Overwrites any existing file!
- - `-t`, `--format=FORMAT`	Format to output in. One of [csv,json], default is json.
- - `-v`, `--verbose[=FILE]`	Verbose logging (to stdout or `FILE`).
+ - `-a / --append`			Append to output file (don't overwrite).
+ - `-f / --input=FILE`		Input from `FILE`.
+ - `-o / --output=FILE`		Output into `FILE`. Overwrites any existing file!
+ - `-t / --format=FORMAT`	Format to output in. One of [csv,json], default is json.
+ - `-v / --verbose[=FILE]`	Verbose logging (to stdout or `FILE`).
 
 #### Other
 
- - `-d`, `--data-dir=DIR`	Set PARI/GP data directory (containing seadata package).
- - `-m`, `--memory=SIZE`	Use PARI stack of `SIZE` (can have suffix k/m/g).
+ - `-d / --data-dir=DIR`	Set PARI/GP data directory (containing seadata package).
+ - `-m / --memory=SIZE`		Use PARI stack of `SIZE` (can have suffix k/m/g).
  - `--thread-stack=SIZE`	Use PARI stack of `SIZE` (per thread, can have suffix k/m/g).
  - `--threads=NUM`			Use `NUM` threads.
 
