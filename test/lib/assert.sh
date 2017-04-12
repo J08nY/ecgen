@@ -120,7 +120,7 @@ assert_matches() {
 	[[ -z "$DISCOVERONLY" ]] || return
 	expected_expr=$(echo -ne "${2:-}")
 	result="$(eval 2>/dev/null $1 <<< ${3:-})" || true
-	if echo "$result" | grep -q "$expected_expr"; then
+	if echo "$result" | grep -E -q "$expected_expr"; then
 		[[ -z "$DEBUG" ]] || echo -n .
 		return
 	fi

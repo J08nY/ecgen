@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. lib/assert.sh
+. lib/assert.sh -v
 econvert="../econvert"
 
 function runs() {

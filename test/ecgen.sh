@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. lib/assert.sh
+. lib/assert.sh -v
 ecgen="../ecgen"
 
 function runs() {
@@ -11,6 +11,7 @@ function runs() {
 
 function csv() {
 	assert_matches "${ecgen} --fp -tcsv --input=fp_10_a.csv.in 10" "$(cat fp_10_a.csv)"
+	assert_matches "${ecgen} --f2m -tcsv --input=f2m_10_a.csv.in 10" "$(cat f2m_10_a.csv)"
 }
 
 runs
