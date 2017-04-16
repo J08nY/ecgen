@@ -10,9 +10,8 @@
 #include "math/random.h"
 
 void *invalid_thread(void *arg) {
-	struct pari_thread *pthread = (struct pari_thread *)arg;
-	// TODO: This is dodgy ... as its really a GEN (so a long*)
-	thread_t *thread = (thread_t *)pari_thread_start(pthread);
+	thread_t *thread = (thread_t *)arg;
+	pari_thread_start(thread->pari_thread);
 	random_init();
 	arg_t *invalid_argss[OFFSET_END];
 

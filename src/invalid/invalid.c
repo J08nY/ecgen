@@ -210,6 +210,10 @@ static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
 	pthread_cond_t generated_cond = PTHREAD_COND_INITIALIZER;
 
 	for (size_t i = 0; i < cfg->threads; ++i) {
+		pari_thread_alloc(&pari_threads[i], cfg->thread_memory,
+						  (GEN)&threads[i]);
+
+		threads[i].pari_thread = &pari_threads[i];
 		threads[i].original_curve = curve;
 		threads[i].nprimes = nprimes;
 		threads[i].primes = primes;
@@ -221,15 +225,12 @@ static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
 		threads[i].cfg = cfg;
 		threads[i].gens = invalid_gen;
 		threads[i].unrolls = unrolls;
-
-		pari_thread_alloc(&pari_threads[i], cfg->thread_memory,
-		                  (GEN)&threads[i]);
 	}
 
 	pthread_mutex_lock(&state_mutex);
 	for (size_t i = 0; i < cfg->threads; ++i) {
 		pthread_create(&pthreads[i], NULL, &invalid_thread,
-		               (void *)&pari_threads[i]);
+		               (void *)&threads[i]);
 	}
 
 	bool running = true;
