@@ -24,12 +24,13 @@ typedef struct {
 	bool binary_field;
 	bool prime_field;
 
-	unsigned long count;
+	long count;
 	bool random;
 	bool prime;
 	bool invalid;
 	bool cm;
 	char *order;
+	bool anomalous;
 	bool koblitz;
 	bool cofactor;
 	long cofactor_bound;

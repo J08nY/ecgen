@@ -60,8 +60,7 @@ bool init(void) {
 	pari_sp ltop = avma;
 	pari_CATCH(e_FILE) {}
 	pari_TRY { ellmodulareqn(2, -1, -1); }
-	pari_ENDCATCH
-	avma = ltop;
+	pari_ENDCATCH avma = ltop;
 
 	// open outfile
 	output_init(&cfg);

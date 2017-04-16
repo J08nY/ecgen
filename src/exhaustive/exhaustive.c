@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "exhaustive.h"
+#include "anomalous.h"
 #include "io/output.h"
 #include "math/arg.h"
 #include "math/curve.h"
@@ -30,7 +31,10 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 	} else {
 		generators[OFFSET_SEED] = &gen_skip;
 
-		if (cfg->random) {
+		if (cfg->anomalous) {
+			generators[OFFSET_A] = &gen_skip;
+			generators[OFFSET_B] = &anomalous_equation;
+		} else if (cfg->random) {
 			generators[OFFSET_A] = &a_random;
 			generators[OFFSET_B] = &b_random;
 		} else {
@@ -48,6 +52,8 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 			generators[OFFSET_ORDER] = &order_prime;
 		} else if (cfg->cofactor) {
 			generators[OFFSET_ORDER] = &order_smallfact;
+		} else if (cfg->anomalous) {
+			generators[OFFSET_ORDER] = &anomalous_order;
 		} else {
 			generators[OFFSET_ORDER] = &order_any;
 		}
@@ -58,7 +64,9 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 		generators[OFFSET_GENERATORS] = &gens_any;
 	}
 
-	if (cfg->random) {
+	if (cfg->anomalous) {
+		generators[OFFSET_FIELD] = &anomalous_field;
+	} else if (cfg->random) {
 		generators[OFFSET_FIELD] = &field_random;
 	} else {
 		generators[OFFSET_FIELD] = &field_input;
@@ -186,8 +194,11 @@ int exhaustive_gen(curve_t *curve, const config_t *cfg, gen_t generators[],
 	                            start_offset, end_offset, 0);
 }
 
+static void exhaustive_init() { anomalous_init(); }
+
 static void exhaustive_quit(arg_t *argss[]) {
 	equation_quit();
+	anomalous_quit();
 	for (size_t i = 0; i < OFFSET_END; ++i) {
 		if (argss[i]) {
 			arg_free(&(argss[i]));
@@ -204,6 +215,7 @@ int exhaustive_do(config_t *cfg) {
 	exhaustive_ginit(generators, cfg);
 	exhaustive_ainit(argss, cfg);
 	exhaustive_uinit(unrolls, cfg);
+	exhaustive_init();
 
 	for (unsigned long i = 0; i < cfg->count; ++i) {
 		curve_t *curve = curve_new();

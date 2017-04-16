@@ -61,15 +61,38 @@ static GEN seed_stoi(const char *cstr) {
 	return gerepilecopy(ltop, seed);
 }
 
+char *seed_itos(GEN seed) {
+	pari_sp ltop = avma;
+	GEN bits = binary_zv(seed);
+
+	long len = glength(bits);
+	long bytes = (len / 8) + (len % 8 == 0 ? 0 : 1);
+	char *result = pari_malloc((size_t)bytes);
+	if (!result) {
+		perror("Couldn't malloc.");
+		exit(1);
+	}
+
+	for (long i = 0; i < len; ++i) {
+		// TODO
+	}
+	avma = ltop;
+	return result;
+}
+
 int seed_random(curve_t *curve, const config_t *cfg, arg_t *args) {
 	curve->seed = seed_new();
 	curve->seed->seed = random_int(160);
+	curve->seed->raw = seed_itos(curve->seed->seed);
+	curve->seed->raw_len = strlen(curve->seed->raw);
 	return 1;
 }
 
 int seed_argument(curve_t *curve, const config_t *cfg, arg_t *args) {
 	curve->seed = seed_new();
 	curve->seed->seed = seed_stoi(cfg->seed);
+	curve->seed->raw = cfg->seed;
+	curve->seed->raw_len = strlen(cfg->seed);
 	return 1;
 }
 
