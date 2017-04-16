@@ -14,6 +14,19 @@ int order_any(curve_t *curve, const config_t *cfg, arg_t *args) {
 	return 1;
 }
 
+int order_sea(curve_t *curve, const config_t *cfg, arg_t *args) {
+	pari_sp ltop = avma;
+	GEN order = ellsea(curve->curve, 0);
+	if (gequal0(order)) {
+		avma = ltop;
+		return -4;
+	} else {
+		curve->order = order;
+		obj_insert_shallow(curve->curve, 1, order);
+		return 1;
+	}
+}
+
 int order_smallfact(curve_t *curve, const config_t *cfg, arg_t *args) {
 	if (!args) {
 		fprintf(stderr, "No args to an arged function. order_smallfact");
@@ -34,7 +47,7 @@ int order_smallfact(curve_t *curve, const config_t *cfg, arg_t *args) {
 		return -4;
 	} else {
 		curve->order = order;
-		obj_insert(curve->curve, 1, curve->order);
+		obj_insert_shallow(curve->curve, 1, curve->order);
 		return 1;
 	}
 }
@@ -47,7 +60,7 @@ int order_prime(curve_t *curve, const config_t *cfg, arg_t *args) {
 		return -4;
 	} else {
 		curve->order = order;
-		obj_insert(curve->curve, 1, curve->order);
+		obj_insert_shallow(curve->curve, 1, curve->order);
 		return 1;
 	}
 }

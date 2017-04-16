@@ -24,6 +24,17 @@ int order_any(curve_t *curve, const config_t *cfg, arg_t *args);
 
 /**
  * GENERATOR(gen_t)
+ * Calculates the curve order, using the SEA algorithm.
+ *
+ * @param curve
+ * @param cfg
+ * @param args
+ * @return
+ */
+int order_sea(curve_t *curve, const config_t *cfg, arg_t *args);
+
+/**
+ * GENERATOR(gen_t)
  *
  * @param curve
  * @param cfg
