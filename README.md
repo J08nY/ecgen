@@ -127,6 +127,7 @@ Three different EC curve parameters generation methods are implemented.
 
 	git clone https://github.com/J08nY/ecgen.git
 	cd ecgen
+	git submodule update --init
 	make
 
 ### Requirements
