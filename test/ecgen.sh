@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-. lib/assert.sh -v
+. lib/assert.sh/assert.sh -v
 ecgen="../ecgen"
 
 function runs() {
