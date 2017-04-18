@@ -35,14 +35,7 @@ static void invalid_invalid_ginit(gen_t *generators, const config_t *cfg) {
 	generators[OFFSET_A] = &gen_skip;
 	generators[OFFSET_B] = &b_random;
 	generators[OFFSET_CURVE] = &curve_nonzero;
-	switch(cfg->field) {
-		case FIELD_PRIME:
-			generators[OFFSET_ORDER] = &order_sea;
-			break;
-		case FIELD_BINARY:
-			generators[OFFSET_ORDER] = &order_any;
-			break;
-	}
+	generators[OFFSET_ORDER] = &order_any;
 	if (cfg->unique) {
 		generators[OFFSET_GENERATORS] = &gens_one;
 	} else {
