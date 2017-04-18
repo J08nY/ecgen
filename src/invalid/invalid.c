@@ -2,10 +2,10 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-#include <io/config.h>
 #include "invalid.h"
 #include "exhaustive/exhaustive.h"
 #include "invalid_thread.h"
+#include "io/config.h"
 #include "io/output.h"
 #include "math/curve.h"
 #include "math/equation.h"
@@ -212,7 +212,7 @@ static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
 
 	for (size_t i = 0; i < cfg->threads; ++i) {
 		pari_thread_alloc(&pari_threads[i], cfg->thread_memory,
-						  (GEN)&threads[i]);
+		                  (GEN)&threads[i]);
 
 		threads[i].pari_thread = &pari_threads[i];
 		threads[i].original_curve = curve;

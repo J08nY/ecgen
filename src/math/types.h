@@ -12,14 +12,23 @@
 #include "io/cli.h"
 #include "io/config.h"
 
+/**
+ * @brief
+ */
 typedef struct { GEN seed; } seed_t;
 
+/**
+ * @brief
+ */
 typedef struct {
 	GEN point;
 	GEN order;
 	GEN cofactor;
 } point_t;
 
+/**
+ * @brief
+ */
 typedef struct {
 	seed_t *seed;
 	GEN field;
@@ -33,6 +42,9 @@ typedef struct {
 	size_t npoints;
 } curve_t;
 
+/**
+ * @brief
+ */
 typedef enum {
 	OFFSET_SEED,
 	OFFSET_FIELD,
@@ -45,13 +57,22 @@ typedef enum {
 	OFFSET_END
 } offset_e;
 
+/**
+ * @brief
+ */
 typedef struct {
 	const void *args;
 	size_t nargs;
 } arg_t;
 
+/**
+ * @brief
+ */
 typedef int (*gen_t)(curve_t *, const config_t *, arg_t *);
 
+/**
+ * @brief
+ */
 typedef int (*unroll_t)(curve_t *, const config_t *, pari_sp, pari_sp);
 
 /**

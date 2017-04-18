@@ -15,7 +15,7 @@
 typedef enum { STATE_FREE, STATE_GENERATING, STATE_GENERATED } state_e;
 
 typedef struct {
-	struct pari_thread* pari_thread;
+	struct pari_thread *pari_thread;
 	curve_t *original_curve;
 	size_t nprimes;
 	pari_ulong *primes;

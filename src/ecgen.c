@@ -45,16 +45,21 @@ static struct argp argp = {options, cli_parse, args_doc, doc, 0, cli_filter};
 static config_t cfg;
 
 bool init(void) {
-	// Init PARI, 1GB stack, 1M primes
+	// init PARI, 1GB stack, 1M primes
 	pari_init(cfg.memory, 1000000);
 
-	// Init PARI PRNG
+	// init PARI PRNG
 	if (!random_init()) return false;
 
 	// set datadir if specified
 	if (cfg.datadir) {
 		default0("datadir", cfg.datadir);
 	}
+
+	// init the modular polynomial db from seadata
+	pari_sp ltop = avma;
+	ellmodulareqn(2, -1, -1);
+	avma = ltop;
 
 	// open outfile
 	output_init(&cfg);
