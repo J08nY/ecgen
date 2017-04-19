@@ -58,7 +58,9 @@ bool init(void) {
 
 	// init the modular polynomial db from seadata
 	pari_sp ltop = avma;
-	ellmodulareqn(2, -1, -1);
+	pari_CATCH(e_FILE) {}
+	pari_TRY { ellmodulareqn(2, -1, -1); }
+	pari_ENDCATCH
 	avma = ltop;
 
 	// open outfile
