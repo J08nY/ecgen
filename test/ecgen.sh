@@ -1,6 +1,8 @@
 #!/usr/bin/env bash
 
 . lib/assert.sh/assert.sh -v
+. lib/JSON.sh/JSON.sh
+
 ecgen="../ecgen"
 
 function runs() {

@@ -1,3 +1,6 @@
 [submodule "test/lib/assert.sh"]
 	path = test/lib/assert.sh
 	url = https://github.com/J08nY/assert.sh
+[submodule "test/lib/JSON.sh"]
+	path = test/lib/JSON.sh
+	url = https://github.com/jimklimov/JSON.sh
