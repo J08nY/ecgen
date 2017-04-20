@@ -118,7 +118,7 @@ int point_random(curve_t *curve, const config_t *cfg, arg_t *args) {
 
 int points_random(curve_t *curve, const config_t *cfg, arg_t *args) {
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. points_random");
+		fprintf(stderr, "No args to an arged function. points_random\n");
 		return INT_MIN;
 	}
 
@@ -154,7 +154,7 @@ int points_random(curve_t *curve, const config_t *cfg, arg_t *args) {
 int points_trial(curve_t *curve, const config_t *cfg, arg_t *args) {
 	// TODO stack code!!!
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. points_trial");
+		fprintf(stderr, "No args to an arged function. points_trial\n");
 		return INT_MIN;
 	}
 

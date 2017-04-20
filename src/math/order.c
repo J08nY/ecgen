@@ -29,9 +29,10 @@ int order_sea(curve_t *curve, const config_t *cfg, arg_t *args) {
 
 int order_smallfact(curve_t *curve, const config_t *cfg, arg_t *args) {
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. order_smallfact");
+		fprintf(stderr, "No args to an arged function. order_smallfact\n");
 		return INT_MIN;
 	}
+
 	pari_ulong smallfact = *(pari_ulong *)args->args;
 	pari_sp ltop = avma;
 	GEN fact = mpfact(smallfact);
