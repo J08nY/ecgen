@@ -16,6 +16,10 @@ arg_t *arg_new(void) {
 
 void arg_free(arg_t **arg) {
 	if (*arg) {
+		if ((*arg)->mallocd) {
+			pari_free((*arg)->mallocd);
+			(*arg)->mallocd = NULL;
+		}
 		pari_free(*arg);
 		*arg = NULL;
 	}

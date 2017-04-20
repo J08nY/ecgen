@@ -14,9 +14,9 @@
 #include "math/types.h"
 
 typedef struct disc_t {
-	GEN D;
+	GEN d;
 	GEN j;
-	GEN a;
+	GEN alpha;
 } disc_t;
 
 int anomalous_field(curve_t *curve, const config_t *cfg, arg_t *args);

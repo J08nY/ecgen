@@ -67,6 +67,7 @@ typedef enum {
 typedef struct {
 	const void *args;
 	size_t nargs;
+	void *mallocd;
 } arg_t;
 
 /**

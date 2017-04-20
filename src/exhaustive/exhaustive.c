@@ -3,6 +3,8 @@
  * Copyright (C) 2017 J08nY
  */
 #include "exhaustive.h"
+#include <io/config.h>
+#include <math/types.h>
 #include "anomalous.h"
 #include "io/output.h"
 #include "math/arg.h"
@@ -93,6 +95,19 @@ static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 	for (size_t i = 0; i < OFFSET_END; ++i) {
 		argss[i] = NULL;
 	}
+	if (cfg->anomalous) {
+		arg_t *field_arg = arg_new();
+		arg_t *eq_arg = arg_new();
+		size_t *i = pari_malloc(sizeof(size_t));
+		*i = 3;
+		field_arg->args = i;
+		field_arg->nargs = 1;
+		eq_arg->args = i;
+		eq_arg->nargs = 1;
+		eq_arg->mallocd = i;
+		argss[OFFSET_FIELD] = field_arg;
+		argss[OFFSET_B] = eq_arg;
+	}
 	if (cfg->points.type == POINTS_RANDOM) {
 		arg_t *points_arg = arg_new();
 		points_arg->args = &cfg->points.amount;
@@ -159,7 +174,7 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 			avma = tops[new_state - start_offset];
 		}
 
-		if (diff == 0) {
+		if (diff <= 0) {
 			int tried = ++tries[state - start_offset];
 			if (retry && tried >= retry) {
 				fprintf(stderr, "Reached retry limit: %i, state = %i\n", retry,
