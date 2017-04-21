@@ -140,6 +140,7 @@ int anomalous_equation(curve_t *curve, const config_t *cfg, arg_t *args) {
 int anomalous_order(curve_t *curve, const config_t *cfg, arg_t *args) {
 	// copy field to order
 	curve->order = gcopy(curve->field);
+	obj_insert(curve->curve, 1, curve->order);
 	return 1;
 }
 
