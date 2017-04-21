@@ -1,3 +1,4 @@
+dist: trusty
 sudo: required
 language: C
 matrix:
@@ -22,7 +23,8 @@ before_install:
   - wget mirrors.kernel.org/ubuntu/pool/universe/p/pari/libpari-gmp-tls5_2.9.1-1_amd64.deb
   - wget mirrors.kernel.org/ubuntu/pool/universe/p/pari/libpari-dev_2.9.1-1_amd64.deb
   - wget mirrors.kernel.org/ubuntu/pool/universe/p/pari/pari-gp_2.9.1-1_amd64.deb
-  - sudo dpkg --force-all -i libpari-gmp-tls5_2.9.1-1_amd64.deb libpari-dev_2.9.1-1_amd64.deb pari-gp_2.9.1-1_amd64.deb
+  - wget mirrors.kernel.org/ubuntu/pool/main/r/readline/libreadline7_7.0-0ubuntu2_amd64.deb
+  - sudo dpkg --force-all -i libreadline7_7.0-0ubuntu2_amd64.deb libpari-gmp-tls5_2.9.1-1_amd64.deb libpari-dev_2.9.1-1_amd64.deb pari-gp_2.9.1-1_amd64.deb
 
 script:
   - make -j2
