@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "exhaustive.h"
+#include <io/config.h>
 #include "io/output.h"
 #include "math/arg.h"
 #include "math/curve.h"
@@ -205,6 +206,7 @@ int exhaustive_do(config_t *cfg) {
 	exhaustive_ainit(argss, cfg);
 	exhaustive_uinit(unrolls, cfg);
 
+	output_o_begin(cfg);
 	for (unsigned long i = 0; i < cfg->count; ++i) {
 		curve_t *curve = curve_new();
 		if (!exhaustive_gen_retry(curve, cfg, generators, argss, unrolls,
@@ -213,8 +215,12 @@ int exhaustive_do(config_t *cfg) {
 			return 1;
 		}
 		output_o(curve, cfg);
+		if (i != cfg->count - 1) {
+			output_o_separator(cfg);
+		}
 		curve_free(&curve);
 	}
+	output_o_end(cfg);
 
 	exhaustive_quit(argss);
 	return 0;

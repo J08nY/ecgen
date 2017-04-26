@@ -155,6 +155,9 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 						curves[i] = curve_new_copy(invalid);
 					}
 					output_o(curves[i], cfg);
+					if (ncurves != nprimes - 1) {
+						output_o_separator(cfg);
+					}
 					ncurves++;
 					count++;
 				}
@@ -241,6 +244,9 @@ static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
 		for (size_t i = 0; i < nprimes; ++i) {
 			if (old_states[i] != states[i] && states[i] == STATE_GENERATED) {
 				output_o(local_curves[i], cfg);
+				if (generated != nprimes) {
+					output_o_separator(cfg);
+				}
 				old_states[i] = states[i];
 			}
 		}
@@ -285,7 +291,9 @@ int invalid_do(config_t *cfg) {
 		curve_free(&curve);
 		return 1;
 	}
+	output_o_begin(cfg);
 	output_o(curve, cfg);
+	output_o_separator(cfg);
 
 	// now, generate primes upto order^2
 	pari_ulong *primes;
@@ -316,6 +324,7 @@ int invalid_do(config_t *cfg) {
 		ncurves = invalid_curves_threaded(curve, cfg, primes, nprimes, curves,
 		                                  invalid_gen, unrolls);
 	}
+	output_o_end(cfg);
 
 	for (size_t i = 0; i < ncurves; ++i) {
 		curve_free(&curves[i]);

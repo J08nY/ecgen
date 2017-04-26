@@ -11,6 +11,16 @@
 FILE *out;
 FILE *verbose;
 
+char *output_malloc(const char *what) {
+	char *s = pari_malloc(sizeof(char) * (strlen(what) + 1));
+	if (!s) {
+		perror("Couldn't malloc.");
+		exit(1);
+	}
+	strcpy(s, what);
+	return s;
+}
+
 char *output_scsv(curve_t *curve, const config_t *cfg) {
 	pari_sp ltop = avma;
 	GEN vector = curve_params(curve);
@@ -48,15 +58,11 @@ char *output_scsv(curve_t *curve, const config_t *cfg) {
 	return result;
 }
 
-void output_fcsv(FILE *out, curve_t *curve, const config_t *cfg) {
-	char *string = output_scsv(curve, cfg);
-	fprintf(out, "%s\n", string);
-	free(string);
-}
+char *output_scsv_separator(const config_t *cfg) { return output_malloc("\n"); }
 
-void output_csv(curve_t *curve, const config_t *cfg) {
-	output_fcsv(out, curve, cfg);
-}
+char *output_scsv_begin(const config_t *cfg) { return NULL; }
+
+char *output_scsv_end(const config_t *cfg) { return output_malloc("\n"); }
 
 static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 	pari_sp ltop = avma;
@@ -176,15 +182,55 @@ char *output_sjson(curve_t *curve, const config_t *cfg) {
 	return result;
 }
 
-void output_fjson(FILE *out, curve_t *curve, const config_t *cfg) {
-	char *s = output_sjson(curve, cfg);
-	fprintf(out, "%s\n", s);
-	json_free_serialized_string(s);
+char *output_sjson_separator(const config_t *cfg) {
+	return output_malloc(",\n");
 }
 
-void output_json(curve_t *curve, const config_t *cfg) {
-	output_fjson(out, curve, cfg);
+char *output_sjson_begin(const config_t *cfg) { return output_malloc("[\n"); }
+
+char *output_sjson_end(const config_t *cfg) { return output_malloc("]\n"); }
+
+void output_f(FILE *out, curve_t *curve, const config_t *cfg) {
+	char *s = output_s(curve, cfg);
+	if (s) {
+		fprintf(out, "%s", s);
+		pari_free(s);
+	}
 }
+
+void output_o(curve_t *curve, const config_t *cfg) {
+	output_f(out, curve, cfg);
+}
+
+void output_f_separator(FILE *out, const config_t *cfg) {
+	char *s = output_s_separator(cfg);
+	if (s) {
+		fprintf(out, "%s", s);
+		pari_free(s);
+	}
+}
+
+void output_o_separator(const config_t *cfg) { output_f_separator(out, cfg); }
+
+void output_f_begin(FILE *out, const config_t *cfg) {
+	char *s = output_s_begin(cfg);
+	if (s) {
+		fprintf(out, "%s", s);
+		pari_free(s);
+	}
+}
+
+void output_o_begin(const config_t *cfg) { output_f_begin(out, cfg); }
+
+void output_f_end(FILE *out, const config_t *cfg) {
+	char *s = output_s_end(cfg);
+	if (s) {
+		fprintf(out, "%s", s);
+		pari_free(s);
+	}
+}
+
+void output_o_end(const config_t *cfg) { output_f_end(out, cfg); }
 
 void output_init(const config_t *cfg) {
 	json_set_allocation_functions(pari_malloc, pari_free);
@@ -212,16 +258,20 @@ void output_init(const config_t *cfg) {
 	setvbuf(verbose, NULL, _IONBF, 0);
 
 	switch (cfg->format) {
-		case FORMAT_JSON:
+		case FORMAT_JSON: {
 			output_s = &output_sjson;
-			output_f = &output_fjson;
-			output_o = &output_json;
+			output_s_separator = &output_sjson_separator;
+			output_s_begin = &output_sjson_begin;
+			output_s_end = &output_sjson_end;
 			break;
-		case FORMAT_CSV:
+		}
+		case FORMAT_CSV: {
 			output_s = &output_scsv;
-			output_f = &output_fcsv;
-			output_o = &output_csv;
+			output_s_separator = &output_scsv_separator;
+			output_s_begin = &output_scsv_begin;
+			output_s_end = &output_scsv_end;
 			break;
+		}
 	}
 }
 
