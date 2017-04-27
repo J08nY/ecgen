@@ -5,7 +5,6 @@
 #include "curve.h"
 #include "exhaustive/seed.h"
 #include "field.h"
-#include "io/output.h"
 #include "point.h"
 
 curve_t *curve_new(void) {

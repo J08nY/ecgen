@@ -8,8 +8,8 @@
 #ifndef ECGEN_TYPES_H
 #define ECGEN_TYPES_H
 
+#include <limits.h>
 #include <pari/pari.h>
-#include "io/cli.h"
 #include "io/config.h"
 
 /**
@@ -18,7 +18,10 @@
 typedef struct { GEN seed; } seed_t;
 
 /**
- * @brief
+ * @brief A point type.
+ * @param point a t_VEC with t_INTMOD or t_FFELT components [x,y]
+ * @param order a t_INT
+ * @param cofactor a t_INT
  */
 typedef struct {
 	GEN point;
@@ -27,7 +30,17 @@ typedef struct {
 } point_t;
 
 /**
- * @brief
+ * @brief A curve type.
+ * @param seed a seed_t
+ * @param field a t_INT or t_FFELT
+ * @param a a t_INTMOD or t_FFELT a parameter
+ * @param b a t_INTMOD or t_FFELT b parameter
+ * @param curve a t_ELL, curve object
+ * @param order a t_INT, curve order
+ * @param generators generators saved
+ * @param ngens   numver of generators saved in the curve type
+ * @param points  points saved
+ * @param npoints number of points saved in the curve type
  */
 typedef struct {
 	seed_t *seed;

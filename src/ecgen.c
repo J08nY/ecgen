@@ -27,8 +27,6 @@
 #include "cm/cm.h"
 #include "exhaustive/exhaustive.h"
 #include "invalid/invalid.h"
-#include "io/cli.h"
-#include "io/config.h"
 #include "io/input.h"
 #include "io/output.h"
 
@@ -125,7 +123,7 @@ int quit(int status) {
  *     - Can generate curves repeatedly until one satisfies requested
  * properties:
  *       - -p / --prime generates curves until a prime order curve is found.
- *       - -k / --koblitz generates a curve with fixed A = 0 parameter.
+ *       - -K / --koblitz generates a curve with fixed A = 0 parameter.
  *
  */
 int main(int argc, char *argv[]) {

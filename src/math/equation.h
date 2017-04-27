@@ -8,7 +8,6 @@
 #ifndef ECGEN_EQUATION_H
 #define ECGEN_EQUATION_H
 
-#include "io/cli.h"
 #include "types.h"
 
 /**

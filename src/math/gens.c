@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include "gens.h"
-#include "io/output.h"
 #include "point.h"
 
 static int gens_put(curve_t *curve, GEN generators, long len) {

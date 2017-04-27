@@ -8,7 +8,6 @@
 #ifndef ECGEN_POINT_H
 #define ECGEN_POINT_H
 
-#include <pari/pari.h>
 #include "types.h"
 
 /**

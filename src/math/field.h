@@ -8,7 +8,6 @@
 #ifndef ECGEN_FIELD_H
 #define ECGEN_FIELD_H
 
-#include "io/cli.h"
 #include "types.h"
 
 /**

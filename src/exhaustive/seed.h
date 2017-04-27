@@ -8,7 +8,7 @@
 #ifndef ECGEN_SEED_H
 #define ECGEN_SEED_H
 
-#include "io/cli.h"
+#include "io/input.h"
 #include "math/types.h"
 
 /**

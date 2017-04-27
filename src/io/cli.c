@@ -6,7 +6,6 @@
 #include <string.h>
 #include <unistd.h>
 #include "config.h"
-#include "io/config.h"
 
 char doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "

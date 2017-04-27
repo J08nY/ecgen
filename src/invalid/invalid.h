@@ -8,7 +8,6 @@
 #ifndef ECGEN_INVALID_H
 #define ECGEN_INVALID_H
 
-#include "io/cli.h"
 #include "io/config.h"
 
 /**

@@ -9,7 +9,6 @@
 #define ECGEN_CURVE_H
 
 #include <pari/pari.h>
-#include "io/cli.h"
 #include "types.h"
 
 /**

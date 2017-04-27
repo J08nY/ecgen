@@ -8,7 +8,6 @@
 #ifndef ECGEN_INVALID_THREAD_H
 #define ECGEN_INVALID_THREAD_H
 
-#include <pari/pari.h>
 #include <pthread.h>
 #include "math/types.h"
 

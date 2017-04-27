@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include "point.h"
-#include "io/output.h"
 
 point_t *point_new(void) {
 	point_t *point = pari_malloc(sizeof(point_t));
