@@ -3,6 +3,9 @@
  * Copyright (C) 2017 J08nY
  */
 #include "exhaustive.h"
+#include <io/config.h>
+#include <math/types.h>
+#include "anomalous.h"
 #include "io/output.h"
 #include "math/arg.h"
 #include "math/curve.h"
@@ -30,7 +33,10 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 	} else {
 		generators[OFFSET_SEED] = &gen_skip;
 
-		if (cfg->random) {
+		if (cfg->anomalous) {
+			generators[OFFSET_A] = &gen_skip;
+			generators[OFFSET_B] = &anomalous_equation;
+		} else if (cfg->random) {
 			generators[OFFSET_A] = &a_random;
 			generators[OFFSET_B] = &b_random;
 		} else {
@@ -48,6 +54,8 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 			generators[OFFSET_ORDER] = &order_prime;
 		} else if (cfg->cofactor) {
 			generators[OFFSET_ORDER] = &order_smallfact;
+		} else if (cfg->anomalous) {
+			generators[OFFSET_ORDER] = &anomalous_order;
 		} else {
 			generators[OFFSET_ORDER] = &order_any;
 		}
@@ -58,7 +66,9 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 		generators[OFFSET_GENERATORS] = &gens_any;
 	}
 
-	if (cfg->random) {
+	if (cfg->anomalous) {
+		generators[OFFSET_FIELD] = &anomalous_field;
+	} else if (cfg->random) {
 		generators[OFFSET_FIELD] = &field_random;
 	} else {
 		generators[OFFSET_FIELD] = &field_input;
@@ -84,6 +94,19 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 	for (size_t i = 0; i < OFFSET_END; ++i) {
 		argss[i] = NULL;
+	}
+	if (cfg->anomalous) {
+		arg_t *field_arg = arg_new();
+		arg_t *eq_arg = arg_new();
+		size_t *i = pari_malloc(sizeof(size_t));
+		*i = 3;
+		field_arg->args = i;
+		field_arg->nargs = 1;
+		eq_arg->args = i;
+		eq_arg->nargs = 1;
+		eq_arg->mallocd = i;
+		argss[OFFSET_FIELD] = field_arg;
+		argss[OFFSET_B] = eq_arg;
 	}
 	if (cfg->points.type == POINTS_RANDOM) {
 		arg_t *points_arg = arg_new();
@@ -151,7 +174,7 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 			avma = tops[new_state - start_offset];
 		}
 
-		if (diff == 0) {
+		if (diff <= 0) {
 			int tried = ++tries[state - start_offset];
 			if (retry && tried >= retry) {
 				fprintf(stderr, "Reached retry limit: %i, state = %i\n", retry,
@@ -186,8 +209,11 @@ int exhaustive_gen(curve_t *curve, const config_t *cfg, gen_t generators[],
 	                            start_offset, end_offset, 0);
 }
 
+static void exhaustive_init() { anomalous_init(); }
+
 static void exhaustive_quit(arg_t *argss[]) {
 	equation_quit();
+	anomalous_quit();
 	for (size_t i = 0; i < OFFSET_END; ++i) {
 		if (argss[i]) {
 			arg_free(&(argss[i]));
@@ -204,6 +230,7 @@ int exhaustive_do(config_t *cfg) {
 	exhaustive_ginit(generators, cfg);
 	exhaustive_ainit(argss, cfg);
 	exhaustive_uinit(unrolls, cfg);
+	exhaustive_init();
 
 	output_o_begin(cfg);
 	for (unsigned long i = 0; i < cfg->count; ++i) {

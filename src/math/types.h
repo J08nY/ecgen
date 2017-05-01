@@ -15,7 +15,11 @@
 /**
  * @brief
  */
-typedef struct { GEN seed; } seed_t;
+typedef struct seed_t {
+	char *raw;
+	size_t raw_len;
+	GEN seed;
+} seed_t;
 
 /**
  * @brief A point type.
@@ -76,6 +80,7 @@ typedef enum {
 typedef struct {
 	const void *args;
 	size_t nargs;
+	void *mallocd;
 } arg_t;
 
 /**

@@ -33,7 +33,8 @@ enum opt_keys {
 	OPT_F2M,
 	OPT_POINTS,
 	OPT_THREADS,
-	OPT_TSTACK
+	OPT_TSTACK,
+	OPT_ANOMALOUS
 };
 
 // clang-format off
@@ -45,12 +46,13 @@ struct argp_option options[] = {
 	{"random",   OPT_RANDOM,   0,        0,                 "Generate a random curve (using Random approach).",                                     2},
 	{"prime",    OPT_PRIME,    0,        0,                 "Generate a curve with prime order.",                                                   2},
 	{"cofactor", OPT_COFACTOR, "BOUND",  0,                 "Generate a curve with cofactor up to BOUND.",                                          2},
+	{"koblitz",  OPT_KOBLITZ,  0,        0,                 "Generate a Koblitz curve (a = 0).",                                                    2},
+	{"unique",   OPT_UNIQUE,   0,        0,                 "Generate a curve with only one generator.",                                            2},
+	{"anomalous",OPT_ANOMALOUS,0,        0,                 "Generate an anomalous curve (of trace one, with field order equal to curve order).",   2},
+	{"points",   OPT_POINTS,   "TYPE",   0,                 "Generate points of given type (random/prime/none).",                                   2},
 	{"seed",     OPT_SEED,     "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure).",                        2},
 	{"invalid",  OPT_INVALID,  0,        0,                 "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).", 2},
 	{"order",    OPT_ORDER,    "ORDER",  0,                 "Generate a curve with given order (using Complex Multiplication).",                    2},
-	{"koblitz",  OPT_KOBLITZ,  0,        0,                 "Generate a Koblitz curve (a = 0).",                                                    2},
-	{"unique",   OPT_UNIQUE,   0,        0,                 "Generate a curve with only one generator.",                                            2},
-	{"points",   OPT_POINTS,   "TYPE",   0,                 "Generate points of given type (random/prime/none).",                                   2},
 	{"count",    OPT_COUNT,    "COUNT",  0,                 "Generate multiple curves.",                                                            2},
 	{0,          0,            0,        0,                 "Input/Output options:",                                                                3},
 	{"format",   OPT_FORMAT,   "FORMAT", 0,                 "Format to output in. One of [csv,json], default is json.",                             3},
@@ -178,6 +180,9 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 		case OPT_UNIQUE:
 			cfg->unique = true;
 			break;
+		case OPT_ANOMALOUS:
+			cfg->anomalous = true;
+			break;
 		case OPT_POINTS:
 			if (arg) {
 				if (strstr(arg, "random")) {
@@ -240,13 +245,23 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				             "from seed, exhaustive or prime order.");
 			}
 			if (cfg->cm && (cfg->prime || cfg->from_seed || cfg->invalid ||
-			                cfg->cofactor)) {
+			                cfg->cofactor || cfg->anomalous)) {
 				argp_failure(state, 1, 0,
 				             "Fixed order curve generation can not generate "
 				             "curves from seed, or invalid curves. Prime order "
 				             "also doesn't make sense if the given one isn't "
 				             "prime.");
 			}
+			if (cfg->anomalous &&
+			    (cfg->binary_field || cfg->cofactor || cfg->from_seed ||
+			     cfg->cm || cfg->invalid || cfg->koblitz)) {
+				argp_failure(
+				    state, 1, 0,
+				    "Anomalous curve generation can not generate "
+				    "binary field curves, curves with a cofactor, from seed "
+				    "with fixed order, invalid or Koblitz curves.");
+			}
+
 			// default values
 			if (!cfg->count) {
 				cfg->count = 1;

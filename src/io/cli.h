@@ -9,6 +9,7 @@
 #define ECGEN_CLI_H
 
 #include <argp.h>
+#include <stdbool.h>
 #include <stdlib.h>
 
 extern char doc[];
