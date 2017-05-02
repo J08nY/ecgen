@@ -56,10 +56,12 @@ static GEN anomalous_prime(size_t i, unsigned long bits) {
 	GEN lower = divii(subii(int2n(bits - 1), last), D);
 	GEN upper = divii(subii(int2n(bits), last), D);
 
-	GEN lower_bound = gceil(gdiv(
-	    gsub(gsqrt(addis(mulis(lower, 4), 1), BIGDEFAULTPREC*2), gen_1), gen_2));
-	GEN upper_bound = gfloor(gdiv(
-	    gsub(gsqrt(addis(mulis(upper, 4), 1), BIGDEFAULTPREC*2), gen_1), gen_2));
+	GEN lower_bound = gceil(
+	    gdiv(gsub(gsqrt(addis(mulis(lower, 4), 1), BIGDEFAULTPREC * 2), gen_1),
+	         gen_2));
+	GEN upper_bound = gfloor(
+	    gdiv(gsub(gsqrt(addis(mulis(upper, 4), 1), BIGDEFAULTPREC * 2), gen_1),
+	         gen_2));
 
 	GEN range = gtovec0(gen_0, 2);
 	gel(range, 1) = lower_bound;

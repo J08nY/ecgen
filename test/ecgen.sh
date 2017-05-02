@@ -20,18 +20,18 @@ function json() {
 	fp=$(${ecgen} --fp -tjson --input=fp_10_a.csv.in 10)
 	f2m=$(${ecgen} --f2m -tjson --input=f2m_10_a.csv.in 10)
 	assert_raises "${JSON}" 0 "${fp}"
-	assert_matches "${JSON} -x field\\\",\\\"p" "0xb" "${fp}"
-	assert_matches "${JSON} -x \\\"a\\\"" "0x1" "${fp}"
-	assert_matches "${JSON} -x \\\"b\\\"" "0x2" "${fp}"
-	assert_matches "${JSON} -x \\\"order\\\"" "0x10" "${fp}"
+	assert_matches "${JSON} -x field\\\",\\\"p" "0x000b" "${fp}"
+	assert_matches "${JSON} -x \\\"a\\\"" "0x0001" "${fp}"
+	assert_matches "${JSON} -x \\\"b\\\"" "0x0002" "${fp}"
+	assert_matches "${JSON} -x \\\"order\\\"" "0x0010" "${fp}"
 
 	assert_raises "${JSON}" 0 "${f2m}"
 	assert_matches "${JSON} -x field\\\",\\\"m" "0xa" "${f2m}"
 	assert_matches "${JSON} -x field\\\",\\\"e1" "0x3" "${f2m}"
 	assert_matches "${JSON} -x field\\\",\\\"e2" "0x0" "${f2m}"
 	assert_matches "${JSON} -x field\\\",\\\"e3" "0x0" "${f2m}"
-	assert_matches "${JSON} -x \\\"a\\\"" "0x2ed" "${f2m}"
-	assert_matches "${JSON} -x \\\"b\\\"" "0xb7" "${f2m}"
+	assert_matches "${JSON} -x \\\"a\\\"" "0x02ed" "${f2m}"
+	assert_matches "${JSON} -x \\\"b\\\"" "0x00b7" "${f2m}"
 	assert_matches "${JSON} -x \\\"order\\\"" "0x3de" "${f2m}"
 }
 

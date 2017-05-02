@@ -5,7 +5,6 @@
 
 #include "output.h"
 #include <parson/parson.h>
-#include "math/curve.h"
 #include "math/field.h"
 
 FILE *out;
@@ -23,36 +22,99 @@ char *output_malloc(const char *what) {
 
 char *output_scsv(curve_t *curve, const config_t *cfg) {
 	pari_sp ltop = avma;
-	GEN vector = curve_params(curve);
+	char *params[OFFSET_END];
 
-	long len = glength(vector);
-	char *params[len];
-	size_t lengths[len];
-	size_t total = 0;
-	for (long i = 0; i < len; ++i) {
-		params[i] = pari_sprintf("%P#x", gel(vector, i + 1));
-		lengths[i] = strlen(params[i]);
-		total += lengths[i];
+	for (int i = 0; i < OFFSET_END; ++i) {
+		params[i] = NULL;
 	}
 
-	char *result = (char *)malloc(total + len);
-	if (!result) {
-		perror("Couldn't malloc.");
-		exit(1);
-	}
-
-	size_t offset = 0;
-	for (long i = 0; i < len; ++i) {
-		memcpy(result + offset, params[i], lengths[i]);
-		free(params[i]);
-
-		offset += lengths[i];
-		if (i != len - 1) {
-			result[offset] = ',';
-			offset++;
+	switch (cfg->field) {
+		case FIELD_PRIME:
+			params[OFFSET_FIELD] =
+			    pari_sprintf("%P0#*x", cfg->hex_digits, curve->field);
+			break;
+		case FIELD_BINARY: {
+			GEN field = field_params(curve->field);
+			params[OFFSET_FIELD] =
+			    pari_sprintf("%P#x,%P#x,%P#x,%P#x", gel(field, 1),
+			                 gel(field, 2), gel(field, 3), gel(field, 4));
+			break;
 		}
 	}
-	memset(result + offset, 0, 1);
+
+	if (curve->a)
+		params[OFFSET_A] =
+		    pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->a));
+	if (curve->b)
+		params[OFFSET_B] =
+		    pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->b));
+
+	if (curve->generators) {
+		char *gens[curve->ngens];
+		size_t len = 0;
+		for (size_t i = 0; i < curve->ngens; ++i) {
+			point_t *generator = curve->generators[i];
+			GEN x = field_elementi(gel(generator->point, 1));
+			GEN y = field_elementi(gel(generator->point, 2));
+			gens[i] = pari_sprintf("%P0#*x,%P0#*x,%P#x,%P#x", cfg->hex_digits,
+			                       x, cfg->hex_digits, y, generator->order,
+			                       generator->cofactor);
+			len += strlen(gens[i]);
+		}
+		size_t lenn = sizeof(char) * (len + curve->ngens);
+		params[OFFSET_GENERATORS] = pari_malloc(lenn);
+		params[OFFSET_GENERATORS][0] = '\0';
+		for (size_t i = 0; i < curve->ngens; ++i) {
+			if (i > 0) strncat(params[OFFSET_GENERATORS], ",", lenn - 1);
+			strncat(params[OFFSET_GENERATORS], gens[i], lenn - 1);
+			pari_free(gens[i]);
+		}
+	}
+
+	if (curve->order)
+		params[OFFSET_ORDER] =
+		    pari_sprintf("%P0#*x", cfg->hex_digits, curve->order);
+
+	if (curve->points) {
+		char *points[curve->npoints];
+		size_t len = 0;
+		for (size_t i = 0; i < curve->npoints; ++i) {
+			point_t *point = curve->points[i];
+			GEN x = field_elementi(gel(point->point, 1));
+			GEN y = field_elementi(gel(point->point, 2));
+			points[i] = pari_sprintf("%P0#*x,%P0#*x,%P#x", cfg->hex_digits, x,
+			                         cfg->hex_digits, y, point->order);
+			len += strlen(points[i]);
+		}
+		size_t lenn = sizeof(char) * (len + curve->npoints);
+		params[OFFSET_POINTS] = pari_malloc(lenn);
+		params[OFFSET_POINTS][0] = '\0';
+		for (size_t i = 0; i < curve->npoints; ++i) {
+			if (i > 0) strncat(params[OFFSET_POINTS], ",", lenn - 1);
+			strncat(params[OFFSET_POINTS], points[i], lenn - 1);
+			pari_free(points[i]);
+		}
+	}
+
+	size_t len = 0;
+	size_t count = 0;
+	for (int i = OFFSET_FIELD; i < OFFSET_END; ++i) {
+		if (params[i]) {
+			len += strlen(params[i]);
+			++count;
+		}
+	}
+	size_t lenn = sizeof(char) * (len + count);
+	char *result = pari_malloc(lenn);
+	result[0] = '\0';
+
+	for (int i = OFFSET_FIELD; i < OFFSET_END; ++i) {
+		if (params[i]) {
+			if (i > OFFSET_FIELD) strncat(result, ",", lenn - 1);
+			strncat(result, params[i], lenn - 1);
+			pari_free(params[i]);
+		}
+	}
 
 	avma = ltop;
 	return result;
@@ -72,7 +134,7 @@ static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 
 	switch (cfg->field) {
 		case FIELD_PRIME: {
-			char *prime = pari_sprintf("%P#x", curve->field);
+			char *prime = pari_sprintf("%P0#*x", cfg->hex_digits, curve->field);
 			json_object_dotset_string(root_object, "field.p", prime);
 			pari_free(prime);
 			break;
@@ -98,13 +160,13 @@ static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 			exit(1);
 	}
 
-	char *a = pari_sprintf("%P#x", field_elementi(curve->a));
+	char *a = pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->a));
 	json_object_set_string(root_object, "a", a);
 	pari_free(a);
-	char *b = pari_sprintf("%P#x", field_elementi(curve->b));
+	char *b = pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->b));
 	json_object_set_string(root_object, "b", b);
 	pari_free(b);
-	char *order = pari_sprintf("%P#x", curve->order);
+	char *order = pari_sprintf("%P0#*x", cfg->hex_digits, curve->order);
 	json_object_set_string(root_object, "order", order);
 	pari_free(order);
 	if (curve->ngens) {
@@ -116,11 +178,13 @@ static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 			JSON_Object *point_object = json_value_get_object(point_value);
 
 			char *x = pari_sprintf(
-			    "%P#x", field_elementi(gel(curve->generators[i]->point, 1)));
+			    "%P0#*x", cfg->hex_digits,
+			    field_elementi(gel(curve->generators[i]->point, 1)));
 			json_object_set_string(point_object, "x", x);
 			pari_free(x);
 			char *y = pari_sprintf(
-			    "%P#x", field_elementi(gel(curve->generators[i]->point, 2)));
+			    "%P0#*x", cfg->hex_digits,
+			    field_elementi(gel(curve->generators[i]->point, 2)));
 			json_object_set_string(point_object, "y", y);
 			pari_free(y);
 			char *p_order = pari_sprintf("%P#x", curve->generators[i]->order);
@@ -147,12 +211,14 @@ static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 			JSON_Value *point_value = json_value_init_object();
 			JSON_Object *point_object = json_value_get_object(point_value);
 
-			char *x = pari_sprintf(
-			    "%P#x", field_elementi(gel(curve->points[i]->point, 1)));
+			char *x =
+			    pari_sprintf("%P0#*x", cfg->hex_digits,
+			                 field_elementi(gel(curve->points[i]->point, 1)));
 			json_object_set_string(point_object, "x", x);
 			pari_free(x);
-			char *y = pari_sprintf(
-			    "%P#x", field_elementi(gel(curve->points[i]->point, 2)));
+			char *y =
+			    pari_sprintf("%P0#*x", cfg->hex_digits,
+			                 field_elementi(gel(curve->points[i]->point, 2)));
 			json_object_set_string(point_object, "y", y);
 			pari_free(y);
 			char *p_order = pari_sprintf("%P#x", curve->points[i]->order);

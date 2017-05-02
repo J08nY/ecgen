@@ -53,6 +53,7 @@ typedef struct {
 	char *verbose_log;
 
 	unsigned long bits;
+	unsigned long hex_digits;
 
 } config_t;
 

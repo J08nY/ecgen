@@ -168,38 +168,3 @@ int curve_unroll(curve_t *curve, const config_t *cfg, pari_sp from,
 	}
 	return -1;
 }
-
-GEN curve_params(const curve_t *curve) {
-	pari_sp ltop = avma;
-
-	GEN result = field_params(curve->field);
-	if (curve->a) result = gconcat(result, field_elementi(curve->a));
-	if (curve->b) result = gconcat(result, field_elementi(curve->b));
-	if (curve->generators) {
-		for (size_t i = 0; i < curve->ngens; ++i) {
-			GEN x = field_elementi(gel(curve->generators[i]->point, 1));
-			GEN y = field_elementi(gel(curve->generators[i]->point, 2));
-			result = gconcat(result, x);
-			result = gconcat(result, y);
-			result = gconcat(result, curve->generators[i]->order);
-			if (curve->generators[i]->cofactor) {
-				result = gconcat(result, curve->generators[i]->cofactor);
-			}
-		}
-	}
-	if (curve->order) result = gconcat(result, gtovec(curve->order));
-	if (curve->points) {
-		for (size_t i = 0; i < curve->npoints; ++i) {
-			GEN x = field_elementi(gel(curve->points[i]->point, 1));
-			GEN y = field_elementi(gel(curve->points[i]->point, 2));
-			result = gconcat(result, x);
-			result = gconcat(result, y);
-			result = gconcat(result, curve->points[i]->order);
-			if (curve->points[i]->cofactor) {
-				result = gconcat(result, curve->points[i]->cofactor);
-			}
-		}
-	}
-
-	return gerepilecopy(ltop, result);
-}

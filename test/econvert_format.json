@@ -1,0 +1,29 @@
+{
+  "field": {
+    "p": "0xb"
+  },
+  "a": "0x1",
+  "b": "0x2",
+  "order": "0x10",
+  "generators": [
+    {
+      "x": "0x2",
+      "y": "0xa",
+      "order": "0x8",
+      "cofactor": "0x2"
+    },
+    {
+      "x": "0x7",
+      "y": "0x0",
+      "order": "0x2",
+      "cofactor": "0x8"
+    }
+  ],
+  "points": [
+    {
+      "x": "0x7",
+      "y": "0x0",
+      "order": "0x2"
+    }
+  ]
+}

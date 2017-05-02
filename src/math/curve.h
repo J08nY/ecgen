@@ -59,18 +59,6 @@ int curve_seed(curve_t *curve, const config_t *cfg, arg_t *args);
 int curve_unroll(curve_t *curve, const config_t *cfg, pari_sp from, pari_sp to);
 
 /**
- * Serializes curve parameters into a t_VEC:
- * - prime field:
- * 	p,a,b,order,(point.x, point.y, point.order)*
- * - binary field:
- *  e1,e2,e3,a,b,order,(point.x, point.y, point.order)*
- *
- * @param curve to serialize
- * @return a t_VEC of curve parameters
- */
-GEN curve_params(const curve_t *curve);
-
-/**
  * Allocates and zeros out a new curve_t object.
  * @return new curve
  */

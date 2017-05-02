@@ -227,6 +227,8 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			}
 
 			cfg->bits = strtoul(arg, NULL, 10);
+			cfg->hex_digits =
+			    2 * (cfg->bits / 8 + (cfg->bits % 8 != 0 ? 1 : 0));
 			break;
 		case ARGP_KEY_END:
 			// validate all option states here.
