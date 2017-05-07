@@ -63,7 +63,7 @@ typedef struct {
  * @brief
  */
 typedef enum {
-	OFFSET_SEED,
+	OFFSET_SEED = 0,
 	OFFSET_FIELD,
 	OFFSET_A,
 	OFFSET_B,

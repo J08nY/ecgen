@@ -30,8 +30,12 @@ void *invalid_thread(void *arg) {
 				ndivides++;
 			}
 		}
+
 		debug("ndivides = %lu\n", ndivides);
-		if (ndivides > 0) {
+		if (ndivides > 0 &&
+		    exhaustive_gen_retry(invalid, thread->cfg, thread->gens,
+		                         invalid_argss, thread->unrolls,
+		                         OFFSET_GENERATORS, OFFSET_POINTS, 1)) {
 			pthread_mutex_lock(thread->mutex_state);
 			size_t nfree = 0;
 			// can be up to ndivides, but also lower...
@@ -52,8 +56,8 @@ void *invalid_thread(void *arg) {
 				arg_t prime_divisors = {primes, nprimes};
 				invalid_argss[OFFSET_POINTS] = &prime_divisors;
 				exhaustive_gen(invalid, thread->cfg, thread->gens,
-				               invalid_argss, thread->unrolls,
-				               OFFSET_GENERATORS, OFFSET_END);
+				               invalid_argss, thread->unrolls, OFFSET_POINTS,
+				               OFFSET_END);
 
 				pthread_mutex_lock(thread->mutex_state);
 				size_t count = 0;
@@ -76,14 +80,13 @@ void *invalid_thread(void *arg) {
 				invalid = curve_new();
 				invalid->field = gcopy(thread->original_curve->field);
 				invalid->a = gcopy(thread->original_curve->a);
-			} else {
-				curve_unroll(invalid, thread->cfg, avma, btop);
-				avma = btop;
+				continue;
 			}
-		} else {
-			curve_unroll(invalid, thread->cfg, avma, btop);
-			avma = btop;
 		}
+
+		// We were unsuccessful for some reasol, unroll
+		curve_unroll(invalid, thread->cfg, avma, btop);
+		avma = btop;
 	}
 	curve_free(&invalid);
 

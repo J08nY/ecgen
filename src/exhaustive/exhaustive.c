@@ -3,11 +3,9 @@
  * Copyright (C) 2017 J08nY
  */
 #include "exhaustive.h"
-#include <io/config.h>
 #include <math/types.h>
 #include "anomalous.h"
 #include "io/output.h"
-#include "math/arg.h"
 #include "math/curve.h"
 #include "math/equation.h"
 #include "math/field.h"
@@ -92,9 +90,6 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 }
 
 static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
-	for (size_t i = 0; i < OFFSET_END; ++i) {
-		argss[i] = NULL;
-	}
 	if (cfg->anomalous) {
 		arg_t *field_arg = arg_new();
 		arg_t *eq_arg = arg_new();
@@ -116,13 +111,18 @@ static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 	}
 	if (cfg->cofactor) {
 		arg_t *order_arg = arg_new();
+		arg_t *gens_arg = arg_new();
 		order_arg->args = &cfg->cofactor_bound;
 		order_arg->nargs = 1;
+		gens_arg->args = &cfg->cofactor_bound;
+		gens_arg->nargs = 1;
 		argss[OFFSET_ORDER] = order_arg;
+		argss[OFFSET_GENERATORS] = gens_arg;
 	}
 }
 
 void exhaustive_uinit(unroll_t *unrolls, const config_t *cfg) {
+	unrolls[OFFSET_SEED] = &unroll_skip;
 	unrolls[OFFSET_FIELD] = &unroll_skip;
 	unrolls[OFFSET_A] = &unroll_skip;
 	unrolls[OFFSET_B] = &unroll_skip;
@@ -137,64 +137,64 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
                          offset_e start_offset, offset_e end_offset,
                          int retry) {
 	if (start_offset == end_offset) {
-		return 1;
+		return 2;
 	}
 	if (start_offset > end_offset) {
-		return -1;
+		return 0;
 	}
-	int num_gens = end_offset - start_offset;
-	pari_sp tops[num_gens];
-	int tries[num_gens];
-	memset(tries, 0, sizeof(int) * num_gens);
+
+	pari_sp stack_tops[OFFSET_END] = {0};
+	int gen_tries[OFFSET_END] = {0};
 
 	int state = start_offset;
 	while (state < end_offset) {
-		// remember pari stack
-		tops[state - start_offset] = avma;
+		stack_tops[state] = avma;
 
 		int diff = generators[state](curve, cfg, argss ? argss[state] : NULL);
-		if (diff == INT_MIN) {
-			fprintf(stderr, "Error generating a curve. state = %i\n", state);
-			return 0;
-		}
+		int new_state = state + diff;
+		if (new_state < start_offset) new_state = start_offset;
 
-		if (state + diff < start_offset) {
-			// what now?
-			// TODO
-		} else if (diff <= 0) {
-			// unroll pari stack
-			int new_state = state + diff;
+		if (diff <= 0) {
+			if (diff == INT_MIN || state + diff < 0) {
+				fprintf(stderr, "Error generating a curve. state = %i\n",
+				        state);
+				return 0;
+			}
+			// record try
+			int tried = ++gen_tries[state];
+			if (retry && tried >= retry) {
+				if (cfg->verbose) {
+					fprintf(verbose, "Reached retry limit: %i, state = %i\n",
+					        retry, state);
+				}
+				return 0;
+			}
+
+			// unroll
 			for (int i = state; i > new_state;) {
 				if (unrolls && unrolls[i]) {
-					i += unrolls[i](curve, cfg, tops[i], tops[i - 1]);
+					i += unrolls[i](curve, cfg, stack_tops[i],
+					                stack_tops[i - 1]);
 				} else {
 					--i;
 				}
 			}
-			avma = tops[new_state - start_offset];
-		}
 
-		if (diff <= 0) {
-			int tried = ++tries[state - start_offset];
-			if (retry && tried >= retry) {
-				fprintf(stderr, "Reached retry limit: %i, state = %i\n", retry,
-				        state);
-				return 0;
+			if (cfg->verbose) {
+				if (diff < 0) {
+					fprintf(verbose, "-");
+				} else {
+					fprintf(verbose, ".");
+				}
 			}
-		} else if (diff > 0) {
-			tries[state - start_offset] = 0;
+			// unroll stack
+			avma = stack_tops[new_state];
+		} else {
+			// we are going forward, reset tries
+			gen_tries[state] = 0;
+			if (cfg->verbose) fprintf(verbose, "+");
 		}
-		state += diff;
-
-		if (cfg->verbose) {
-			if (diff > 0) {
-				fprintf(verbose, "+");
-			} else if (diff < 0) {
-				fprintf(verbose, "-");
-			} else {
-				fprintf(verbose, ".");
-			}
-		}
+		state = new_state;
 	}
 
 	if (cfg->verbose) fprintf(verbose, "\n");
@@ -224,9 +224,9 @@ static void exhaustive_quit(arg_t *argss[]) {
 int exhaustive_do(config_t *cfg) {
 	debug("# Starting Exhaustive method\n");
 
-	gen_t generators[OFFSET_END];
-	arg_t *argss[OFFSET_END];
-	unroll_t unrolls[OFFSET_END];
+	gen_t generators[OFFSET_END] = {NULL};
+	arg_t *argss[OFFSET_END] = {NULL};
+	unroll_t unrolls[OFFSET_END] = {NULL};
 	exhaustive_ginit(generators, cfg);
 	exhaustive_ainit(argss, cfg);
 	exhaustive_uinit(unrolls, cfg);
@@ -235,8 +235,8 @@ int exhaustive_do(config_t *cfg) {
 	output_o_begin(cfg);
 	for (unsigned long i = 0; i < cfg->count; ++i) {
 		curve_t *curve = curve_new();
-		if (!exhaustive_gen_retry(curve, cfg, generators, argss, unrolls,
-		                          OFFSET_SEED, OFFSET_END, 10)) {
+		if (!exhaustive_gen(curve, cfg, generators, argss, unrolls, OFFSET_SEED,
+		                    OFFSET_END)) {
 			curve_free(&curve);
 			return 1;
 		}

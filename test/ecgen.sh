@@ -35,8 +35,32 @@ function json() {
 	assert_matches "${JSON} -x \\\"order\\\"" "0x3de" "${f2m}"
 }
 
+function exhaustive() {
+	start_test
+	assert_raises "${ecgen} --fp -r 10"
+	assert_raises "${ecgen} --f2m -r 10"
+	assert_raises "${ecgen} --fp -r -i 10"
+	assert_raises "${ecgen} --f2m -r -i 10"
+	assert_raises "${ecgen} --fp -r -p 10"
+	assert_raises "${ecgen} --f2m -r -u 10"
+	assert_raises "${ecgen} --fp -r -i -u 10"
+	assert_raises "${ecgen} --f2m -r -i -u 10"
+	assert_raises "${ecgen} --fp -r -k 10 10"
+}
+
+function anomalous() {
+	start_test
+	assert_raises "${ecgen} --fp --anomalous -r 20"
+	out=$(${ecgen} --fp -tjson --anomalous -r 20)
+	p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
+	order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
+	assert "strip_num $p" $(strip_num $order)
+}
+
 . ${ASSERT} -v
 runs
 csv
 json
+exhaustive
+anomalous
 assert_end ecgen

@@ -9,3 +9,12 @@ start_test() {
 	echo
 	printf "[*] Test %-20s" "${FUNCNAME[1]}"
 }
+
+strip_num() {
+	num="$1"
+	num="${num%\"}"
+	num="${num#\"}"
+	num="${num:2}"
+	num="${num##+(0)}"
+	echo $num
+}

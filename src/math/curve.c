@@ -66,6 +66,8 @@ curve_t *curve_new_clone(const curve_t *src) {
 void curve_free(curve_t **curve) {
 	if (*curve) {
 		seed_free(&(*curve)->seed);
+		points_free_deep(&(*curve)->generators, (*curve)->ngens);
+		points_free_deep(&(*curve)->points, (*curve)->npoints);
 
 		if ((*curve)->curve) {
 			// TODO, this is possibly dangerous...
@@ -88,8 +90,6 @@ void curve_free(curve_t **curve) {
 			gunclone((*curve)->order);
 		}
 
-		points_free_deep(&(*curve)->generators, (*curve)->ngens);
-		points_free_deep(&(*curve)->points, (*curve)->npoints);
 		pari_free(*curve);
 		*curve = NULL;
 	}

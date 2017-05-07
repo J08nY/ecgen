@@ -15,9 +15,10 @@ Tool for generating Elliptic curve domain parameters.
 
  - `-c / --count=COUNT`		Generate multiple curves.
  - `-i / --invalid`			Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).
- - `-k / --cofactor=BOUND`	Generate a curve with cofactor up to `BOUND`
+ - `-k / --cofactor=BOUND`	Generate a curve with cofactor up to `BOUND` **TODO**
+ - `--anomalous`            Generate an anomalous curve (of trace one, with field order equal to curve order).
  - `-K / --koblitz`			Generate a Koblitz curve (a = 0).
- - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication).
+ - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication). **TODO**
  - `-p / --prime`			Generate a curve with prime order.
  - `--points=TYPE`			Generate points of given `TYPE` (random/prime/none).
  - `-r / --random`			Generate a random curve (using Random approach).
@@ -26,18 +27,18 @@ Tool for generating Elliptic curve domain parameters.
 
 #### IO options
 
- - `-a / --append`			Append to output file (don't overwrite).
+- `-t / --format=FORMAT`	Format to output in. One of [csv,json], default is json.
  - `-f / --input=FILE`		Input from `FILE`.
  - `-o / --output=FILE`		Output into `FILE`. Overwrites any existing file!
- - `-t / --format=FORMAT`	Format to output in. One of [csv,json], default is json.
+ - `-a / --append`			Append to output file (don't overwrite).
  - `-v / --verbose[=FILE]`	Verbose logging (to stdout or `FILE`).
 
 #### Other
 
  - `-d / --data-dir=DIR`	Set PARI/GP data directory (containing seadata package).
  - `-m / --memory=SIZE`		Use PARI stack of `SIZE` (can have suffix k/m/g).
- - `--thread-stack=SIZE`	Use PARI stack of `SIZE` (per thread, can have suffix k/m/g).
  - `--threads=NUM`			Use `NUM` threads.
+ - `--thread-stack=SIZE`	Use PARI stack of `SIZE` (per thread, can have suffix k/m/g).
 
 #### Examples
 
@@ -103,6 +104,7 @@ Three different EC curve parameters generation methods are implemented.
    - `-p / --prime` generates curves until a prime order curve is found.
    - `-K / --koblitz` generates a curve with fixed *A = 0* parameter.
    - `-u / --unique` generates a uniquely generated curve (with one generator/cyclic group).
+   - etc..
 
 ##### Invalid curve generation
 
@@ -121,6 +123,7 @@ Three different EC curve parameters generation methods are implemented.
  - Used with the `-n / --order` option
  - [Constructing elliptic curves of prime order - [Broker, Stevenhagen]](https://arxiv.org/abs/0712.2022)
  - [Generating Elliptic Curves of Prime Order - [Savas, Schmidt, Koc]](http://people.oregonstate.edu/~schmidtt/ourPapers/SavasKoc/ches01curve.pdf)
+ - *Currently not implemented.*
 
 
 ### Build

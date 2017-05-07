@@ -5,7 +5,6 @@
 #include "invalid.h"
 #include "exhaustive/exhaustive.h"
 #include "invalid_thread.h"
-#include "io/config.h"
 #include "io/output.h"
 #include "math/curve.h"
 #include "math/equation.h"
@@ -31,6 +30,7 @@ static void invalid_original_ginit(gen_t *generators, const config_t *cfg) {
 }
 
 static void invalid_invalid_ginit(gen_t *generators, const config_t *cfg) {
+	generators[OFFSET_SEED] = &gen_skip;
 	generators[OFFSET_FIELD] = &gen_skip;
 	generators[OFFSET_A] = &gen_skip;
 	generators[OFFSET_B] = &b_random;
@@ -121,6 +121,14 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 		}
 
 		if (total > 0) {
+			if (!exhaustive_gen_retry(invalid, cfg, invalid_gen, NULL, unrolls,
+			                          OFFSET_GENERATORS, OFFSET_POINTS, 1)) {
+				curve_unroll(invalid, cfg, avma,
+				             btop);  // necessary to free the ellinit
+				avma = btop;
+				continue;
+			}
+
 			// only pass small primes that divide the curve order and those
 			// where we dont have a curve yet.
 			// this is passed to points_trial which uses trial division to find
@@ -142,7 +150,7 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 			// generate prime order points, this is expensive (order needs to be
 			// factorised, so only do it if we want the curve)
 			exhaustive_gen(invalid, cfg, invalid_gen, invalid_argss, unrolls,
-			               OFFSET_GENERATORS, OFFSET_END);
+			               OFFSET_POINTS, OFFSET_END);
 
 			size_t count = 0;
 			for (size_t i = nprimes; i-- > 0;) {
@@ -184,7 +192,8 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 			// primes from range divided order. Thus remove it
 			// like it never existed.
 
-			obj_free(invalid->curve);  // necessary to free the ellinit
+			curve_unroll(invalid, cfg, avma,
+			             btop);  // necessary to free the ellinit
 			avma = btop;
 		}
 	}

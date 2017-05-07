@@ -6,8 +6,6 @@
 #include "point.h"
 
 static int gens_put(curve_t *curve, GEN generators, long len) {
-	points_free_deep(&curve->generators, curve->ngens);
-
 	curve->generators = points_new((size_t)len);
 	curve->ngens = (size_t)len;
 
