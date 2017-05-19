@@ -116,6 +116,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 					}
 				}
 			}
+			break;
 		case OPT_COUNT:
 			if (arg) {
 				cfg->count = strtoul(arg, NULL, 10);
