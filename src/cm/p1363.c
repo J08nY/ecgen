@@ -2,11 +2,8 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-/**
- * @file p1363.c
- */
 #include "p1363.h"
-#include <pari/paripriv.h>
+#include "util/memory.h"
 
 GEN p1363_group(GEN D) {
 	pari_sp ltop = avma;
@@ -57,12 +54,10 @@ long p1363_num(GEN group) { return glength(group); }
 size_t p1363_forms(GEN D, form_t ***forms) {
 	GEN group = p1363_group(D);
 	size_t nforms = (size_t)p1363_num(group);
-	*forms = pari_malloc(nforms * sizeof(form_t *));
-	memset(*forms, 0, nforms * sizeof(form_t *));
+	*forms = try_calloc(nforms * sizeof(form_t *));
 
 	for (size_t i = 0; i < nforms; ++i) {
-		(*forms)[i] = pari_malloc(sizeof(form_t));
-		memset((*forms)[i], 0, sizeof(form_t));
+		(*forms)[i] = try_calloc(sizeof(form_t));
 		(*forms)[i]->A = gel(gel(group, i + 1), 1);
 		(*forms)[i]->B = gel(gel(group, i + 1), 2);
 		(*forms)[i]->C = gel(gel(group, i + 1), 3);

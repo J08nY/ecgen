@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include "exhaustive.h"
-#include <math/types.h>
 #include "anomalous.h"
 #include "io/output.h"
 #include "math/curve.h"
@@ -13,6 +12,7 @@
 #include "math/order.h"
 #include "math/point.h"
 #include "seed.h"
+#include "util/memory.h"
 
 static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 	if (cfg->from_seed) {
@@ -93,13 +93,13 @@ static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 	if (cfg->anomalous) {
 		arg_t *field_arg = arg_new();
 		arg_t *eq_arg = arg_new();
-		size_t *i = pari_malloc(sizeof(size_t));
+		size_t *i = try_calloc(sizeof(size_t));
 		*i = 3;
 		field_arg->args = i;
 		field_arg->nargs = 1;
 		eq_arg->args = i;
 		eq_arg->nargs = 1;
-		eq_arg->mallocd = i;
+		eq_arg->allocd = i;
 		argss[OFFSET_FIELD] = field_arg;
 		argss[OFFSET_B] = eq_arg;
 	}
@@ -222,7 +222,7 @@ static void exhaustive_quit(arg_t *argss[]) {
 }
 
 int exhaustive_do(config_t *cfg) {
-	debug("# Starting Exhaustive method\n");
+	debug_log_start("Starting Exhaustive method");
 
 	gen_t generators[OFFSET_END] = {NULL};
 	arg_t *argss[OFFSET_END] = {NULL};
@@ -234,12 +234,15 @@ int exhaustive_do(config_t *cfg) {
 
 	output_o_begin(cfg);
 	for (unsigned long i = 0; i < cfg->count; ++i) {
+		debug_log_start("Generating new curve");
 		curve_t *curve = curve_new();
 		if (!exhaustive_gen(curve, cfg, generators, argss, unrolls, OFFSET_SEED,
 		                    OFFSET_END)) {
 			curve_free(&curve);
 			return 1;
 		}
+		debug_log_end("Generated new curve");
+
 		output_o(curve, cfg);
 		if (i != cfg->count - 1) {
 			output_o_separator(cfg);
@@ -249,5 +252,6 @@ int exhaustive_do(config_t *cfg) {
 	output_o_end(cfg);
 
 	exhaustive_quit(argss);
+	debug_log_end("Finished Exhaustive method");
 	return 0;
 }

@@ -2,18 +2,11 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-#include "seed.h"
-#include "io/input.h"
 
-seed_t *seed_new(void) {
-	seed_t *seed = pari_malloc(sizeof(seed_t));
-	if (!seed) {
-		perror("Couldn't malloc.");
-		exit(1);
-	}
-	memset(seed, 0, sizeof(seed_t));
-	return seed;
-}
+#include "seed.h"
+#include "util/memory.h"
+
+seed_t *seed_new(void) { return try_calloc(sizeof(seed_t)); }
 
 seed_t *seed_copy(const seed_t *src, seed_t *dest) {
 	if (src->seed) dest->seed = gcopy(src->seed);
@@ -67,11 +60,7 @@ char *seed_itos(GEN seed) {
 
 	long len = glength(bits);
 	long bytes = (len / 8) + (len % 8 == 0 ? 0 : 1);
-	char *result = pari_malloc((size_t)bytes);
-	if (!result) {
-		perror("Couldn't malloc.");
-		exit(1);
-	}
+	char *result = try_malloc((size_t)bytes);
 
 	for (long i = 0; i < len; ++i) {
 		// TODO

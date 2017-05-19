@@ -12,6 +12,29 @@
 #include <stdbool.h>
 #include "math/types.h"
 
+#ifdef DEBUG
+
+#include "time.h"
+
+#define debug(...) fprintf(verbose, __VA_ARGS__)
+#define debug_log(...) \
+	fprintf(verbose, " -  %lu %s\n", time(NULL), __VA_ARGS__);
+#define debug_log_start(...) \
+	fprintf(verbose, "[ ] %lu %s\n", time(NULL), __VA_ARGS__)
+#define debug_log_end(...) \
+	fprintf(verbose, "[*] %lu %s\n", time(NULL), __VA_ARGS__)
+#else
+#define debug(...)
+#define debug_log(...)
+#define debug_log_start(...)
+#define debug_log_end(...)
+#endif  // DEBUG
+
+#define verbose_log(...) \
+	if (cfg->verbose) fprintf(verbose, __VA_ARGS__)
+
+#define output_log(...) fprintf(out, __VA_ARGS__)
+
 /**
  * @brief Output curve to a pari_malloc'ed string in CSV format.
  * @param curve
@@ -177,11 +200,5 @@ void output_init(const config_t *cfg);
  * @brief Deinitialize output.
  */
 void output_quit(void);
-
-#ifdef DEBUG
-#define debug(...) fprintf(out, __VA_ARGS__)
-#else
-#define debug(...)
-#endif
 
 #endif  // ECGEN_OUTPUT_H

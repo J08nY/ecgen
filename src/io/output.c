@@ -6,16 +6,13 @@
 #include "output.h"
 #include <parson/parson.h>
 #include "math/field.h"
+#include "util/memory.h"
 
 FILE *out;
 FILE *verbose;
 
 char *output_malloc(const char *what) {
-	char *s = pari_malloc(sizeof(char) * (strlen(what) + 1));
-	if (!s) {
-		perror("Couldn't malloc.");
-		exit(1);
-	}
+	char *s = try_calloc(sizeof(char) * (strlen(what) + 1));
 	strcpy(s, what);
 	return s;
 }
@@ -62,8 +59,7 @@ char *output_scsv(curve_t *curve, const config_t *cfg) {
 			len += strlen(gens[i]);
 		}
 		size_t lenn = sizeof(char) * (len + curve->ngens);
-		params[OFFSET_GENERATORS] = pari_malloc(lenn);
-		params[OFFSET_GENERATORS][0] = '\0';
+		params[OFFSET_GENERATORS] = try_calloc(lenn);
 		for (size_t i = 0; i < curve->ngens; ++i) {
 			if (i > 0) strncat(params[OFFSET_GENERATORS], ",", lenn - 1);
 			strncat(params[OFFSET_GENERATORS], gens[i], lenn - 1);
@@ -87,8 +83,7 @@ char *output_scsv(curve_t *curve, const config_t *cfg) {
 			len += strlen(points[i]);
 		}
 		size_t lenn = sizeof(char) * (len + curve->npoints);
-		params[OFFSET_POINTS] = pari_malloc(lenn);
-		params[OFFSET_POINTS][0] = '\0';
+		params[OFFSET_POINTS] = try_calloc(lenn);
 		for (size_t i = 0; i < curve->npoints; ++i) {
 			if (i > 0) strncat(params[OFFSET_POINTS], ",", lenn - 1);
 			strncat(params[OFFSET_POINTS], points[i], lenn - 1);
@@ -105,8 +100,7 @@ char *output_scsv(curve_t *curve, const config_t *cfg) {
 		}
 	}
 	size_t lenn = sizeof(char) * (len + count);
-	char *result = pari_malloc(lenn);
-	result[0] = '\0';
+	char *result = try_calloc(lenn);
 
 	for (int i = OFFSET_FIELD; i < OFFSET_END; ++i) {
 		if (params[i]) {
@@ -299,7 +293,7 @@ void output_f_end(FILE *out, const config_t *cfg) {
 void output_o_end(const config_t *cfg) { output_f_end(out, cfg); }
 
 void output_init(const config_t *cfg) {
-	json_set_allocation_functions(pari_malloc, pari_free);
+	json_set_allocation_functions(try_malloc, pari_free);
 
 	if (cfg->output) {
 		out = fopen(cfg->output, cfg->append ? "a" : "w");
@@ -315,11 +309,11 @@ void output_init(const config_t *cfg) {
 	if (cfg->verbose_log) {
 		verbose = fopen(cfg->verbose_log, "w");
 		if (!verbose) {
-			verbose = stdout;
+			verbose = stderr;
 			perror("Failed to open verbose output file.");
 		}
 	} else {
-		verbose = stdout;
+		verbose = stderr;
 	}
 	setvbuf(verbose, NULL, _IONBF, 0);
 

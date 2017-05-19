@@ -6,16 +6,9 @@
 #include "exhaustive/seed.h"
 #include "field.h"
 #include "point.h"
+#include "util/memory.h"
 
-curve_t *curve_new(void) {
-	curve_t *curve = pari_malloc(sizeof(curve_t));
-	if (!curve) {
-		perror("Couldn't malloc.");
-		exit(1);
-	}
-	memset(curve, 0, sizeof(curve_t));
-	return curve;
-}
+curve_t *curve_new(void) { return try_calloc(sizeof(curve_t)); }
 
 curve_t *curve_copy(const curve_t *src, curve_t *dest) {
 	if (src->seed) dest->seed = seed_copy(src->seed, dest->seed);

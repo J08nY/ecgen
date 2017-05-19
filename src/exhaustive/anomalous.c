@@ -2,27 +2,15 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-/**
- * @file anomalous.c
- */
 #include "anomalous.h"
-#include <io/config.h>
-#include <math/types.h>
+#include "util/memory.h"
 
 static disc_t **disc_table;
 
 void anomalous_init() {
-	disc_table = pari_malloc(sizeof(disc_t *) * 5);
-	if (!disc_table) {
-		perror("Couldn't malloc.");
-		exit(1);
-	}
+	disc_table = try_calloc(sizeof(disc_t *) * 5);
 	for (int i = 0; i < 5; ++i) {
-		disc_table[i] = pari_malloc(sizeof(disc_t));
-		if (!disc_table[i]) {
-			perror("Couldn't malloc.");
-			exit(1);
-		}
+		disc_table[i] = try_calloc(sizeof(disc_t));
 	}
 
 	/*

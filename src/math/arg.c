@@ -3,22 +3,15 @@
  * Copyright (C) 2017 J08nY
  */
 #include "arg.h"
+#include "util/memory.h"
 
-arg_t *arg_new(void) {
-	arg_t *arg = pari_malloc(sizeof(arg_t));
-	if (!arg) {
-		perror("Couldn't malloc.");
-		exit(1);
-	}
-	memset(arg, 0, sizeof(arg_t));
-	return arg;
-}
+arg_t *arg_new(void) { return try_calloc(sizeof(arg_t)); }
 
 void arg_free(arg_t **arg) {
 	if (*arg) {
-		if ((*arg)->mallocd) {
-			pari_free((*arg)->mallocd);
-			(*arg)->mallocd = NULL;
+		if ((*arg)->allocd) {
+			pari_free((*arg)->allocd);
+			(*arg)->allocd = NULL;
 		}
 		pari_free(*arg);
 		*arg = NULL;

@@ -4,8 +4,8 @@
  */
 #define _POSIX_C_SOURCE 200809L
 #include "input.h"
-#include <parson/parson.h>
 #include "output.h"
+#include "util/memory.h"
 
 FILE *in;
 int delim;
@@ -29,11 +29,7 @@ static GEN input_i(const char *prompt, unsigned long bits) {
 		;
 
 	if (len <= 3 || !(line[0] == '0' && (line[1] == 'x' || line[1] == 'X'))) {
-		char *new_line = realloc(line, (size_t)(len + 2));
-		if (!new_line) {
-			perror("Couldn't alloc.");
-			exit(1);
-		}
+		char *new_line = try_realloc(line, (size_t)(len + 2));
 		memmove(new_line + 2, new_line, (size_t)len);
 		new_line[0] = '0';
 		new_line[1] = 'x';
@@ -113,8 +109,6 @@ GEN input_param(param_t param, const char *prompt, unsigned long bits) {
 }
 
 void input_init(const config_t *cfg) {
-	json_set_allocation_functions(pari_malloc, pari_free);
-
 	if (cfg->input) {
 		in = fopen(cfg->input, "r");
 		delim = ',';

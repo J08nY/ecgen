@@ -3,16 +3,9 @@
  * Copyright (C) 2017 J08nY
  */
 #include "point.h"
+#include "util/memory.h"
 
-point_t *point_new(void) {
-	point_t *point = pari_malloc(sizeof(point_t));
-	if (!point) {
-		perror("Couldn't malloc.");
-		exit(1);
-	}
-	memset(point, 0, sizeof(point_t));
-	return point;
-}
+point_t *point_new(void) { return try_calloc(sizeof(point_t)); }
 
 point_t *point_copy(const point_t *src, point_t *dest) {
 	if (src->point) dest->point = gcopy(src->point);
@@ -54,15 +47,7 @@ void point_free(point_t **point) {
 	}
 }
 
-point_t **points_new(size_t num) {
-	point_t **points = pari_malloc(num * sizeof(point_t *));
-	if (!points) {
-		perror("Couldn't malloc.");
-		exit(1);
-	}
-	memset(points, 0, num * sizeof(point_t *));
-	return points;
-}
+point_t **points_new(size_t num) { return try_calloc(num * sizeof(point_t *)); }
 
 point_t **points_copy(point_t **const src, point_t **dest, size_t num) {
 	for (size_t i = 0; i < num; ++i) {
