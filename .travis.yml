@@ -28,6 +28,7 @@ before_install:
 
 script:
   - make -j2
+  - mkdir cmake && cd cmake && cmake .. && make -j2 && cd ..
   - make test
 
 deploy:

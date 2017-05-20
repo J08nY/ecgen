@@ -13,7 +13,7 @@ find_library(sha1 sha1/libsha1.a)
 
 file(GLOB SRC "src/math/*.c" "src/cm/*.c" "src/invalid/*.c" "src/io/*.c" "src/exhaustive/*.c" "src/util/*.c")
 set(ECGEN_SRC "src/ecgen.c" ${SRC})
-set(ECONVERT_SRC "src/econvert.c" ${SRC})
+set(ECONVERT_SRC "src/econvert.c")
 
 add_executable(ecgen ${ECGEN_SRC})
 add_executable(econvert ${ECONVERT_SRC})
