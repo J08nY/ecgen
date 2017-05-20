@@ -12,9 +12,9 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-extern char doc[];
-extern char args_doc[];
-extern struct argp_option options[];
+extern char cli_doc[];
+extern char cli_args_doc[];
+extern struct argp_option cli_options[];
 
 error_t cli_parse(int key, char *arg, struct argp_state *state);
 

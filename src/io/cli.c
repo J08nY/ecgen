@@ -7,10 +7,10 @@
 #include <unistd.h>
 #include "config.h"
 
-char doc[] =
+char cli_doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
     "Eastern Seaboard Phishing Authority";
-char args_doc[] = "bits";
+char cli_args_doc[] = "bits";
 
 enum opt_keys {
 	OPT_DATADIR = 'd',
@@ -38,33 +38,33 @@ enum opt_keys {
 };
 
 // clang-format off
-struct argp_option options[] = {
-	{0,          0,            0,        0,                 "Field specification:",                                                                 1},
-	{"fp",       OPT_FP,       0,        0,                 "Prime field.",                                                                         1},
-	{"f2m",      OPT_F2M,      0,        0,                 "Binary field.",                                                                        1},
-	{0,          0,            0,        0,                 "Generation options:",                                                                  2},
-	{"random",   OPT_RANDOM,   0,        0,                 "Generate a random curve (using Random approach).",                                     2},
-	{"prime",    OPT_PRIME,    0,        0,                 "Generate a curve with prime order.",                                                   2},
-	{"cofactor", OPT_COFACTOR, "BOUND",  0,                 "Generate a curve with cofactor up to BOUND.",                                          2},
-	{"koblitz",  OPT_KOBLITZ,  0,        0,                 "Generate a Koblitz curve (a = 0).",                                                    2},
-	{"unique",   OPT_UNIQUE,   0,        0,                 "Generate a curve with only one generator.",                                            2},
-	{"anomalous",OPT_ANOMALOUS,0,        0,                 "Generate an anomalous curve (of trace one, with field order equal to curve order).",   2},
-	{"points",   OPT_POINTS,   "TYPE",   0,                 "Generate points of given type (random/prime/none).",                                   2},
-	{"seed",     OPT_SEED,     "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure).",                        2},
-	{"invalid",  OPT_INVALID,  0,        0,                 "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).", 2},
-	{"order",    OPT_ORDER,    "ORDER",  0,                 "Generate a curve with given order (using Complex Multiplication).",                    2},
-	{"count",    OPT_COUNT,    "COUNT",  0,                 "Generate multiple curves.",                                                            2},
-	{0,          0,            0,        0,                 "Input/Output options:",                                                                3},
-	{"format",   OPT_FORMAT,   "FORMAT", 0,                 "Format to output in. One of [csv,json], default is json.",                             3},
-	{"input",    OPT_INPUT,    "FILE",   0,                 "Input from file.",                                                                     3},
-	{"output",   OPT_OUTPUT,   "FILE",   0,                 "Output into file. Overwrites any existing file!",                                      3},
-	{"append",   OPT_APPEND,   0,        0,                 "Append to output file (don't overwrite).",                                             3},
-	{"verbose",  OPT_VERBOSE,  "FILE", OPTION_ARG_OPTIONAL, "Verbose logging (to stdout or file).",                                                 3},
-	{0,          0,            0,        0,                 "Other:",                                                                               4},
-	{"data-dir", OPT_DATADIR,  "DIR",    0,                 "Set PARI/GP data directory (containing seadata package).",                             4},
-	{"memory",   OPT_MEMORY,   "SIZE",   0,                 "Use PARI stack of SIZE (can have suffix k/m/g).",                                      4},
-	{"threads",  OPT_THREADS,  "NUM",    0,                 "Use NUM threads.",                                                                     4},
-	{"thread-stack",OPT_TSTACK,"SIZE",   0,           		"Use PARI stack of SIZE (per thread, can have suffix k/m/g).",							4},
+struct argp_option cli_options[] = {
+	{0,              0,             0,        0,                 "Field specification:",                                                                  1},
+	{"fp",           OPT_FP,        0,        0,                 "Prime field.",                                                                          1},
+	{"f2m",          OPT_F2M,       0,        0,                 "Binary field.",                                                                         1},
+	{0,              0,             0,        0,                 "Generation options:",                                                                   2},
+	{"random",       OPT_RANDOM,    0,        0,                 "Generate a random curve (using Random approach).",                                      2},
+	{"prime",        OPT_PRIME,     0,        0,                 "Generate a curve with prime order.",                                                    2},
+	{"cofactor",     OPT_COFACTOR,  "BOUND",  0,                 "Generate a curve with cofactor up to BOUND.",                                           2},
+	{"koblitz",      OPT_KOBLITZ,   0,        0,                 "Generate a Koblitz curve (a = 0).",                                                     2},
+	{"unique",       OPT_UNIQUE,    0,        0,                 "Generate a curve with only one generator.",                                             2},
+	{"anomalous",    OPT_ANOMALOUS, 0,        0,                 "Generate an anomalous curve (of trace one, with field order equal to curve order).",    2},
+	{"points",       OPT_POINTS,    "TYPE",   0,                 "Generate points of given type (random/prime/none).",                                    2},
+	{"seed",         OPT_SEED,      "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure). **NOT IMPLEMENTED**",     2},
+	{"invalid",      OPT_INVALID,   0,        0,                 "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).",  2},
+	{"order",        OPT_ORDER,     "ORDER",  0,                 "Generate a curve with given order (using Complex Multiplication). **NOT IMPLEMENTED**", 2},
+	{"count",        OPT_COUNT,     "COUNT",  0,                 "Generate multiple curves.",                                                             2},
+	{0,              0,             0,        0,                 "Input/Output options:",                                                                 3},
+	{"format",       OPT_FORMAT,    "FORMAT", 0,                 "Format to output in. One of [csv,json], default is json.",                              3},
+	{"input",        OPT_INPUT,     "FILE",   0,                 "Input from file.",                                                                      3},
+	{"output",       OPT_OUTPUT,    "FILE",   0,                 "Output into file. Overwrites any existing file!",                                       3},
+	{"append",       OPT_APPEND,    0,        0,                 "Append to output file (don't overwrite).",                                              3},
+	{"verbose",      OPT_VERBOSE,   "FILE", OPTION_ARG_OPTIONAL, "Verbose logging (to stdout or file).",                                                  3},
+	{0,              0,             0,        0,                 "Other:",                                                                                4},
+	{"data-dir",     OPT_DATADIR,   "DIR",    0,                 "Set PARI/GP data directory (containing seadata package).",                              4},
+	{"memory",       OPT_MEMORY,    "SIZE",   0,                 "Use PARI stack of SIZE (can have suffix k/m/g).",                                       4},
+	{"threads",      OPT_THREADS,   "NUM",    0,                 "Use NUM threads.",                                                                      4},
+	{"thread-stack", OPT_TSTACK,    "SIZE",   0,                 "Use PARI stack of SIZE (per thread, can have suffix k/m/g).",                           4},
 	{0}
 };
 // clang-format on

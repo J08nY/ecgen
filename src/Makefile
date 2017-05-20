@@ -21,8 +21,6 @@ LIBS = -lrt -lpari -lpthread -lparson -lsha1
 
 ####
 
-VPATH = cm:invalid:io:exhaustive:math
-
 ECGEN_SRC = ecgen.c $(wildcard */*.c)
 ECGEN_OBJ = $(patsubst %.c,%.o, $(ECGEN_SRC))
 

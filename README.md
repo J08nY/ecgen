@@ -15,14 +15,14 @@ Tool for generating Elliptic curve domain parameters.
 
  - `-c / --count=COUNT`		Generate multiple curves.
  - `-i / --invalid`			Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).
- - `-k / --cofactor=BOUND`	Generate a curve with cofactor up to `BOUND` **TODO**
+ - `-k / --cofactor=BOUND`	Generate a curve with cofactor up to `BOUND` **TODO - NOT FINISHED**
  - `--anomalous`            Generate an anomalous curve (of trace one, with field order equal to curve order).
  - `-K / --koblitz`			Generate a Koblitz curve (a = 0).
- - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication). **TODO**
+ - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication). **TODO - NOT IMPLEMENTED**
  - `-p / --prime`			Generate a curve with prime order.
  - `--points=TYPE`			Generate points of given `TYPE` (random/prime/none).
  - `-r / --random`			Generate a random curve (using Random approach).
- - `-s / --seed[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
+ - `-s / --seed[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure). **TODO - NOT IMPLEMENTED**
  - `-u / --unique`			Generate a curve with only one generator.
 
 #### IO options
@@ -137,10 +137,19 @@ Three different EC curve parameters generation methods are implemented.
 
  - PARI/GP
 
+
 ecgen uses the [PARI/GP](http://pari.math.u-bordeaux.fr/) library for elliptic
 curve arithmetic and it's SEA point counting algorithm implementation. It also requires the 
 additional [seadata](http://pari.math.u-bordeaux.fr/packages.html) package (seadata and seadata-big recommended for large curves).
 
+### Libraries
+
+ - `lib/parson` *©MIT*
+ - `lib/sha1` *©MPL / GPLv2 or later*
+
+[parson](https://github.com/kgabis/parson) is used to input and output JSON and is included in the `lib/` directory.
+
+A [SHA-1](lib/sha1/sha1.c) implementation by Paul Kocher, based on the SHA 180-1 Reference Implementation (for ANSI X9.62 algorithm) is used and also included in the `lib/` directory.
 
 ### License
 

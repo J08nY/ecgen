@@ -27,6 +27,7 @@
 #include "cm/cm.h"
 #include "exhaustive/exhaustive.h"
 #include "invalid/invalid.h"
+#include "io/cli.h"
 #include "io/input.h"
 #include "io/output.h"
 
@@ -37,9 +38,10 @@ const char *argp_program_version =
     "<http://gnu.org/licenses/gpl.html>\n"
     "This is free software: you are free to change and redistribute it.\n"
     "There is NO WARRANTY, to the extent permitted by law.";
-const char *argp_program_bug_address = "<johny@neuromancer.sk>";
+const char *argp_program_bug_address = "<johny+ecgen@neuromancer.sk>";
 
-static struct argp argp = {options, cli_parse, args_doc, doc, 0, cli_filter};
+static struct argp argp = {cli_options, cli_parse, cli_args_doc,
+                           cli_doc,     0,         cli_filter};
 static config_t cfg;
 
 bool init(void) {
@@ -135,7 +137,7 @@ int main(int argc, char *argv[]) {
 		return quit(1);
 	}
 
-	int status = 0;
+	int status;
 	if (cfg.cm) {
 		status = cm_do(&cfg);
 	} else if (cfg.invalid) {
