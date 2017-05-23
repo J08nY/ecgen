@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include "cm.h"
-#include "exhaustive/anomalous.h"
 #include "io/output.h"
 #include "p1363.h"
 

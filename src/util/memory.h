@@ -2,10 +2,13 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-#include <stddef.h>
-
+/**
+ * @file memory.h
+ */
 #ifndef ECGEN_MEMORY_H
 #define ECGEN_MEMORY_H
+
+#include <stddef.h>
 
 /**
  * @brief

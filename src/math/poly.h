@@ -12,10 +12,10 @@
 #include <stdbool.h>
 
 typedef struct {
-	int m;
-	int e1;
-	int e2;
-	int e3;
+	unsigned int m;
+	unsigned int e1;
+	unsigned int e2;
+	unsigned int e3;
 } polynomial_t;
 
 /**

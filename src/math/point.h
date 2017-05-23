@@ -159,6 +159,19 @@ GENERATOR(points_gen_trial);
 GENERATOR(points_gen_prime);
 
 /**
+ * GENERATOR(gen_t)
+ *
+ * Generates points on all subgroups of the curve. Prime and non-prime order.
+ *
+ * @param curve
+ * @param cfg
+ * @param args
+ * @return
+ */
+GENERATOR(points_gen_allgroups);
+
+/**
+ * UNROLL(unroll_t)
  *
  * @param curve
  * @param cfg

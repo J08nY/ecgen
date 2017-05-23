@@ -2729,7 +2729,7 @@ polynomial_t *poly_find(unsigned long m) {
 		len_penta = sizeof(hp_pentanomials) / sizeof(polynomial_t);
 	}
 
-	polynomial_t searched = {(int)m};
+	polynomial_t searched = {(unsigned int)m};
 	polynomial_t *tri = (polynomial_t *)bsearch(
 	    &searched, search_tri, len_tri, sizeof(polynomial_t), &compare_poly);
 	if (tri) {

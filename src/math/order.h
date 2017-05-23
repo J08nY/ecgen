@@ -11,6 +11,23 @@
 #include "types.h"
 
 /**
+ * @brief Factors curve order.
+ * @param curve
+ * @param cfg
+ * @return
+ */
+GEN order_factors(curve_t *curve, const config_t *cfg);
+
+/**
+ * @brief Enumerates all subgroup orders of a curve given prime order factors.
+ * @param curve
+ * @param cfg
+ * @param factors
+ * @return
+ */
+GEN order_groups(curve_t *curve, const config_t *cfg, GEN factors);
+
+/**
  * GENERATOR(gen_t)
  * Calculates the curve order, using a general algorithm.
  * Always succeeds.

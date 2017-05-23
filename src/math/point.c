@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "point.h"
+#include "order.h"
 #include "util/memory.h"
 
 point_t *point_new(void) { return try_calloc(sizeof(point_t)); }
@@ -176,8 +177,7 @@ GENERATOR(points_gen_trial) {
 GENERATOR(points_gen_prime) {
 	// TODO stack code!!!
 
-	GEN factors = Z_factor(curve->order);
-	GEN primes = gel(factors, 1);
+	GEN primes = order_factors(curve, cfg);
 	long nprimes = glength(primes);
 
 	curve->points = points_new((size_t)nprimes);
@@ -195,15 +195,57 @@ GENERATOR(points_gen_prime) {
 
 				// primes[i] divides ord
 				// mul = ord/primes[i]
-				GEN p = gcopy(gel(primes, i));
-				GEN mul = divii(ord, p);
+				GEN mul = divii(ord, gel(primes, i));
 				GEN point = ellmul(curve->curve, rand, mul);
 
 				curve->points[i - 1] = point_new();
-				gerepileall(ftop, 2, &point, &p);
+				gerepileall(ftop, 1, &point);
 				curve->points[i - 1]->point = point;
-				curve->points[i - 1]->order = p;
+				curve->points[i - 1]->order = gcopy(gel(primes, i));
 				npoints++;
+			}
+		}
+	}
+
+	return 1;
+}
+
+GENERATOR(points_gen_allgroups) {
+	// TODO stack code!!!
+
+	GEN primes = order_factors(curve, cfg);
+
+	GEN groups = order_groups(curve, cfg, primes);
+	long ngroups = glength(groups);
+
+	curve->points = points_new((size_t)ngroups);
+	curve->npoints = (size_t)ngroups;
+
+	long npoints = 0;
+	while (npoints < ngroups) {
+		GEN rand = genrand(curve->curve);
+		GEN ord = ellorder(curve->curve, rand, NULL);
+
+		for (long i = 1; i <= ngroups; ++i) {
+			pari_sp ftop = avma;
+			GEN num = gel(groups, i);
+
+			if (curve->points[i - 1] == NULL) {
+				GEN point = NULL;
+				if (equalii(ord, num)) {
+					point = gcopy(rand);
+				} else if (dvdii(ord, num)) {
+					GEN mul = divii(ord, num);
+					point = ellmul(curve->curve, rand, mul);
+				}
+
+				if (point) {
+					curve->points[i - 1] = point_new();
+					gerepileall(ftop, 1, &point);
+					curve->points[i - 1]->point = point;
+					curve->points[i - 1]->order = gcopy(num);
+					++npoints;
+				}
 			}
 		}
 	}
