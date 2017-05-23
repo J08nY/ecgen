@@ -20,13 +20,13 @@ static int gens_put(curve_t *curve, GEN generators, long len) {
 	return 1;
 }
 
-int gens_any(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(gens_gen_any) {
 	GEN generators = ellff_get_gens(curve->curve);
 	long len = glength(generators);
 	return gens_put(curve, generators, len);
 }
 
-int gens_one(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(gens_gen_one) {
 	pari_sp ltop = avma;
 	GEN generators = ellff_get_gens(curve->curve);
 	long len = glength(generators);
@@ -37,7 +37,7 @@ int gens_one(curve_t *curve, const config_t *cfg, arg_t *args) {
 	return gens_put(curve, generators, len);
 }
 
-int gens_unroll(curve_t *curve, const config_t *cfg, pari_sp from, pari_sp to) {
+UNROLL(gens_unroll) {
 	if (curve->generators) {
 		points_free_deep(&curve->generators, curve->ngens);
 	}

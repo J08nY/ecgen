@@ -4,7 +4,7 @@
  */
 #include "order.h"
 
-int order_any(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(order_gen_any) {
 	GEN ord = ellff_get_card(curve->curve);
 	if (isclone(ord)) {
 		curve->order = gcopy(ord);
@@ -14,7 +14,7 @@ int order_any(curve_t *curve, const config_t *cfg, arg_t *args) {
 	return 1;
 }
 
-int order_sea(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(order_gen_sea) {
 	pari_sp ltop = avma;
 	GEN order = ellsea(curve->curve, 0);
 	if (gequal0(order)) {
@@ -27,9 +27,9 @@ int order_sea(curve_t *curve, const config_t *cfg, arg_t *args) {
 	}
 }
 
-int order_smallfact(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(order_gen_smallfact) {
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. order_smallfact\n");
+		fprintf(stderr, "No args to an arged function. order_gen_smallfact\n");
 		return INT_MIN;
 	}
 
@@ -53,7 +53,7 @@ int order_smallfact(curve_t *curve, const config_t *cfg, arg_t *args) {
 	}
 }
 
-int order_prime(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(order_gen_prime) {
 	pari_sp ltop = avma;
 	GEN order = ellsea(curve->curve, 1);
 	if (gequal0(order) || !(isprime(order))) {

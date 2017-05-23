@@ -21,7 +21,7 @@
  * @param args unused
  * @return state diff
  */
-int curve_any(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(curve_gen_any);
 
 /**
  * GENERATOR(gen_t)
@@ -33,7 +33,7 @@ int curve_any(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args unused
  * @return state diff
  */
-int curve_nonzero(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(curve_gen_nonzero);
 
 /**
  * GENERATOR(gen_t)
@@ -46,7 +46,7 @@ int curve_nonzero(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args unused
  * @return state diff
  */
-int curve_seed(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(curve_gen_seed);
 
 /**
  *
@@ -56,7 +56,7 @@ int curve_seed(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param to
  * @return
  */
-int curve_unroll(curve_t *curve, const config_t *cfg, pari_sp from, pari_sp to);
+UNROLL(curve_unroll);
 
 /**
  * Allocates and zeros out a new curve_t object.

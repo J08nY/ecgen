@@ -84,14 +84,28 @@ typedef struct {
 } arg_t;
 
 /**
- * @brief
+ * @brief A generator function type.
+ * @param curve
+ * @param cfg
+ * @param args
+ * @return
  */
-typedef int (*gen_t)(curve_t *, const config_t *, arg_t *);
+#define GENERATOR(gen_name) \
+	int gen_name(curve_t *curve, const config_t *cfg, arg_t *args)
+typedef GENERATOR((*gen_t));
 
 /**
  * @brief
+ * @param curve
+ * @param cfg
+ * @param from
+ * @param to
+ * @return
  */
-typedef int (*unroll_t)(curve_t *, const config_t *, pari_sp, pari_sp);
+#define UNROLL(unroll_name)                                            \
+	int unroll_name(curve_t *curve, const config_t *cfg, pari_sp from, \
+	                pari_sp to)
+typedef UNROLL((*unroll_t));
 
 /**
  *

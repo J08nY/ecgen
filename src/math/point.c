@@ -89,7 +89,7 @@ void points_free_deep(point_t ***points, size_t npoints) {
 	}
 }
 
-int point_random(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(point_gen_random) {
 	point_t *p = point_new();
 	p->point = genrand(curve->curve);
 	p->order = ellorder(curve->curve, p->point, NULL);
@@ -100,9 +100,9 @@ int point_random(curve_t *curve, const config_t *cfg, arg_t *args) {
 	return 1;
 }
 
-int points_random(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(points_gen_random) {
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. points_random\n");
+		fprintf(stderr, "No args to an arged function. points_gen_random\n");
 		return INT_MIN;
 	}
 
@@ -135,10 +135,10 @@ int points_random(curve_t *curve, const config_t *cfg, arg_t *args) {
     }
  */
 
-int points_trial(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(points_gen_trial) {
 	// TODO stack code!!!
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. points_trial\n");
+		fprintf(stderr, "No args to an arged function. points_gen_trial\n");
 		return INT_MIN;
 	}
 
@@ -173,12 +173,13 @@ int points_trial(curve_t *curve, const config_t *cfg, arg_t *args) {
 	return 1;
 }
 
-int points_prime(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(points_gen_prime) {
 	// TODO stack code!!!
 
 	GEN factors = Z_factor(curve->order);
 	GEN primes = gel(factors, 1);
 	long nprimes = glength(primes);
+
 	curve->points = points_new((size_t)nprimes);
 	curve->npoints = (size_t)nprimes;
 
@@ -210,8 +211,7 @@ int points_prime(curve_t *curve, const config_t *cfg, arg_t *args) {
 	return 1;
 }
 
-int points_unroll(curve_t *curve, const config_t *cfg, pari_sp from,
-                  pari_sp to) {
+UNROLL(points_unroll) {
 	if (curve->points) {
 		points_free_deep(&curve->points, curve->npoints);
 	}

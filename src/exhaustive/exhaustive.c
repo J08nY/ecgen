@@ -16,6 +16,7 @@
 
 static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 	if (cfg->from_seed) {
+		// setup ANSI X9.62 generators
 		if (cfg->seed) {
 			generators[OFFSET_SEED] = &seed_argument;
 		} else {
@@ -25,63 +26,66 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 				generators[OFFSET_SEED] = &seed_input;
 			}
 		}
-		generators[OFFSET_A] = &a_seed;
-		generators[OFFSET_B] = &b_seed;
-		generators[OFFSET_CURVE] = &curve_seed;
+		generators[OFFSET_A] = &a_gen_seed;
+		generators[OFFSET_B] = &b_gen_seed;
+		generators[OFFSET_CURVE] = &curve_gen_seed;
 	} else {
+		// setup normal generators
 		generators[OFFSET_SEED] = &gen_skip;
 
 		if (cfg->anomalous) {
 			generators[OFFSET_A] = &gen_skip;
 			generators[OFFSET_B] = &anomalous_equation;
 		} else if (cfg->random) {
-			generators[OFFSET_A] = &a_random;
-			generators[OFFSET_B] = &b_random;
+			generators[OFFSET_A] = &a_gen_random;
+			generators[OFFSET_B] = &b_gen_random;
 		} else {
-			generators[OFFSET_A] = &a_input;
-			generators[OFFSET_B] = &b_input;
+			generators[OFFSET_A] = &a_gen_input;
+			generators[OFFSET_B] = &b_gen_input;
 		}
 
 		if (cfg->koblitz) {
-			generators[OFFSET_A] = &a_zero;
+			generators[OFFSET_A] = &a_gen_zero;
 		}
 
-		generators[OFFSET_CURVE] = &curve_nonzero;
+		generators[OFFSET_CURVE] = &curve_gen_nonzero;
 
 		if (cfg->prime) {
-			generators[OFFSET_ORDER] = &order_prime;
+			generators[OFFSET_ORDER] = &order_gen_prime;
 		} else if (cfg->cofactor) {
-			generators[OFFSET_ORDER] = &order_smallfact;
+			generators[OFFSET_ORDER] = &order_gen_smallfact;
 		} else if (cfg->anomalous) {
 			generators[OFFSET_ORDER] = &anomalous_order;
 		} else {
-			generators[OFFSET_ORDER] = &order_any;
+			generators[OFFSET_ORDER] = &order_gen_any;
 		}
 	}
+
+	// setup common generators
 	if (cfg->unique) {
-		generators[OFFSET_GENERATORS] = &gens_one;
+		generators[OFFSET_GENERATORS] = &gens_gen_one;
 	} else {
-		generators[OFFSET_GENERATORS] = &gens_any;
+		generators[OFFSET_GENERATORS] = &gens_gen_any;
 	}
 
 	if (cfg->anomalous) {
 		generators[OFFSET_FIELD] = &anomalous_field;
 	} else if (cfg->random) {
-		generators[OFFSET_FIELD] = &field_random;
+		generators[OFFSET_FIELD] = &field_gen_random;
 	} else {
-		generators[OFFSET_FIELD] = &field_input;
+		generators[OFFSET_FIELD] = &field_gen_input;
 	}
 
 	switch (cfg->points.type) {
 		case POINTS_RANDOM:
 			if (cfg->points.amount) {
-				generators[OFFSET_POINTS] = &points_random;
+				generators[OFFSET_POINTS] = &points_gen_random;
 			} else {
-				generators[OFFSET_POINTS] = &point_random;
+				generators[OFFSET_POINTS] = &point_gen_random;
 			}
 			break;
 		case POINTS_PRIME:
-			generators[OFFSET_POINTS] = &points_prime;
+			generators[OFFSET_POINTS] = &points_gen_prime;
 			break;
 		case POINTS_NONE:
 			generators[OFFSET_POINTS] = &gen_skip;

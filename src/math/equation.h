@@ -21,7 +21,7 @@
  * @param args
  * @return state diff
  */
-int a_random(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(a_gen_random);
 
 /**
  * GENERATOR(gen_t)
@@ -32,7 +32,7 @@ int a_random(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return state diff
  */
-int a_input(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(a_gen_input);
 
 /**
  * GENERATOR(gen_t)
@@ -43,7 +43,7 @@ int a_input(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return
  */
-int a_once(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(a_gen_once);
 
 /**
  * GENERATOR(gen_t)
@@ -54,7 +54,7 @@ int a_once(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return state diff
  */
-int a_zero(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(a_gen_zero);
 
 /**
  * GENERATOR(gen_t)
@@ -65,7 +65,7 @@ int a_zero(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return state diff
  */
-int a_one(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(a_gen_one);
 
 /**
  * @brief
@@ -74,7 +74,7 @@ int a_one(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return
  */
-int a_seed(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(a_gen_seed);
 
 /**
  * GENERATOR(gen_t)
@@ -86,7 +86,7 @@ int a_seed(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return state diff
  */
-int b_random(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(b_gen_random);
 
 /**
  * GENERATOR(gen_t)
@@ -97,7 +97,7 @@ int b_random(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return state diff
  */
-int b_input(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(b_gen_input);
 
 /**
  * GENERATOR(gen_t)
@@ -108,7 +108,7 @@ int b_input(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return
  */
-int b_once(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(b_gen_once);
 
 /**
  * GENERATOR(gen_t)
@@ -119,7 +119,7 @@ int b_once(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return state diff
  */
-int b_zero(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(b_gen_zero);
 
 /**
  * GENERATOR(gen_t)
@@ -130,7 +130,7 @@ int b_zero(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return state diff
  */
-int b_one(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(g_gen_one);
 
 /**
  * @brief
@@ -139,7 +139,7 @@ int b_one(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return
  */
-int b_seed(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(b_gen_seed);
 
 /**
  *

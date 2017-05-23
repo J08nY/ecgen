@@ -20,7 +20,7 @@
  * @param args
  * @return state diff
  */
-int order_any(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(order_gen_any);
 
 /**
  * GENERATOR(gen_t)
@@ -31,7 +31,7 @@ int order_any(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return
  */
-int order_sea(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(order_gen_sea);
 
 /**
  * GENERATOR(gen_t)
@@ -41,7 +41,7 @@ int order_sea(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return
  */
-int order_smallfact(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(order_gen_smallfact);
 
 /**
  * GENERATOR(gen_t)
@@ -54,6 +54,6 @@ int order_smallfact(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return state diff
  */
-int order_prime(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(order_gen_prime);
 
 #endif  // ECGEN_ORDER_H

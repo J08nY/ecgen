@@ -18,7 +18,7 @@
  * @param args
  * @return
  */
-int gens_any(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(gens_gen_any);
 
 /**
  * @brief
@@ -27,7 +27,7 @@ int gens_any(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return
  */
-int gens_one(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(gens_gen_one);
 
 /**
  *
@@ -37,6 +37,6 @@ int gens_one(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param to
  * @return
  */
-int gens_unroll(curve_t *curve, const config_t *cfg, pari_sp from, pari_sp to);
+UNROLL(gens_unroll);
 
 #endif  // ECGEN_GENS_H

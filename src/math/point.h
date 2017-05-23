@@ -114,7 +114,7 @@ void points_free_deep(point_t ***points, size_t npoints);
  * @param args unused
  * @return state diff
  */
-int point_random(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(point_gen_random);
 
 /**
  * GENERATOR(gen_t)
@@ -124,7 +124,7 @@ int point_random(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args size_t number of points to generate
  * @return state diff
  */
-int points_random(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(points_gen_random);
 
 /**
  * GENERATOR(gen_t)
@@ -142,7 +142,7 @@ int points_random(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return state diff
  */
-int points_trial(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(points_gen_trial);
 
 /**
  * GENERATOR(gen_t)
@@ -156,7 +156,7 @@ int points_trial(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args
  * @return state diff
  */
-int points_prime(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(points_gen_prime);
 
 /**
  *
@@ -166,7 +166,6 @@ int points_prime(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param to
  * @return
  */
-int points_unroll(curve_t *curve, const config_t *cfg, pari_sp from,
-                  pari_sp to);
+UNROLL(points_unroll);
 
 #endif  // ECGEN_POINT_H

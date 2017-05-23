@@ -18,7 +18,7 @@ static GEN field_binaryr(unsigned long bits) {
 	}
 }
 
-int field_random(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(field_gen_random) {
 	switch (cfg->field) {
 		case FIELD_PRIME:
 			curve->field = field_primer(cfg->bits);
@@ -31,7 +31,7 @@ int field_random(curve_t *curve, const config_t *cfg, arg_t *args) {
 	}
 }
 
-int field_input(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(field_gen_input) {
 	pari_sp ltop = avma;
 	switch (cfg->field) {
 		case FIELD_PRIME: {
@@ -97,13 +97,13 @@ int field_input(curve_t *curve, const config_t *cfg, arg_t *args) {
 static GEN field = NULL;
 static curve_t *curve_field = NULL;
 
-int field_once(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(field_gen_once) {
 	if (field && curve_field == curve) {
 		curve->field = gcopy(field);
 		return 1;
 	}
 
-	int inp = field_input(curve, cfg, args);
+	int inp = field_gen_input(curve, cfg, args);
 	if (inp > 0) {
 		field = gclone(curve->field);
 		curve_field = curve;

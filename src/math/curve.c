@@ -4,7 +4,6 @@
  */
 #include "curve.h"
 #include "exhaustive/seed.h"
-#include "field.h"
 #include "point.h"
 #include "util/memory.h"
 
@@ -88,7 +87,7 @@ void curve_free(curve_t **curve) {
 	}
 }
 
-int curve_any(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(curve_gen_any) {
 	pari_sp ltop = avma;
 	GEN v = gen_0;
 	switch (typ(curve->field)) {
@@ -104,7 +103,7 @@ int curve_any(curve_t *curve, const config_t *cfg, arg_t *args) {
 			gel(v, 4) = curve->b;
 			break;
 		default:
-			pari_err_TYPE("curve_any", curve->field);
+			pari_err_TYPE("curve_gen_any", curve->field);
 	}
 	GEN crv = ellinit(v, curve->field, -1);
 
@@ -117,9 +116,9 @@ int curve_any(curve_t *curve, const config_t *cfg, arg_t *args) {
 	}
 }
 
-int curve_nonzero(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(curve_gen_nonzero) {
 	pari_sp ltop = avma;
-	int any = curve_any(curve, cfg, args);
+	int any = curve_gen_any(curve, cfg, args);
 	if (any <= 0) {
 		return any;
 	}
@@ -131,30 +130,30 @@ int curve_nonzero(curve_t *curve, const config_t *cfg, arg_t *args) {
 	}
 }
 
-static int curve_seed_fp(curve_t *curve, const config_t *cfg, arg_t *args) {
+static int curve_gen_seed_fp(curve_t *curve, const config_t *cfg, arg_t *args) {
 	// TODO implement
 	return INT_MIN;
 }
 
-static int curve_seed_f2m(curve_t *curve, const config_t *cfg, arg_t *args) {
+static int curve_gen_seed_f2m(curve_t *curve, const config_t *cfg,
+                              arg_t *args) {
 	// TODO implement
 	return INT_MIN;
 }
 
-int curve_seed(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(curve_gen_seed) {
 	switch (typ(curve->field)) {
 		case t_INT:
-			return curve_seed_fp(curve, cfg, args);
+			return curve_gen_seed_fp(curve, cfg, args);
 		case t_FFELT:
-			return curve_seed_f2m(curve, cfg, args);
+			return curve_gen_seed_f2m(curve, cfg, args);
 		default:
-			pari_err_TYPE("curve_seed", curve->field);
+			pari_err_TYPE("curve_gen_seed", curve->field);
 			return INT_MIN; /* NOT REACHABLE */
 	}
 }
 
-int curve_unroll(curve_t *curve, const config_t *cfg, pari_sp from,
-                 pari_sp to) {
+UNROLL(curve_unroll) {
 	if (curve->curve) {
 		obj_free(curve->curve);
 		curve->curve = NULL;

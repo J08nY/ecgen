@@ -17,32 +17,32 @@
 static void invalid_original_ginit(gen_t *generators, const config_t *cfg) {
 	generators[OFFSET_SEED] = &gen_skip;
 	if (cfg->random) {
-		generators[OFFSET_FIELD] = &field_random;
-		generators[OFFSET_A] = &a_random;
-		generators[OFFSET_B] = &b_random;
+		generators[OFFSET_FIELD] = &field_gen_random;
+		generators[OFFSET_A] = &a_gen_random;
+		generators[OFFSET_B] = &b_gen_random;
 	} else {
-		generators[OFFSET_FIELD] = &field_input;
-		generators[OFFSET_A] = &a_input;
-		generators[OFFSET_B] = &b_input;
+		generators[OFFSET_FIELD] = &field_gen_input;
+		generators[OFFSET_A] = &a_gen_input;
+		generators[OFFSET_B] = &b_gen_input;
 	}
-	generators[OFFSET_GENERATORS] = &gens_any;
-	generators[OFFSET_CURVE] = &curve_nonzero;
-	generators[OFFSET_ORDER] = &order_any;
+	generators[OFFSET_GENERATORS] = &gens_gen_any;
+	generators[OFFSET_CURVE] = &curve_gen_nonzero;
+	generators[OFFSET_ORDER] = &order_gen_any;
 }
 
 static void invalid_invalid_ginit(gen_t *generators, const config_t *cfg) {
 	generators[OFFSET_SEED] = &gen_skip;
 	generators[OFFSET_FIELD] = &gen_skip;
 	generators[OFFSET_A] = &gen_skip;
-	generators[OFFSET_B] = &b_random;
-	generators[OFFSET_CURVE] = &curve_nonzero;
-	generators[OFFSET_ORDER] = &order_any;
+	generators[OFFSET_B] = &b_gen_random;
+	generators[OFFSET_CURVE] = &curve_gen_nonzero;
+	generators[OFFSET_ORDER] = &order_gen_any;
 	if (cfg->unique) {
-		generators[OFFSET_GENERATORS] = &gens_one;
+		generators[OFFSET_GENERATORS] = &gens_gen_one;
 	} else {
-		generators[OFFSET_GENERATORS] = &gens_any;
+		generators[OFFSET_GENERATORS] = &gens_gen_any;
 	}
-	generators[OFFSET_POINTS] = &points_trial;
+	generators[OFFSET_POINTS] = &points_gen_trial;
 }
 
 static size_t invalid_primes(GEN order, pari_ulong **primes) {
@@ -124,7 +124,8 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 
 			// only pass small primes that divide the curve order and those
 			// where we dont have a curve yet.
-			// this is passed to points_trial which uses trial division to find
+			// this is passed to points_gen_trial which uses trial division to
+			// find
 			// a point with given prime order.
 			size_t j = 0;
 			pari_ulong dprimes[total];
