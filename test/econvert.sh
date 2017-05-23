@@ -1,4 +1,10 @@
 #!/usr/bin/env bash
+####
+#
+# ecgen, tool for generating Elliptic curve domain parameters
+# Copyright (C) 2017 J08nY
+#
+####
 
 . ./common.sh
 

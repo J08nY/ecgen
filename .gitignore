@@ -1,7 +1,7 @@
 ### Custom
 data/
 gen/
-doc/
+docs/
 ecgen
 econvert
 

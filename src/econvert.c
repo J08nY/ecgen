@@ -17,6 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA  02110-1301,
  * USA.
  */
+#include <stdio.h>
+
 /**
  * @file econvert.c
  * @author J08nY <johny@neuromancer.sk>
@@ -24,4 +26,6 @@
  * @copyright GPL v2.0
  */
 
-int main(void) { return 0; }
+int main(void) {
+	fprintf(stderr, "This is not implemented *yet*.\n");
+}
