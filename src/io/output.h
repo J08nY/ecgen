@@ -16,13 +16,28 @@
 
 #include "time.h"
 
-#define debug(...) fprintf(verbose, __VA_ARGS__)
-#define debug_log(...) \
-	fprintf(verbose, " -  %lu %s\n", time(NULL), __VA_ARGS__);
-#define debug_log_start(...) \
-	fprintf(verbose, "[ ] %lu %s\n", time(NULL), __VA_ARGS__)
-#define debug_log_end(...) \
-	fprintf(verbose, "[*] %lu %s\n", time(NULL), __VA_ARGS__)
+#define debug(...) pari_fprintf(verbose, __VA_ARGS__)
+#define debug_log(...)                            \
+	do {                                          \
+		fprintf(verbose, " -  %lu ", time(NULL)); \
+		debug(__VA_ARGS__);                       \
+		fprintf(verbose, "\n");                   \
+	} while (0)
+
+#define debug_log_start(...)                      \
+	do {                                          \
+		fprintf(verbose, "[ ] %lu ", time(NULL)); \
+		debug(__VA_ARGS__);                       \
+		fprintf(verbose, "\n");                   \
+	} while (0)
+
+#define debug_log_end(...)                        \
+	do {                                          \
+		fprintf(verbose, "[ ] %lu ", time(NULL)); \
+		debug(__VA_ARGS__);                       \
+		fprintf(verbose, "\n");                   \
+	} while (0)
+
 #else
 #define debug(...)
 #define debug_log(...)
