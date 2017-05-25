@@ -43,13 +43,13 @@ Tool for generating Elliptic curve domain parameters.
 
 #### Examples
 
-Generate a prime field, uniquely generated 192-bit curve, don't ask for input try random values:
+Generate a prime field, uniquely generated, prime order, 192-bit curve, don't ask for input try random values:
 
-    > ecgen --fp -r -p -u 192
+    > ecgen --fp -u -p -r 192
     
 Generate 5 random, binary field, 163-bit koblitz curves:
 
-    > ecgen --f2m -r -k -c5 163
+    > ecgen --f2m -r -K -c5 163
     
 Generate invalid curves to a file, for a given prime field 192-bit curve:
 
@@ -58,9 +58,9 @@ Generate invalid curves to a file, for a given prime field 192-bit curve:
     a: <input a param>
     b: <input b param>
 
-Generate a prime field, uniquely generated, prime order curve, don't ask for input try random values, verbose output *(show with example output here)*:
+Generate a prime field, uniquely generated, prime order curve, don't ask for input try random values, verbose output *(shown with example output here)*:
 
-    > ecgen --fp -r -p -u -v 128
+    > ecgen --fp -u -p -r -v 128
     +++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-++++-+++++++
     {
         "field": {
@@ -86,6 +86,13 @@ Generate a prime field, uniquely generated, prime order curve, don't ask for inp
         ]
     }
 
+### Docs
+
+See [docs](docs/readme.md). Also:
+
+    make docs
+
+for Doxygen.
 
 ### Generation methods
 
@@ -98,14 +105,14 @@ Three different EC curve parameters generation methods are implemented.
 ##### Random approach
 
  - Generates field and equation parameters:
-   - randomly
-   - using ANSI X9.62 verifiably random method(from seed), until a curve with requested properties appears.
-   - given input
+    - randomly
+    - using ANSI X9.62 verifiably random method(from seed), until a curve with requested properties appears.
+    - given input
  - Can generate curves repeatedly until one satisfies requested properties:
-   - `-p / --prime` generates curves until a prime order curve is found.
-   - `-K / --koblitz` generates a curve with fixed *A = 0* parameter.
-   - `-u / --unique` generates a uniquely generated curve (with one generator/cyclic group).
-   - etc..
+    - `-p / --prime` generates curves until a prime order curve is found.
+    - `-K / --koblitz` generates a curve with fixed *A = 0* parameter.
+    - `-u / --unique` generates a uniquely generated curve (with one generator/cyclic group).
+    - etc..
 
 ##### Invalid curve generation
 
@@ -124,7 +131,7 @@ Three different EC curve parameters generation methods are implemented.
  - Used with the `-n / --order` option
  - [Constructing elliptic curves of prime order - [Broker, Stevenhagen]](https://arxiv.org/abs/0712.2022)
  - [Generating Elliptic Curves of Prime Order - [Savas, Schmidt, Koc]](http://people.oregonstate.edu/~schmidtt/ourPapers/SavasKoc/ches01curve.pdf)
- - *Currently not implemented.*
+ - **Currently not implemented.**
 
 
 ### Build
