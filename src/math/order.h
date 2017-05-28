@@ -29,6 +29,17 @@ GEN order_groups(curve_t *curve, const config_t *cfg, GEN factors);
 
 /**
  * GENERATOR(gen_t)
+ * Reads the curve order from input, does not verify it.
+ *
+ * @param curve
+ * @param cfg
+ * @param args
+ * @return state diff
+ */
+GENERATOR(order_gen_input);
+
+/**
+ * GENERATOR(gen_t)
  * Calculates the curve order, using a general algorithm.
  * Always succeeds.
  *

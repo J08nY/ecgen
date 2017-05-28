@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "order.h"
+#include "io/input.h"
 
 GEN order_factors(curve_t *curve, const config_t *cfg) {
 	if (cfg->prime) {
@@ -34,6 +35,19 @@ GEN order_groups(curve_t *curve, const config_t *cfg, GEN factors) {
 		// TODO: sort this, as it is not necessarily sorted, in fact most likely
 		// not
 		return groups;
+	}
+}
+
+GENERATOR(order_gen_input) {
+	pari_sp ltop = avma;
+	GEN ord = input_int("order", cfg->bits);
+	if (gequalm1(ord)) {
+		avma = ltop;
+		return -4;
+	} else {
+		curve->order = ord;
+		obj_insert_shallow(curve->curve, 1, ord);
+		return 1;
 	}
 }
 
