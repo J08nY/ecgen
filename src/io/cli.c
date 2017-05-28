@@ -95,51 +95,37 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			cfg->datadir = arg;
 			break;
 		case OPT_MEMORY:
-			if (arg) {
-				cfg->memory = cli_parse_memory(arg);
-			}
+			cfg->memory = cli_parse_memory(arg);
 			break;
 		case OPT_TSTACK:
-			if (arg) {
-				cfg->thread_memory = cli_parse_memory(arg);
-			}
+			cfg->thread_memory = cli_parse_memory(arg);
 			break;
 		case OPT_THREADS:
-			if (arg) {
-				if (!strcmp(arg, "auto") || !strcmp(arg, "AUTO")) {
-					long nprocs = sysconf(_SC_NPROCESSORS_ONLN);
-					if (nprocs > 0) {
-						cfg->threads = (unsigned long)nprocs;
-					}
-				} else {
-					cfg->threads = strtoul(arg, NULL, 10);
-					if (!cfg->threads) {
-						argp_failure(state, 1, 0,
-						             "Invalid number of threads specified.");
-					}
+			if (!strcmp(arg, "auto") || !strcmp(arg, "AUTO")) {
+				long nprocs = sysconf(_SC_NPROCESSORS_ONLN);
+				if (nprocs > 0) {
+					cfg->threads = (unsigned long)nprocs;
+				}
+			} else {
+				cfg->threads = strtoul(arg, NULL, 10);
+				if (!cfg->threads) {
+					argp_failure(state, 1, 0,
+					             "Invalid number of threads specified.");
 				}
 			}
 			break;
 		case OPT_COUNT:
-			if (arg) {
-				cfg->count = strtoul(arg, NULL, 10);
-			}
+			cfg->count = strtoul(arg, NULL, 10);
 			break;
 		case OPT_FORMAT:
-			if (arg) {
-				if (!strcmp(arg, "csv")) {
-					cfg->format = FORMAT_CSV;
-				} else if (!strcmp(arg, "json")) {
-					cfg->format = FORMAT_JSON;
-				} else {
-					argp_failure(state, 1, 0,
-					             "Invalid format specified. One of [csv, json] "
-					             "is valid.");
-				}
+			if (!strcmp(arg, "csv")) {
+				cfg->format = FORMAT_CSV;
+			} else if (!strcmp(arg, "json")) {
+				cfg->format = FORMAT_JSON;
 			} else {
-				argp_failure(
-				    state, 1, 0,
-				    "You have to specify a format with the format option.");
+				argp_failure(state, 1, 0,
+				             "Invalid format specified. One of [csv, json] "
+				             "is valid.");
 			}
 			break;
 		case OPT_INPUT:
@@ -165,9 +151,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			break;
 		case OPT_COFACTOR:
 			cfg->cofactor = true;
-			if (arg) {
-				cfg->cofactor_bound = strtol(arg, NULL, 10);
-			}
+			cfg->cofactor_bound = strtol(arg, NULL, 10);
 			break;
 		case OPT_INVALID:
 			cfg->invalid = true;
@@ -187,26 +171,23 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 		case OPT_ANOMALOUS:
 			cfg->anomalous = true;
 			break;
-		case OPT_POINTS:
-			if (arg) {
-				long pts = strtol(arg, NULL, 10);
-				cfg->points.amount = (size_t)pts;
-				if (strstr(arg, "random")) {
-					cfg->points.type = POINTS_RANDOM;
-				} else if (strstr(arg, "prime")) {
-					cfg->points.type = POINTS_PRIME;
-				} else if (strstr(arg, "all")) {
-					cfg->points.type = POINTS_ALL;
-				} else if (strstr(arg, "none")) {
-					cfg->points.type = POINTS_NONE;
-				} else {
-					argp_failure(state, 1, 0, "Unknown point type.");
-				}
+		case OPT_POINTS: {
+			char *num_end;
+			long amount = strtol(arg, &num_end, 10);
+			cfg->points.amount = (size_t)amount;
+			if (strstr(num_end, "random")) {
+				cfg->points.type = POINTS_RANDOM;
+			} else if (strstr(num_end, "prime")) {
+				cfg->points.type = POINTS_PRIME;
+			} else if (strstr(num_end, "all")) {
+				cfg->points.type = POINTS_ALL;
+			} else if (strstr(num_end, "none")) {
+				cfg->points.type = POINTS_NONE;
 			} else {
-				argp_failure(state, 1, 0,
-				             "You have to specify what points you want.");
+				argp_failure(state, 1, 0, "Unknown point type. %s", num_end);
 			}
 			break;
+		}
 		case OPT_SEED:
 			cfg->from_seed = true;
 			if (arg) {
