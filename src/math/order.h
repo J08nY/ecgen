@@ -31,9 +31,10 @@ GEN order_groups(curve_t *curve, const config_t *cfg, GEN factors);
  * GENERATOR(gen_t)
  * Reads the curve order from input, does not verify it.
  *
- * @param curve
- * @param cfg
- * @param args
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args Current optional generator argument
+ * @return state diff
  * @return state diff
  */
 GENERATOR(order_gen_input);
@@ -43,9 +44,9 @@ GENERATOR(order_gen_input);
  * Calculates the curve order, using a general algorithm.
  * Always succeeds.
  *
- * @param curve
- * @param cfg
- * @param args
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args Current optional generator argument
  * @return state diff
  */
 GENERATOR(order_gen_any);
@@ -54,20 +55,20 @@ GENERATOR(order_gen_any);
  * GENERATOR(gen_t)
  * Calculates the curve order, using the SEA algorithm.
  *
- * @param curve
- * @param cfg
- * @param args
- * @return
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args unused
+ * @return state diff
  */
 GENERATOR(order_gen_sea);
 
 /**
  * GENERATOR(gen_t)
  *
- * @param curve
- * @param cfg
- * @param args
- * @return
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args pari_ulong passed to ellsea(curve, smallfact)
+ * @return state diff
  */
 GENERATOR(order_gen_smallfact);
 
@@ -77,9 +78,9 @@ GENERATOR(order_gen_smallfact);
  * gives up early in case the order is divisible by "something".
  * Succeeds if the curve has a prime order.
  *
- * @param curve
- * @param cfg
- * @param args
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args unused
  * @return state diff
  */
 GENERATOR(order_gen_prime);

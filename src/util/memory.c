@@ -9,7 +9,7 @@ void *alloc(void *(*fun)(size_t), size_t size) {
 	void *result = fun(size);
 	if (!result) {
 		perror("Couldn't alloc.");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	return result;
 }
@@ -22,7 +22,7 @@ void *try_realloc(void *ptr, size_t size) {
 	void *result = pari_realloc(ptr, size);
 	if (!result) {
 		perror("Couldn't alloc.");
-		exit(1);
+		exit(EXIT_FAILURE);
 	}
 	return result;
 }

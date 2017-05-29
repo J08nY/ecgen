@@ -94,32 +94,19 @@ GEN input_string(const char *prompt) {
 	return result;
 }
 
-GEN input_param(param_t param, const char *prompt, unsigned long bits) {
-	switch (param) {
-		case PARAM_PRIME:
-			return input_prime(prompt, bits);
-		case PARAM_INT:
-			return input_int(prompt, bits);
-		case PARAM_SHORT:
-			return input_short(prompt);
-		case PARAM_STRING:
-			return input_string(prompt);
-	}
-	return gen_m1;
-}
-
-void input_init(const config_t *cfg) {
+bool input_init(const config_t *cfg) {
 	if (cfg->input) {
 		in = fopen(cfg->input, "r");
 		delim = ',';
 		if (!in) {
 			perror("Failed to open input file.");
-			exit(1);
+			return false;
 		}
 	} else {
 		in = stdin;
 		delim = '\n';
 	}
+	return true;
 }
 
 void input_quit(void) {

@@ -26,6 +26,4 @@
  * @copyright GPL v2.0
  */
 
-int main(void) {
-	fprintf(stderr, "This is not implemented *yet*.\n");
-}
+int main(void) { fprintf(stderr, "This is not implemented *yet*.\n"); }

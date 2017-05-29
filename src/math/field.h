@@ -15,8 +15,8 @@
  * Creates a random field.
  * Always succeeds.
  *
- * @param curve
- * @param config
+ * @param curve A curve_t being generated
+ * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -28,19 +28,21 @@ GENERATOR(field_gen_random);
  *  - a prime number in the prime field case
  *  - three short exponents of the reduction polynomial in the binary case
  *
- * @param curve
- * @param config
+ * @param curve A curve_t being generated
+ * @param cfg An application config
  * @param args unused
  * @return state diff
  */
 GENERATOR(field_gen_input);
 
 /**
+ * GENERATOR(gen_t)
+ * Creates the field by reading it once.
  *
- * @param curve
- * @param cfg
- * @param args
- * @return
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args unused
+ * @return state diff
  */
 GENERATOR(field_gen_once);
 
@@ -67,10 +69,11 @@ GEN field_params(GEN field);
 GEN field_elementi(GEN element);
 
 /**
+ * Transforms an integer into a field element.
  *
- * @param field
- * @param in
- * @return
+ * @param field the field to work in
+ * @param in the integer to transform
+ * @return a field element, t_INTMOD or t_FFELT
  */
 GEN field_ielement(GEN field, GEN in);
 

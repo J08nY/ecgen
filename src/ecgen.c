@@ -27,7 +27,6 @@
 #include "cm/cm.h"
 #include "exhaustive/exhaustive.h"
 #include "invalid/invalid.h"
-#include "io/cli.h"
 #include "io/input.h"
 #include "io/output.h"
 
@@ -58,15 +57,19 @@ bool init(void) {
 
 	// init the modular polynomial db from seadata
 	pari_sp ltop = avma;
-	pari_CATCH(e_FILE) {}
+	pari_CATCH(e_FILE) {
+		fprintf(
+		    stderr,
+		    "seadata not found, this will probably take quite some time.\n");
+	}
 	pari_TRY { ellmodulareqn(2, -1, -1); }
 	pari_ENDCATCH avma = ltop;
 
 	// open outfile
-	output_init(&cfg);
+	if (!output_init(&cfg)) return false;
 
 	// open infile
-	input_init(&cfg);
+	if (!input_init(&cfg)) return false;
 
 	return true;
 }
@@ -134,7 +137,7 @@ int main(int argc, char *argv[]) {
 	argp_parse(&argp, argc, argv, 0, 0, &cfg);
 
 	if (!init()) {
-		return quit(1);
+		return quit(EXIT_FAILURE);
 	}
 
 	int status;

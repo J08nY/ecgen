@@ -11,13 +11,6 @@
 #include "math/random.h"
 #include "math/types.h"
 
-typedef enum PARAM {
-	PARAM_PRIME,
-	PARAM_INT,
-	PARAM_SHORT,
-	PARAM_STRING
-} param_t;
-
 /**
  *
  * @param prompt
@@ -50,26 +43,18 @@ GEN input_string(const char *prompt);
 
 /**
  *
- * @param param
- * @param prompt
- * @param bits
- * @return
- */
-GEN input_param(param_t param, const char *prompt, unsigned long bits);
-
-/**
- *
  */
 extern FILE *in;
 
 /**
- *
+ * @brief Initialize input based on cfg.
  * @param cfg
+ * @return whether the initialization was successful
  */
-void input_init(const config_t *cfg);
+bool input_init(const config_t *cfg);
 
 /**
- *
+ * @brief Deinitialize input.
  */
 void input_quit(void);
 

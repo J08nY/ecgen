@@ -16,9 +16,9 @@
  *
  * Initializes the PARI-GP random generator, tries to do so from
  * cryptographically strong sources(/dev/urandom) at first but falls back on
- * clock_gettime and {@link time(NULL)}.
+ * clock_gettime and time(NULL).
  *
- * @return Whether the initialization was successful.
+ * @return whether the initialization was successful
  */
 bool random_init(void);
 

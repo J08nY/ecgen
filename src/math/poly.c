@@ -2740,8 +2740,6 @@ polynomial_t *poly_find(unsigned long m) {
 	}
 }
 
-GEN poly_find_gen(unsigned long m) { return poly_gen(poly_find(m)); }
-
 GEN poly_gen(const polynomial_t *polynomial) {
 	pari_sp ltop = avma;
 
@@ -2755,3 +2753,5 @@ GEN poly_gen(const polynomial_t *polynomial) {
 	GEN poly = gmul(gtopolyrev(coeffs, -1), gmodulss(1, 2));
 	return gerepilecopy(ltop, ffgen(poly, -1));
 }
+
+GEN poly_find_gen(unsigned long m) { return poly_gen(poly_find(m)); }

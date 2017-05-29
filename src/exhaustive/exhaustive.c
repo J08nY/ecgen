@@ -11,7 +11,7 @@
 #include "math/gens.h"
 #include "math/order.h"
 #include "math/point.h"
-#include "seed.h"
+#include "math/seed.h"
 #include "util/memory.h"
 
 static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
@@ -246,7 +246,7 @@ int exhaustive_do(config_t *cfg) {
 		if (!exhaustive_gen(curve, cfg, generators, argss, unrolls, OFFSET_SEED,
 		                    OFFSET_END)) {
 			curve_free(&curve);
-			return 1;
+			return EXIT_FAILURE;
 		}
 		debug_log_end("Generated new curve");
 
@@ -260,5 +260,5 @@ int exhaustive_do(config_t *cfg) {
 
 	exhaustive_quit(argss);
 	debug_log_end("Finished Exhaustive method");
-	return 0;
+	return EXIT_SUCCESS;
 }

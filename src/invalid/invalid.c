@@ -290,7 +290,7 @@ int invalid_do(config_t *cfg) {
 	if (!exhaustive_gen(curve, cfg, original_gens, original_argss,
 	                    common_unrolls, OFFSET_FIELD, OFFSET_POINTS)) {
 		curve_free(&curve);
-		return 1;
+		return EXIT_FAILURE;
 	}
 	debug_log_end("Finished creating curve to invalidate");
 
@@ -331,5 +331,5 @@ int invalid_do(config_t *cfg) {
 	curve_free(&curve);
 
 	debug_log_end("Finished Invalid curve method");
-	return 0;
+	return EXIT_SUCCESS;
 }

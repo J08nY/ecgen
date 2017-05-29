@@ -11,21 +11,21 @@
 #include <stddef.h>
 
 /**
- * @brief
+ * @brief Try mallocing some memory, exit(EXIT_FAILURE) if it fails.
  * @param size
  * @return
  */
 void *try_malloc(size_t size);
 
 /**
- * @brief
+ * @brief Try callocing some memory, exit(EXIT_FAILURE) if it fails.
  * @param size
  * @return
  */
 void *try_calloc(size_t size);
 
 /**
- * @brief
+ * @brief Try reallocing some memory, exit(EXIT_FAILURE) if it fails.
  * @param ptr
  * @param size
  * @return

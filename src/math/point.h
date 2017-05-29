@@ -109,8 +109,8 @@ void points_free_deep(point_t ***points, size_t npoints);
 /**
  * GENERATOR(gen_t)
  *
- * @param curve
- * @param config
+ * @param curve A curve_t being generated
+ * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -119,8 +119,8 @@ GENERATOR(point_gen_random);
 /**
  * GENERATOR(gen_t)
  *
- * @param curve
- * @param config
+ * @param curve A curve_t being generated
+ * @param cfg An application config
  * @param args size_t number of points to generate
  * @return state diff
  */
@@ -129,17 +129,13 @@ GENERATOR(points_gen_random);
 /**
  * GENERATOR(gen_t)
  * Generates prime order points using trial division.
- * The supplied arg is of format:
- *
- * pari_ulong *args->args  primes
- * size_t args->nargs      length of primes
  *
  * Assumes the primes divide curve order, thus that points with all
  * prime orders specified exist.
  *
- * @param curve
- * @param config
- * @param args
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args pari_ulong array of primes length nargs
  * @return state diff
  */
 GENERATOR(points_gen_trial);
@@ -151,9 +147,9 @@ GENERATOR(points_gen_trial);
  *   Let G be a finite group and p be a prime. If p divides the order of G, then
  *   G has an element of order p.
  *
- * @param curve
- * @param config
- * @param args
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args unused
  * @return state diff
  */
 GENERATOR(points_gen_prime);
@@ -163,10 +159,10 @@ GENERATOR(points_gen_prime);
  *
  * Generates points on all subgroups of the curve. Prime and non-prime order.
  *
- * @param curve
- * @param cfg
- * @param args
- * @return
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args unused
+ * @return state diff
  */
 GENERATOR(points_gen_allgroups);
 

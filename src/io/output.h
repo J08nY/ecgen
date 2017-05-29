@@ -208,8 +208,9 @@ extern FILE *verbose;
 /**
  * @brief Initialize output based on cfg.
  * @param cfg
+ * @return whether the initialization was successful
  */
-void output_init(const config_t *cfg);
+bool output_init(const config_t *cfg);
 
 /**
  * @brief Deinitialize output.

@@ -85,17 +85,17 @@ typedef struct {
 
 /**
  * @brief A generator function type.
- * @param curve
- * @param cfg
- * @param args
- * @return
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args Current optional generator argument
+ * @return state diff
  */
 #define GENERATOR(gen_name) \
 	int gen_name(curve_t *curve, const config_t *cfg, arg_t *args)
 typedef GENERATOR((*gen_t));
 
 /**
- * @brief
+ * @brief An unroll function type
  * @param curve
  * @param cfg
  * @param from
@@ -108,15 +108,18 @@ typedef GENERATOR((*gen_t));
 typedef UNROLL((*unroll_t));
 
 /**
+ * GENERATOR(gen_t)
  *
- * @param curve
- * @param config
- * @param args
- * @return
+ *
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args unused
+ * @return state diff
  */
 int gen_skip(curve_t *curve, const config_t *cfg, arg_t *args);
 
 /**
+ * UNROLL(unroll_t)
  *
  * @param curve
  * @param cfg

@@ -292,7 +292,7 @@ void output_f_end(FILE *out, const config_t *cfg) {
 
 void output_o_end(const config_t *cfg) { output_f_end(out, cfg); }
 
-void output_init(const config_t *cfg) {
+bool output_init(const config_t *cfg) {
 	json_set_allocation_functions(try_malloc, pari_free);
 
 	if (cfg->output) {
@@ -333,6 +333,7 @@ void output_init(const config_t *cfg) {
 			break;
 		}
 	}
+	return true;
 }
 
 void output_quit(void) {

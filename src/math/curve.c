@@ -3,8 +3,8 @@
  * Copyright (C) 2017 J08nY
  */
 #include "curve.h"
-#include "exhaustive/seed.h"
 #include "point.h"
+#include "seed.h"
 #include "util/memory.h"
 
 curve_t *curve_new(void) { return try_calloc(sizeof(curve_t)); }

@@ -16,8 +16,8 @@
  * Creates a curve GEN in curve_t curve from field, a and b.
  * Always succeeds.
  *
- * @param curve
- * @param config
+ * @param curve A curve_t being generated
+ * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -28,8 +28,8 @@ GENERATOR(curve_gen_any);
  * Creates a curve GEN in curve_t curve from field, a and b.
  * Succeeds if a curve exists(non-zero discriminant).
  *
- * @param curve
- * @param config
+ * @param curve A curve_t being generated
+ * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -41,8 +41,8 @@ GENERATOR(curve_gen_nonzero);
  * X9.62 verifiably random algorithm.
  * Succeeds if a curve exists(non-zero discriminant).
  *
- * @param curve
- * @param config
+ * @param curve A curve_t being generated
+ * @param cfg An application config
  * @param args unused
  * @return state diff
  */

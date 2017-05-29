@@ -12,24 +12,27 @@
 #include "types.h"
 
 /**
- * @brief
- * @param curve
- * @param config
- * @param args
- * @return
+ * GENERATOR(gen_t)
+ *
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args unused
+ * @return state diff
  */
 GENERATOR(gens_gen_any);
 
 /**
- * @brief
- * @param curve
- * @param config
- * @param args
- * @return
+ * GENERATOR(gen_t)
+ *
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args unused
+ * @return state diff
  */
 GENERATOR(gens_gen_one);
 
 /**
+ * UNROLL(unroll_t)
  *
  * @param curve
  * @param cfg

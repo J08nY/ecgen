@@ -113,7 +113,6 @@ int anomalous_equation(curve_t *curve, const config_t *cfg, arg_t *args) {
 	}
 	size_t i = *(size_t *)args->args;
 
-	// 1 on success, -2 on failure
 	pari_sp ltop = avma;
 	GEN c = anomalous_c(i, curve->field);
 
