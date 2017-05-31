@@ -1,12 +1,12 @@
 ### Custom
-data/
-gen/
-ecgen
-econvert
+/data/
+/gen/
+/ecgen
+/econvert
 
 ### Doxygen
-docs/html/
-docs/latex/
+/docs/html/
+/docs/latex/
 
 ### C template
 # Prerequisites

@@ -6,8 +6,8 @@
 #include "invalid_thread.h"
 #include "exhaustive/exhaustive.h"
 #include "io/output.h"
-#include "math/curve.h"
-#include "math/random.h"
+#include "gen/curve.h"
+#include "util/random.h"
 
 void *invalid_thread(void *arg) {
 	thread_t *thread = (thread_t *)arg;

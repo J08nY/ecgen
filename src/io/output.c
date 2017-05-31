@@ -5,7 +5,7 @@
 
 #include "output.h"
 #include <parson/parson.h>
-#include "math/field.h"
+#include "gen/field.h"
 #include "util/memory.h"
 
 FILE *out;

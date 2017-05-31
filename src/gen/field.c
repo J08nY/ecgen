@@ -4,7 +4,7 @@
  */
 #include "field.h"
 #include "io/input.h"
-#include "poly.h"
+#include "math/poly.h"
 
 static GEN field_primer(unsigned long bits) { return random_prime(bits); }
 

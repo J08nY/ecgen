@@ -10,8 +10,8 @@
 
 #include <pari/pari.h>
 #include "io/cli.h"
-#include "math/arg.h"
-#include "math/types.h"
+#include "arg.h"
+#include "gen/types.h"
 
 typedef struct disc_t {
 	GEN d;

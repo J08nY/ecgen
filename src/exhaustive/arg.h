@@ -8,7 +8,7 @@
 #ifndef ECGEN_ARG_H
 #define ECGEN_ARG_H
 
-#include "types.h"
+#include "gen/types.h"
 
 /**
  * @brief

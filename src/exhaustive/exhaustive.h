@@ -8,7 +8,7 @@
 #ifndef ECGEN_GENERATORS_H
 #define ECGEN_GENERATORS_H
 
-#include "math/types.h"
+#include "gen/types.h"
 
 /**
  *

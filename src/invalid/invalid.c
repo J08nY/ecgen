@@ -6,12 +6,12 @@
 #include "exhaustive/exhaustive.h"
 #include "invalid_thread.h"
 #include "io/output.h"
-#include "math/curve.h"
-#include "math/equation.h"
-#include "math/field.h"
-#include "math/gens.h"
-#include "math/order.h"
-#include "math/point.h"
+#include "gen/curve.h"
+#include "gen/equation.h"
+#include "gen/field.h"
+#include "gen/gens.h"
+#include "gen/order.h"
+#include "gen/point.h"
 #include "util/memory.h"
 
 static void invalid_original_ginit(gen_t *generators, const config_t *cfg) {

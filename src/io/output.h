@@ -10,7 +10,7 @@
 
 #include <pari/pari.h>
 #include <stdbool.h>
-#include "math/types.h"
+#include "gen/types.h"
 
 #ifdef DEBUG
 

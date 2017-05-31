@@ -4,7 +4,7 @@
  */
 #include "equation.h"
 #include "io/input.h"
-#include "math/field.h"
+#include "field.h"
 
 GENERATOR(a_gen_random) {
 	curve->a = genrand(curve->field);

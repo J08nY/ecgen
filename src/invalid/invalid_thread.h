@@ -9,7 +9,7 @@
 #define ECGEN_INVALID_THREAD_H
 
 #include <pthread.h>
-#include "math/types.h"
+#include "gen/types.h"
 
 typedef enum { STATE_FREE, STATE_GENERATING, STATE_GENERATED } state_e;
 
