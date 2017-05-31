@@ -4,14 +4,14 @@
  */
 #include "invalid.h"
 #include "exhaustive/exhaustive.h"
-#include "invalid_thread.h"
-#include "io/output.h"
 #include "gen/curve.h"
 #include "gen/equation.h"
 #include "gen/field.h"
 #include "gen/gens.h"
 #include "gen/order.h"
 #include "gen/point.h"
+#include "invalid_thread.h"
+#include "io/output.h"
 #include "util/memory.h"
 
 static void invalid_original_ginit(gen_t *generators, const config_t *cfg) {

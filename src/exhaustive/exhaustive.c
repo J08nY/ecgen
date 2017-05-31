@@ -4,7 +4,6 @@
  */
 #include "exhaustive.h"
 #include "anomalous.h"
-#include "io/output.h"
 #include "gen/curve.h"
 #include "gen/equation.h"
 #include "gen/field.h"
@@ -12,18 +11,19 @@
 #include "gen/order.h"
 #include "gen/point.h"
 #include "gen/seed.h"
+#include "io/output.h"
 #include "util/memory.h"
 
 static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 	if (cfg->from_seed) {
 		// setup ANSI X9.62 generators
 		if (cfg->seed) {
-			generators[OFFSET_SEED] = &seed_argument;
+			generators[OFFSET_SEED] = &seed_gen_argument;
 		} else {
 			if (cfg->random) {
-				generators[OFFSET_SEED] = &seed_random;
+				generators[OFFSET_SEED] = &seed_gen_random;
 			} else {
-				generators[OFFSET_SEED] = &seed_input;
+				generators[OFFSET_SEED] = &seed_gen_input;
 			}
 		}
 		generators[OFFSET_A] = &a_gen_seed;
@@ -35,7 +35,7 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 
 		if (cfg->anomalous) {
 			generators[OFFSET_A] = &gen_skip;
-			generators[OFFSET_B] = &anomalous_equation;
+			generators[OFFSET_B] = &anomalous_gen_equation;
 		} else if (cfg->random) {
 			generators[OFFSET_A] = &a_gen_random;
 			generators[OFFSET_B] = &b_gen_random;
@@ -55,7 +55,7 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 		} else if (cfg->cofactor) {
 			generators[OFFSET_ORDER] = &order_gen_smallfact;
 		} else if (cfg->anomalous) {
-			generators[OFFSET_ORDER] = &anomalous_order;
+			generators[OFFSET_ORDER] = &anomalous_gen_order;
 		} else {
 			generators[OFFSET_ORDER] = &order_gen_any;
 		}
@@ -69,7 +69,7 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 	}
 
 	if (cfg->anomalous) {
-		generators[OFFSET_FIELD] = &anomalous_field;
+		generators[OFFSET_FIELD] = &anomalous_gen_field;
 	} else if (cfg->random) {
 		generators[OFFSET_FIELD] = &field_gen_random;
 	} else {

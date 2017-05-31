@@ -33,7 +33,7 @@
 
 #define debug_log_end(...)                        \
 	do {                                          \
-		fprintf(verbose, "[ ] %lu ", time(NULL)); \
+		fprintf(verbose, "[*] %lu ", time(NULL)); \
 		debug(__VA_ARGS__);                       \
 		fprintf(verbose, "\n");                   \
 	} while (0)

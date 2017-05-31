@@ -8,8 +8,8 @@
 #ifndef ECGEN_INPUT_H
 #define ECGEN_INPUT_H
 
-#include "util/random.h"
 #include "gen/types.h"
+#include "util/random.h"
 
 /**
  *

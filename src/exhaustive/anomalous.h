@@ -9,9 +9,9 @@
 #define ECGEN_ANOMALOUS_H
 
 #include <pari/pari.h>
-#include "io/cli.h"
 #include "arg.h"
 #include "gen/types.h"
+#include "io/cli.h"
 
 typedef struct disc_t {
 	GEN d;
@@ -27,7 +27,7 @@ typedef struct disc_t {
  * @param args the index of the discriminant to use, in the disc_table
  * @return state diff
  */
-int anomalous_field(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(anomalous_gen_field);
 
 /**
  * GENERATOR(gen_t)
@@ -37,7 +37,7 @@ int anomalous_field(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args the index of the discriminant to use, in the disc_table
  * @return state diff
  */
-int anomalous_equation(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(anomalous_gen_equation);
 
 /**
  * GENERATOR(gen_t)
@@ -47,7 +47,7 @@ int anomalous_equation(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param args unused
  * @return state diff
  */
-int anomalous_order(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(anomalous_gen_order);
 
 /**
  * @brief Initialize anomalous generation, allocate and set the disc_table.

@@ -55,29 +55,29 @@ void seed_free(seed_t **seed);
 
 /**
  *
- * @param curve
- * @param config
- * @param args
- * @return
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args unused
+ * @return state diff
  */
-int seed_random(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(seed_gen_random);
 
 /**
  *
- * @param curve
- * @param config
- * @param args
- * @return
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args unused
+ * @return state diff
  */
-int seed_argument(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(seed_gen_argument);
 
 /**
  *
- * @param curve
- * @param config
- * @param args
- * @return
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args unused
+ * @return state diff
  */
-int seed_input(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(seed_gen_input);
 
 #endif  // ECGEN_SEED_H

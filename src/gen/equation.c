@@ -3,8 +3,8 @@
  * Copyright (C) 2017 J08nY
  */
 #include "equation.h"
-#include "io/input.h"
 #include "field.h"
+#include "io/input.h"
 
 GENERATOR(a_gen_random) {
 	curve->a = genrand(curve->field);

@@ -54,7 +54,7 @@ static GEN seed_stoi(const char *cstr) {
 	return gerepilecopy(ltop, seed);
 }
 
-char *seed_itos(GEN seed) {
+static char *seed_itos(GEN seed) {
 	pari_sp ltop = avma;
 	GEN bits = binary_zv(seed);
 
@@ -69,7 +69,7 @@ char *seed_itos(GEN seed) {
 	return result;
 }
 
-int seed_random(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(seed_gen_random) {
 	curve->seed = seed_new();
 	curve->seed->seed = random_int(160);
 	curve->seed->raw = seed_itos(curve->seed->seed);
@@ -77,7 +77,7 @@ int seed_random(curve_t *curve, const config_t *cfg, arg_t *args) {
 	return 1;
 }
 
-int seed_argument(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(seed_gen_argument) {
 	curve->seed = seed_new();
 	curve->seed->seed = seed_stoi(cfg->seed);
 	curve->seed->raw = cfg->seed;
@@ -85,7 +85,7 @@ int seed_argument(curve_t *curve, const config_t *cfg, arg_t *args) {
 	return 1;
 }
 
-int seed_input(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(seed_gen_input) {
 	pari_sp ltop = avma;
 
 	GEN str = input_string("seed:");

@@ -116,7 +116,7 @@ typedef UNROLL((*unroll_t));
  * @param args unused
  * @return state diff
  */
-int gen_skip(curve_t *curve, const config_t *cfg, arg_t *args);
+GENERATOR(gen_skip);
 
 /**
  * UNROLL(unroll_t)
@@ -127,6 +127,6 @@ int gen_skip(curve_t *curve, const config_t *cfg, arg_t *args);
  * @param to
  * @return
  */
-int unroll_skip(curve_t *curve, const config_t *cfg, pari_sp from, pari_sp to);
+UNROLL(unroll_skip);
 
 #endif  // ECGEN_TYPES_H

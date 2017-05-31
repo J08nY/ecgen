@@ -4,8 +4,6 @@
  */
 #include "types.h"
 
-int gen_skip(curve_t *curve, const config_t *cfg, arg_t *args) { return 1; }
+GENERATOR(gen_skip) { return 1; }
 
-int unroll_skip(curve_t *curve, const config_t *cfg, pari_sp from, pari_sp to) {
-	return -1;
-}
+UNROLL(unroll_skip) { return -1; }

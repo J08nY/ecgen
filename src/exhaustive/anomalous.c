@@ -87,7 +87,7 @@ static GEN anomalous_c(size_t i, GEN p) {
 	return gerepilecopy(ltop, c);
 }
 
-int anomalous_field(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(anomalous_gen_field) {
 	if (!args) {
 		fprintf(stderr, "No args to an arged function. anomalous_field\n");
 		return INT_MIN;
@@ -106,9 +106,10 @@ int anomalous_field(curve_t *curve, const config_t *cfg, arg_t *args) {
 	return 1;
 }
 
-int anomalous_equation(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(anomalous_gen_equation) {
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. anomalous_equation\n");
+		fprintf(stderr,
+		        "No args to an arged function. anomalous_gen_equation\n");
 		return INT_MIN;
 	}
 	size_t i = *(size_t *)args->args;
@@ -126,7 +127,7 @@ int anomalous_equation(curve_t *curve, const config_t *cfg, arg_t *args) {
 	return 1;
 }
 
-int anomalous_order(curve_t *curve, const config_t *cfg, arg_t *args) {
+GENERATOR(anomalous_gen_order) {
 	// copy field to order
 	curve->order = gcopy(curve->field);
 	obj_insert(curve->curve, 1, curve->order);
