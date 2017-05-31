@@ -5,39 +5,6 @@
 #include "order.h"
 #include "io/input.h"
 
-GEN order_factors(curve_t *curve, const config_t *cfg) {
-	if (cfg->prime) {
-		return gtovec(curve->order);
-	} else {
-		GEN factors = Z_factor(curve->order);
-		return gel(factors, 1);
-	}
-}
-
-GEN order_groups(curve_t *curve, const config_t *cfg, GEN factors) {
-	long nprimes = glength(factors);
-	if (cfg->prime) {
-		return gtovec(curve->order);
-	} else {
-		GEN amount = int2n(nprimes);
-		GEN groups = gtovec0(gen_0, itos(amount) - 1);
-
-		for (size_t count = 1; count < (size_t)(1 << nprimes); ++count) {
-			GEN result = gen_1;
-			for (long bit = 0; bit < nprimes; ++bit) {
-				size_t mask = (size_t)(1 << bit);
-				if (count & mask) {
-					result = mulii(result, gel(factors, bit + 1));
-				}
-			}
-			gel(groups, count) = result;
-		}
-		// TODO: sort this, as it is not necessarily sorted, in fact most likely
-		// not
-		return groups;
-	}
-}
-
 GENERATOR(order_gen_input) {
 	pari_sp ltop = avma;
 	GEN ord = input_int("order", cfg->bits);

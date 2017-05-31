@@ -5,6 +5,8 @@
 #include "point.h"
 #include "order.h"
 #include "util/memory.h"
+#include "math/subgroups.h"
+#include "types.h"
 
 point_t *point_new(void) { return try_calloc(sizeof(point_t)); }
 
@@ -120,24 +122,44 @@ GENERATOR(points_gen_random) {
 	return 1;
 }
 
-/*
-    GEN o = utoi(dprimes[i]);
-    GEN mul = ellmul(curve->curve, rand, o);
+static int points_from_orders(curve_t *curve, const config_t *cfg, GEN orders) {
+	// TODO better stack code
+	size_t norders = (size_t)glength(orders);
 
-    if (gequal0(mul)) {
-        printf("Success! %lu\n", npoints);
-        curve->points[i] = point_new();
+	curve->points = points_new(norders);
+	curve->npoints = norders;
 
-        gerepileall(btop, 2, &rand, &o);
-        curve->points[i]->point = rand;
-        curve->points[i]->order = o;
-        npoints++;
-        break;
-    }
- */
+	for (size_t ngen = 0; ngen <= curve->ngens; ++ngen) {
+		point_t *gen = curve->generators[ngen];
+
+		for (long i = 0; i < norders; ++i) {
+			GEN num = gel(orders, i + 1);
+			if (curve->points[i] == NULL) {
+				pari_sp ftop = avma;
+
+				GEN point = NULL;
+				if (equalii(gen->order, num)) {
+					point = gcopy(gen->point);
+				} else if (dvdii(gen->order, num)) {
+					GEN mul = divii(gen->order, num);
+					point = ellmul(curve->curve, gen->point, mul);
+				}
+
+				if (point) {
+					curve->points[i] = point_new();
+					gerepileall(ftop, 1, &point);
+					curve->points[i]->point = point;
+					curve->points[i]->order = gcopy(num);
+				}
+			}
+		}
+	}
+
+	return 1;
+}
+
 
 GENERATOR(points_gen_trial) {
-	// TODO stack code!!!
 	if (!args) {
 		fprintf(stderr, "No args to an arged function. points_gen_trial\n");
 		return INT_MIN;
@@ -146,111 +168,31 @@ GENERATOR(points_gen_trial) {
 	pari_ulong *primes = (pari_ulong *)args->args;
 	size_t nprimes = args->nargs;
 
-	curve->points = points_new(nprimes);
-	curve->npoints = nprimes;
-
-	size_t npoints = 0;
-	while (npoints < nprimes) {
-		GEN rand = genrand(curve->curve);
-		GEN ord = ellorder(curve->curve, rand, NULL);
-
-		for (long i = 0; i < nprimes; ++i) {
-			if (curve->points[i] == NULL && dvdis(ord, primes[i])) {
-				pari_sp ftop = avma;
-
-				GEN p = stoi(primes[i]);
-				GEN mul = divii(ord, p);
-				GEN point = ellmul(curve->curve, rand, mul);
-
-				curve->points[i] = point_new();
-				gerepileall(ftop, 2, &point, &p);
-				curve->points[i]->point = point;
-				curve->points[i]->order = p;
-				npoints++;
-			}
-		}
+	GEN orders = gtovec0(gen_0, nprimes);
+	for (size_t i = 1; i <= nprimes; ++i) {
+		gel(orders, i) = utoi(primes[i - 1]);
 	}
 
-	return 1;
+	return points_from_orders(curve, cfg, orders);
 }
 
 GENERATOR(points_gen_prime) {
-	// TODO stack code!!!
-
-	GEN primes = order_factors(curve, cfg);
-	long nprimes = glength(primes);
-
-	curve->points = points_new((size_t)nprimes);
-	curve->npoints = (size_t)nprimes;
-
-	long npoints = 0;
-	while (npoints < nprimes) {
-		GEN rand = genrand(curve->curve);
-		GEN ord = ellorder(curve->curve, rand, NULL);
-		// ord(rand) = ord
-
-		for (long i = 1; i <= nprimes; ++i) {
-			if (curve->points[i - 1] == NULL && dvdii(ord, gel(primes, i))) {
-				pari_sp ftop = avma;
-
-				// primes[i] divides ord
-				// mul = ord/primes[i]
-				GEN mul = divii(ord, gel(primes, i));
-				GEN point = ellmul(curve->curve, rand, mul);
-
-				curve->points[i - 1] = point_new();
-				gerepileall(ftop, 1, &point);
-				curve->points[i - 1]->point = point;
-				curve->points[i - 1]->order = gcopy(gel(primes, i));
-				npoints++;
-			}
-		}
-	}
-
-	return 1;
+	GEN primes = subgroups_prime(curve->order, cfg);
+	return points_from_orders(curve, cfg, primes);
 }
 
 GENERATOR(points_gen_allgroups) {
-	// TODO stack code!!!
+	GEN groups = subgroups_all(curve->order, cfg);
+	return points_from_orders(curve, cfg, groups);
+}
 
-	GEN primes = order_factors(curve, cfg);
-
-	GEN groups = order_groups(curve, cfg, primes);
-	long ngroups = glength(groups);
-
-	curve->points = points_new((size_t)ngroups);
-	curve->npoints = (size_t)ngroups;
-
-	long npoints = 0;
-	while (npoints < ngroups) {
-		GEN rand = genrand(curve->curve);
-		GEN ord = ellorder(curve->curve, rand, NULL);
-
-		for (long i = 1; i <= ngroups; ++i) {
-			pari_sp ftop = avma;
-			GEN num = gel(groups, i);
-
-			if (curve->points[i - 1] == NULL) {
-				GEN point = NULL;
-				if (equalii(ord, num)) {
-					point = gcopy(rand);
-				} else if (dvdii(ord, num)) {
-					GEN mul = divii(ord, num);
-					point = ellmul(curve->curve, rand, mul);
-				}
-
-				if (point) {
-					curve->points[i - 1] = point_new();
-					gerepileall(ftop, 1, &point);
-					curve->points[i - 1]->point = point;
-					curve->points[i - 1]->order = gcopy(num);
-					++npoints;
-				}
-			}
-		}
+GENERATOR(points_gen_nonprime) {
+	GEN groups = subgroups_nonprime(curve->order, cfg);
+	if (!groups) {
+		return -6;
+	} else {
+		return points_from_orders(curve, cfg, groups);
 	}
-
-	return 1;
 }
 
 UNROLL(points_unroll) {

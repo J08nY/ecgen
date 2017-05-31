@@ -167,6 +167,18 @@ GENERATOR(points_gen_prime);
 GENERATOR(points_gen_allgroups);
 
 /**
+ * GENERATOR(gen_t)
+ *
+ * Generates points on non-prime order of the curve.
+ *
+ * @param curve A curve_t being generated
+ * @param cfg An application config
+ * @param args unused
+ * @return state diff
+ */
+GENERATOR(points_gen_nonprime);
+
+/**
  * UNROLL(unroll_t)
  *
  * @param curve

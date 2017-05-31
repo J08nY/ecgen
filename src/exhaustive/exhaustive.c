@@ -87,12 +87,16 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 		case POINTS_PRIME:
 			generators[OFFSET_POINTS] = &points_gen_prime;
 			break;
+		case POINTS_NONPRIME:
+			generators[OFFSET_POINTS] = &points_gen_nonprime;
+			break;
 		case POINTS_ALL:
 			generators[OFFSET_POINTS] = &points_gen_allgroups;
 			break;
 		case POINTS_NONE:
 			generators[OFFSET_POINTS] = &gen_skip;
 			break;
+
 	}
 }
 

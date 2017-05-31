@@ -50,7 +50,7 @@ struct argp_option cli_options[] = {
 	{"koblitz",      OPT_KOBLITZ,   0,        0,                 "Generate a Koblitz curve (a = 0).",                                                     2},
 	{"unique",       OPT_UNIQUE,    0,        0,                 "Generate a curve with only one generator.",                                             2},
 	{"anomalous",    OPT_ANOMALOUS, 0,        0,                 "Generate an anomalous curve (of trace one, with field order equal to curve order).",    2},
-	{"points",       OPT_POINTS,    "TYPE",   0,                 "Generate points of given type (random/prime/all/none).",                                    2},
+	{"points",       OPT_POINTS,    "TYPE",   0,                 "Generate points of given type (random/prime/all/nonprime/none).",                       2},
 	{"seed",         OPT_SEED,      "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure). **NOT IMPLEMENTED**",     2},
 	{"invalid",      OPT_INVALID,   0,        0,                 "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).",  2},
 	{"order",        OPT_ORDER,     "ORDER",  0,                 "Generate a curve with given order (using Complex Multiplication). **NOT IMPLEMENTED**", 2},
@@ -175,13 +175,15 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			char *num_end;
 			long amount = strtol(arg, &num_end, 10);
 			cfg->points.amount = (size_t)amount;
-			if (strstr(num_end, "random")) {
+			if (strstr(num_end, "random") == num_end) {
 				cfg->points.type = POINTS_RANDOM;
-			} else if (strstr(num_end, "prime")) {
+			} else if (strstr(num_end, "prime") == num_end) {
 				cfg->points.type = POINTS_PRIME;
-			} else if (strstr(num_end, "all")) {
+			} else if (strstr(num_end, "all") == num_end) {
 				cfg->points.type = POINTS_ALL;
-			} else if (strstr(num_end, "none")) {
+			} else if (strstr(num_end, "nonprime") == num_end) {
+				cfg->points.type = POINTS_NONPRIME;
+			} else if (strstr(num_end, "none") == num_end) {
 				cfg->points.type = POINTS_NONE;
 			} else {
 				argp_failure(state, 1, 0, "Unknown point type. %s", num_end);
