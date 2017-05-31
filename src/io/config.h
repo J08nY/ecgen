@@ -13,7 +13,13 @@
 
 enum field_e { FIELD_PRIME, FIELD_BINARY };
 enum format_e { FORMAT_JSON, FORMAT_CSV };
-enum points_e { POINTS_PRIME, POINTS_RANDOM, POINTS_ALL, POINTS_NONPRIME, POINTS_NONE };
+enum points_e {
+	POINTS_PRIME,
+	POINTS_RANDOM,
+	POINTS_ALL,
+	POINTS_NONPRIME,
+	POINTS_NONE
+};
 struct points_s {
 	enum points_e type;
 	size_t amount;

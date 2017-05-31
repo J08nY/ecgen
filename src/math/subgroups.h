@@ -35,5 +35,4 @@ GEN subgroups_nonprime(GEN order, const config_t *cfg);
  */
 GEN subgroups_all(GEN order, const config_t *cfg);
 
-
-#endif //ECGEN_SUBGROUPS_H
+#endif  // ECGEN_SUBGROUPS_H

@@ -3,10 +3,10 @@
  * Copyright (C) 2017 J08nY
  */
 #include "point.h"
-#include "order.h"
-#include "util/memory.h"
 #include "math/subgroups.h"
+#include "order.h"
 #include "types.h"
+#include "util/memory.h"
 
 point_t *point_new(void) { return try_calloc(sizeof(point_t)); }
 
@@ -157,7 +157,6 @@ static int points_from_orders(curve_t *curve, const config_t *cfg, GEN orders) {
 
 	return 1;
 }
-
 
 GENERATOR(points_gen_trial) {
 	if (!args) {

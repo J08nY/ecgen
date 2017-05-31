@@ -96,7 +96,6 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 		case POINTS_NONE:
 			generators[OFFSET_POINTS] = &gen_skip;
 			break;
-
 	}
 }
 
