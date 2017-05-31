@@ -23,8 +23,10 @@ function csv() {
 
 function json() {
 	start_test
-	fp=$(${ecgen} --fp -tjson --input=fp_10_a.csv.in 10)
-	f2m=$(${ecgen} --f2m -tjson --input=f2m_10_a.csv.in 10)
+	assert_raises "${ecgen} --fp -tjson --input=fp_10_a.csv.in 10"
+	assert_raises "${ecgen} --f2m -tjson --input=f2m_10_a.csv.in 10"
+	fp=$(${ecgen} --fp -tjson --input=fp_10_a.csv.in 10 2>/dev/null)
+	f2m=$(${ecgen} --f2m -tjson --input=f2m_10_a.csv.in 10 2>/dev/null)
 	assert_raises "${JSON}" 0 "${fp}"
 	assert_matches "${JSON} -x field\\\",\\\"p" "0x000b" "${fp}"
 	assert_matches "${JSON} -x \\\"a\\\"" "0x0001" "${fp}"
@@ -71,7 +73,7 @@ function exhaustive() {
 function anomalous() {
 	start_test
 	assert_raises "${ecgen} --fp --anomalous -r 20"
-	out=$(${ecgen} --fp -tjson --anomalous -r 20)
+	out=$(${ecgen} --fp -tjson --anomalous -r 20 2>/dev/null)
 	p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
 	order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
 	assert "strip_num $p" $(strip_num $order)
