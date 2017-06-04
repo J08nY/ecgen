@@ -21,7 +21,7 @@ Tool for generating Elliptic curve domain parameters.
  - `-K / --koblitz`			Generate a Koblitz curve (a = 0).
  - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication). **TODO - NOT IMPLEMENTED**
  - `-p / --prime`			Generate a curve with prime order.
- - `--points=TYPE`			Generate points of given `TYPE` (random/prime/all/none).
+ - `--points=TYPE`			Generate points of given `TYPE` (random/prime/all/nonprime/none).
  - `-r / --random`			Generate a random curve (using Random approach).
  - `-s / --seed[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure). **TODO - NOT IMPLEMENTED**
  - `-u / --unique`			Generate a curve with only one generator.
