@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include "subgroups.h"
-#include "io/output.h"
 
 /**
  * @brief All prime divisors of a given integer.
@@ -20,7 +19,7 @@ static GEN subgroups_factors(GEN order) {
  * @param order
  * @return
  */
-static GEN subgroups_divisors(GEN order) {
+static GEN __attribute__((unused)) subgroups_divisors(GEN order) {
 	GEN factors = Z_factor(order);
 	GEN primes = gel(factors, 1);
 	GEN multiples = gel(factors, 2);
