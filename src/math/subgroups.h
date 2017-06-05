@@ -12,27 +12,27 @@
 #include "gen/types.h"
 
 /**
- * @brief Enumerates prime subgroup orders of a given finite group.
- * @param order group order
+ * @brief Enumerates prime subgroup orders of a given curve.
+ * @param curve
  * @param cfg
  * @return
  */
-GEN subgroups_prime(GEN i, const config_t *cfg);
+GEN subgroups_prime(const curve_t *curve, const config_t *cfg);
 
 /**
- * @brief Enumerates nonprime subgroup orders of a given finite group.
- * @param order group order
+ * @brief Enumerates nonprime subgroup orders of a given curve.
+ * @param curve
  * @param cfg
  * @return
  */
-GEN subgroups_nonprime(GEN order, const config_t *cfg);
+GEN subgroups_nonprime(const curve_t *curve, const config_t *cfg);
 
 /**
- * @brief Enumerates all subgroup orders of a given finite group.
- * @param order group order
+ * @brief Enumerates all subgroup orders of a given curve.
+ * @param curve
  * @param cfg
  * @return
  */
-GEN subgroups_all(GEN order, const config_t *cfg);
+GEN subgroups_all(const curve_t *curve, const config_t *cfg);
 
 #endif  // ECGEN_SUBGROUPS_H

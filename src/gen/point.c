@@ -3,8 +3,8 @@
  * Copyright (C) 2017 J08nY
  */
 #include "point.h"
+#include "io/output.h"
 #include "math/subgroups.h"
-#include "order.h"
 #include "types.h"
 #include "util/memory.h"
 
@@ -122,14 +122,14 @@ GENERATOR(points_gen_random) {
 	return 1;
 }
 
-static int points_from_orders(curve_t *curve, const config_t *cfg, GEN orders) {
+static int points_from_orders(curve_t *curve, GEN orders) {
 	// TODO better stack code
 	size_t norders = (size_t)glength(orders);
 
 	curve->points = points_new(norders);
 	curve->npoints = norders;
 
-	for (size_t ngen = 0; ngen <= curve->ngens; ++ngen) {
+	for (size_t ngen = 0; ngen < curve->ngens; ++ngen) {
 		point_t *gen = curve->generators[ngen];
 
 		for (long i = 0; i < norders; ++i) {
@@ -146,6 +146,8 @@ static int points_from_orders(curve_t *curve, const config_t *cfg, GEN orders) {
 				}
 
 				if (point) {
+					debug_log("VERIFY %Ps %Ps", num,
+					          ellorder(curve->curve, point, NULL));
 					curve->points[i] = point_new();
 					gerepileall(ftop, 1, &point);
 					curve->points[i]->point = point;
@@ -172,25 +174,26 @@ GENERATOR(points_gen_trial) {
 		gel(orders, i) = utoi(primes[i - 1]);
 	}
 
-	return points_from_orders(curve, cfg, orders);
+	return points_from_orders(curve, orders);
 }
 
 GENERATOR(points_gen_prime) {
-	GEN primes = subgroups_prime(curve->order, cfg);
-	return points_from_orders(curve, cfg, primes);
+	GEN primes = subgroups_prime(curve, cfg);
+	return points_from_orders(curve, primes);
 }
 
 GENERATOR(points_gen_allgroups) {
-	GEN groups = subgroups_all(curve->order, cfg);
-	return points_from_orders(curve, cfg, groups);
+	GEN groups = subgroups_all(curve, cfg);
+	return points_from_orders(curve, groups);
 }
 
 GENERATOR(points_gen_nonprime) {
-	GEN groups = subgroups_nonprime(curve->order, cfg);
+	GEN groups = subgroups_nonprime(curve, cfg);
 	if (!groups) {
-		return -6;
+		// No non-prime order points on curve.
+		return 1;
 	} else {
-		return points_from_orders(curve, cfg, groups);
+		return points_from_orders(curve, groups);
 	}
 }
 

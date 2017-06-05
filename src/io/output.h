@@ -14,28 +14,35 @@
 
 #ifdef DEBUG
 
-#include "time.h"
+#include <inttypes.h>
+#include <time.h>
+
+#define _debug_print(prefix)             \
+	fprintf(verbose, prefix);            \
+	struct timespec ts;                  \
+	clock_gettime(CLOCK_MONOTONIC, &ts); \
+	fprintf(verbose, "%" PRIdMAX ".%.9ld ", ts.tv_sec, ts.tv_nsec);
 
 #define debug(...) pari_fprintf(verbose, __VA_ARGS__)
-#define debug_log(...)                            \
-	do {                                          \
-		fprintf(verbose, " -  %lu ", time(NULL)); \
-		debug(__VA_ARGS__);                       \
-		fprintf(verbose, "\n");                   \
+#define debug_log(...)          \
+	do {                        \
+		_debug_print(" -  ");   \
+		debug(__VA_ARGS__);     \
+		fprintf(verbose, "\n"); \
 	} while (0)
 
-#define debug_log_start(...)                      \
-	do {                                          \
-		fprintf(verbose, "[ ] %lu ", time(NULL)); \
-		debug(__VA_ARGS__);                       \
-		fprintf(verbose, "\n");                   \
+#define debug_log_start(...)    \
+	do {                        \
+		_debug_print("[ ] ");   \
+		debug(__VA_ARGS__);     \
+		fprintf(verbose, "\n"); \
 	} while (0)
 
-#define debug_log_end(...)                        \
-	do {                                          \
-		fprintf(verbose, "[*] %lu ", time(NULL)); \
-		debug(__VA_ARGS__);                       \
-		fprintf(verbose, "\n");                   \
+#define debug_log_end(...)      \
+	do {                        \
+		_debug_print("[*] ");   \
+		debug(__VA_ARGS__);     \
+		fprintf(verbose, "\n"); \
 	} while (0)
 
 #else
