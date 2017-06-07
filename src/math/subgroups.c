@@ -2,6 +2,7 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+#include <gen/types.h>
 #include "subgroups.h"
 
 /**
@@ -49,6 +50,12 @@ GEN subgroups_prime(const curve_t *curve, const config_t *cfg) {
 	}
 }
 
+/**
+ * @brief
+ * @param factors
+ * @param min_bits
+ * @return
+ */
 static GEN subgroups_2n(GEN factors, size_t min_bits) {
 	long nprimes = glength(factors);
 	if (nprimes == min_bits) return NULL;
@@ -76,6 +83,34 @@ static GEN subgroups_2n(GEN factors, size_t min_bits) {
 	return groups;
 }
 
+/**
+ * @brief
+ * @param curve
+ * @param min_bits
+ * @return
+ */
+static GEN subgroups_2n_gens(const curve_t *curve, size_t min_bits) {
+	GEN one_factors = subgroups_factors(curve->generators[0]->order);
+	GEN one = subgroups_2n(one_factors, min_bits);
+	GEN other_factors = subgroups_factors(curve->generators[1]->order);
+	GEN other = subgroups_2n(other_factors, min_bits);
+	if (!one) {
+		return other;
+	}
+	if (!other) {
+		return one;
+	}
+	GEN result = gtovec0(gen_0, glength(one) + glength(other));
+	for (long i = 1; i <= glength(result); ++i) {
+		if (i <= glength(one)) {
+			gel(result, i) = gel(one, i);
+		} else {
+			gel(result, i) = gel(other, i - glength(one));
+		}
+	}
+	return result;
+}
+
 GEN subgroups_nonprime(const curve_t *curve, const config_t *cfg) {
 	if (cfg->prime || isprime(curve->order)) {
 		return NULL;
@@ -84,25 +119,7 @@ GEN subgroups_nonprime(const curve_t *curve, const config_t *cfg) {
 			GEN factors = subgroups_factors(curve->order);
 			return subgroups_2n(factors, 1);
 		} else {
-			GEN one_factors = subgroups_factors(curve->generators[0]->order);
-			GEN one = subgroups_2n(one_factors, 1);
-			GEN other_factors = subgroups_factors(curve->generators[1]->order);
-			GEN other = subgroups_2n(other_factors, 1);
-			if (!one) {
-				return other;
-			}
-			if (!other) {
-				return one;
-			}
-			GEN result = gtovec0(gen_0, glength(one) + glength(other));
-			for (long i = 1; i <= glength(result); ++i) {
-				if (i <= glength(one)) {
-					gel(result, i) = gel(one, i);
-				} else {
-					gel(result, i) = gel(other, i - glength(one));
-				}
-			}
-			return result;
+			return subgroups_2n_gens(curve, 1);
 		}
 	}
 }
@@ -111,7 +128,11 @@ GEN subgroups_all(const curve_t *curve, const config_t *cfg) {
 	if (cfg->prime || isprime(curve->order)) {
 		return gtovec(curve->order);
 	} else {
-		GEN factors = subgroups_factors(curve->order);
-		return subgroups_2n(factors, 0);
+		if (curve->ngens == 1) {
+			GEN factors = subgroups_factors(curve->order);
+			return subgroups_2n(factors, 0);
+		} else {
+			return subgroups_2n_gens(curve, 0);
+		}
 	}
 }
