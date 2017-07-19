@@ -53,6 +53,11 @@
 *.idb
 *.pdb
 
+# Coverage
+*.gcno
+*.gcda
+*.gcov
+
 # Kernel Module Compile Results
 *.mod*
 *.cmd
