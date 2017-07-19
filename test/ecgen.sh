@@ -47,8 +47,6 @@ function exhaustive() {
 	start_test
 	assert_raises "${ecgen} --fp -r 10"
 	assert_raises "${ecgen} --f2m -r 10"
-	assert_raises "${ecgen} --fp -r -i 10"
-	assert_raises "${ecgen} --f2m -r -i 10"
 	assert_raises "${ecgen} --fp -r -p 10"
 	assert_raises "${ecgen} --f2m -r -u 10"
 	assert_raises "${ecgen} --fp -r -i -u 10"
@@ -68,6 +66,8 @@ function exhaustive() {
 	assert_raises "${ecgen} --f2m -r --points=nonprime 10"
 	assert_raises "${ecgen} --f2m -r --points=all 10"
 	assert_raises "${ecgen} --f2m -r --points=none 10"
+
+	assert_raises "${ecgen} --fp -r -c 5 10"
 }
 
 function anomalous() {
@@ -79,10 +79,21 @@ function anomalous() {
 	assert "strip_num $p" $(strip_num $order)
 }
 
+function invalid() {
+	start_test
+	assert_raises "${ecgen} --fp -r -i 10"
+	assert_raises "${ecgen} --f2m -r -i 10"
+	assert_raises "${ecgen} --fp --threads=2 -r -i -u 10"
+	assert_raises "${ecgen} --f2m --threads=2 -r -i -u 10"
+}
+
 . ${ASSERT} -v
+start_suite
 runs
 csv
 json
 exhaustive
 anomalous
+invalid
 assert_end ecgen
+end_suite

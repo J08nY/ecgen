@@ -15,5 +15,7 @@ function runs() {
 }
 
 . ${ASSERT} -v
+start_suite
 runs
 assert_end econvert
+end_suite
