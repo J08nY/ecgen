@@ -10,12 +10,12 @@ all:
 
 clean:
 	+$(MAKE) -C src clean
-	rm *.gcov
+	rm -rf *.gcov
 
 clean-all:
 	+$(MAKE) -C lib clean
 	+$(MAKE) -C src clean-all
-	rm *.gcov
+	rm -rf *.gcov
 	rm -rf doc/*
 
 docs:
