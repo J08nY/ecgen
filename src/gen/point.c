@@ -5,7 +5,6 @@
 #include "point.h"
 #include "io/output.h"
 #include "math/subgroups.h"
-#include "types.h"
 #include "util/memory.h"
 
 point_t *point_new(void) { return try_calloc(sizeof(point_t)); }
