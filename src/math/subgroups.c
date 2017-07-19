@@ -2,8 +2,8 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-#include "gen/types.h"
 #include "subgroups.h"
+#include "gen/types.h"
 
 /**
  * @brief All prime divisors of a given integer.
@@ -44,17 +44,17 @@ static GEN __attribute__((unused)) subgroups_divisors(GEN order) {
 
 /*
 static GEN subgroups_exponents(GEN order) {
-	GEN factors = Z_factor(order);
-	GEN primes = gel(factors, 1);
-	GEN multiples = gel(factors, 2);
+    GEN factors = Z_factor(order);
+    GEN primes = gel(factors, 1);
+    GEN multiples = gel(factors, 2);
 
-	long len = glength(primes);
-	pari_ulong count = 1;
-	for (long i = 1; i <= len; ++i) {
-		count *= itou(gel(multiples,i)) + 1;
-	}
+    long len = glength(primes);
+    pari_ulong count = 1;
+    for (long i = 1; i <= len; ++i) {
+        count *= itou(gel(multiples,i)) + 1;
+    }
 
-	GEN result = gtovec0(gen_0, count);
+    GEN result = gtovec0(gen_0, count);
 
 }
 */

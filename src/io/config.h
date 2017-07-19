@@ -38,6 +38,7 @@ typedef struct {
 	char *order;
 	bool anomalous;
 	bool koblitz;
+	long koblitz_value;
 	bool cofactor;
 	long cofactor_bound;
 	bool from_seed;

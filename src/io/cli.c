@@ -47,7 +47,7 @@ struct argp_option cli_options[] = {
 	{"random",       OPT_RANDOM,    0,        0,                 "Generate a random curve (using Random approach).",                                      2},
 	{"prime",        OPT_PRIME,     0,        0,                 "Generate a curve with prime order.",                                                    2},
 	{"cofactor",     OPT_COFACTOR,  "BOUND",  0,                 "Generate a curve with cofactor up to BOUND.",                                           2},
-	{"koblitz",      OPT_KOBLITZ,   0,        0,                 "Generate a Koblitz curve (a = 0).",                                                     2},
+	{"koblitz",      OPT_KOBLITZ,   "A",     OPTION_ARG_OPTIONAL,"Generate a Koblitz curve (a in {0, 1}, b = 1).",                                                     2},
 	{"unique",       OPT_UNIQUE,    0,        0,                 "Generate a curve with only one generator.",                                             2},
 	{"anomalous",    OPT_ANOMALOUS, 0,        0,                 "Generate an anomalous curve (of trace one, with field order equal to curve order).",    2},
 	{"points",       OPT_POINTS,    "TYPE",   0,                 "Generate points of given type (random/prime/all/nonprime/none).",                       2},
@@ -57,7 +57,7 @@ struct argp_option cli_options[] = {
 	{"count",        OPT_COUNT,     "COUNT",  0,                 "Generate multiple curves.",                                                             2},
 
 	{0,              0,             0,        0,                 "Input/Output options:",                                                                 3},
-	{"format",       OPT_FORMAT,    "FORMAT", 0,                 "Format to output in. One of [csv,json], default is json.",                              3},
+	{"format",       OPT_FORMAT,    "FORMAT", 0,                 "Format to output in. One of {csv, json}, default is json.",                              3},
 	{"input",        OPT_INPUT,     "FILE",   0,                 "Input from file.",                                                                      3},
 	{"output",       OPT_OUTPUT,    "FILE",   0,                 "Output into file. Overwrites any existing file!",                                       3},
 	{"append",       OPT_APPEND,    0,        0,                 "Append to output file (don't overwrite).",                                              3},
@@ -164,6 +164,13 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			break;
 		case OPT_KOBLITZ:
 			cfg->koblitz = true;
+			if (arg) {
+				cfg->koblitz_value = strtol(arg, NULL, 10);
+				if (cfg->koblitz_value != 0 && cfg->koblitz_value != 1) {
+					argp_failure(state, 1, 0, "Wrong value for a = %li",
+					             cfg->koblitz_value);
+				}
+			}
 			break;
 		case OPT_UNIQUE:
 			cfg->unique = true;

@@ -106,7 +106,7 @@ GENERATOR(b_gen_zero) {
 	return 1;
 }
 
-GENERATOR(g_gen_one) {
+GENERATOR(b_gen_one) {
 	curve->b = gen_1;
 	return 1;
 }

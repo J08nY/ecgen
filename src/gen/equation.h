@@ -131,7 +131,7 @@ GENERATOR(b_gen_zero);
  * @param args unused
  * @return state diff
  */
-GENERATOR(g_gen_one);
+GENERATOR(b_gen_one);
 
 /**
  * GENERATOR(gen_t)
