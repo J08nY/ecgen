@@ -10,14 +10,13 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - gcc-6
-    - compiler: clang-3.9
+    - compiler: clang-5.0
       addons:
         apt:
           sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-precise-3.9
+            - llvm-toolchain-trusty
           packages:
-            - clang-3.9
+            - clang-5.0
 
 before_install:
   - wget mirrors.kernel.org/ubuntu/pool/universe/p/pari/libpari-gmp-tls5_2.9.3-1_amd64.deb
