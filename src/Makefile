@@ -14,6 +14,9 @@ ifeq ($(DEBUG), 1)
 else
     CFLAGS += -DNDEBUG -O3
 endif
+ifeq ($(TEST), 1)
+	CFLAGS += -fprofile-arcs -ftest-coverage
+endif
 LDFLAGS = -L../lib/parson -L../lib/sha1 -L../lib/pari
 
 INCLUDES = -I. -I../lib
@@ -53,6 +56,9 @@ clean-all: clean
 
 clean:
 	find . -type f -name '*.o' -exec rm {} +
+	find . -type f -name '*.gcda' -exec rm {} +
+	find . -type f -name '*.gcno' -exec rm {} +
+	find . -type f -name '*.gcov' -exec rm {} +
 
 format:
 	clang-format -i $(SRC)
