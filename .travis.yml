@@ -32,7 +32,7 @@ script:
   - TEST=1 make test
 
 after_success:
-  - cd src && gcov **/*.c && bash <(curl -s https://codecov.io/bash) && cd ..
+  - bash <(curl -s https://codecov.io/bash)
 
 deploy:
   provider: releases
