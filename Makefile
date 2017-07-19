@@ -10,6 +10,7 @@ all:
 
 clean:
 	+$(MAKE) -C src clean
+	rm *.gcov
 
 clean-all:
 	+$(MAKE) -C lib clean

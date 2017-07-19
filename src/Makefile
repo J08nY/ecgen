@@ -15,7 +15,7 @@ else
     CFLAGS += -DNDEBUG -O3
 endif
 ifeq ($(TEST), 1)
-	CFLAGS += -fprofile-arcs -ftest-coverage
+	CFLAGS += --coverage
 endif
 LDFLAGS = -L../lib/parson -L../lib/sha1 -L../lib/pari
 
