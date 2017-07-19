@@ -9,13 +9,13 @@ CC ?= gcc
 
 CFLAGS = -Wall
 DEBUG ?= 0
+TEST ?= 0
 ifeq ($(DEBUG), 1)
     CFLAGS += -DDEBUG -g -Werror -pedantic
+else ifeq ($(TEST), 1)
+    CFLAGS += --coverage -g -O0
 else
-    CFLAGS += -DNDEBUG -O3
-endif
-ifeq ($(TEST), 1)
-	CFLAGS += --coverage
+	CFLAGS += -DNDEBUG -O3
 endif
 LDFLAGS = -L../lib/parson -L../lib/sha1 -L../lib/pari
 
