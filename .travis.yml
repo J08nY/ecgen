@@ -29,7 +29,10 @@ before_install:
 script:
   - make -j2
   - mkdir cmake && cd cmake && cmake .. && make -j2 && cd ..
-  - make test
+  - TEST=1 make test
+
+after_success:
+  - cd src && gcov **/*.c && bash <(curl -s https://codecov.io/bash) && cd ..
 
 deploy:
   provider: releases
