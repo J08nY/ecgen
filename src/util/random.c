@@ -7,7 +7,7 @@
 #include "random.h"
 #include <time.h>
 
-bool random_init(void) {
+void random_reseed(void) {
 	pari_ulong seed = 0;
 	// Try urandom first
 	FILE *rand = fopen("/dev/urandom", "rb");
@@ -32,6 +32,10 @@ bool random_init(void) {
 	pari_sp ltop = avma;
 	setrand(utoi(seed));
 	avma = ltop;
+}
+
+bool random_init(void) {
+	random_reseed();
 
 	return true;
 }
