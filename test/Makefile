@@ -5,7 +5,11 @@
 #
 ####
 
-test: ecgen econvert
+test: unit ecgen econvert
+
+unit:
+	cd lib/criterion && mkdir -p build && cd build && cmake .. && cmake --build .
+	$(MAKE) -C src all
 
 ecgen:
 	./ecgen.sh
