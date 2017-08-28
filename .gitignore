@@ -1,6 +1,7 @@
 ### Custom
 /data/
 /gen/
+/lib/pari/
 /ecgen
 /econvert
 
