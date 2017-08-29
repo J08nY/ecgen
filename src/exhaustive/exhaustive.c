@@ -2,7 +2,6 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-#include <io/config.h>
 #include "exhaustive.h"
 #include "anomalous.h"
 #include "gen/curve.h"
@@ -53,7 +52,8 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 				case 1:
 					generators[OFFSET_A] = &a_gen_one;
 					break;
-				default:break;
+				default:
+					break;
 			}
 			generators[OFFSET_B] = &b_gen_one;
 		}
