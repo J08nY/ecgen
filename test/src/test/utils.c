@@ -5,10 +5,6 @@
 #include "utils.h"
 #include <pari/pari.h>
 
-void default_setup(void) {
-	pari_init(1000000, 1000000);
-}
+void default_setup(void) { pari_init(1000000, 1000000); }
 
-void default_teardown(void) {
-	pari_close();
-}
+void default_teardown(void) { pari_close(); }

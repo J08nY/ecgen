@@ -2,7 +2,6 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-#include <gen/types.h>
 #include "subgroups.h"
 
 /**
@@ -47,7 +46,8 @@ static GEN subgroups_divisors(GEN order) {
 }
 
 /**
- * @brief All factors consisting of at least <code>min_bits</code> prime <code>factors</code>.
+ * @brief All factors consisting of at least <code>min_bits</code> prime
+ * <code>factors</code>.
  *
  * @param factors
  * @param min_bits

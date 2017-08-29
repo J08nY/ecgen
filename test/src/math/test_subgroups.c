@@ -2,13 +2,12 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-#include "gen/types.h"
+#include <criterion/criterion.h>
 #include "gen/point.h"
 #include "math/subgroups.h"
-#include <criterion/criterion.h>
 #include "test/utils.h"
 
-TestSuite(subgroups, .init=default_setup, .fini=default_teardown);
+TestSuite(subgroups, .init = default_setup, .fini = default_teardown);
 
 Test(subgroups, test_prime_factors) {
 	curve_t curve = {.order = stoi(12)};
@@ -40,8 +39,7 @@ Test(subgroups, test_nonprime_factors) {
 	config_t cfg = {.prime = false};
 	GEN divs = subgroups_nonprime(&curve, &cfg);
 	GEN vec = mkvec2s(9, 27);
-	cr_assert(gequal(divs, vec),
-			  "Factors not equal!");
+	cr_assert(gequal(divs, vec), "Factors not equal!");
 }
 
 Test(subgroups, test_all_factors) {
@@ -69,7 +67,7 @@ Test(subgroups, test_all_factors_two_gens) {
 	config_t cfg = {.prime = false};
 	GEN divs = subgroups_all(&curve, &cfg);
 	GEN vec = mkvecn(8, stoi(2), stoi(3), stoi(4), stoi(6), stoi(12), stoi(2),
-					 stoi(3), stoi(6));
+	                 stoi(3), stoi(6));
 	cr_assert(gequal(divs, vec), "Factors not equal!");
 	points_free_deep(&gens, 2);
 }
