@@ -9,17 +9,20 @@
 CC ?= gcc
 CFLAGS = -Wall -g -O0
 LDFLAGS = -L../../lib/parson -L../../lib/sha1 -L../../lib/pari -L../lib/criterion/build
-INCLUDES = -I. -I../../lib -I../lib/criterion/include
+INCLUDES = -I. -I../../src -I../../lib -I../lib/criterion/include
 LIBS = -lrt -lpari -lpthread -lparson -lsha1 -lcriterion
 
 TEST_SRC = $(wildcard *.c) $(wildcard */*.c)
 TEST_OBJ = $(patsubst %.c,%.o, $(TEST_SRC))
 TESTS = $(patsubst %.c,%, $(TEST_SRC))
 
+ECGEN_SRC = $(wildcard ../../src/*/*.c)
+ECGEN_OBJ = $(patsubst %.c,%.o, $(ECGEN_SRC))
+
 all: test_ecgen
 	LD_LIBRARY_PATH=../lib/criterion/build ./test_ecgen
 
-test_ecgen: $(TEST_OBJ)
+test_ecgen: $(TEST_OBJ) $(ECGEN_OBJ)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) $(LIBS)
 
 %.o: %.c

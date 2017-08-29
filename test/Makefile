@@ -5,7 +5,9 @@
 #
 ####
 
-test: unit ecgen econvert
+test: ecgen econvert
+
+unittest: unit ecgen econvert
 
 unit:
 	cd lib/criterion && mkdir -p build && cd build && cmake .. && cmake --build .
