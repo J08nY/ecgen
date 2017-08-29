@@ -7,7 +7,7 @@
 
 
 CC ?= gcc
-CFLAGS = -Wall -g -O0
+CFLAGS = -Wall --coverage -g -O0
 LDFLAGS = -L../../lib/parson -L../../lib/sha1 -L../../lib/pari -L../lib/criterion/build
 INCLUDES = -I. -I../../src -I../../lib -I../lib/criterion/include
 LIBS = -lrt -lpari -lpthread -lparson -lsha1 -lcriterion
