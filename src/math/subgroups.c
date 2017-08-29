@@ -2,12 +2,15 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+#include <gen/types.h>
 #include "subgroups.h"
 
 /**
- * @brief All prime divisors of a given integer.
+ * @brief All prime factors of a given integer.
+ *
+ * subgroups_factors(27) = [3]
  * @param order
- * @return
+ * @return a t_VEC of prime factors.
  */
 static GEN subgroups_factors(GEN order) {
 	GEN factors = Z_factor(order);
@@ -19,7 +22,7 @@ static GEN subgroups_factors(GEN order) {
  *
  * subgroups_divisors(27) = [3, 3, 3]
  * @param order
- * @return
+ * @return a t_VEC of prime divisors.
  */
 static GEN subgroups_divisors(GEN order) {
 	GEN factors = Z_factor(order);
@@ -44,12 +47,13 @@ static GEN subgroups_divisors(GEN order) {
 }
 
 /**
- * @brief
+ * @brief All factors consisting of at least <code>min_bits</code> prime <code>factors</code>.
+ *
  * @param factors
  * @param min_bits
- * @return
+ * @return a t_VEC of factors
  */
-static GEN subgroups_2n(GEN factors, size_t min_bits) {
+static GEN subgroups_2n_factors(GEN factors, size_t min_bits) {
 	long nprimes = glength(factors);
 	if (nprimes == min_bits) return NULL;
 	GEN amount = int2n(nprimes);
@@ -94,9 +98,9 @@ static GEN subgroups_2n(GEN factors, size_t min_bits) {
  */
 static GEN subgroups_2n_gens(const curve_t *curve, size_t min_bits) {
 	GEN one_factors = subgroups_divisors(curve->generators[0]->order);
-	GEN one = subgroups_2n(one_factors, min_bits);
+	GEN one = subgroups_2n_factors(one_factors, min_bits);
 	GEN other_factors = subgroups_divisors(curve->generators[1]->order);
-	GEN other = subgroups_2n(other_factors, min_bits);
+	GEN other = subgroups_2n_factors(other_factors, min_bits);
 	if (!one) {
 		return other;
 	}
@@ -114,35 +118,41 @@ static GEN subgroups_2n_gens(const curve_t *curve, size_t min_bits) {
 	return result;
 }
 
+/**
+ * @brief
+ * @param curve
+ * @param min_bits
+ * @return
+ */
+static GEN subgroups_2n(const curve_t *curve, size_t min_bits) {
+	if (curve->ngens == 1) {
+		GEN factors = subgroups_divisors(curve->order);
+		return subgroups_2n_factors(factors, min_bits);
+	}
+
+	return subgroups_2n_gens(curve, min_bits);
+}
+
 GEN subgroups_prime(const curve_t *curve, const config_t *cfg) {
 	if (cfg->prime || isprime(curve->order)) {
 		return gtovec(curve->order);
 	}
+
 	return subgroups_factors(curve->order);
 }
 
 GEN subgroups_nonprime(const curve_t *curve, const config_t *cfg) {
 	if (cfg->prime || isprime(curve->order)) {
 		return NULL;
-	} else {
-		if (curve->ngens == 1) {
-			GEN factors = subgroups_divisors(curve->order);
-			return subgroups_2n(factors, 1);
-		} else {
-			return subgroups_2n_gens(curve, 1);
-		}
 	}
+
+	return subgroups_2n(curve, 1);
 }
 
 GEN subgroups_all(const curve_t *curve, const config_t *cfg) {
 	if (cfg->prime || isprime(curve->order)) {
 		return gtovec(curve->order);
-	} else {
-		if (curve->ngens == 1) {
-			GEN factors = subgroups_divisors(curve->order);
-			return subgroups_2n(factors, 0);
-		} else {
-			return subgroups_2n_gens(curve, 0);
-		}
 	}
+
+	return subgroups_2n(curve, 0);
 }
