@@ -2,6 +2,7 @@
 /lib/pari/
 /ecgen
 /econvert
+/test/src/test_ecgen
 
 ### Doxygen
 /docs/html/
