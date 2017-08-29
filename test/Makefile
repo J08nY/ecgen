@@ -19,6 +19,9 @@ ecgen:
 econvert:
 	./econvert.sh
 
+clean:
+	+$(MAKE) -C src clean
+
 clean-all:
 	cd lib/criterion && rm -r build
 	+$(MAKE) -C src clean-all
