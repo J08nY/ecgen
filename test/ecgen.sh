@@ -17,16 +17,16 @@ function runs() {
 
 function csv() {
 	start_test
-	assert_matches "${ecgen} --fp -tcsv --input=fp_10_a.csv.in 10" "$(cat fp_10_a.csv)"
-	assert_matches "${ecgen} --f2m -tcsv --input=f2m_10_a.csv.in 10" "$(cat f2m_10_a.csv)"
+	assert_matches "${ecgen} --fp -tcsv --input=data/fp_10_a.csv.in 10" "$(cat data/fp_10_a.csv)"
+	assert_matches "${ecgen} --f2m -tcsv --input=data/f2m_10_a.csv.in 10" "$(cat data/f2m_10_a.csv)"
 }
 
 function json() {
 	start_test
-	assert_raises "${ecgen} --fp -tjson --input=fp_10_a.csv.in 10"
-	assert_raises "${ecgen} --f2m -tjson --input=f2m_10_a.csv.in 10"
-	fp=$(${ecgen} --fp -tjson --input=fp_10_a.csv.in 10 2>/dev/null)
-	f2m=$(${ecgen} --f2m -tjson --input=f2m_10_a.csv.in 10 2>/dev/null)
+	assert_raises "${ecgen} --fp -tjson --input=data/fp_10_a.csv.in 10"
+	assert_raises "${ecgen} --f2m -tjson --input=data/f2m_10_a.csv.in 10"
+	fp=$(${ecgen} --fp -tjson --input=data/fp_10_a.csv.in 10 2>/dev/null)
+	f2m=$(${ecgen} --f2m -tjson --input=data/f2m_10_a.csv.in 10 2>/dev/null)
 	assert_raises "${JSON}" 0 "${fp}"
 	assert_matches "${JSON} -x field\\\",\\\"p" "0x000b" "${fp}"
 	assert_matches "${JSON} -x \\\"a\\\"" "0x0001" "${fp}"

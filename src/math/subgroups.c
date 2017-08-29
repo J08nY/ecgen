@@ -61,7 +61,7 @@ static GEN subgroups_exponents(GEN order) {
 
 GEN subgroups_prime(const curve_t *curve, const config_t *cfg) {
 	if (cfg->prime || isprime(curve->order)) {
-		return gtovec(curve->order);
+		return gtocol(curve->order);
 	} else {
 		return subgroups_factors(curve->order);
 	}
