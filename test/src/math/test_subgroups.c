@@ -5,12 +5,9 @@
 #include "gen/types.h"
 #include "math/subgroups.h"
 #include <criterion/criterion.h>
+#include "test/utils.h"
 
-void setup(void) {
-	pari_init(1000000000, 1000000);
-}
-
-TestSuite(subgroups, .init=setup);
+TestSuite(subgroups, .init=default_setup, .fini=default_teardown);
 
 Test(subgroups, test_prime_factors) {
 	curve_t curve = {.order = stoi(12)};
