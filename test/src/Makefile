@@ -28,3 +28,11 @@ test_ecgen: $(TEST_OBJ) $(ECGEN_OBJ)
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
+clean-all: clean
+	rm -f ./test_ecgen
+
+clean:
+	find . -type f -name '*.o' -exec rm {} +
+	find . -type f -name '*.gcda' -exec rm {} +
+	find . -type f -name '*.gcno' -exec rm {} +
+	find . -type f -name '*.gcov' -exec rm {} +
