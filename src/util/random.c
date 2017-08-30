@@ -43,9 +43,7 @@ bool random_init(void) {
 GEN random_prime(unsigned long bits) {
 	pari_sp ltop = avma;
 
-	GEN range = gtovec0(gen_0, 2);
-	gel(range, 1) = powis(gen_2, bits - 1);
-	gel(range, 2) = powis(gen_2, bits);
+	GEN range = mkvec2(int2n(bits - 1), int2n(bits));
 
 	GEN p;
 	pari_sp btop = avma;
@@ -60,9 +58,6 @@ GEN random_prime(unsigned long bits) {
 GEN random_int(unsigned long bits) {
 	pari_sp ltop = avma;
 
-	GEN range = gtovec0(gen_0, 2);
-	gel(range, 1) = powis(gen_2, bits - 1);
-	gel(range, 2) = powis(gen_2, bits);
-
+	GEN range = mkvec2(int2n(bits - 1), int2n(bits));
 	return gerepilecopy(ltop, genrand(range));
 }
