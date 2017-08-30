@@ -110,7 +110,7 @@ bool input_init(const config_t *cfg) {
 }
 
 void input_quit(void) {
-	if (in != NULL && in != stdout) {
+	if (in != NULL && in != stdin) {
 		fclose(in);
 	}
 }
