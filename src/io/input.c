@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #define _POSIX_C_SOURCE 200809L
+
 #include "input.h"
 #include "output.h"
 #include "util/memory.h"
@@ -25,10 +26,9 @@ static GEN input_i(const char *prompt, unsigned long bits) {
 		free(line);
 		return gen_m1;
 	}
-	for (size_t i = 0, j = 0; (line[j] = line[i]); j += !isspace(line[i++]))
-		;
+	for (size_t i = 0, j = 0; (line[j] = line[i]); j += !isspace(line[i++]));
 
-	if (len <= 3 || !(line[0] == '0' && (line[1] == 'x' || line[1] == 'X'))) {
+/*	if (len <= 3 || !(line[0] == '0' && (line[1] == 'x' || line[1] == 'X'))) {
 		char *new_line = try_realloc(line, (size_t)(len + 2));
 		memmove(new_line + 2, new_line, (size_t)len);
 		new_line[0] = '0';
@@ -39,7 +39,7 @@ static GEN input_i(const char *prompt, unsigned long bits) {
 			new_line[len + 2] = 0;
 		}
 		line = new_line;
-	}
+	}*/
 
 	pari_sp ltop = avma;
 	GEN in = strtoi(line);
@@ -83,6 +83,9 @@ GEN input_string(const char *prompt) {
 	size_t n = 0;
 
 	ssize_t len = getdelim(&line, &n, delim, in);
+	if (len <= 0) {
+		return strtoGENstr("");
+	}
 	if (len == 1) {
 		free(line);
 		return strtoGENstr("");
