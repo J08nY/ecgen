@@ -3,17 +3,16 @@
  * Copyright (C) 2017 J08nY
  */
 
-#include "test/utils.h"
-#include "io/cli.h"
-#include "io/config.h"
 #include <criterion/criterion.h>
 #include <unistd.h>
+#include "io/cli.h"
+#include "io/config.h"
+#include "test/default.h"
 
 static struct argp test_argp = {cli_options, cli_parse, cli_args_doc,
-								cli_doc, 0, cli_filter};
+                                cli_doc,     0,         cli_filter};
 
 TestSuite(cli, .init = default_setup, .fini = default_teardown);
-
 
 Test(cli, test_memory) {
 	int argc = 4;
@@ -21,8 +20,8 @@ Test(cli, test_memory) {
 	config_t cfg;
 	memset(&cfg, 0, sizeof(cfg));
 	int ret = argp_parse(&test_argp, argc, argv, 0, 0, &cfg);
-	cr_assert_eq(ret, 0,);
-	cr_assert_eq(cfg.memory, 2000,);
+	cr_assert_eq(ret, 0, );
+	cr_assert_eq(cfg.memory, 2000, );
 }
 
 Test(cli, test_thread_memory) {
@@ -31,8 +30,8 @@ Test(cli, test_thread_memory) {
 	config_t cfg;
 	memset(&cfg, 0, sizeof(cfg));
 	int ret = argp_parse(&test_argp, argc, argv, 0, 0, &cfg);
-	cr_assert_eq(ret, 0,);
-	cr_assert_eq(cfg.thread_memory, 2000,);
+	cr_assert_eq(ret, 0, );
+	cr_assert_eq(cfg.thread_memory, 2000, );
 }
 
 Test(cli, test_threads) {
@@ -41,8 +40,8 @@ Test(cli, test_threads) {
 	config_t cfg;
 	memset(&cfg, 0, sizeof(cfg));
 	int ret = argp_parse(&test_argp, argc, argv, 0, 0, &cfg);
-	cr_assert_eq(ret, 0,);
-	cr_assert_eq(cfg.threads, 2,);
+	cr_assert_eq(ret, 0, );
+	cr_assert_eq(cfg.threads, 2, );
 }
 
 Test(cli, test_auto_threads) {
@@ -51,6 +50,6 @@ Test(cli, test_auto_threads) {
 	config_t cfg;
 	memset(&cfg, 0, sizeof(cfg));
 	int ret = argp_parse(&test_argp, argc, argv, 0, 0, &cfg);
-	cr_assert_eq(ret, 0,);
-	cr_assert_eq(cfg.threads, sysconf(_SC_NPROCESSORS_ONLN),);
+	cr_assert_eq(ret, 0, );
+	cr_assert_eq(cfg.threads, sysconf(_SC_NPROCESSORS_ONLN), );
 }

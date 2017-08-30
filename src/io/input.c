@@ -26,20 +26,8 @@ static GEN input_i(const char *prompt, unsigned long bits) {
 		free(line);
 		return gen_m1;
 	}
-	for (size_t i = 0, j = 0; (line[j] = line[i]); j += !isspace(line[i++]));
-
-/*	if (len <= 3 || !(line[0] == '0' && (line[1] == 'x' || line[1] == 'X'))) {
-		char *new_line = try_realloc(line, (size_t)(len + 2));
-		memmove(new_line + 2, new_line, (size_t)len);
-		new_line[0] = '0';
-		new_line[1] = 'x';
-		if (!feof(in)) {
-			new_line[len + 1] = 0;
-		} else {
-			new_line[len + 2] = 0;
-		}
-		line = new_line;
-	}*/
+	for (size_t i = 0, j = 0; (line[j] = line[i]); j += !isspace(line[i++]))
+		;
 
 	pari_sp ltop = avma;
 	GEN in = strtoi(line);

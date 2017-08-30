@@ -46,7 +46,7 @@ void try_free(void *ptr);
  * @param free_fun
  */
 void set_mem_funcs(void *(*malloc_fun)(size_t), void *(*calloc_fun)(size_t),
-				   void *(*realloc_fun)(void *, size_t),
-				   void(*free_fun)(void *));
+                   void *(*realloc_fun)(void *, size_t),
+                   void (*free_fun)(void *));
 
 #endif  // ECGEN_MEMORY_H

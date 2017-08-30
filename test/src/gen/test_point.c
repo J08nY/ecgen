@@ -5,7 +5,7 @@
 
 #include <criterion/criterion.h>
 #include "gen/point.h"
-#include "test/utils.h"
+#include "test/default.h"
 
 TestSuite(point, .init = default_setup, .fini = default_teardown);
 

@@ -5,7 +5,7 @@
 #include <criterion/criterion.h>
 #include "gen/point.h"
 #include "math/subgroups.h"
-#include "test/utils.h"
+#include "test/default.h"
 
 TestSuite(subgroups, .init = default_setup, .fini = default_teardown);
 

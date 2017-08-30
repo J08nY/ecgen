@@ -4,6 +4,7 @@
  */
 
 #include "seed.h"
+#include <io/config.h>
 #include "io/output.h"
 #include "util/memory.h"
 
@@ -41,33 +42,34 @@ void seed_free(seed_t **seed) {
 
 static GEN seed_stoi(const char *cstr) {
 	pari_sp ltop = avma;
-	GEN seed = gen_0;
 
 	size_t len = strlen(cstr);
-	for (size_t i = 0; i < len; ++i) {
-		pari_sp btop = avma;
-		GEN s = stoi(cstr[i]);
-		s = shifti(s, (len - i - 1) * 8);
-		seed = addii(seed, s);
-		gerepileall(btop, 1, &seed);
+	char *seed_str;
+	if (len <= 3 || !(cstr[0] == '0' && (cstr[1] == 'x' || cstr[1] == 'X'))) {
+		seed_str = try_malloc((size_t)(len + 3));
+		strncpy(seed_str + 2, cstr, len);
+		seed_str[0] = '0';
+		seed_str[1] = 'x';
+		seed_str[len + 2] = 0;
+	} else {
+		seed_str = try_malloc(len + 1);
+		strncpy(seed_str, cstr, len);
 	}
+	GEN i = strtoi(seed_str);
 
-	return gerepilecopy(ltop, seed);
+	return gerepilecopy(ltop, i);
 }
 
 static char *seed_itos(GEN seed) {
 	pari_sp ltop = avma;
-	GEN bits = binary_zv(seed);
+	char *result = pari_sprintf("%Px", seed);
 
-	long len = glength(bits);
-	long bytes = (len / 8) + (len % 8 == 0 ? 0 : 1);
-	char *result = try_malloc((size_t)bytes);
+	size_t seed_len = strlen(result);
+	char *seed_str = try_malloc(seed_len + 1);
+	strcpy(seed_str, result);
 
-	for (long i = 0; i < len; ++i) {
-		// TODO
-	}
 	avma = ltop;
-	return result;
+	return seed_str;
 }
 
 GENERATOR(seed_gen_random) {
@@ -81,8 +83,13 @@ GENERATOR(seed_gen_random) {
 GENERATOR(seed_gen_argument) {
 	curve->seed = seed_new();
 	curve->seed->seed = seed_stoi(cfg->seed);
-	curve->seed->raw = cfg->seed;
-	curve->seed->raw_len = strlen(cfg->seed);
+
+	size_t seed_len = strlen(cfg->seed);
+	char *seed = try_malloc(seed_len + 1);
+	strcpy(seed, cfg->seed);
+
+	curve->seed->raw = seed;
+	curve->seed->raw_len = seed_len;
 	return 1;
 }
 
@@ -96,10 +103,16 @@ GENERATOR(seed_gen_input) {
 		avma = ltop;
 		return 0;
 	}
-
 	GEN seed = seed_stoi(cstr);
 
 	curve->seed = seed_new();
 	curve->seed->seed = gerepilecopy(ltop, seed);
+
+	size_t seed_len = strlen(cstr);
+	char *seed_str = try_malloc(seed_len + 1);
+	strcpy(seed_str, cfg->seed);
+
+	curve->seed->raw = seed_str;
+	curve->seed->raw_len = seed_len;
 	return 1;
 }

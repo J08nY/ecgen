@@ -5,7 +5,6 @@
 #include "memory.h"
 #include <pari/pari.h>
 
-
 static void *(*malloc_func)(size_t) = pari_malloc;
 
 static void *(*calloc_func)(size_t) = pari_calloc;
@@ -25,9 +24,7 @@ void *alloc(void *(*fun)(size_t), size_t size) {
 
 void *try_malloc(size_t size) { return alloc(malloc_func, size); }
 
-void *try_calloc(size_t size) {
-	return alloc(calloc_func, size);
-}
+void *try_calloc(size_t size) { return alloc(calloc_func, size); }
 
 void *try_realloc(void *ptr, size_t size) {
 	void *result = realloc_func(ptr, size);
@@ -38,13 +35,11 @@ void *try_realloc(void *ptr, size_t size) {
 	return result;
 }
 
-void try_free(void *ptr) {
-	free_func(ptr);
-}
+void try_free(void *ptr) { free_func(ptr); }
 
 void set_mem_funcs(void *(*malloc_fun)(size_t), void *(*calloc_fun)(size_t),
-				   void *(*realloc_fun)(void *, size_t),
-				   void(*free_fun)(void *)) {
+                   void *(*realloc_fun)(void *, size_t),
+                   void (*free_fun)(void *)) {
 	malloc_func = malloc_fun;
 	calloc_func = calloc_fun;
 	realloc_func = realloc_fun;
