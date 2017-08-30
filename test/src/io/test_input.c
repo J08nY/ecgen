@@ -55,6 +55,12 @@ Test(input, test_prime_nonprime) {
 	cr_assert(gequal(p, gen_m1),);
 }
 
+Test(input, test_prime_newline) {
+	fprintf(write_in, "\n");
+	GEN p = input_prime(NULL, 10);
+	cr_assert(gequal(p, gen_m1),);
+}
+
 Test(input, test_int) {
 	fprintf(write_in, "256\n");
 	GEN i = input_int(NULL, 10);
@@ -77,5 +83,12 @@ Test(input, test_str) {
 	fprintf(write_in, "something\n");
 	GEN s = input_string(NULL);
 	GEN expected = strtoGENstr("something");
+	cr_assert(gequal(s, expected),);
+}
+
+Test(input, test_str_newline) {
+	fprintf(write_in, "\n");
+	GEN s = input_string(NULL);
+	GEN expected = strtoGENstr("");
 	cr_assert(gequal(s, expected),);
 }
