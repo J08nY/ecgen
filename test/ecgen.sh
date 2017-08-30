@@ -91,6 +91,18 @@ function invalid() {
 	assert_raises "${ecgen} --f2m --threads=2 -r -i -u 10"
 }
 
+function cli() {
+	start_test
+	assert_raises "${ecgen} --threads=a" 1
+	assert_raises "${ecgen} --format=something" 1
+	assert_raises "${ecgen} --koblitz=2" 1
+	assert_raises "${ecgen} --points=something" 1
+	assert_raises "${ecgen} --seed=some" 1
+	assert_raises "${ecgen} 1 2 3" 64
+	assert_raises "${ecgen} --fp --f2m 1" 1
+}
+
+
 . ${ASSERT} -v
 start_suite
 runs
@@ -99,5 +111,5 @@ json
 exhaustive
 anomalous
 invalid
-assert_end ecgen
-end_suite
+cli
+end_suite ecgen

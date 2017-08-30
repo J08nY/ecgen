@@ -229,7 +229,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 		case ARGP_KEY_END:
 			// validate all option states here.
 			// Only one field
-			if (!cfg->prime_field && !cfg->binary_field) {
+			if (cfg->prime_field == cfg->binary_field) {
 				argp_failure(state, 1, 0,
 				             "Specify field type, prime or binary, with --fp / "
 				             "--f2m (but not both).");
