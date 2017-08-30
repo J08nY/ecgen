@@ -9,7 +9,7 @@
 int cm_do(config_t *cfg) {
 	debug_log_start("Starting Complex Multiplication method");
 
-	fprintf(stderr, "This is *NOT IMPLEMENTED* currently.\n");
+	fprintf(err, "This is *NOT IMPLEMENTED* currently.\n");
 
 	GEN D = stoi(71);
 	form_t **forms;

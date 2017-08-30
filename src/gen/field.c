@@ -4,6 +4,7 @@
  */
 #include "field.h"
 #include "io/input.h"
+#include "io/output.h"
 #include "math/poly.h"
 
 static GEN field_primer(unsigned long bits) { return random_prime(bits); }
@@ -12,8 +13,7 @@ static GEN field_binaryr(unsigned long bits) {
 	if (poly_exists(bits)) {
 		return poly_find_gen(bits);
 	} else {
-		fprintf(stderr,
-		        "Unable to find a suitable binary field. Use an explicit one.");
+		fprintf(err, "Unable to find a suitable binary field. Use an explicit one.");
 		exit(1);
 	}
 }
@@ -67,7 +67,7 @@ GENERATOR(field_gen_input) {
 			}
 
 			if (isintzero(e1) && isintzero(e2) && isintzero(e3)) {
-				fprintf(stderr, "At least one exponent must be nonzero.\n");
+				fprintf(err, "At least one exponent must be nonzero.\n");
 				avma = ltop;
 				return 0;
 			}
@@ -81,7 +81,7 @@ GENERATOR(field_gen_input) {
 
 			GEN poly = gmul(gtopolyrev(v, -1), gmodulss(1, 2));
 			if (!isirreducible(poly)) {
-				fprintf(stderr, "Polynomial is reducible.\n");
+				fprintf(err, "Polynomial is reducible.\n");
 				avma = ltop;
 				return 0;
 			}

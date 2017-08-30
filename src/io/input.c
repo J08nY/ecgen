@@ -50,7 +50,7 @@ static GEN input_i(const char *prompt, unsigned long bits) {
 	if (cmpii(in, size) <= 0) {
 		return gerepileupto(ltop, in);
 	} else {
-		fprintf(stderr, "Number too big(> %ld bits).\n", bits);
+		fprintf(err, "Number too big(> %ld bits).\n", bits);
 		return gen_m1;
 	}
 }
@@ -63,7 +63,7 @@ GEN input_prime(const char *prompt, unsigned long bits) {
 		if (isprime(read)) {
 			return read;
 		} else {
-			fprintf(stderr, "Number is not prime. Prime required.\n");
+			fprintf(err, "Number is not prime. Prime required.\n");
 			return gen_m1;
 		}
 	}

@@ -104,7 +104,7 @@ GENERATOR(point_gen_random) {
 
 GENERATOR(points_gen_random) {
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. points_gen_random\n");
+		fprintf(err, "No args to an arged function. points_gen_random\n");
 		return INT_MIN;
 	}
 
@@ -161,7 +161,7 @@ static int points_from_orders(curve_t *curve, GEN orders) {
 
 GENERATOR(points_gen_trial) {
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. points_gen_trial\n");
+		fprintf(err, "No args to an arged function. points_gen_trial\n");
 		return INT_MIN;
 	}
 

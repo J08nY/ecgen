@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "anomalous.h"
+#include "io/output.h"
 #include "util/memory.h"
 
 static disc_t **disc_table;
@@ -89,7 +90,7 @@ static GEN anomalous_c(size_t i, GEN p) {
 
 GENERATOR(anomalous_gen_field) {
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. anomalous_field\n");
+		fprintf(err, "No args to an arged function. anomalous_field\n");
 		return INT_MIN;
 	}
 	size_t i = *(size_t *)args->args;
@@ -108,8 +109,7 @@ GENERATOR(anomalous_gen_field) {
 
 GENERATOR(anomalous_gen_equation) {
 	if (!args) {
-		fprintf(stderr,
-		        "No args to an arged function. anomalous_gen_equation\n");
+		fprintf(err, "No args to an arged function. anomalous_gen_equation\n");
 		return INT_MIN;
 	}
 	size_t i = *(size_t *)args->args;

@@ -208,6 +208,11 @@ void output_o_end(const config_t *cfg);
 extern FILE *out;
 
 /**
+ * @brief
+ */
+extern FILE *err;
+
+/**
  * @brief Configured verbose output FILE*.
  */
 extern FILE *verbose;

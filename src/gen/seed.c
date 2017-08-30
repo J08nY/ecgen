@@ -4,6 +4,7 @@
  */
 
 #include "seed.h"
+#include "io/output.h"
 #include "util/memory.h"
 
 seed_t *seed_new(void) { return try_calloc(sizeof(seed_t)); }
@@ -91,7 +92,7 @@ GENERATOR(seed_gen_input) {
 	GEN str = input_string("seed:");
 	const char *cstr = GSTR(str);
 	if (strlen(cstr) < 20) {
-		fprintf(stderr, "SEED must be at least 160 bits(20 characters).\n");
+		fprintf(err, "SEED must be at least 160 bits(20 characters).\n");
 		avma = ltop;
 		return 0;
 	}

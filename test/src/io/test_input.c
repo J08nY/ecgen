@@ -25,6 +25,7 @@ void input_setup() {
 	write_in = fdopen(in_fd[1], "w");
 	setlinebuf(write_in);
 	in = fdopen(in_fd[0], "r");
+	err = fopen("/dev/null", "w");
 }
 
 void input_teardown() {

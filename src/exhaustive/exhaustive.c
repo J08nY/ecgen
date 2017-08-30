@@ -176,7 +176,7 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 
 		if (diff <= 0) {
 			if (diff == INT_MIN || state + diff < 0) {
-				fprintf(stderr, "Error generating a curve. state = %i\n",
+				fprintf(err, "Error generating a curve. state = %i\n",
 				        state);
 				return 0;
 			}

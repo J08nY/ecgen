@@ -9,6 +9,7 @@
 #include "util/memory.h"
 
 FILE *out;
+FILE *err;
 FILE *verbose;
 
 char *output_malloc(const char *what) {
@@ -28,23 +29,23 @@ char *output_scsv(curve_t *curve, const config_t *cfg) {
 	switch (cfg->field) {
 		case FIELD_PRIME:
 			params[OFFSET_FIELD] =
-			    pari_sprintf("%P0#*x", cfg->hex_digits, curve->field);
+				pari_sprintf("%P0#*x", cfg->hex_digits, curve->field);
 			break;
 		case FIELD_BINARY: {
 			GEN field = field_params(curve->field);
 			params[OFFSET_FIELD] =
-			    pari_sprintf("%P#x,%P#x,%P#x,%P#x", gel(field, 1),
-			                 gel(field, 2), gel(field, 3), gel(field, 4));
+				pari_sprintf("%P#x,%P#x,%P#x,%P#x", gel(field, 1),
+							 gel(field, 2), gel(field, 3), gel(field, 4));
 			break;
 		}
 	}
 
 	if (curve->a)
 		params[OFFSET_A] =
-		    pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->a));
+			pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->a));
 	if (curve->b)
 		params[OFFSET_B] =
-		    pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->b));
+			pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->b));
 
 	if (curve->generators) {
 		char *gens[curve->ngens];
@@ -54,8 +55,8 @@ char *output_scsv(curve_t *curve, const config_t *cfg) {
 			GEN x = field_elementi(gel(generator->point, 1));
 			GEN y = field_elementi(gel(generator->point, 2));
 			gens[i] = pari_sprintf("%P0#*x,%P0#*x,%P#x,%P#x", cfg->hex_digits,
-			                       x, cfg->hex_digits, y, generator->order,
-			                       generator->cofactor);
+								   x, cfg->hex_digits, y, generator->order,
+								   generator->cofactor);
 			len += strlen(gens[i]);
 		}
 		size_t lenn = sizeof(char) * (len + curve->ngens);
@@ -69,7 +70,7 @@ char *output_scsv(curve_t *curve, const config_t *cfg) {
 
 	if (curve->order)
 		params[OFFSET_ORDER] =
-		    pari_sprintf("%P0#*x", cfg->hex_digits, curve->order);
+			pari_sprintf("%P0#*x", cfg->hex_digits, curve->order);
 
 	if (curve->points) {
 		char *points[curve->npoints];
@@ -79,7 +80,7 @@ char *output_scsv(curve_t *curve, const config_t *cfg) {
 			GEN x = field_elementi(gel(point->point, 1));
 			GEN y = field_elementi(gel(point->point, 2));
 			points[i] = pari_sprintf("%P0#*x,%P0#*x,%P#x", cfg->hex_digits, x,
-			                         cfg->hex_digits, y, point->order);
+									 cfg->hex_digits, y, point->order);
 			len += strlen(points[i]);
 		}
 		size_t lenn = sizeof(char) * (len + curve->npoints);
@@ -149,8 +150,7 @@ static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 			pari_free(e3);
 			break;
 		}
-		default:
-			fprintf(stderr, "Error, field has unknown amount of elements.\n");
+		default: fprintf(err, "Error, field has unknown amount of elements.\n");
 			exit(1);
 	}
 
@@ -172,13 +172,13 @@ static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 			JSON_Object *point_object = json_value_get_object(point_value);
 
 			char *x = pari_sprintf(
-			    "%P0#*x", cfg->hex_digits,
-			    field_elementi(gel(curve->generators[i]->point, 1)));
+				"%P0#*x", cfg->hex_digits,
+				field_elementi(gel(curve->generators[i]->point, 1)));
 			json_object_set_string(point_object, "x", x);
 			pari_free(x);
 			char *y = pari_sprintf(
-			    "%P0#*x", cfg->hex_digits,
-			    field_elementi(gel(curve->generators[i]->point, 2)));
+				"%P0#*x", cfg->hex_digits,
+				field_elementi(gel(curve->generators[i]->point, 2)));
 			json_object_set_string(point_object, "y", y);
 			pari_free(y);
 			char *p_order = pari_sprintf("%P#x", curve->generators[i]->order);
@@ -186,7 +186,7 @@ static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 			pari_free(p_order);
 			if (curve->generators[i]->cofactor) {
 				char *cofactor =
-				    pari_sprintf("%P#x", curve->generators[i]->cofactor);
+					pari_sprintf("%P#x", curve->generators[i]->cofactor);
 				json_object_set_string(point_object, "cofactor", cofactor);
 				pari_free(cofactor);
 			}
@@ -206,13 +206,13 @@ static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 			JSON_Object *point_object = json_value_get_object(point_value);
 
 			char *x =
-			    pari_sprintf("%P0#*x", cfg->hex_digits,
-			                 field_elementi(gel(curve->points[i]->point, 1)));
+				pari_sprintf("%P0#*x", cfg->hex_digits,
+							 field_elementi(gel(curve->points[i]->point, 1)));
 			json_object_set_string(point_object, "x", x);
 			pari_free(x);
 			char *y =
-			    pari_sprintf("%P0#*x", cfg->hex_digits,
-			                 field_elementi(gel(curve->points[i]->point, 2)));
+				pari_sprintf("%P0#*x", cfg->hex_digits,
+							 field_elementi(gel(curve->points[i]->point, 2)));
 			json_object_set_string(point_object, "y", y);
 			pari_free(y);
 			char *p_order = pari_sprintf("%P#x", curve->points[i]->order);
@@ -220,7 +220,7 @@ static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 			pari_free(p_order);
 			if (curve->points[i]->cofactor) {
 				char *cofactor =
-				    pari_sprintf("%P#x", curve->points[i]->cofactor);
+					pari_sprintf("%P#x", curve->points[i]->cofactor);
 				json_object_set_string(point_object, "cofactor", cofactor);
 				pari_free(cofactor);
 			}
@@ -306,6 +306,10 @@ bool output_init(const config_t *cfg) {
 		out = stdout;
 	}
 	setvbuf(out, NULL, _IONBF, 0);
+
+	err = stderr;
+	setvbuf(err, NULL, _IONBF, 0);
+
 	if (cfg->verbose_log) {
 		verbose = fopen(cfg->verbose_log, "w");
 		if (!verbose) {
@@ -339,5 +343,8 @@ bool output_init(const config_t *cfg) {
 void output_quit(void) {
 	if (out != NULL && out != stdout) {
 		fclose(out);
+	}
+	if (err != NULL && err != stdout) {
+		fclose(err);
 	}
 }

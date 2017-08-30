@@ -4,6 +4,7 @@
  */
 #include "order.h"
 #include "io/input.h"
+#include "io/output.h"
 
 GENERATOR(order_gen_input) {
 	pari_sp ltop = avma;
@@ -43,7 +44,7 @@ GENERATOR(order_gen_sea) {
 
 GENERATOR(order_gen_smallfact) {
 	if (!args) {
-		fprintf(stderr, "No args to an arged function. order_gen_smallfact\n");
+		fprintf(err, "No args to an arged function. order_gen_smallfact\n");
 		return INT_MIN;
 	}
 
