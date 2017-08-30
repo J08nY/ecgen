@@ -138,9 +138,9 @@ void anomalous_quit() {
 	if (disc_table) {
 		for (int i = 0; i < 5; ++i) {
 			if (disc_table[i]) {
-				pari_free(disc_table[i]);
+				try_free(disc_table[i]);
 			}
 		}
-		pari_free(disc_table);
+		try_free(disc_table);
 	}
 }

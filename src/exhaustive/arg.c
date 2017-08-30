@@ -10,10 +10,10 @@ arg_t *arg_new(void) { return try_calloc(sizeof(arg_t)); }
 void arg_free(arg_t **arg) {
 	if (*arg) {
 		if ((*arg)->allocd) {
-			pari_free((*arg)->allocd);
+			try_free((*arg)->allocd);
 			(*arg)->allocd = NULL;
 		}
-		pari_free(*arg);
+		try_free(*arg);
 		*arg = NULL;
 	}
 }

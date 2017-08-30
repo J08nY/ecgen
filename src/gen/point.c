@@ -44,7 +44,7 @@ void point_free(point_t **point) {
 		if ((*point)->cofactor && isclone((*point)->cofactor)) {
 			gunclone((*point)->cofactor);
 		}
-		pari_free(*point);
+		try_free(*point);
 		*point = NULL;
 	}
 }
@@ -77,7 +77,7 @@ point_t **points_new_clone(point_t **const src, size_t num) {
 
 void points_free(point_t ***points) {
 	if (*points) {
-		pari_free(*points);
+		try_free(*points);
 		*points = NULL;
 	}
 }

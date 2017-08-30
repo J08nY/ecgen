@@ -82,7 +82,7 @@ void curve_free(curve_t **curve) {
 			gunclone((*curve)->order);
 		}
 
-		pari_free(*curve);
+		try_free(*curve);
 		*curve = NULL;
 	}
 }

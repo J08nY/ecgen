@@ -70,11 +70,11 @@ void p1363_free(form_t ***forms, size_t nforms) {
 	if (*forms) {
 		for (size_t i = 0; i < nforms; ++i) {
 			if ((*forms)[i]) {
-				pari_free((*forms)[i]);
+				try_free((*forms)[i]);
 				(*forms)[i] = NULL;
 			}
 		}
-		pari_free(*forms);
+		try_free(*forms);
 		*forms = NULL;
 	}
 }

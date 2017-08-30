@@ -59,7 +59,7 @@ char *output_scsv(curve_t *curve, const config_t *cfg) {
 			len += strlen(gens[i]);
 		}
 		size_t lenn = sizeof(char) * (len + curve->ngens);
-		params[OFFSET_GENERATORS] = try_calloc(lenn);
+		params[OFFSET_GENERATORS] = pari_calloc(lenn);
 		for (size_t i = 0; i < curve->ngens; ++i) {
 			if (i > 0) strncat(params[OFFSET_GENERATORS], ",", lenn - 1);
 			strncat(params[OFFSET_GENERATORS], gens[i], lenn - 1);
@@ -83,7 +83,7 @@ char *output_scsv(curve_t *curve, const config_t *cfg) {
 			len += strlen(points[i]);
 		}
 		size_t lenn = sizeof(char) * (len + curve->npoints);
-		params[OFFSET_POINTS] = try_calloc(lenn);
+		params[OFFSET_POINTS] = pari_calloc(lenn);
 		for (size_t i = 0; i < curve->npoints; ++i) {
 			if (i > 0) strncat(params[OFFSET_POINTS], ",", lenn - 1);
 			strncat(params[OFFSET_POINTS], points[i], lenn - 1);
@@ -254,7 +254,7 @@ void output_f(FILE *out, curve_t *curve, const config_t *cfg) {
 	char *s = output_s(curve, cfg);
 	if (s) {
 		fprintf(out, "%s", s);
-		pari_free(s);
+		try_free(s);
 	}
 }
 
@@ -266,7 +266,7 @@ void output_f_separator(FILE *out, const config_t *cfg) {
 	char *s = output_s_separator(cfg);
 	if (s) {
 		fprintf(out, "%s", s);
-		pari_free(s);
+		try_free(s);
 	}
 }
 
@@ -276,7 +276,7 @@ void output_f_begin(FILE *out, const config_t *cfg) {
 	char *s = output_s_begin(cfg);
 	if (s) {
 		fprintf(out, "%s", s);
-		pari_free(s);
+		try_free(s);
 	}
 }
 
@@ -286,14 +286,14 @@ void output_f_end(FILE *out, const config_t *cfg) {
 	char *s = output_s_end(cfg);
 	if (s) {
 		fprintf(out, "%s", s);
-		pari_free(s);
+		try_free(s);
 	}
 }
 
 void output_o_end(const config_t *cfg) { output_f_end(out, cfg); }
 
 bool output_init(const config_t *cfg) {
-	json_set_allocation_functions(try_malloc, pari_free);
+	json_set_allocation_functions(try_malloc, try_free);
 
 	if (cfg->output) {
 		out = fopen(cfg->output, cfg->append ? "a" : "w");

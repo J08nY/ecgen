@@ -326,8 +326,8 @@ int invalid_do(config_t *cfg) {
 	for (size_t i = 0; i < ncurves; ++i) {
 		curve_free(&curves[i]);
 	}
-	pari_free(curves);
-	pari_free(primes);
+	try_free(curves);
+	try_free(primes);
 	curve_free(&curve);
 
 	debug_log_end("Finished Invalid curve method");

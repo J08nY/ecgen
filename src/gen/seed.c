@@ -33,7 +33,7 @@ void seed_free(seed_t **seed) {
 		if ((*seed)->seed && isclone((*seed)->seed)) {
 			gunclone((*seed)->seed);
 		}
-		pari_free(*seed);
+		try_free(*seed);
 		*seed = NULL;
 	}
 }
