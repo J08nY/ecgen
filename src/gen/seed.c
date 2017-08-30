@@ -4,7 +4,6 @@
  */
 
 #include "seed.h"
-#include <io/config.h>
 #include "io/output.h"
 #include "util/memory.h"
 
@@ -57,6 +56,7 @@ static GEN seed_stoi(const char *cstr) {
 	}
 	GEN i = strtoi(seed_str);
 
+	try_free(seed_str);
 	return gerepilecopy(ltop, i);
 }
 
@@ -72,6 +72,18 @@ static char *seed_itos(GEN seed) {
 	return seed_str;
 }
 
+static char *seed_strip(const char *cstr) {
+	size_t seed_len = strlen(cstr);
+	char *seed_str = try_malloc(seed_len + 1);
+	char *prefix = strstr(cstr, "0x");
+	if (prefix != NULL) {
+		strcpy(seed_str, cstr + 2);
+	} else {
+		strcpy(seed_str, cstr);
+	}
+	return seed_str;
+}
+
 GENERATOR(seed_gen_random) {
 	curve->seed = seed_new();
 	curve->seed->seed = random_int(160);
@@ -83,13 +95,8 @@ GENERATOR(seed_gen_random) {
 GENERATOR(seed_gen_argument) {
 	curve->seed = seed_new();
 	curve->seed->seed = seed_stoi(cfg->seed);
-
-	size_t seed_len = strlen(cfg->seed);
-	char *seed = try_malloc(seed_len + 1);
-	strcpy(seed, cfg->seed);
-
-	curve->seed->raw = seed;
-	curve->seed->raw_len = seed_len;
+	curve->seed->raw = seed_strip(cfg->seed);
+	curve->seed->raw_len = strlen(curve->seed->raw);
 	return 1;
 }
 
@@ -99,20 +106,14 @@ GENERATOR(seed_gen_input) {
 	GEN str = input_string("seed:");
 	const char *cstr = GSTR(str);
 	if (strlen(cstr) < 20) {
-		fprintf(err, "SEED must be at least 160 bits(20 characters).\n");
+		fprintf(err, "SEED must be at least 160 bits(20 hex characters).\n");
 		avma = ltop;
 		return 0;
 	}
-	GEN seed = seed_stoi(cstr);
 
 	curve->seed = seed_new();
-	curve->seed->seed = gerepilecopy(ltop, seed);
-
-	size_t seed_len = strlen(cstr);
-	char *seed_str = try_malloc(seed_len + 1);
-	strcpy(seed_str, cfg->seed);
-
-	curve->seed->raw = seed_str;
-	curve->seed->raw_len = seed_len;
+	curve->seed->seed = seed_stoi(cstr);
+	curve->seed->raw = seed_strip(cstr);
+	curve->seed->raw_len = strlen(curve->seed->raw);
 	return 1;
 }
