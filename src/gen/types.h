@@ -16,9 +16,10 @@
  * @brief
  */
 typedef struct seed_t {
-	char *raw;
-	size_t raw_len;
 	GEN seed;
+	char *hex;
+	size_t hex_len;
+	unsigned char *hash;
 } seed_t;
 
 /**
@@ -82,6 +83,11 @@ typedef struct {
 	size_t nargs;
 	void *allocd;
 } arg_t;
+
+/**
+ * @brief
+ */
+typedef enum { ENDIAN_BIG = 0, ENDIAN_LITTLE } endian_e;
 
 /**
  * @brief A generator function type.
