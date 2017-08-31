@@ -19,9 +19,11 @@ typedef struct seed_t {
 	GEN seed;
 	char *hex;
 	size_t hex_len;
-	char *raw;
+	unsigned char *raw;
 	size_t raw_len;
 	unsigned char *hash20;
+	char *W;
+	size_t W_len;
 } seed_t;
 
 /**
@@ -89,7 +91,9 @@ typedef struct {
 /**
  * @brief
  */
-typedef enum { ENDIAN_BIG = 0, ENDIAN_LITTLE } endian_e;
+typedef enum {
+	ENDIAN_BIG = 0, ENDIAN_LITTLE
+} endian_e;
 
 /**
  * @brief A generator function type.
@@ -99,7 +103,7 @@ typedef enum { ENDIAN_BIG = 0, ENDIAN_LITTLE } endian_e;
  * @return state diff
  */
 #define GENERATOR(gen_name) \
-	int gen_name(curve_t *curve, const config_t *cfg, arg_t *args)
+    int gen_name(curve_t *curve, const config_t *cfg, arg_t *args)
 
 typedef GENERATOR((*gen_t));
 
@@ -112,8 +116,8 @@ typedef GENERATOR((*gen_t));
  * @return
  */
 #define UNROLL(unroll_name)                                            \
-	int unroll_name(curve_t *curve, const config_t *cfg, pari_sp from, \
-	                pari_sp to)
+    int unroll_name(curve_t *curve, const config_t *cfg, pari_sp from, \
+                    pari_sp to)
 
 typedef UNROLL((*unroll_t));
 

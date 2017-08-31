@@ -34,6 +34,21 @@ void *try_realloc(void *ptr, size_t size);
 
 /**
  * @brief
+ * @param str
+ * @return
+ */
+char *try_strdup(char *str);
+
+/**
+ * @brief
+ * @param mem
+ * @param len
+ * @return
+ */
+void *try_memdup(void *mem, size_t len);
+
+/**
+ * @brief
  * @param ptr
  */
 void try_free(void *ptr);

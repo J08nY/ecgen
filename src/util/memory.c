@@ -35,11 +35,22 @@ void *try_realloc(void *ptr, size_t size) {
 	return result;
 }
 
+char *try_strdup(char *str) {
+	size_t len = strlen(str);
+	return try_memdup(str, len + 1);
+}
+
+void *try_memdup(void *mem, size_t len) {
+	void *result = try_malloc(len);
+	memcpy(result, mem, len);
+	return result;
+}
+
 void try_free(void *ptr) { free_func(ptr); }
 
 void set_mem_funcs(void *(*malloc_fun)(size_t), void *(*calloc_fun)(size_t),
-                   void *(*realloc_fun)(void *, size_t),
-                   void (*free_fun)(void *)) {
+				   void *(*realloc_fun)(void *, size_t),
+				   void (*free_fun)(void *)) {
 	malloc_func = malloc_fun;
 	calloc_func = calloc_fun;
 	realloc_func = realloc_fun;

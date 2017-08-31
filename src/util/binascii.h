@@ -21,7 +21,7 @@ size_t binascii_blen(GEN i);
  * @param endianity
  * @return
  */
-char *binascii_itob(GEN i, endian_e endianity);
+unsigned char *binascii_itob(GEN i, endian_e endianity);
 
 /**
  * @brief
@@ -29,6 +29,6 @@ char *binascii_itob(GEN i, endian_e endianity);
  * @param endianity
  * @return
  */
-GEN binascii_btoi(const char *bytes, size_t len, endian_e endianity);
+GEN binascii_btoi(const unsigned char *bytes, size_t len, endian_e endianity);
 
 #endif  // ECGEN_BINASCII_H
