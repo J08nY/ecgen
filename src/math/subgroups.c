@@ -54,6 +54,7 @@ static GEN subgroups_divisors(GEN order) {
  * @return a t_VEC of factors
  */
 static GEN subgroups_2n_factors(GEN factors, size_t min_bits) {
+	pari_sp ltop = avma;
 	long nprimes = glength(factors);
 	if (nprimes == min_bits) return NULL;
 	GEN amount = int2n(nprimes);
@@ -78,7 +79,7 @@ static GEN subgroups_2n_factors(GEN factors, size_t min_bits) {
 		}
 	}
 	GEN ret = gtoset(groups);
-	return ret;
+	return gerepilecopy(ltop, ret);
 }
 
 /**

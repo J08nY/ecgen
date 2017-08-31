@@ -31,47 +31,48 @@ Test(seed, test_seed_random) {
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
-	cr_assert_str_eq(curve.seed->raw, pari_sprintf("%Px", curve.seed->seed), );
-	cr_assert_eq(strlen(curve.seed->raw), curve.seed->raw_len, );
+	cr_assert_str_eq(curve.seed->hex, pari_sprintf("%Px", curve.seed->seed), );
+	cr_assert_eq(strlen(curve.seed->hex), curve.seed->hex_len, );
 }
 
 Test(seed, test_seed_argument) {
 	curve_t curve = {};
-	char *seed = "abcdefabcdefabcdefab";
+	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	config_t cfg = {.seed = seed};
 	int ret = seed_gen_argument(&curve, &cfg, NULL);
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
-	cr_assert_str_eq(curve.seed->raw, seed, );
-	cr_assert_str_eq(curve.seed->raw, pari_sprintf("%Px", curve.seed->seed), );
-	cr_assert_eq(strlen(curve.seed->raw), curve.seed->raw_len, );
+	cr_assert_str_eq(curve.seed->hex, seed, );
+	cr_assert_str_eq(curve.seed->hex, pari_sprintf("%Px", curve.seed->seed), );
+	cr_assert_eq(strlen(curve.seed->hex), curve.seed->hex_len, );
 }
 
 Test(seed, test_seed_argument_hex) {
 	curve_t curve = {};
-	char *seed = "0xabcdefabcdefabcdefab";
+	char *seed = "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	config_t cfg = {.seed = seed};
 	int ret = seed_gen_argument(&curve, &cfg, NULL);
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
-	cr_assert_str_eq(curve.seed->raw, pari_sprintf("%Px", curve.seed->seed), );
-	cr_assert_eq(strlen(curve.seed->raw), curve.seed->raw_len, );
+	cr_assert_str_eq(curve.seed->hex, seed + 2, );
+	cr_assert_str_eq(curve.seed->hex, pari_sprintf("%Px", curve.seed->seed), );
+	cr_assert_eq(strlen(curve.seed->hex), curve.seed->hex_len, );
 }
 
 Test(seed, test_seed_input) {
 	curve_t curve = {};
-	char *seed = "abcdefabcdefabcdefab";
+	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	config_t cfg = {};
 	fprintf(write_in, "%s\n", seed);
 	int ret = seed_gen_input(&curve, &cfg, NULL);
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
-	cr_assert_str_eq(curve.seed->raw, seed, );
-	cr_assert_str_eq(curve.seed->raw, pari_sprintf("%Px", curve.seed->seed), );
-	cr_assert_eq(strlen(curve.seed->raw), curve.seed->raw_len, );
+	cr_assert_str_eq(curve.seed->hex, seed, );
+	cr_assert_str_eq(curve.seed->hex, pari_sprintf("%Px", curve.seed->seed), );
+	cr_assert_eq(strlen(curve.seed->hex), curve.seed->hex_len, );
 }
 
 Test(seed, test_seed_input_short) {

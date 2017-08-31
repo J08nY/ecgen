@@ -4,7 +4,9 @@
  */
 
 #include "seed.h"
+#include <sha1/sha1.h>
 #include "io/output.h"
+#include "util/binascii.h"
 #include "util/memory.h"
 
 seed_t *seed_new(void) { return try_calloc(sizeof(seed_t)); }
@@ -34,6 +36,15 @@ void seed_free(seed_t **seed) {
 		if ((*seed)->seed && isclone((*seed)->seed)) {
 			gunclone((*seed)->seed);
 		}
+		if ((*seed)->hex) {
+			try_free((*seed)->hex);
+		}
+		if ((*seed)->raw) {
+			try_free((*seed)->raw);
+		}
+		if ((*seed)->hash20) {
+			try_free((*seed)->hash20);
+		}
 		try_free(*seed);
 		*seed = NULL;
 	}
@@ -49,7 +60,6 @@ static GEN seed_stoi(const char *cstr) {
 		strncpy(seed_str + 2, cstr, len);
 		seed_str[0] = '0';
 		seed_str[1] = 'x';
-		seed_str[len + 2] = 0;
 	} else {
 		seed_str = try_malloc(len + 1);
 		strncpy(seed_str, cstr, len);
@@ -64,8 +74,7 @@ static char *seed_itos(GEN seed) {
 	pari_sp ltop = avma;
 	char *result = pari_sprintf("%Px", seed);
 
-	size_t seed_len = strlen(result);
-	char *seed_str = try_malloc(seed_len + 1);
+	char *seed_str = try_malloc(strlen(result) + 1);
 	strcpy(seed_str, result);
 
 	avma = ltop;
@@ -73,8 +82,7 @@ static char *seed_itos(GEN seed) {
 }
 
 static char *seed_strip(const char *cstr) {
-	size_t seed_len = strlen(cstr);
-	char *seed_str = try_malloc(seed_len + 1);
+	char *seed_str = try_malloc(strlen(cstr) + 1);
 	char *prefix = strstr(cstr, "0x");
 	if (prefix != NULL) {
 		strcpy(seed_str, cstr + 2);
@@ -84,19 +92,36 @@ static char *seed_strip(const char *cstr) {
 	return seed_str;
 }
 
+static void hash_string(const char *str, int len, unsigned char *hashout) {
+	SHA_CTX ctx = {};
+	SHA1_Init(&ctx);
+	SHA1_Update(&ctx, str, len);
+	SHA1_Final(hashout, &ctx);
+}
+
 GENERATOR(seed_gen_random) {
-	curve->seed = seed_new();
-	curve->seed->seed = random_int(160);
-	curve->seed->raw = seed_itos(curve->seed->seed);
-	curve->seed->raw_len = strlen(curve->seed->raw);
+	seed_t *seed = seed_new();
+	seed->seed = random_int(160);
+	seed->hex = seed_itos(seed->seed);
+	seed->hex_len = strlen(seed->hex);
+	seed->raw = binascii_itob(seed->seed, ENDIAN_BIG);
+	seed->raw_len = binascii_blen(seed->seed);
+	seed->hash20 = try_malloc(20);
+	hash_string(seed->raw, (int)seed->raw_len, seed->hash20);
+	curve->seed = seed;
 	return 1;
 }
 
 GENERATOR(seed_gen_argument) {
-	curve->seed = seed_new();
-	curve->seed->seed = seed_stoi(cfg->seed);
-	curve->seed->raw = seed_strip(cfg->seed);
-	curve->seed->raw_len = strlen(curve->seed->raw);
+	seed_t *seed = seed_new();
+	seed->seed = seed_stoi(cfg->seed);
+	seed->hex = seed_strip(cfg->seed);
+	seed->hex_len = strlen(seed->hex);
+	seed->raw = binascii_itob(seed->seed, ENDIAN_BIG);
+	seed->raw_len = binascii_blen(seed->seed);
+	seed->hash20 = try_malloc(20);
+	hash_string(seed->raw, (int)seed->raw_len, seed->hash20);
+	curve->seed = seed;
 	return 1;
 }
 
@@ -105,15 +130,20 @@ GENERATOR(seed_gen_input) {
 
 	GEN str = input_string("seed:");
 	const char *cstr = GSTR(str);
-	if (strlen(cstr) < 20) {
-		fprintf(err, "SEED must be at least 160 bits(20 hex characters).\n");
+	if (strlen(cstr) < 40) {
+		fprintf(err, "SEED must be at least 160 bits(40 hex characters).\n");
 		avma = ltop;
 		return 0;
 	}
 
-	curve->seed = seed_new();
-	curve->seed->seed = seed_stoi(cstr);
-	curve->seed->raw = seed_strip(cstr);
-	curve->seed->raw_len = strlen(curve->seed->raw);
+	seed_t *seed = seed_new();
+	seed->seed = seed_stoi(cstr);
+	seed->hex = seed_strip(cstr);
+	seed->hex_len = strlen(seed->hex);
+	seed->raw = binascii_itob(seed->seed, ENDIAN_BIG);
+	seed->raw_len = binascii_blen(seed->seed);
+	seed->hash20 = try_malloc(20);
+	hash_string(seed->raw, (int)seed->raw_len, seed->hash20);
+	curve->seed = seed;
 	return 1;
 }

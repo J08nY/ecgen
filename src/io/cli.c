@@ -201,10 +201,10 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			cfg->from_seed = true;
 			if (arg) {
 				// ANSI X9.62 specifies seed as at least 160 bits in length.
-				if (strlen(arg) < 20) {
+				if (strlen(arg) < 40) {
 					argp_failure(
 					    state, 1, 0,
-					    "SEED must be at least 160 bits (20 characters).");
+					    "SEED must be at least 160 bits (40 characters).");
 				}
 				cfg->seed = arg;
 			}
