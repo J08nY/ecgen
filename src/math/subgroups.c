@@ -77,17 +77,8 @@ static GEN subgroups_2n_factors(GEN factors, size_t min_bits) {
 			avma = btop;
 		}
 	}
-	GEN sorted = sort(groups);
-	size_t k = 1;
-	for (size_t j = 1; j <= i; j++) {
-		GEN k_value = gel(sorted, k);
-		GEN j_value = gel(sorted, j);
-		if (!gequal(k_value, j_value)) {
-			gel(sorted, ++k) = j_value;
-		}
-	}
-	sorted = vec_shorten(sorted, k);
-	return sorted;
+	GEN ret = gtoset(groups);
+	return ret;
 }
 
 /**
