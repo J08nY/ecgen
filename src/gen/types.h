@@ -95,6 +95,12 @@ typedef enum {
 	ENDIAN_BIG = 0, ENDIAN_LITTLE
 } endian_e;
 
+typedef struct {
+	unsigned char *bits;
+	size_t bitlen;
+	size_t allocated;
+} bits_t;
+
 /**
  * @brief A generator function type.
  * @param curve A curve_t being generated

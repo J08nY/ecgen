@@ -201,6 +201,8 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			cfg->from_seed = true;
 			if (arg) {
 				// ANSI X9.62 specifies seed as at least 160 bits in length.
+				// TODO: validate that it is a hex string, or what actually? It
+				// can be any PARI int. so 123465689  or 0xab45 or 0b1101100100
 				if (strlen(arg) < 40) {
 					argp_failure(
 					    state, 1, 0,

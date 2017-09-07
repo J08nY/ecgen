@@ -123,9 +123,15 @@ static void seed_hash(seed_t *seed) {
 }
 
 static void seed_W(seed_t *seed, const config_t *cfg) {
-	GEN t = utoi(cfg->bits - 1);
+	GEN t = utoi(cfg->bits);
 	GEN s = floorr(rdivii(subis(t, 1), stoi(160), DEFAULTPREC));
-	GEN h = subis(t, 160);
+	GEN h = subii(t, mulis(s, 160));
+	GEN hash = binascii_btoi(seed->hash20, 20, ENDIAN_BIG);
+	GEN mask = subis(int2n(itos(h)), 1);
+	// TODO: what if I get zeros at the beginning? 0123 == 123 for PARI t_INT
+	// I should just convert to a t_VECSMALL of bits from the seed->hash and do everything with that.
+	// That's  alot of custom code to handle bit strings.
+	GEN c0 = ibitand(hash, mask);
 }
 
 GENERATOR(seed_gen_random) {
