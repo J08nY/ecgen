@@ -37,7 +37,7 @@ void *try_realloc(void *ptr, size_t size);
  * @param str
  * @return
  */
-char *try_strdup(char *str);
+char *try_strdup(const char *str);
 
 /**
  * @brief
@@ -45,7 +45,7 @@ char *try_strdup(char *str);
  * @param len
  * @return
  */
-void *try_memdup(void *mem, size_t len);
+void *try_memdup(const void *mem, size_t len);
 
 /**
  * @brief

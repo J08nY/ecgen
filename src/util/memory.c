@@ -35,12 +35,12 @@ void *try_realloc(void *ptr, size_t size) {
 	return result;
 }
 
-char *try_strdup(char *str) {
+char *try_strdup(const char *str) {
 	size_t len = strlen(str);
 	return try_memdup(str, len + 1);
 }
 
-void *try_memdup(void *mem, size_t len) {
+void *try_memdup(const void *mem, size_t len) {
 	void *result = try_malloc(len);
 	memcpy(result, mem, len);
 	return result;
