@@ -2,7 +2,6 @@ coverage:
   range: 50..100
   round: up
   precision: 2
-
-ignore:
-  - "test/"
-  - "lib/"
+  ignore:
+    - "**/test_*.c"
+    - "lib"
