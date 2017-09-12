@@ -377,6 +377,20 @@ Test(bits, test_bits_shorten) {
 	bits_free(&shorter);
 }
 
+Test(bits, test_bits_sha1) {
+	char *text = "The quick brown fox jumps over the lazy dog";
+	bits_t *bits = bits_from_raw((unsigned char *)text, strlen(text) * 8);
+	unsigned char hashout[20] = {};
+	bits_sha1(bits, hashout);
+
+	unsigned char expected[] = {0x2f, 0xd4, 0xe1, 0xc6, 0x7a, 0x2d, 0x28, 0xfc,
+								0xed, 0x84, 0x9e, 0xe1, 0xbb, 0x76, 0xe7, 0x39,
+								0x1b, 0x93, 0xeb, 0x12};
+	for (size_t i = 0; i < 20; ++i) {
+		cr_assert_eq(hashout[i], expected[i],);
+	}
+}
+
 Test(bits, test_bits_eq) {
 	bits_t *bits = bits_new(6);
 	bits->bits[0] = 0b10000000;

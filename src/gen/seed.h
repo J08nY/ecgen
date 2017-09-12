@@ -12,13 +12,13 @@
 #include "types.h"
 
 /**
- *
+ * @brief
  * @return
  */
 seed_t *seed_new(void);
 
 /**
- *
+ * @brief
  * @param src
  * @param dest
  * @return
@@ -26,14 +26,14 @@ seed_t *seed_new(void);
 seed_t *seed_copy(const seed_t *src, seed_t *dest);
 
 /**
- *
+ * @brief
  * @param src
  * @return
  */
 seed_t *seed_new_copy(const seed_t *src);
 
 /**
- *
+ * @brief
  * @param src
  * @param dest
  * @return
@@ -41,20 +41,27 @@ seed_t *seed_new_copy(const seed_t *src);
 seed_t *seed_clone(const seed_t *src, seed_t *dest);
 
 /**
- *
+ * @brief
  * @param src
  * @return
  */
 seed_t *seed_new_clone(const seed_t *src);
 
 /**
- *
+ * @brief
  * @param seed
  */
 void seed_free(seed_t **seed);
 
 /**
- *
+ * @brief
+ * @param hex_str
+ * @return
+ */
+bool seed_valid(const char *hex_str);
+
+/**
+ * @brief
  * @param curve A curve_t being generated
  * @param cfg An application config
  * @param args unused
@@ -63,7 +70,7 @@ void seed_free(seed_t **seed);
 GENERATOR(seed_gen_random);
 
 /**
- *
+ * @brief
  * @param curve A curve_t being generated
  * @param cfg An application config
  * @param args unused
@@ -72,7 +79,7 @@ GENERATOR(seed_gen_random);
 GENERATOR(seed_gen_argument);
 
 /**
- *
+ * @brief
  * @param curve A curve_t being generated
  * @param cfg An application config
  * @param args unused

@@ -6,6 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "config.h"
+#include "gen/seed.h"
 
 char cli_doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
@@ -200,10 +201,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 		case OPT_SEED:
 			cfg->from_seed = true;
 			if (arg) {
-				// ANSI X9.62 specifies seed as at least 160 bits in length.
-				// TODO: validate that it is a hex string, or what actually? It
-				// can be any PARI int. so 123465689  or 0xab45 or 0b1101100100
-				if (strlen(arg) < 40) {
+				if (!seed_valid(arg)) {
 					argp_failure(
 					    state, 1, 0,
 					    "SEED must be at least 160 bits (40 characters).");

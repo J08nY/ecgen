@@ -74,6 +74,8 @@ void bits_shortenz(bits_t *bits, long amount);
 
 bits_t *bits_shorten(const bits_t *bits, long amount);
 
+void bits_sha1(const bits_t *bits, unsigned char hashout[20]);
+
 bool bits_eq(const bits_t *one, const bits_t *other);
 
 #endif  // ECGEN_BITS_H

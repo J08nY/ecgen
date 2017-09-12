@@ -4,9 +4,9 @@
  */
 
 #include <criterion/criterion.h>
-#include <gen/types.h>
 #include "gen/seed.h"
-#include "gen/types.h"
+#include "util/bits.h"
+#include "util/memory.h"
 #include "test/default.h"
 #include "test/input.h"
 #include "test/output.h"
@@ -32,8 +32,6 @@ Test(seed, test_seed_random) {
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
-	cr_assert_str_eq(curve.seed->hex, pari_sprintf("%Px", curve.seed->seed), );
-	cr_assert_eq(strlen(curve.seed->hex), curve.seed->hex_len, );
 
 	seed_free(&curve.seed);
 }
@@ -46,10 +44,10 @@ Test(seed, test_seed_argument) {
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
-	cr_assert_str_eq(curve.seed->hex, seed, );
-	cr_assert_str_eq(curve.seed->hex, pari_sprintf("%Px", curve.seed->seed), );
-	cr_assert_eq(strlen(curve.seed->hex), curve.seed->hex_len, );
+	char *hex = bits_to_hex(curve.seed->seed);
+	cr_assert_str_eq(hex, seed, );
 
+	try_free(hex);
 	seed_free(&curve.seed);
 }
 
@@ -61,10 +59,10 @@ Test(seed, test_seed_argument_hex) {
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
-	cr_assert_str_eq(curve.seed->hex, seed + 2, );
-	cr_assert_str_eq(curve.seed->hex, pari_sprintf("%Px", curve.seed->seed), );
-	cr_assert_eq(strlen(curve.seed->hex), curve.seed->hex_len, );
+	char *hex = bits_to_hex(curve.seed->seed);
+	cr_assert_str_eq(hex, seed + 2, );
 
+	try_free(hex);
 	seed_free(&curve.seed);
 }
 
@@ -77,10 +75,10 @@ Test(seed, test_seed_input) {
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
-	cr_assert_str_eq(curve.seed->hex, seed, );
-	cr_assert_str_eq(curve.seed->hex, pari_sprintf("%Px", curve.seed->seed), );
-	cr_assert_eq(strlen(curve.seed->hex), curve.seed->hex_len, );
+	char *hex = bits_to_hex(curve.seed->seed);
+	cr_assert_str_eq(hex, seed, );
 
+	try_free(hex);
 	seed_free(&curve.seed);
 }
 

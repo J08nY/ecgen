@@ -3,8 +3,9 @@
  * Copyright (C) 2017 J08nY
  */
 
-#include <gen/types.h>
 #include "bits.h"
+#include <gen/types.h>
+#include <sha1/sha1.h>
 #include "util/memory.h"
 
 bits_t *bits_new(size_t bit_len) {
@@ -148,8 +149,8 @@ static unsigned char and_func(unsigned char one, unsigned char other) {
 }
 
 static bits_t *bits_bitwise(const bits_t *one, const bits_t *other,
-							unsigned char (*bitwise_func)(unsigned char,
-														  unsigned char)) {
+                            unsigned char (*bitwise_func)(unsigned char,
+                                                          unsigned char)) {
 	const bits_t *shorter;
 	const bits_t *longer;
 	if (one->bitlen > other->bitlen) {
@@ -165,7 +166,7 @@ static bits_t *bits_bitwise(const bits_t *one, const bits_t *other,
 		size_t longer_pos = longer->bitlen - i - 1;
 
 		unsigned char longer_bit =
-			(unsigned char)GET_BIT(longer->bits, longer_pos);
+		    (unsigned char)GET_BIT(longer->bits, longer_pos);
 		unsigned char shorter_bit = 0;
 		if (shorter->bitlen > i) {
 			size_t shorter_pos = shorter->bitlen - i - 1;
@@ -222,9 +223,9 @@ void bits_rotz(bits_t *bits) {
 		size_t left_pos = i;
 		size_t right_pos = bits->bitlen - i - 1;
 		unsigned char left_bit =
-			(unsigned char)GET_BIT(original_bits, left_pos);
+		    (unsigned char)GET_BIT(original_bits, left_pos);
 		unsigned char right_bit =
-			(unsigned char)GET_BIT(original_bits, right_pos);
+		    (unsigned char)GET_BIT(original_bits, right_pos);
 		bits->bits[right_pos / 8] |= left_bit << (7 - (right_pos % 8));
 		bits->bits[left_pos / 8] |= right_bit << (7 - (left_pos % 8));
 	}
@@ -232,7 +233,7 @@ void bits_rotz(bits_t *bits) {
 		size_t middle_pos = bits->bitlen / 2;
 
 		unsigned char middle_bit =
-			(unsigned char)GET_BIT(original_bits, middle_pos);
+		    (unsigned char)GET_BIT(original_bits, middle_pos);
 		bits->bits[middle_pos / 8] |= middle_bit << (7 - (middle_pos % 8));
 	}
 }
@@ -253,7 +254,7 @@ void bits_shiftz(bits_t *bits, long amount) {
 	for (size_t i = 0; i < bits->bitlen; ++i) {
 		unsigned char new_bit = 0;
 		if ((amount > 0 && i + amount < bits->bitlen) ||
-			(amount < 0 && i >= -amount)) {
+		    (amount < 0 && i >= -amount)) {
 			new_bit = (unsigned char)GET_BIT(original_bits, i + amount);
 		}
 		bits->bits[i / 8] |= new_bit << (7 - (i % 8));
@@ -277,7 +278,7 @@ void bits_shiftrz(bits_t *bits, long amount) {
 		unsigned char new_bit = 0;
 		size_t new_pos = 0;
 		if ((amount > 0 && i + amount < bits->bitlen) ||
-			(amount < 0 && i >= -amount)) {
+		    (amount < 0 && i >= -amount)) {
 			new_pos = i + amount;
 		} else if (amount > 0) {
 			new_pos = (i + amount) % bits->bitlen;
@@ -360,6 +361,13 @@ bits_t *bits_shorten(const bits_t *bits, long amount) {
 	bits_t *result = bits_copy(bits);
 	bits_shortenz(result, amount);
 	return result;
+}
+
+void bits_sha1(const bits_t *bits, unsigned char hashout[20]) {
+	SHA_CTX ctx = {};
+	SHA1_Init(&ctx);
+	SHA1_Update(&ctx, bits->bits, (int)BYTE_LEN(bits->bitlen));
+	SHA1_Final(hashout, &ctx);
 }
 
 bool bits_eq(const bits_t *one, const bits_t *other) {

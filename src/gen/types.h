@@ -14,16 +14,23 @@
 
 /**
  * @brief
+ * @param bits
+ * @param bitlen
+ * @param allocated
+ */
+typedef struct {
+	unsigned char *bits;
+	size_t bitlen;
+	size_t allocated;
+} bits_t;
+
+/**
+ * @brief
  */
 typedef struct seed_t {
-	GEN seed;
-	char *hex;
-	size_t hex_len;
-	unsigned char *raw;
-	size_t raw_len;
+	bits_t *seed;
 	unsigned char *hash20;
-	char *W;
-	size_t W_len;
+	bits_t *W;
 } seed_t;
 
 /**
@@ -87,17 +94,6 @@ typedef struct {
 	size_t nargs;
 	void *allocd;
 } arg_t;
-
-/**
- * @brief
- */
-typedef enum { ENDIAN_BIG = 0, ENDIAN_LITTLE } endian_e;
-
-typedef struct {
-	unsigned char *bits;
-	size_t bitlen;
-	size_t allocated;
-} bits_t;
 
 /**
  * @brief A generator function type.
