@@ -90,8 +90,7 @@ bits_t *bits_from_bitvec(GEN v) {
 	size_t bit_len = (size_t)glength(v);
 	bits_t *result = bits_new(bit_len);
 	for (size_t i = 0; i < bit_len; ++i) {
-		if (gel(v, i + 1) == (GEN)1)
-			result->bits[i / 8] |= 1 << (7 - (i % 8));
+		if (gel(v, i + 1) == (GEN)1) result->bits[i / 8] |= 1 << (7 - (i % 8));
 	}
 	return result;
 }
@@ -108,7 +107,7 @@ GEN bits_to_i(const bits_t *bits) {
 
 char *bits_to_hex(const bits_t *bits) {
 	char *result = try_calloc(BYTE_LEN(bits->bitlen) * 2 + 1);
-	//probably right pad with zeroes, as thats what is actually stored.
+	// probably right pad with zeroes, as thats what is actually stored.
 	for (size_t i = 0; i < BYTE_LEN(bits->bitlen); ++i) {
 		sprintf(result + (i * 2), "%x", bits->bits[i]);
 	}
@@ -130,15 +129,12 @@ unsigned char *bits_to_raw(const bits_t *bits) {
 	return try_memdup(bits->bits, BYTE_LEN(bits->bitlen));
 }
 
-size_t bits_to_rawlen(const bits_t *bits) {
-	return BYTE_LEN(bits->bitlen);
-}
+size_t bits_to_rawlen(const bits_t *bits) { return BYTE_LEN(bits->bitlen); }
 
 GEN bits_to_bitvec(const bits_t *bits) {
 	GEN bitvec = gtovecsmall0(gen_0, bits->bitlen);
 	for (size_t i = 0; i < bits->bitlen; ++i) {
-		if (GET_BIT(bits->bits, i) != 0)
-			gel(bitvec, i + 1) = (GEN)1;
+		if (GET_BIT(bits->bits, i) != 0) gel(bitvec, i + 1) = (GEN)1;
 	}
 	return bitvec;
 }
@@ -152,8 +148,8 @@ static unsigned char and_func(unsigned char one, unsigned char other) {
 }
 
 static bits_t *bits_bitwise(const bits_t *one, const bits_t *other,
-							unsigned char (*bitwise_func)(
-								unsigned char, unsigned char)) {
+							unsigned char (*bitwise_func)(unsigned char,
+														  unsigned char)) {
 	const bits_t *shorter;
 	const bits_t *longer;
 	if (one->bitlen > other->bitlen) {
@@ -168,13 +164,12 @@ static bits_t *bits_bitwise(const bits_t *one, const bits_t *other,
 	for (size_t i = 0; i < longer->bitlen; ++i) {
 		size_t longer_pos = longer->bitlen - i - 1;
 
-		unsigned char longer_bit = (unsigned char)GET_BIT(longer->bits,
-														  longer_pos);
+		unsigned char longer_bit =
+			(unsigned char)GET_BIT(longer->bits, longer_pos);
 		unsigned char shorter_bit = 0;
 		if (shorter->bitlen > i) {
 			size_t shorter_pos = shorter->bitlen - i - 1;
-			shorter_bit = (unsigned char)GET_BIT(shorter->bits,
-												 shorter_pos);
+			shorter_bit = (unsigned char)GET_BIT(shorter->bits, shorter_pos);
 		}
 
 		unsigned char result_bit = bitwise_func(longer_bit, shorter_bit);
@@ -193,8 +188,7 @@ bits_t *bits_and(const bits_t *one, const bits_t *other) {
 }
 
 void bits_notz(bits_t *bits) {
-	if (bits->bitlen == 0)
-		return;
+	if (bits->bitlen == 0) return;
 	for (size_t i = 0; i < bits->bitlen / 8; ++i) {
 		bits->bits[i] = ~bits->bits[i];
 	}
@@ -203,8 +197,7 @@ void bits_notz(bits_t *bits) {
 		unsigned char mask = 0;
 		for (size_t i = 7; i >= 0; --i) {
 			mask |= 1 << i;
-			if (--mask_len == 0)
-				break;
+			if (--mask_len == 0) break;
 		}
 		size_t last_pos = (bits->bitlen / 8);
 		unsigned char anti_mask = ~mask;
@@ -228,18 +221,18 @@ void bits_rotz(bits_t *bits) {
 	for (size_t i = 0; i < bits->bitlen / 2; ++i) {
 		size_t left_pos = i;
 		size_t right_pos = bits->bitlen - i - 1;
-		unsigned char left_bit = (unsigned char)GET_BIT(original_bits,
-														left_pos);
-		unsigned char right_bit = (unsigned char)GET_BIT(original_bits,
-														 right_pos);
+		unsigned char left_bit =
+			(unsigned char)GET_BIT(original_bits, left_pos);
+		unsigned char right_bit =
+			(unsigned char)GET_BIT(original_bits, right_pos);
 		bits->bits[right_pos / 8] |= left_bit << (7 - (right_pos % 8));
 		bits->bits[left_pos / 8] |= right_bit << (7 - (left_pos % 8));
 	}
 	if (bits->bitlen % 2 == 1) {
 		size_t middle_pos = bits->bitlen / 2;
 
-		unsigned char middle_bit = (unsigned char)GET_BIT(original_bits,
-														  middle_pos);
+		unsigned char middle_bit =
+			(unsigned char)GET_BIT(original_bits, middle_pos);
 		bits->bits[middle_pos / 8] |= middle_bit << (7 - (middle_pos % 8));
 	}
 }
@@ -251,8 +244,7 @@ bits_t *bits_rot(const bits_t *bits) {
 }
 
 void bits_shiftz(bits_t *bits, long amount) {
-	if (amount == 0)
-		return;
+	if (amount == 0) return;
 	unsigned char original_bits[bits->allocated];
 	for (size_t i = 0; i < bits->allocated; ++i) {
 		original_bits[i] = bits->bits[i];
@@ -275,8 +267,7 @@ bits_t *bits_shift(const bits_t *bits, long amount) {
 }
 
 void bits_shiftrz(bits_t *bits, long amount) {
-	if (amount == 0)
-		return;
+	if (amount == 0) return;
 	unsigned char original_bits[bits->allocated];
 	for (size_t i = 0; i < bits->allocated; ++i) {
 		original_bits[i] = bits->bits[i];
@@ -305,20 +296,82 @@ bits_t *bits_shiftr(const bits_t *bits, long amount) {
 	return result;
 }
 
+void bits_shiftiz(bits_t *bits, long amount) {
+	if (amount > 0) {
+		bits_lengthenz(bits, -amount);
+	} else if (amount < 0) {
+		bits_shortenz(bits, amount);
+	}
+}
+
+bits_t *bits_shifti(const bits_t *bits, long amount) {
+	bits_t *result = bits_copy(bits);
+	bits_shiftiz(result, amount);
+	return result;
+}
+
+void bits_lengthenz(bits_t *bits, long amount) {
+	size_t abs_amount;
+	if (amount > 0) {
+		abs_amount = (size_t)amount;
+	} else if (amount < 0) {
+		abs_amount = (size_t)-amount;
+	} else {
+		return;
+	}
+	size_t new_alloc = BYTE_LEN(bits->bitlen + abs_amount);
+	if (new_alloc > bits->allocated) {
+		bits->bits = try_realloc(bits->bits, new_alloc);
+		for (size_t i = bits->allocated; i < new_alloc; ++i) {
+			bits->bits[i] = 0;
+		}
+		bits->allocated = new_alloc;
+	}
+	bits->bitlen += abs_amount;
+
+	if (amount > 0) {
+		bits_shiftz(bits, -amount);
+	}
+}
+
+bits_t *bits_lengthen(const bits_t *bits, long amount) {
+	bits_t *result = bits_copy(bits);
+	bits_lengthenz(result, amount);
+	return result;
+}
+
+void bits_shortenz(bits_t *bits, long amount) {
+	size_t new_bits;
+	if (amount > 0) {
+		new_bits = bits->bitlen - amount;
+		bits_shiftz(bits, amount);
+	} else if (amount < 0) {
+		new_bits = bits->bitlen + amount;
+		for (size_t i = new_bits; i < bits->bitlen; ++i) {
+			bits->bits[i / 8] &= ~(1 << (7 - (i % 8)));
+		}
+	} else {
+		return;
+	}
+	bits->bitlen = new_bits;
+}
+
+bits_t *bits_shorten(const bits_t *bits, long amount) {
+	bits_t *result = bits_copy(bits);
+	bits_shortenz(result, amount);
+	return result;
+}
+
 bool bits_eq(const bits_t *one, const bits_t *other) {
-	if (one->bitlen != other->bitlen)
-		return false;
-	if (one->bitlen == 0)
-		return true;
-	if (memcmp(one->bits, other->bits, one->bitlen / 8) != 0)
-		return false;
+	if (one->bitlen != other->bitlen) return false;
+	if (one->bitlen == 0) return true;
+	if (memcmp(one->bits, other->bits, one->bitlen / 8) != 0) return false;
 	if (one->bitlen % 8 != 0) {
 		size_t mask_len = one->bitlen % 8;
 		unsigned char mask = 0;
 		for (size_t i = 7; i >= 0; --i) {
 			mask |= 1 << i;
-			if (--mask_len == 0)
-				break;
+			if (--mask_len == 0) break;
 		}
 		size_t last_byte = (one->bitlen / 8);
 		unsigned char one_masked = one->bits[last_byte] & mask;

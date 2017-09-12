@@ -49,8 +49,8 @@ void *try_memdup(const void *mem, size_t len) {
 void try_free(void *ptr) { free_func(ptr); }
 
 void set_mem_funcs(void *(*malloc_fun)(size_t), void *(*calloc_fun)(size_t),
-				   void *(*realloc_fun)(void *, size_t),
-				   void (*free_fun)(void *)) {
+                   void *(*realloc_fun)(void *, size_t),
+                   void (*free_fun)(void *)) {
 	malloc_func = malloc_fun;
 	calloc_func = calloc_fun;
 	realloc_func = realloc_fun;

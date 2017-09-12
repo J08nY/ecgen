@@ -8,8 +8,11 @@
 
 #include "gen/types.h"
 
-#define BYTE_LEN(bit_len) (((bit_len) % 8 == 0) ? (bit_len) / 8 : ((bit_len) / 8) + 1)
-#define GET_BIT(bit_array, bit_pos) (((bit_array)[(bit_pos) / 8] & (1 << (7 - ((bit_pos) % 8)))) >> (7 - ((bit_pos) % 8)))
+#define BYTE_LEN(bit_len) \
+	(((bit_len) % 8 == 0) ? (bit_len) / 8 : ((bit_len) / 8) + 1)
+#define GET_BIT(bit_array, bit_pos)                                 \
+	(((bit_array)[(bit_pos) / 8] & (1 << (7 - ((bit_pos) % 8)))) >> \
+	 (7 - ((bit_pos) % 8)))
 
 bits_t *bits_new(size_t bit_len);
 
@@ -59,7 +62,18 @@ void bits_shiftrz(bits_t *bits, long amount);
 
 bits_t *bits_shiftr(const bits_t *bits, long amount);
 
+void bits_shiftiz(bits_t *bits, long amount);
+
+bits_t *bits_shifti(const bits_t *bits, long amount);
+
+void bits_lengthenz(bits_t *bits, long amount);
+
+bits_t *bits_lengthen(const bits_t *bits, long amount);
+
+void bits_shortenz(bits_t *bits, long amount);
+
+bits_t *bits_shorten(const bits_t *bits, long amount);
+
 bool bits_eq(const bits_t *one, const bits_t *other);
 
-
-#endif //ECGEN_BITS_H
+#endif  // ECGEN_BITS_H

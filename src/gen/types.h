@@ -91,9 +91,7 @@ typedef struct {
 /**
  * @brief
  */
-typedef enum {
-	ENDIAN_BIG = 0, ENDIAN_LITTLE
-} endian_e;
+typedef enum { ENDIAN_BIG = 0, ENDIAN_LITTLE } endian_e;
 
 typedef struct {
 	unsigned char *bits;
@@ -109,7 +107,7 @@ typedef struct {
  * @return state diff
  */
 #define GENERATOR(gen_name) \
-    int gen_name(curve_t *curve, const config_t *cfg, arg_t *args)
+	int gen_name(curve_t *curve, const config_t *cfg, arg_t *args)
 
 typedef GENERATOR((*gen_t));
 
@@ -122,8 +120,8 @@ typedef GENERATOR((*gen_t));
  * @return
  */
 #define UNROLL(unroll_name)                                            \
-    int unroll_name(curve_t *curve, const config_t *cfg, pari_sp from, \
-                    pari_sp to)
+	int unroll_name(curve_t *curve, const config_t *cfg, pari_sp from, \
+	                pari_sp to)
 
 typedef UNROLL((*unroll_t));
 

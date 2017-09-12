@@ -296,6 +296,87 @@ Test(bits, test_bits_shiftr) {
 	bits_free(&shift);
 }
 
+Test(bits, test_bits_shiftiz) {
+	bits_t *bits = bits_new(8);
+	bits->bits[0] = 0b11001100;
+
+	bits_shiftiz(bits, 2);
+	cr_assert_eq(bits->bitlen, 10,);
+	cr_assert_eq(bits->bits[0], 0b11001100,);
+	cr_assert_eq(bits->bits[1], 0b00000000,);
+
+	bits_shiftiz(bits, -2);
+	cr_assert_eq(bits->bitlen, 8,);
+	cr_assert_eq(bits->bits[0], 0b11001100,);
+	bits_free(&bits);
+}
+
+Test(bits, test_bits_shitfi) {
+	bits_t *bits = bits_new(8);
+	bits->bits[0] = 0b11001100;
+
+	bits_t *shift = bits_shifti(bits, -4);
+	cr_assert_eq(shift->bitlen, 4,);
+	cr_assert_eq(shift->bits[0], 0b11000000,);
+	bits_free(&bits);
+	bits_free(&shift);
+}
+
+Test(bits, test_bits_lengthenz) {
+	bits_t *bits = bits_new(8);
+	bits->bits[0] = 0b11001100;
+
+	bits_lengthenz(bits, 4);
+	cr_assert_eq(bits->bitlen, 12,);
+	cr_assert_eq(bits->bits[0], 0b00001100,);
+	cr_assert_eq(bits->bits[1], 0b11000000,);
+
+	bits_lengthenz(bits, -4);
+	cr_assert_eq(bits->bitlen, 16,);
+	cr_assert_eq(bits->bits[0], 0b00001100,);
+	cr_assert_eq(bits->bits[1], 0b11000000,);
+
+	bits_free(&bits);
+}
+
+Test(bits, test_bits_lengthen) {
+	bits_t *bits = bits_new(6);
+	bits->bits[0] = 0b11111100;
+
+	bits_t *longer = bits_lengthen(bits, 2);
+	cr_assert_not_null(longer,);
+	cr_assert_eq(longer->bitlen, 8,);
+	cr_assert_eq(longer->bits[0], 0b00111111,);
+	bits_free(&bits);
+	bits_free(&longer);
+}
+
+Test(bits, test_bits_shortenz) {
+	bits_t *bits = bits_new(6);
+	bits->bits[0] = 0b10110100;
+
+	bits_shortenz(bits, 2);
+	cr_assert_eq(bits->bitlen, 4,);
+	cr_assert_eq(bits->bits[0], 0b11010000,);
+
+	bits_shortenz(bits, -2);
+	cr_assert_eq(bits->bitlen, 2,);
+	cr_assert_eq(bits->bits[0], 0b11000000,);
+	bits_free(&bits);
+}
+
+Test(bits, test_bits_shorten) {
+	bits_t *bits = bits_new(6);
+	bits->bits[0] = 0b10110100;
+
+	bits_t *shorter = bits_shorten(bits, 4);
+	cr_assert_not_null(shorter,);
+	cr_assert_eq(shorter->bitlen, 2,);
+	cr_assert_eq(shorter->bits[0], 0b01000000,);
+	bits_free(&bits);
+	bits_free(&shorter);
+}
+
 Test(bits, test_bits_eq) {
 	bits_t *bits = bits_new(6);
 	bits->bits[0] = 0b10000000;
