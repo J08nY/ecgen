@@ -82,9 +82,39 @@ static void seed_hash(seed_t *seed) {
 }
 
 static void seed_W(seed_t *seed, const config_t *cfg) {
+	pari_sp ltop = avma;
 	GEN t = utoi(cfg->bits);
 	GEN s = floorr(rdivii(subis(t, 1), stoi(160), DEFAULTPREC));
 	GEN h = subii(t, mulis(s, 160));
+
+	bits_t *c0 = bits_from_raw(seed->hash20, 160);
+	bits_shortenz(c0, 160 - itos(h));
+
+	bits_t *W0 = bits_copy(c0);
+	SET_BIT(W0->bits, 0, 0);
+
+	long is = itos(s);
+	seed->W = bits_copy(W0);
+	GEN two_g = int2n(seed->seed->bitlen);
+	for (long i = 1; i <= is; ++i) {
+		pari_sp btop = avma;
+		GEN inner = bits_to_i(seed->seed);
+		inner = addis(inner, i);
+		inner = modii(inner, two_g);
+
+		bits_t *to_hash = bits_from_i(inner);
+		unsigned char hashout[20];
+		bits_sha1(to_hash, hashout);
+		bits_t *Wi = bits_from_raw(hashout, 160);
+		bits_concatz(seed->W, Wi, NULL);
+		bits_free(&to_hash);
+		bits_free(&Wi);
+		avma = btop;
+	}
+
+	bits_free(&c0);
+	bits_free(&W0);
+	avma = ltop;
 }
 
 GENERATOR(seed_gen_random) {

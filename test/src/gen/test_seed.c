@@ -5,11 +5,11 @@
 
 #include <criterion/criterion.h>
 #include "gen/seed.h"
-#include "util/bits.h"
-#include "util/memory.h"
 #include "test/default.h"
 #include "test/input.h"
 #include "test/output.h"
+#include "util/bits.h"
+#include "util/memory.h"
 
 void seed_suite_setup(void) {
 	default_setup();
