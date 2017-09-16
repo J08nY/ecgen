@@ -10,9 +10,20 @@
 
 #define BYTE_LEN(bit_len) \
 	(((bit_len) % 8 == 0) ? (bit_len) / 8 : ((bit_len) / 8) + 1)
+
 #define GET_BIT(bit_array, bit_pos)                                 \
 	(((bit_array)[(bit_pos) / 8] & (1 << (7 - ((bit_pos) % 8)))) >> \
 	 (7 - ((bit_pos) % 8)))
+
+#define SET_BIT(bit_array, bit_pos, bit_value)          \
+	do {                                                \
+		unsigned char val = 1 << (7 - ((bit_pos) % 8)); \
+		if ((bit_value) == 1) {                         \
+			(bit_array)[(bit_pos) / 8] |= val;          \
+		} else {                                        \
+			(bit_array)[(bit_pos) / 8] &= ~val;         \
+		}                                               \
+	} while (0);
 
 bits_t *bits_new(size_t bit_len);
 
@@ -41,6 +52,10 @@ unsigned char *bits_to_raw(const bits_t *bits);
 size_t bits_to_rawlen(const bits_t *bits);
 
 GEN bits_to_bitvec(const bits_t *bits);
+
+void bits_concatz(bits_t *one, ...);
+
+bits_t *bits_concat(const bits_t *one, ...);
 
 bits_t *bits_or(const bits_t *one, const bits_t *other);
 

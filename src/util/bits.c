@@ -4,7 +4,6 @@
  */
 
 #include "bits.h"
-#include <gen/types.h>
 #include <sha1/sha1.h>
 #include "util/memory.h"
 
@@ -177,6 +176,47 @@ static bits_t *bits_bitwise(const bits_t *one, const bits_t *other,
 		result->bits[longer_pos / 8] |= result_bit << (7 - (longer_pos % 8));
 	}
 
+	return result;
+}
+
+void bits_concatzv(bits_t *one, va_list valist) {
+	const bits_t *next;
+	while ((next = va_arg(valist, const bits_t *)) != NULL) {
+		if (next->bitlen == 0) continue;
+		size_t new_bitlen = one->bitlen + next->bitlen;
+		size_t new_alloc = BYTE_LEN(new_bitlen);
+		if (new_alloc > one->allocated) {
+			one->bits = try_realloc(one->bits, new_alloc);
+			for (size_t i = one->allocated; i < new_alloc; ++i) {
+				one->bits[i] = 0;
+			}
+			one->allocated = new_alloc;
+		}
+		for (size_t j = 0; j < next->bitlen; ++j) {
+			SET_BIT(one->bits, one->bitlen + j, GET_BIT(next->bits, j));
+		}
+		one->bitlen = new_bitlen;
+	}
+}
+
+void bits_concatz(bits_t *one, ...) {
+	va_list valist;
+	va_start(valist, one);
+
+	bits_concatzv(one, valist);
+
+	va_end(valist);
+}
+
+bits_t *bits_concat(const bits_t *one, ...) {
+	va_list valist;
+	va_start(valist, one);
+
+	bits_t *result = bits_copy(one);
+
+	bits_concatzv(result, valist);
+
+	va_end(valist);
 	return result;
 }
 
