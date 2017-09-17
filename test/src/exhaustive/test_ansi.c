@@ -5,10 +5,11 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
-#include <gen/types.h>
+#include "gen/types.h"
 #include "math/poly.h"
 #include "exhaustive/ansi.h"
 #include "gen/seed.h"
+#include "gen/field.h"
 #include "test/default.h"
 #include "test/memory.h"
 #include "test/input.h"
@@ -244,7 +245,7 @@ ParameterizedTestParameters(ansi, test_seed_binary_examples) {
 	params[9].b = cr_strdup("2472E2D0197C49363F1FE7F5B6DB075D52B6947D135D8CA445805D39BC345626089687742B6329E70680231988");
 
 	size_t nb_params = sizeof(params) / sizeof(struct binary_params);
-	//size_t nb_params = 1;
+	//nb_params = 2;
 	return cr_make_param_array(struct binary_params, params, nb_params, binary_params_cleanup);
 }
 ParameterizedTest(struct binary_params *param, ansi, test_seed_binary_examples) {
@@ -257,11 +258,13 @@ ParameterizedTest(struct binary_params *param, ansi, test_seed_binary_examples) 
 
 	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL);
 	cr_assert_eq(ret, 1,);
-	bits_t *b = bits_from_hex(param->b);
+	bits_t *b = bits_from_i(bits_to_i(bits_from_hex(param->b)));
+	ret = ansi_gen_equation(&curve, &cfg, NULL);
+	cr_assert_eq(ret, 1,);
+	GEN curve_b = field_elementi(curve.b);
+	printf("\n******************************\n\n%lu\n%s\n%s\n********************\n", cfg.bits, bits_to_bin(b), bits_to_bin(bits_from_i(curve_b)));
+	cr_assert(gequal(curve_b, bits_to_i(b)),);
 
-	//TODO: this is not a correct comparison, need to store c0 from the algo as well.
-	printf("%s %s\n", bits_to_hex(curve.seed->W), param->b);
-	cr_assert(bits_eq(b, curve.seed->W),);
 
 	bits_free(&b);
 	seed_free(&curve.seed);

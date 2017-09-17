@@ -30,7 +30,9 @@ typedef struct {
 typedef struct seed_t {
 	bits_t *seed;
 	unsigned char *hash20;
-	bits_t *W;
+	GEN t;
+	GEN s;
+	GEN h;
 } seed_t;
 
 /**

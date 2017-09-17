@@ -2,6 +2,7 @@
 #include <io/config.h>
 #include "ansi.h"
 #include "gen/seed.h"
+#include "gen/field.h"
 #include "util/bits.h"
 #include "util/memory.h"
 #include "io/output.h"
@@ -35,52 +36,19 @@ static void seed_hash(seed_t *seed) {
 	bits_sha1(seed->seed, seed->hash20);
 }
 
-static void seed_W(seed_t *seed, const config_t *cfg) {
+static void seed_tsh(seed_t *seed, const config_t *cfg) {
 	pari_sp ltop = avma;
-	GEN t = utoi(cfg->bits);
-	GEN s = floorr(rdivii(subis(t, 1), stoi(160), DEFAULTPREC));
-	GEN h = subii(t, mulis(s, 160));
-	pari_printf("bits = %lu, t = %Pi, s = %Pi, h = %Pi\n", cfg->bits, t, s, h);
-
-	bits_t *c0 = bits_from_raw(seed->hash20, 160);
-	printf("H = %s, len = %lu alloc = %lu\n", bits_to_hex(c0), c0->bitlen,
-		   c0->allocated);
-	bits_shortenz(c0, 160 - itos(h));
-	printf("c0 = %s\n", bits_to_hex(c0));
-
-	bits_t *W0 = bits_copy(c0);
-	SET_BIT(W0->bits, 0, 0);
-
-	long is = itos(s);
-	seed->W = bits_copy(W0);
-	GEN two_g = int2n(seed->seed->bitlen);
-	for (long i = 1; i <= is; ++i) {
-		printf("doing i = %li\n", i);
-		pari_sp btop = avma;
-		GEN inner = bits_to_i(seed->seed);
-		inner = addis(inner, i);
-		inner = modii(inner, two_g);
-
-		bits_t *to_hash = bits_from_i(inner);
-		unsigned char hashout[20];
-		bits_sha1(to_hash, hashout);
-		bits_t *Wi = bits_from_raw(hashout, 160);
-		bits_concatz(seed->W, Wi, NULL);
-		bits_free(&to_hash);
-		bits_free(&Wi);
-		avma = btop;
-	}
-
-	bits_free(&c0);
-	bits_free(&W0);
-	avma = ltop;
+	seed->t = utoi(cfg->bits);
+	seed->s = floorr(rdivii(subis(seed->t, 1), stoi(160), DEFAULTPREC));
+	seed->h = subii(seed->t, mulis(seed->s, 160));
+	gerepileall(ltop, 3, &seed->t, &seed->s, &seed->h);
 }
 
 GENERATOR(ansi_gen_seed_random) {
 	seed_t *seed = seed_new();
 	seed->seed = bits_from_i(random_int(160));
 	seed_hash(seed);
-	seed_W(seed, cfg);
+	seed_tsh(seed, cfg);
 	curve->seed = seed;
 	return 1;
 }
@@ -89,7 +57,7 @@ GENERATOR(ansi_gen_seed_argument) {
 	seed_t *seed = seed_new();
 	seed->seed = seed_stoi(cfg->seed);
 	seed_hash(seed);
-	seed_W(seed, cfg);
+	seed_tsh(seed, cfg);
 	curve->seed = seed;
 	return 1;
 }
@@ -108,17 +76,65 @@ GENERATOR(ansi_gen_seed_input) {
 	seed_t *seed = seed_new();
 	seed->seed = seed_stoi(cstr);
 	seed_hash(seed);
-	seed_W(seed, cfg);
+	seed_tsh(seed, cfg);
 	curve->seed = seed;
 	return 1;
 }
 
+static bits_t *seed_process(seed_t *seed, const bits_t *first) {
+	pari_sp ltop = avma;
+
+	bits_t *result = bits_copy(first);
+
+	long is = itos(seed->s);
+	GEN two_g = int2n(seed->seed->bitlen);
+
+	for (long i = 1; i <= is; ++i) {
+		pari_sp btop = avma;
+		GEN inner = bits_to_i(seed->seed);
+		inner = addis(inner, i);
+		inner = modii(inner, two_g);
+
+		bits_t *to_hash = bits_from_i(inner);
+		unsigned char hashout[20];
+		bits_sha1(to_hash, hashout);
+		bits_t *Wi = bits_from_raw(hashout, 160);
+		bits_concatz(result, Wi, NULL);
+
+		bits_free(&to_hash);
+		bits_free(&Wi);
+		avma = btop;
+	}
+
+	avma = ltop;
+	return result;
+}
+
 static GENERATOR(ansi_gen_equation_fp) {
+	bits_t *c0 = bits_from_raw(curve->seed->hash20, 160);
+	bits_shortenz(c0, 160 - itos(curve->seed->h));
+
+	bits_t *W0 = bits_copy(c0);
+	SET_BIT(W0->bits, 0, 0);
+
+	bits_t *W = seed_process(curve->seed, W0);
+
 	return 0;
 }
 
 static GENERATOR(ansi_gen_equation_f2m) {
-	return 0;
+	bits_t *b0 = bits_from_raw(curve->seed->hash20, 160);
+	bits_shortenz(b0, 160 - itos(curve->seed->h));
+
+	bits_t *b = seed_process(curve->seed, b0);
+	GEN ib = bits_to_i(b);
+	if (gequal0(ib)) {
+		return -3;
+	}
+	GEN a = random_int(cfg->bits);
+	curve->a = field_ielement(curve->field, a);
+	curve->b = field_ielement(curve->field, ib);
+	return 1;
 }
 
 GENERATOR(ansi_gen_equation) {

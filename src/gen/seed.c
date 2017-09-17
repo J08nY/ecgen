@@ -19,9 +19,6 @@ seed_t *seed_copy(const seed_t *src, seed_t *dest) {
 	if (src->hash20) {
 		dest->hash20 = try_memdup(src->hash20, 20);
 	}
-	if (src->W) {
-		dest->W = bits_copy(src->W);
-	}
 	return dest;
 }
 
@@ -46,9 +43,6 @@ void seed_free(seed_t **seed) {
 		}
 		if ((*seed)->hash20) {
 			try_free((*seed)->hash20);
-		}
-		if ((*seed)->W) {
-			bits_free(&(*seed)->W);
 		}
 		try_free(*seed);
 		*seed = NULL;
