@@ -111,7 +111,7 @@ char *bits_to_hex(const bits_t *bits) {
 	char *result = try_calloc(BYTE_LEN(bits->bitlen) * 2 + 1);
 	// probably right pad with zeroes, as thats what is actually stored.
 	for (size_t i = 0; i < BYTE_LEN(bits->bitlen); ++i) {
-		sprintf(result + (i * 2), "%x", bits->bits[i]);
+		sprintf(result + (i * 2), "%02x", bits->bits[i]);
 	}
 	return result;
 }
@@ -119,7 +119,7 @@ char *bits_to_hex(const bits_t *bits) {
 char *bits_to_bin(const bits_t *bits) {
 	char *result = try_calloc(bits->bitlen + 1);
 	for (size_t i = 0; i < bits->bitlen; ++i) {
-		sprintf(result + i, "%u", GET_BIT(bits->bits, i));
+		sprintf(result + i, "%1u", GET_BIT(bits->bits, i));
 	}
 	return result;
 }
