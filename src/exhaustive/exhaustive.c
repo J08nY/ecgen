@@ -4,13 +4,13 @@
  */
 #include "exhaustive.h"
 #include "anomalous.h"
+#include "ansi.h"
 #include "gen/curve.h"
 #include "gen/equation.h"
 #include "gen/field.h"
 #include "gen/gens.h"
 #include "gen/order.h"
 #include "gen/point.h"
-#include "gen/seed.h"
 #include "io/output.h"
 #include "util/memory.h"
 
@@ -18,17 +18,17 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 	if (cfg->from_seed) {
 		// setup ANSI X9.62 generators
 		if (cfg->seed) {
-			generators[OFFSET_SEED] = &seed_gen_argument;
+			generators[OFFSET_SEED] = &ansi_gen_seed_argument;
 		} else {
 			if (cfg->random) {
-				generators[OFFSET_SEED] = &seed_gen_random;
+				generators[OFFSET_SEED] = &ansi_gen_seed_random;
 			} else {
-				generators[OFFSET_SEED] = &seed_gen_input;
+				generators[OFFSET_SEED] = &ansi_gen_seed_input;
 			}
 		}
-		generators[OFFSET_A] = &a_gen_seed;
-		generators[OFFSET_B] = &b_gen_seed;
-		generators[OFFSET_CURVE] = &curve_gen_seed;
+		generators[OFFSET_A] = &gen_skip;
+		generators[OFFSET_B] = &ansi_gen_equation;
+		generators[OFFSET_CURVE] = &curve_gen_nonzero;
 	} else {
 		// setup normal generators
 		generators[OFFSET_SEED] = &gen_skip;

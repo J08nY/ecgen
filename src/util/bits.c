@@ -10,8 +10,7 @@
 bits_t *bits_new(size_t bit_len) {
 	bits_t *result = try_calloc(sizeof(bits_t));
 	size_t byte_len = BYTE_LEN(bit_len);
-	if (byte_len > 0)
-		result->bits = try_calloc(byte_len);
+	if (byte_len > 0) result->bits = try_calloc(byte_len);
 	result->allocated = byte_len;
 	result->bitlen = bit_len;
 	return result;
@@ -83,8 +82,7 @@ bits_t *bits_from_raw(const unsigned char *bits, size_t bit_len) {
 	bits_t *result = try_calloc(sizeof(bits_t));
 	result->bitlen = bit_len;
 	result->allocated = BYTE_LEN(bit_len);
-	if (bit_len > 0)
-		result->bits = try_memdup(bits, result->allocated);
+	if (bit_len > 0) result->bits = try_memdup(bits, result->allocated);
 	return result;
 }
 

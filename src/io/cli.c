@@ -6,7 +6,7 @@
 #include <string.h>
 #include <unistd.h>
 #include "config.h"
-#include "gen/seed.h"
+#include "exhaustive/ansi.h"
 
 char cli_doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
@@ -201,7 +201,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 		case OPT_SEED:
 			cfg->from_seed = true;
 			if (arg) {
-				if (!seed_valid(arg)) {
+				if (!ansi_seed_valid(arg)) {
 					argp_failure(
 					    state, 1, 0,
 					    "SEED must be at least 160 bits (40 characters).");

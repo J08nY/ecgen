@@ -53,38 +53,5 @@ seed_t *seed_new_clone(const seed_t *src);
  */
 void seed_free(seed_t **seed);
 
-/**
- * @brief
- * @param hex_str
- * @return
- */
-bool seed_valid(const char *hex_str);
-
-/**
- * @brief
- * @param curve A curve_t being generated
- * @param cfg An application config
- * @param args unused
- * @return state diff
- */
-GENERATOR(seed_gen_random);
-
-/**
- * @brief
- * @param curve A curve_t being generated
- * @param cfg An application config
- * @param args unused
- * @return state diff
- */
-GENERATOR(seed_gen_argument);
-
-/**
- * @brief
- * @param curve A curve_t being generated
- * @param cfg An application config
- * @param args unused
- * @return state diff
- */
-GENERATOR(seed_gen_input);
 
 #endif  // ECGEN_SEED_H

@@ -4,7 +4,9 @@
  */
 
 #include "seed.h"
+#include <io/config.h>
 #include "io/output.h"
+#include "types.h"
 #include "util/bits.h"
 #include "util/memory.h"
 
@@ -53,103 +55,3 @@ void seed_free(seed_t **seed) {
 	}
 }
 
-bool seed_valid(const char *hex_str) {
-	size_t len = strlen(hex_str);
-	if (len < 40) {
-		return false;
-	}
-	const char *str_start = hex_str;
-	if (hex_str[0] == '0' && (hex_str[1] == 'x' || hex_str[1] == 'X')) {
-		str_start = hex_str + 2;
-	}
-	while (*str_start != 0) {
-		char c = *str_start++;
-		if (!isxdigit(c)) return false;
-	}
-	return true;
-}
-
-static bits_t *seed_stoi(const char *cstr) {
-	const char *seed_str = cstr;
-	const char *prefix = strstr(cstr, "0x");
-	if (prefix != NULL) seed_str = prefix + 2;
-	return bits_from_hex(seed_str);
-}
-
-static void seed_hash(seed_t *seed) {
-	seed->hash20 = try_malloc(20);
-	bits_sha1(seed->seed, seed->hash20);
-}
-
-static void seed_W(seed_t *seed, const config_t *cfg) {
-	pari_sp ltop = avma;
-	GEN t = utoi(cfg->bits);
-	GEN s = floorr(rdivii(subis(t, 1), stoi(160), DEFAULTPREC));
-	GEN h = subii(t, mulis(s, 160));
-
-	bits_t *c0 = bits_from_raw(seed->hash20, 160);
-	bits_shortenz(c0, 160 - itos(h));
-
-	bits_t *W0 = bits_copy(c0);
-	SET_BIT(W0->bits, 0, 0);
-
-	long is = itos(s);
-	seed->W = bits_copy(W0);
-	GEN two_g = int2n(seed->seed->bitlen);
-	for (long i = 1; i <= is; ++i) {
-		pari_sp btop = avma;
-		GEN inner = bits_to_i(seed->seed);
-		inner = addis(inner, i);
-		inner = modii(inner, two_g);
-
-		bits_t *to_hash = bits_from_i(inner);
-		unsigned char hashout[20];
-		bits_sha1(to_hash, hashout);
-		bits_t *Wi = bits_from_raw(hashout, 160);
-		bits_concatz(seed->W, Wi, NULL);
-		bits_free(&to_hash);
-		bits_free(&Wi);
-		avma = btop;
-	}
-
-	bits_free(&c0);
-	bits_free(&W0);
-	avma = ltop;
-}
-
-GENERATOR(seed_gen_random) {
-	seed_t *seed = seed_new();
-	seed->seed = bits_from_i(random_int(160));
-	seed_hash(seed);
-	seed_W(seed, cfg);
-	curve->seed = seed;
-	return 1;
-}
-
-GENERATOR(seed_gen_argument) {
-	seed_t *seed = seed_new();
-	seed->seed = seed_stoi(cfg->seed);
-	seed_hash(seed);
-	seed_W(seed, cfg);
-	curve->seed = seed;
-	return 1;
-}
-
-GENERATOR(seed_gen_input) {
-	pari_sp ltop = avma;
-
-	GEN str = input_string("seed:");
-	const char *cstr = GSTR(str);
-	if (!seed_valid(cstr)) {
-		fprintf(err, "SEED must be at least 160 bits(40 hex characters).\n");
-		avma = ltop;
-		return 0;
-	}
-
-	seed_t *seed = seed_new();
-	seed->seed = seed_stoi(cstr);
-	seed_hash(seed);
-	seed_W(seed, cfg);
-	curve->seed = seed;
-	return 1;
-}

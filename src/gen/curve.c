@@ -2,6 +2,7 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+#include <io/config.h>
 #include "curve.h"
 #include "point.h"
 #include "seed.h"
@@ -127,29 +128,6 @@ GENERATOR(curve_gen_nonzero) {
 		return -3;
 	} else {
 		return 1;
-	}
-}
-
-static int curve_gen_seed_fp(curve_t *curve, const config_t *cfg, arg_t *args) {
-	// TODO implement
-	return INT_MIN;
-}
-
-static int curve_gen_seed_f2m(curve_t *curve, const config_t *cfg,
-                              arg_t *args) {
-	// TODO implement
-	return INT_MIN;
-}
-
-GENERATOR(curve_gen_seed) {
-	switch (typ(curve->field)) {
-		case t_INT:
-			return curve_gen_seed_fp(curve, cfg, args);
-		case t_FFELT:
-			return curve_gen_seed_f2m(curve, cfg, args);
-		default:
-			pari_err_TYPE("curve_gen_seed", curve->field);
-			return INT_MIN; /* NOT REACHABLE */
 	}
 }
 
