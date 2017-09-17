@@ -4,8 +4,10 @@
  */
 
 #include <criterion/criterion.h>
+#include <criterion/parameterized.h>
 #include <gen/types.h>
 #include "test/default.h"
+#include "test/memory.h"
 #include "util/bits.h"
 #include "util/memory.h"
 
@@ -394,18 +396,44 @@ Test(bits, test_bits_shorten) {
 	bits_free(&shorter);
 }
 
-Test(bits, test_bits_sha1) {
-	char *text = "The quick brown fox jumps over the lazy dog";
-	bits_t *bits = bits_from_raw((unsigned char *)text, strlen(text) * 8);
+struct sha1_params {
+	char *data;
+	unsigned char *hashout;
+};
+
+void sha1_params_cleanup(struct criterion_test_params *ctp) {
+	struct sha1_params *params = (struct sha1_params *)ctp->params;
+	cr_free(params->data);
+	cr_free(params->hashout);
+}
+
+ParameterizedTestParameters(bits, test_bits_sha1) {
+	static struct sha1_params params[5] = {};
+	params[0].data = cr_strdup("The quick brown fox jumps over the lazy dog");
+	params[0].hashout = cr_memdup("\x2f\xd4\xe1\xc6\x7a\x2d\x28\xfc\xed\x84\x9e\xe1\xbb\x76\xe7\x39\x1b\x93\xeb\x12", 20);
+	params[1].data = cr_strdup("abc");
+	params[1].hashout = cr_memdup("\xa9\x99\x3e\x36\x47\x06\x81\x6a\xba\x3e\x25\x71\x78\x50\xc2\x6c\x9c\xd0\xd8\x9d", 20);
+	params[2].data = cr_strdup("");
+	params[2].hashout = cr_memdup("\xda\x39\xa3\xee\x5e\x6b\x4b\x0d\x32\x55\xbf\xef\x95\x60\x18\x90\xaf\xd8\x07\x09", 20);
+	params[3].data = cr_strdup("abcdbcdecdefdefgefghfghighijhijkijkljklmklmnlmnomnopnopq");
+	params[3].hashout = cr_memdup("\x84\x98\x3e\x44\x1c\x3b\xd2\x6e\xba\xae\x4a\xa1\xf9\x51\x29\xe5\xe5\x46\x70\xf1", 20);
+	params[4].data = cr_strdup("abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu");
+	params[4].hashout = cr_memdup("\xa4\x9b\x24\x46\xa0\x2c\x64\x5b\xf4\x19\xf9\x95\xb6\x70\x91\x25\x3a\x04\xa2\x59", 20);
+
+	size_t nb_params = sizeof(params) / sizeof(struct sha1_params);
+	return cr_make_param_array(struct sha1_params, params, nb_params, sha1_params_cleanup);
+}
+
+ParameterizedTest(struct sha1_params *param, bits, test_bits_sha1) {
+	bits_t *bits = bits_from_raw((unsigned char *)param->data, strlen(param->data) * 8);
 	unsigned char hashout[20] = {};
 	bits_sha1(bits, hashout);
 
-	unsigned char expected[] = {0x2f, 0xd4, 0xe1, 0xc6, 0x7a, 0x2d, 0x28,
-	                            0xfc, 0xed, 0x84, 0x9e, 0xe1, 0xbb, 0x76,
-	                            0xe7, 0x39, 0x1b, 0x93, 0xeb, 0x12};
 	for (size_t i = 0; i < 20; ++i) {
-		cr_assert_eq(hashout[i], expected[i], );
+		cr_assert_eq(hashout[i], param->hashout[i], );
 	}
+
+	bits_free(&bits);
 }
 
 Test(bits, test_bits_eq) {
