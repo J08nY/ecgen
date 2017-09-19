@@ -1,5 +1,6 @@
 
 #include <io/config.h>
+#include <gen/types.h>
 #include "ansi.h"
 #include "gen/seed.h"
 #include "gen/field.h"
@@ -38,10 +39,10 @@ static void seed_hash(seed_t *seed) {
 
 static void seed_tsh(seed_t *seed, const config_t *cfg) {
 	pari_sp ltop = avma;
-	seed->t = utoi(cfg->bits);
-	seed->s = floorr(rdivii(subis(seed->t, 1), stoi(160), DEFAULTPREC));
-	seed->h = subii(seed->t, mulis(seed->s, 160));
-	gerepileall(ltop, 3, &seed->t, &seed->s, &seed->h);
+	seed->ansi.t = utoi(cfg->bits);
+	seed->ansi.s = floorr(rdivii(subis(seed->ansi.t, 1), stoi(160), DEFAULTPREC));
+	seed->ansi.h = subii(seed->ansi.t, mulis(seed->ansi.s, 160));
+	gerepileall(ltop, 3, &seed->ansi.t, &seed->ansi.s, &seed->ansi.h);
 }
 
 GENERATOR(ansi_gen_seed_random) {
@@ -86,16 +87,19 @@ static bits_t *seed_process(seed_t *seed, const bits_t *first) {
 
 	bits_t *result = bits_copy(first);
 
-	long is = itos(seed->s);
+	long is = itos(seed->ansi.s);
+	GEN seedi = bits_to_i(seed->seed);
 	GEN two_g = int2n(seed->seed->bitlen);
 
 	for (long i = 1; i <= is; ++i) {
 		pari_sp btop = avma;
-		GEN inner = bits_to_i(seed->seed);
-		inner = addis(inner, i);
+		GEN inner = addis(seedi, i);
 		inner = modii(inner, two_g);
 
 		bits_t *to_hash = bits_from_i(inner);
+		if (to_hash->bitlen < seed->seed->bitlen) {
+			bits_lengthenz(to_hash, seed->seed->bitlen - to_hash->bitlen);
+		}
 		unsigned char hashout[20];
 		bits_sha1(to_hash, hashout);
 		bits_t *Wi = bits_from_raw(hashout, 160);
@@ -110,9 +114,14 @@ static bits_t *seed_process(seed_t *seed, const bits_t *first) {
 	return result;
 }
 
+UNROLL(ansi_unroll_seed) {
+	seed_free(&curve->seed);
+	return -1;
+}
+
 static GENERATOR(ansi_gen_equation_fp) {
 	bits_t *c0 = bits_from_raw(curve->seed->hash20, 160);
-	bits_shortenz(c0, 160 - itos(curve->seed->h));
+	bits_shortenz(c0, 160 - itos(curve->seed->ansi.h));
 
 	bits_t *W0 = bits_copy(c0);
 	SET_BIT(W0->bits, 0, 0);
@@ -124,7 +133,7 @@ static GENERATOR(ansi_gen_equation_fp) {
 
 static GENERATOR(ansi_gen_equation_f2m) {
 	bits_t *b0 = bits_from_raw(curve->seed->hash20, 160);
-	bits_shortenz(b0, 160 - itos(curve->seed->h));
+	bits_shortenz(b0, 160 - itos(curve->seed->ansi.h));
 
 	bits_t *b = seed_process(curve->seed, b0);
 	GEN ib = bits_to_i(b);

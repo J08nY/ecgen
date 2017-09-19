@@ -2,6 +2,7 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+#include <io/config.h>
 #include "exhaustive.h"
 #include "anomalous.h"
 #include "ansi.h"
@@ -142,7 +143,11 @@ static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 }
 
 void exhaustive_uinit(unroll_t *unrolls, const config_t *cfg) {
-	unrolls[OFFSET_SEED] = &unroll_skip;
+	if (cfg->from_seed) {
+		unrolls[OFFSET_SEED] = &ansi_unroll_seed;
+	} else {
+		unrolls[OFFSET_SEED] = &unroll_skip;
+	}
 	unrolls[OFFSET_FIELD] = &unroll_skip;
 	unrolls[OFFSET_A] = &unroll_skip;
 	unrolls[OFFSET_B] = &unroll_skip;

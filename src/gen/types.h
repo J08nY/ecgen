@@ -30,9 +30,16 @@ typedef struct {
 typedef struct seed_t {
 	bits_t *seed;
 	unsigned char *hash20;
-	GEN t;
-	GEN s;
-	GEN h;
+	union {
+		struct {
+			GEN t;
+			GEN s;
+			GEN h;
+		} ansi;
+		struct {
+			bits_t *f;
+		} brainpool;
+	};
 } seed_t;
 
 /**
@@ -105,7 +112,7 @@ typedef struct {
  * @return state diff
  */
 #define GENERATOR(gen_name) \
-	int gen_name(curve_t *curve, const config_t *cfg, arg_t *args)
+    int gen_name(curve_t *curve, const config_t *cfg, arg_t *args)
 
 typedef GENERATOR((*gen_t));
 
@@ -118,8 +125,8 @@ typedef GENERATOR((*gen_t));
  * @return
  */
 #define UNROLL(unroll_name)                                            \
-	int unroll_name(curve_t *curve, const config_t *cfg, pari_sp from, \
-	                pari_sp to)
+    int unroll_name(curve_t *curve, const config_t *cfg, pari_sp from, \
+                    pari_sp to)
 
 typedef UNROLL((*unroll_t));
 

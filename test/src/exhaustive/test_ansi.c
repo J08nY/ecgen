@@ -189,6 +189,7 @@ void binary_params_cleanup(struct criterion_test_params *ctp) {
 
 ParameterizedTestParameters(ansi, test_seed_binary_examples) {
 	static struct binary_params params[10] = {};
+	// Taken from ANSI X9.62 J.4.1, J.4.3, J.4.5 and J.4.8; p. 107 - 113
 	polynomial_t p163 = {163, 9, 3, 2};
 	params[0].bits = 163;
 	params[0].field = p163;
@@ -245,7 +246,7 @@ ParameterizedTestParameters(ansi, test_seed_binary_examples) {
 	params[9].b = cr_strdup("2472E2D0197C49363F1FE7F5B6DB075D52B6947D135D8CA445805D39BC345626089687742B6329E70680231988");
 
 	size_t nb_params = sizeof(params) / sizeof(struct binary_params);
-	//nb_params = 2;
+	//nb_params = 1;
 	return cr_make_param_array(struct binary_params, params, nb_params, binary_params_cleanup);
 }
 ParameterizedTest(struct binary_params *param, ansi, test_seed_binary_examples) {
@@ -256,14 +257,16 @@ ParameterizedTest(struct binary_params *param, ansi, test_seed_binary_examples) 
 	curve_t curve = {};
 	curve.field = poly_gen(&param->field);
 
+	GEN expected_b = bits_to_i(bits_from_hex(param->b));
+	bits_t *b = bits_from_i(expected_b);
+
 	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL);
 	cr_assert_eq(ret, 1,);
-	bits_t *b = bits_from_i(bits_to_i(bits_from_hex(param->b)));
+
 	ret = ansi_gen_equation(&curve, &cfg, NULL);
 	cr_assert_eq(ret, 1,);
 	GEN curve_b = field_elementi(curve.b);
-	printf("\n******************************\n\n%lu\n%s\n%s\n********************\n", cfg.bits, bits_to_bin(b), bits_to_bin(bits_from_i(curve_b)));
-	cr_assert(gequal(curve_b, bits_to_i(b)),);
+	cr_assert(gequal(curve_b, expected_b),);
 
 
 	bits_free(&b);

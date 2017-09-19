@@ -35,6 +35,16 @@ GENERATOR(ansi_gen_seed_input);
 
 /**
  * @brief
+ * @param curve
+ * @param cfg
+ * @param from
+ * @param to
+ * @return
+ */
+UNROLL(ansi_unroll_seed);
+
+/**
+ * @brief
  * @param curve A curve_t being generated
  * @param cfg An application config
  * @param args unused
