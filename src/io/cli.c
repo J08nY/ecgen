@@ -299,7 +299,6 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			}
 			break;
 		}
-
 		/* IO options */
 		case OPT_FORMAT:
 			if (!strcmp(arg, "csv")) {

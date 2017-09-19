@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 
+#include <misc/types.h>
 #include "seed.h"
 #include "util/bits.h"
 #include "util/memory.h"
