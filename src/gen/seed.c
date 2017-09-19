@@ -4,9 +4,6 @@
  */
 
 #include "seed.h"
-#include <misc/config.h>
-#include "io/output.h"
-#include "misc/types.h"
 #include "util/bits.h"
 #include "util/memory.h"
 

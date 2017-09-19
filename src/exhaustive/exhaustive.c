@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include "exhaustive.h"
-#include <misc/config.h>
 #include "anomalous.h"
 #include "ansi.h"
 #include "gen/curve.h"

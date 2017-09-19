@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include "curve.h"
-#include <misc/config.h>
 #include "point.h"
 #include "seed.h"
 #include "util/memory.h"

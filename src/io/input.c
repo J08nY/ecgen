@@ -6,7 +6,6 @@
 
 #include "input.h"
 #include "output.h"
-#include "util/memory.h"
 
 FILE *in;
 int delim;
