@@ -9,7 +9,7 @@
 #define ECGEN_SUBGROUPS_H
 
 #include <pari/pari.h>
-#include "gen/types.h"
+#include "misc/types.h"
 
 /**
  * @brief Enumerates prime subgroup orders of a given curve.

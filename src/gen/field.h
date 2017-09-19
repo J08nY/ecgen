@@ -8,7 +8,7 @@
 #ifndef ECGEN_FIELD_H
 #define ECGEN_FIELD_H
 
-#include "types.h"
+#include "misc/types.h"
 
 /**
  * GENERATOR(gen_t)

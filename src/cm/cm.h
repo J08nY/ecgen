@@ -9,7 +9,7 @@
 #define ECGEN_CM_H
 
 #include "io/cli.h"
-#include "io/config.h"
+#include "misc/config.h"
 
 /**
  *

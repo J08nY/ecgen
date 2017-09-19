@@ -9,7 +9,7 @@
 #ifndef ECGEN_GENS_H
 #define ECGEN_GENS_H
 
-#include "types.h"
+#include "misc/types.h"
 
 /**
  * GENERATOR(gen_t)

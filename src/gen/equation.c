@@ -56,10 +56,6 @@ GENERATOR(a_gen_one) {
 	return 1;
 }
 
-GENERATOR(a_gen_seed) {
-	// TODO implement
-	return INT_MIN;
-}
 
 GENERATOR(b_gen_random) {
 	curve->b = genrand(curve->field);
@@ -109,11 +105,6 @@ GENERATOR(b_gen_zero) {
 GENERATOR(b_gen_one) {
 	curve->b = gen_1;
 	return 1;
-}
-
-GENERATOR(b_gen_seed) {
-	// TODO implement
-	return INT_MIN;
 }
 
 void equation_quit(void) {

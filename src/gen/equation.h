@@ -8,7 +8,7 @@
 #ifndef ECGEN_EQUATION_H
 #define ECGEN_EQUATION_H
 
-#include "types.h"
+#include "misc/types.h"
 
 /**
  * GENERATOR(gen_t)

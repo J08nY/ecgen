@@ -2,33 +2,35 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+#include <misc/config.h>
 #include "exhaustive.h"
 #include "anomalous.h"
+#include "ansi.h"
 #include "gen/curve.h"
 #include "gen/equation.h"
 #include "gen/field.h"
 #include "gen/gens.h"
 #include "gen/order.h"
 #include "gen/point.h"
-#include "gen/seed.h"
 #include "io/output.h"
 #include "util/memory.h"
 
 static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
-	if (cfg->from_seed) {
+	if (cfg->ansi) {
 		// setup ANSI X9.62 generators
 		if (cfg->seed) {
-			generators[OFFSET_SEED] = &seed_gen_argument;
+			generators[OFFSET_SEED] = &ansi_gen_seed_argument;
 		} else {
 			if (cfg->random) {
-				generators[OFFSET_SEED] = &seed_gen_random;
+				generators[OFFSET_SEED] = &ansi_gen_seed_random;
 			} else {
-				generators[OFFSET_SEED] = &seed_gen_input;
+				generators[OFFSET_SEED] = &ansi_gen_seed_input;
 			}
 		}
-		generators[OFFSET_A] = &a_gen_seed;
-		generators[OFFSET_B] = &b_gen_seed;
-		generators[OFFSET_CURVE] = &curve_gen_seed;
+		generators[OFFSET_A] = &gen_skip;
+		generators[OFFSET_B] = &ansi_gen_equation;
+		generators[OFFSET_CURVE] = &curve_gen_nonzero;
+		generators[OFFSET_ORDER] = &order_gen_any;
 	} else {
 		// setup normal generators
 		generators[OFFSET_SEED] = &gen_skip;
@@ -142,7 +144,11 @@ static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 }
 
 void exhaustive_uinit(unroll_t *unrolls, const config_t *cfg) {
-	unrolls[OFFSET_SEED] = &unroll_skip;
+	if (cfg->ansi) {
+		unrolls[OFFSET_SEED] = &ansi_unroll_seed;
+	} else {
+		unrolls[OFFSET_SEED] = &unroll_skip;
+	}
 	unrolls[OFFSET_FIELD] = &unroll_skip;
 	unrolls[OFFSET_A] = &unroll_skip;
 	unrolls[OFFSET_B] = &unroll_skip;
@@ -176,8 +182,7 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 
 		if (diff <= 0) {
 			if (diff == INT_MIN || state + diff < 0) {
-				fprintf(err, "Error generating a curve. state = %i\n",
-				        state);
+				fprintf(err, "Error generating a curve. state = %i\n", state);
 				return 0;
 			}
 			// record try

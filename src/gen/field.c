@@ -13,7 +13,8 @@ static GEN field_binaryr(unsigned long bits) {
 	if (poly_exists(bits)) {
 		return poly_find_gen(bits);
 	} else {
-		fprintf(err, "Unable to find a suitable binary field. Use an explicit one.");
+		fprintf(err,
+		        "Unable to find a suitable binary field. Use an explicit one.");
 		exit(1);
 	}
 }

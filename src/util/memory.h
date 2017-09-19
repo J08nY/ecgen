@@ -34,6 +34,21 @@ void *try_realloc(void *ptr, size_t size);
 
 /**
  * @brief
+ * @param str
+ * @return
+ */
+char *try_strdup(const char *str);
+
+/**
+ * @brief
+ * @param mem
+ * @param len
+ * @return
+ */
+void *try_memdup(const void *mem, size_t len);
+
+/**
+ * @brief
  * @param ptr
  */
 void try_free(void *ptr);
@@ -46,7 +61,7 @@ void try_free(void *ptr);
  * @param free_fun
  */
 void set_mem_funcs(void *(*malloc_fun)(size_t), void *(*calloc_fun)(size_t),
-				   void *(*realloc_fun)(void *, size_t),
-				   void(*free_fun)(void *));
+                   void *(*realloc_fun)(void *, size_t),
+                   void (*free_fun)(void *));
 
 #endif  // ECGEN_MEMORY_H

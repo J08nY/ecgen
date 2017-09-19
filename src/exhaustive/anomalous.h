@@ -10,7 +10,7 @@
 
 #include <pari/pari.h>
 #include "arg.h"
-#include "gen/types.h"
+#include "misc/types.h"
 #include "io/cli.h"
 
 typedef struct disc_t {
