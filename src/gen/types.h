@@ -35,6 +35,7 @@ typedef struct seed_t {
 			GEN t;
 			GEN s;
 			GEN h;
+			GEN r;
 		} ansi;
 		struct {
 			bits_t *f;

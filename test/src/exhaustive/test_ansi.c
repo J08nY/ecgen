@@ -166,10 +166,24 @@ ParameterizedTestParameters(ansi, test_seed_prime_examples) {
 	return cr_make_param_array(struct prime_params, params, nb_params, NULL);
 }
 ParameterizedTest(struct prime_params *param, ansi, test_seed_prime_examples) {
-	//TODO: implement the test
 	config_t cfg = {};
 	cfg.bits = param->bits;
+	cfg.field = FIELD_PRIME;
+	cfg.seed = param->seed;
 	curve_t curve = {};
+	bits_t *p = bits_from_hex(param->p);
+	curve.field = bits_to_i(p);
+
+	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL);
+	cr_assert_eq(ret, 1,);
+
+	ret = ansi_gen_equation(&curve, &cfg, NULL);
+	cr_assert_eq(ret, 1,);
+	GEN expected_r = bits_to_i(bits_from_hex(param->r));
+	cr_assert(gequal(curve.seed->ansi.r, expected_r),);
+
+	bits_free(&p);
+	seed_free(&curve.seed);
 }
 
 struct binary_params {
@@ -246,7 +260,6 @@ ParameterizedTestParameters(ansi, test_seed_binary_examples) {
 	params[9].b = cr_strdup("2472E2D0197C49363F1FE7F5B6DB075D52B6947D135D8CA445805D39BC345626089687742B6329E70680231988");
 
 	size_t nb_params = sizeof(params) / sizeof(struct binary_params);
-	//nb_params = 1;
 	return cr_make_param_array(struct binary_params, params, nb_params, binary_params_cleanup);
 }
 ParameterizedTest(struct binary_params *param, ansi, test_seed_binary_examples) {

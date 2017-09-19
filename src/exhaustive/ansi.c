@@ -40,7 +40,8 @@ static void seed_hash(seed_t *seed) {
 static void seed_tsh(seed_t *seed, const config_t *cfg) {
 	pari_sp ltop = avma;
 	seed->ansi.t = utoi(cfg->bits);
-	seed->ansi.s = floorr(rdivii(subis(seed->ansi.t, 1), stoi(160), DEFAULTPREC));
+	seed->ansi.s = floorr(
+		rdivii(subis(seed->ansi.t, 1), stoi(160), DEFAULTPREC));
 	seed->ansi.h = subii(seed->ansi.t, mulis(seed->ansi.s, 160));
 	gerepileall(ltop, 3, &seed->ansi.t, &seed->ansi.s, &seed->ansi.h);
 }
@@ -120,6 +121,7 @@ UNROLL(ansi_unroll_seed) {
 }
 
 static GENERATOR(ansi_gen_equation_fp) {
+	pari_sp ltop = avma;
 	bits_t *c0 = bits_from_raw(curve->seed->hash20, 160);
 	bits_shortenz(c0, 160 - itos(curve->seed->ansi.h));
 
@@ -128,32 +130,59 @@ static GENERATOR(ansi_gen_equation_fp) {
 
 	bits_t *W = seed_process(curve->seed, W0);
 
-	return 0;
+	long ti = itos(curve->seed->ansi.t);
+	GEN r = gen_0;
+	for (long i = 1; i <= ti; ++i) {
+		GEN Wi = stoi(GET_BIT(W->bits, i - 1));
+		r = addii(r, mulii(Wi, int2n(ti - i)));
+	}
+	curve->seed->ansi.r = r;
+
+	GEN r_inv = Fp_invsafe(r, curve->field);
+	GEN a;
+	GEN b2;
+	do {
+		a = random_int(cfg->bits);
+		b2 = mulii(powis(a, 3), r_inv);
+	}while (!Fp_issquare(b2, curve->field));
+	GEN b = Fp_sqrt(b2, curve->field);
+
+	curve->a = a;
+	curve->b = b;
+
+	gerepileall(ltop, 3, &r, &a, &b);
+	bits_free(&c0);
+	bits_free(&W0);
+	bits_free(&W);
+	return 1;
 }
 
 static GENERATOR(ansi_gen_equation_f2m) {
+	pari_sp ltop = avma;
 	bits_t *b0 = bits_from_raw(curve->seed->hash20, 160);
 	bits_shortenz(b0, 160 - itos(curve->seed->ansi.h));
 
 	bits_t *b = seed_process(curve->seed, b0);
 	GEN ib = bits_to_i(b);
 	if (gequal0(ib)) {
+		avma = ltop;
 		return -3;
 	}
 	GEN a = random_int(cfg->bits);
 	curve->a = field_ielement(curve->field, a);
 	curve->b = field_ielement(curve->field, ib);
+
+	gerepileall(ltop, 2, &curve->a, &curve->b);
+	bits_free(&b0);
+	bits_free(&b);
 	return 1;
 }
 
 GENERATOR(ansi_gen_equation) {
 	switch (cfg->field) {
-		case FIELD_PRIME:
-			return ansi_gen_equation_fp(curve, cfg, args);
-		case FIELD_BINARY:
-			return ansi_gen_equation_f2m(curve, cfg, args);
-		default:
-			pari_err_BUG("Field not prime or binary?");
+		case FIELD_PRIME: return ansi_gen_equation_fp(curve, cfg, args);
+		case FIELD_BINARY: return ansi_gen_equation_f2m(curve, cfg, args);
+		default: pari_err_BUG("Field not prime or binary?");
 			return INT_MIN; /* NOT REACHABLE */
 	}
 }
