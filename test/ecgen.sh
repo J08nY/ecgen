@@ -97,7 +97,7 @@ function cli() {
 	assert_raises "${ecgen} --format=something" 1
 	assert_raises "${ecgen} --koblitz=2" 1
 	assert_raises "${ecgen} --points=something" 1
-	assert_raises "${ecgen} --seed=some" 1
+	assert_raises "${ecgen} --seed=some" 64
 	assert_raises "${ecgen} 1 2 3" 64
 	assert_raises "${ecgen} --fp --f2m 1" 1
 }
