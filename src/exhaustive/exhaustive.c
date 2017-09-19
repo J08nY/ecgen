@@ -30,6 +30,7 @@ static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
 		generators[OFFSET_A] = &gen_skip;
 		generators[OFFSET_B] = &ansi_gen_equation;
 		generators[OFFSET_CURVE] = &curve_gen_nonzero;
+		generators[OFFSET_ORDER] = &order_gen_any;
 	} else {
 		// setup normal generators
 		generators[OFFSET_SEED] = &gen_skip;

@@ -404,7 +404,7 @@ bits_t *bits_shorten(const bits_t *bits, long amount) {
 }
 
 void bits_sha1(const bits_t *bits, unsigned char hashout[20]) {
-	SHA_CTX ctx = {};
+	SHA_CTX ctx = {0};
 	SHA1_Init(&ctx);
 	SHA1_Update(&ctx, bits->bits, (int)BYTE_LEN(bits->bitlen));
 	SHA1_Final(hashout, &ctx);

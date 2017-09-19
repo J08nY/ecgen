@@ -281,7 +281,6 @@ ParameterizedTest(struct binary_params *param, ansi, test_seed_binary_examples) 
 	GEN curve_b = field_elementi(curve.b);
 	cr_assert(gequal(curve_b, expected_b),);
 
-
 	bits_free(&b);
 	seed_free(&curve.seed);
 }
