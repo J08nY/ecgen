@@ -150,7 +150,7 @@ static GENERATOR(ansi_gen_equation_fp) {
 	curve->a = a;
 	curve->b = b;
 
-	gerepileall(ltop, 3, &r, &a, &b);
+	gerepileall(ltop, 3, &curve->seed->ansi.r, &curve->a, &curve->b);
 	bits_free(&c0);
 	bits_free(&W0);
 	bits_free(&W);

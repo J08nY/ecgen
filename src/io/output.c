@@ -5,6 +5,7 @@
 
 #include "output.h"
 #include <parson/parson.h>
+#include "util/bits.h"
 #include "gen/field.h"
 #include "util/memory.h"
 
@@ -153,6 +154,16 @@ static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 		default:
 			fprintf(err, "Error, field has unknown amount of elements.\n");
 			exit(1);
+	}
+	if (curve->seed) {
+		char *hex_str = bits_to_hex(curve->seed->seed);
+		char *hex = try_calloc(strlen(hex_str) + 3);
+		hex[0] = '0';
+		hex[1] = 'x';
+		strcat(hex, hex_str);
+		json_object_set_string(root_object, "seed", hex);
+		try_free(hex_str);
+		try_free(hex);
 	}
 
 	char *a = pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->a));

@@ -16,7 +16,7 @@
 #include "util/memory.h"
 
 static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
-	if (cfg->from_seed) {
+	if (cfg->ansi) {
 		// setup ANSI X9.62 generators
 		if (cfg->seed) {
 			generators[OFFSET_SEED] = &ansi_gen_seed_argument;
@@ -144,7 +144,7 @@ static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 }
 
 void exhaustive_uinit(unroll_t *unrolls, const config_t *cfg) {
-	if (cfg->from_seed) {
+	if (cfg->ansi) {
 		unrolls[OFFSET_SEED] = &ansi_unroll_seed;
 	} else {
 		unrolls[OFFSET_SEED] = &unroll_skip;

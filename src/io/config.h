@@ -41,7 +41,7 @@ typedef struct {
 	long koblitz_value;
 	bool cofactor;
 	long cofactor_bound;
-	bool from_seed;
+	bool ansi;
 	char *seed;
 	bool unique;
 	struct points_s points;
