@@ -41,6 +41,12 @@ void seed_free(seed_t **seed) {
 		if ((*seed)->hash20) {
 			try_free((*seed)->hash20);
 		}
+		switch ((*seed)->type) {
+			case SEED_ANSI:break;
+			case SEED_BRAINPOOL:break;
+			case SEED_BRAINPOOL_RFC:break;
+			case SEED_FIPS:break;
+		}
 		try_free(*seed);
 		*seed = NULL;
 	}

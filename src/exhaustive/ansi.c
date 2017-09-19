@@ -2,12 +2,19 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+
 #include "ansi.h"
 #include "gen/field.h"
 #include "gen/seed.h"
 #include "io/output.h"
 #include "util/bits.h"
 #include "util/memory.h"
+
+static seed_t *ansi_new() {
+	seed_t *result = seed_new();
+	result->type = SEED_ANSI;
+	return result;
+}
 
 bool ansi_seed_valid(const char *hex_str) {
 	size_t len = strlen(hex_str);
@@ -41,13 +48,13 @@ static void seed_tsh(seed_t *seed, const config_t *cfg) {
 	pari_sp ltop = avma;
 	seed->ansi.t = utoi(cfg->bits);
 	seed->ansi.s =
-	    floorr(rdivii(subis(seed->ansi.t, 1), stoi(160), DEFAULTPREC));
+		floorr(rdivii(subis(seed->ansi.t, 1), stoi(160), DEFAULTPREC));
 	seed->ansi.h = subii(seed->ansi.t, mulis(seed->ansi.s, 160));
 	gerepileall(ltop, 3, &seed->ansi.t, &seed->ansi.s, &seed->ansi.h);
 }
 
 GENERATOR(ansi_gen_seed_random) {
-	seed_t *seed = seed_new();
+	seed_t *seed = ansi_new();
 	seed->seed = bits_from_i(random_int(160));
 	seed_hash(seed);
 	seed_tsh(seed, cfg);
@@ -56,7 +63,7 @@ GENERATOR(ansi_gen_seed_random) {
 }
 
 GENERATOR(ansi_gen_seed_argument) {
-	seed_t *seed = seed_new();
+	seed_t *seed = ansi_new();
 	seed->seed = seed_stoi(cfg->seed);
 	seed_hash(seed);
 	seed_tsh(seed, cfg);
@@ -75,7 +82,7 @@ GENERATOR(ansi_gen_seed_input) {
 		return 0;
 	}
 
-	seed_t *seed = seed_new();
+	seed_t *seed = ansi_new();
 	seed->seed = seed_stoi(cstr);
 	seed_hash(seed);
 	seed_tsh(seed, cfg);
@@ -180,12 +187,9 @@ static GENERATOR(ansi_gen_equation_f2m) {
 
 GENERATOR(ansi_gen_equation) {
 	switch (cfg->field) {
-		case FIELD_PRIME:
-			return ansi_gen_equation_fp(curve, cfg, args);
-		case FIELD_BINARY:
-			return ansi_gen_equation_f2m(curve, cfg, args);
-		default:
-			pari_err_BUG("Field not prime or binary?");
+		case FIELD_PRIME: return ansi_gen_equation_fp(curve, cfg, args);
+		case FIELD_BINARY: return ansi_gen_equation_f2m(curve, cfg, args);
+		default: pari_err_BUG("Field not prime or binary?");
 			return INT_MIN; /* NOT REACHABLE */
 	}
 }
