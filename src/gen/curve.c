@@ -10,7 +10,7 @@
 curve_t *curve_new(void) { return try_calloc(sizeof(curve_t)); }
 
 curve_t *curve_copy(const curve_t *src, curve_t *dest) {
-	if (src->seed) dest->seed = seed_copy(src->seed, dest->seed);
+	if (src->seed) dest->seed = seed_new_copy(src->seed);
 	if (src->field) dest->field = gcopy(src->field);
 	if (src->a) dest->a = gcopy(src->a);
 	if (src->b) dest->b = gcopy(src->b);
@@ -33,7 +33,7 @@ curve_t *curve_new_copy(const curve_t *src) {
 }
 
 curve_t *curve_clone(const curve_t *src, curve_t *dest) {
-	if (src->seed) dest->seed = seed_clone(src->seed, dest->seed);
+	if (src->seed) dest->seed = seed_new_clone(src->seed);
 	if (src->field) dest->field = gclone(src->field);
 	if (src->a) dest->a = gclone(src->a);
 	if (src->b) dest->b = gclone(src->b);
