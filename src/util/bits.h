@@ -6,7 +6,7 @@
 #ifndef ECGEN_BITS_H
 #define ECGEN_BITS_H
 
-#include "gen/types.h"
+#include "misc/types.h"
 
 #define BYTE_LEN(bit_len) \
 	(((bit_len) % 8 == 0) ? (bit_len) / 8 : ((bit_len) / 8) + 1)

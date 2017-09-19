@@ -10,7 +10,7 @@
 
 #include <limits.h>
 #include <pari/pari.h>
-#include "io/config.h"
+#include "misc/config.h"
 
 /**
  * @brief

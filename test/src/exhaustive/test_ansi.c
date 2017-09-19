@@ -5,7 +5,7 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
-#include "gen/types.h"
+#include "misc/types.h"
 #include "math/poly.h"
 #include "exhaustive/ansi.h"
 #include "gen/seed.h"

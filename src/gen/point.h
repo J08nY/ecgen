@@ -8,7 +8,7 @@
 #ifndef ECGEN_POINT_H
 #define ECGEN_POINT_H
 
-#include "types.h"
+#include "misc/types.h"
 
 /**
  *

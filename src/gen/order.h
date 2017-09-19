@@ -8,7 +8,7 @@
 #ifndef ECGEN_ORDER_H
 #define ECGEN_ORDER_H
 
-#include "types.h"
+#include "misc/types.h"
 
 /**
  * GENERATOR(gen_t)

@@ -3,7 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "output.h"
-#include "gen/types.h"
+#include "misc/types.h"
 #include "io/output.h"
 
 FILE *read_out = NULL;

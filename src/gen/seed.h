@@ -9,7 +9,7 @@
 #define ECGEN_SEED_H
 
 #include "io/input.h"
-#include "types.h"
+#include "misc/types.h"
 
 /**
  * @brief

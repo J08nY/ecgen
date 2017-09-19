@@ -5,7 +5,7 @@
 #include "cli.h"
 #include <string.h>
 #include <unistd.h>
-#include "config.h"
+#include "misc/config.h"
 #include "exhaustive/ansi.h"
 
 char cli_doc[] =

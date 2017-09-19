@@ -6,7 +6,7 @@
 #include <criterion/criterion.h>
 #include <unistd.h>
 #include "io/cli.h"
-#include "io/config.h"
+#include "misc/config.h"
 #include "test/default.h"
 
 static struct argp test_argp = {cli_options, cli_parse, cli_args_doc,

@@ -2,7 +2,7 @@
 #ifndef ECGEN_ANSI_H
 #define ECGEN_ANSI_H
 
-#include "gen/types.h"
+#include "misc/types.h"
 
 bool ansi_seed_valid(const char *hex_str);
 

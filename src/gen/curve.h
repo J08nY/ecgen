@@ -9,7 +9,7 @@
 #define ECGEN_CURVE_H
 
 #include <pari/pari.h>
-#include "types.h"
+#include "misc/types.h"
 
 /**
  * GENERATOR(gen_t)

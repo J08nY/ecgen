@@ -1,6 +1,6 @@
 
-#include <io/config.h>
-#include <gen/types.h>
+#include <misc/config.h>
+#include <misc/types.h>
 #include "ansi.h"
 #include "gen/seed.h"
 #include "gen/field.h"
