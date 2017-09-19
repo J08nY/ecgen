@@ -48,4 +48,3 @@ void seed_free(seed_t **seed) {
 		*seed = NULL;
 	}
 }
-

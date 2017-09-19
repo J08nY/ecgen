@@ -1,13 +1,12 @@
 
+#include "ansi.h"
 #include <misc/config.h>
 #include <misc/types.h>
-#include "ansi.h"
-#include "gen/seed.h"
 #include "gen/field.h"
+#include "gen/seed.h"
+#include "io/output.h"
 #include "util/bits.h"
 #include "util/memory.h"
-#include "io/output.h"
-
 
 bool ansi_seed_valid(const char *hex_str) {
 	size_t len = strlen(hex_str);
@@ -40,8 +39,8 @@ static void seed_hash(seed_t *seed) {
 static void seed_tsh(seed_t *seed, const config_t *cfg) {
 	pari_sp ltop = avma;
 	seed->ansi.t = utoi(cfg->bits);
-	seed->ansi.s = floorr(
-		rdivii(subis(seed->ansi.t, 1), stoi(160), DEFAULTPREC));
+	seed->ansi.s =
+	    floorr(rdivii(subis(seed->ansi.t, 1), stoi(160), DEFAULTPREC));
 	seed->ansi.h = subii(seed->ansi.t, mulis(seed->ansi.s, 160));
 	gerepileall(ltop, 3, &seed->ansi.t, &seed->ansi.s, &seed->ansi.h);
 }
@@ -144,7 +143,7 @@ static GENERATOR(ansi_gen_equation_fp) {
 	do {
 		a = random_int(cfg->bits);
 		b2 = mulii(powis(a, 3), r_inv);
-	}while (!Fp_issquare(b2, curve->field));
+	} while (!Fp_issquare(b2, curve->field));
 	GEN b = Fp_sqrt(b2, curve->field);
 
 	curve->a = a;
@@ -180,9 +179,12 @@ static GENERATOR(ansi_gen_equation_f2m) {
 
 GENERATOR(ansi_gen_equation) {
 	switch (cfg->field) {
-		case FIELD_PRIME: return ansi_gen_equation_fp(curve, cfg, args);
-		case FIELD_BINARY: return ansi_gen_equation_f2m(curve, cfg, args);
-		default: pari_err_BUG("Field not prime or binary?");
+		case FIELD_PRIME:
+			return ansi_gen_equation_fp(curve, cfg, args);
+		case FIELD_BINARY:
+			return ansi_gen_equation_f2m(curve, cfg, args);
+		default:
+			pari_err_BUG("Field not prime or binary?");
 			return INT_MIN; /* NOT REACHABLE */
 	}
 }

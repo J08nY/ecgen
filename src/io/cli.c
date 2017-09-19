@@ -5,8 +5,8 @@
 #include "cli.h"
 #include <string.h>
 #include <unistd.h>
-#include "misc/config.h"
 #include "exhaustive/ansi.h"
+#include "misc/config.h"
 
 char cli_doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
@@ -235,8 +235,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				             "--f2m (but not both).");
 			}
 			// Invalid is not prime or seed by definition.
-			if (cfg->invalid &&
-			    (cfg->prime || cfg->ansi || cfg->cofactor)) {
+			if (cfg->invalid && (cfg->prime || cfg->ansi || cfg->cofactor)) {
 				// not seed, not prime
 				argp_failure(state, 1, 0,
 				             "Invalid curve generation can not generate curves "
@@ -251,8 +250,8 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				             "prime.");
 			}
 			if (cfg->anomalous &&
-			    (cfg->binary_field || cfg->cofactor || cfg->ansi ||
-			     cfg->cm || cfg->invalid || cfg->koblitz)) {
+			    (cfg->binary_field || cfg->cofactor || cfg->ansi || cfg->cm ||
+			     cfg->invalid || cfg->koblitz)) {
 				argp_failure(
 				    state, 1, 0,
 				    "Anomalous curve generation can not generate "

@@ -35,7 +35,6 @@ GENERATOR(curve_gen_any);
  */
 GENERATOR(curve_gen_nonzero);
 
-
 /**
  *
  * @param curve

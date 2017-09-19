@@ -52,4 +52,4 @@ UNROLL(ansi_unroll_seed);
  */
 GENERATOR(ansi_gen_equation);
 
-#endif //ECGEN_ANSI_H
+#endif  // ECGEN_ANSI_H

@@ -5,8 +5,8 @@
 
 #include "output.h"
 #include <parson/parson.h>
-#include "util/bits.h"
 #include "gen/field.h"
+#include "util/bits.h"
 #include "util/memory.h"
 
 FILE *out;

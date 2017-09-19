@@ -56,7 +56,6 @@ GENERATOR(a_gen_one) {
 	return 1;
 }
 
-
 GENERATOR(b_gen_random) {
 	curve->b = genrand(curve->field);
 	return 1;

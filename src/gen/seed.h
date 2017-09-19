@@ -53,5 +53,4 @@ seed_t *seed_new_clone(const seed_t *src);
  */
 void seed_free(seed_t **seed);
 
-
 #endif  // ECGEN_SEED_H
