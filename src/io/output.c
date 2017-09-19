@@ -21,11 +21,7 @@ char *output_malloc(const char *what) {
 
 char *output_scsv(curve_t *curve, const config_t *cfg) {
 	pari_sp ltop = avma;
-	char *params[OFFSET_END];
-
-	for (int i = 0; i < OFFSET_END; ++i) {
-		params[i] = NULL;
-	}
+	char *params[OFFSET_END] = {NULL};
 
 	switch (cfg->field) {
 		case FIELD_PRIME:

@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 
+#include <misc/types.h>
 #include "seed.h"
 #include "util/bits.h"
 #include "util/memory.h"
@@ -50,4 +51,9 @@ void seed_free(seed_t **seed) {
 		try_free(*seed);
 		*seed = NULL;
 	}
+}
+
+UNROLL(seed_unroll) {
+	seed_free(&curve->seed);
+	return -1;
 }

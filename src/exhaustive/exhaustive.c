@@ -11,23 +11,32 @@
 #include "gen/gens.h"
 #include "gen/order.h"
 #include "gen/point.h"
+#include "gen/seed.h"
 #include "io/output.h"
 #include "util/memory.h"
 
 static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
-	if (cfg->ansi) {
-		// setup ANSI X9.62 generators
-		if (cfg->seed) {
-			generators[OFFSET_SEED] = &ansi_gen_seed_argument;
-		} else {
-			if (cfg->random) {
-				generators[OFFSET_SEED] = &ansi_gen_seed_random;
-			} else {
-				generators[OFFSET_SEED] = &ansi_gen_seed_input;
+	if (cfg->seed_algo) {
+		switch (cfg->seed_algo) {
+			case SEED_ANSI: {
+				// setup ANSI X9.62 generators
+				if (cfg->seed) {
+					generators[OFFSET_SEED] = &ansi_gen_seed_argument;
+				} else {
+					if (cfg->random) {
+						generators[OFFSET_SEED] = &ansi_gen_seed_random;
+					} else {
+						generators[OFFSET_SEED] = &ansi_gen_seed_input;
+					}
+				}
+				generators[OFFSET_A] = &gen_skip;
+				generators[OFFSET_B] = &ansi_gen_equation;
 			}
+			case SEED_BRAINPOOL:break;
+			case SEED_BRAINPOOL_RFC:break;
+			case SEED_FIPS:break;
+			default:break;
 		}
-		generators[OFFSET_A] = &gen_skip;
-		generators[OFFSET_B] = &ansi_gen_equation;
 		generators[OFFSET_CURVE] = &curve_gen_nonzero;
 		generators[OFFSET_ORDER] = &order_gen_any;
 	} else {
@@ -143,8 +152,8 @@ static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 }
 
 void exhaustive_uinit(unroll_t *unrolls, const config_t *cfg) {
-	if (cfg->ansi) {
-		unrolls[OFFSET_SEED] = &ansi_unroll_seed;
+	if (cfg->seed_algo) {
+		unrolls[OFFSET_SEED] = &seed_unroll;
 	} else {
 		unrolls[OFFSET_SEED] = &unroll_skip;
 	}

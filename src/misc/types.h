@@ -24,12 +24,6 @@ typedef struct {
 	size_t allocated;
 } bits_t;
 
-enum seed_e {
-	SEED_ANSI,
-	SEED_BRAINPOOL,
-	SEED_BRAINPOOL_RFC,
-	SEED_FIPS
-};
 /**
  * @brief
  * @param seed
@@ -41,7 +35,7 @@ enum seed_e {
 typedef struct {
 	bits_t *seed;
 	unsigned char *hash20;
-	enum seed_e type;
+	seed_e type;
 	union {
 		struct {
 			GEN t;

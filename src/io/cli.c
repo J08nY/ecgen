@@ -47,17 +47,17 @@ struct argp_option cli_options[] = {
 	{"random",       OPT_RANDOM,    0,        0,                 "Generate a random curve (using Random approach).",                                      2},
 	{"prime",        OPT_PRIME,     0,        0,                 "Generate a curve with prime order.",                                                    2},
 	{"cofactor",     OPT_COFACTOR,  "BOUND",  0,                 "Generate a curve with cofactor up to BOUND.",                                           2},
-	{"koblitz",      OPT_KOBLITZ,   "A",     OPTION_ARG_OPTIONAL,"Generate a Koblitz curve (a in {0, 1}, b = 1).",                                                     2},
+	{"koblitz",      OPT_KOBLITZ,   "A",     OPTION_ARG_OPTIONAL,"Generate a Koblitz curve (a in {0, 1}, b = 1).",                                        2},
 	{"unique",       OPT_UNIQUE,    0,        0,                 "Generate a curve with only one generator.",                                             2},
 	{"anomalous",    OPT_ANOMALOUS, 0,        0,                 "Generate an anomalous curve (of trace one, with field order equal to curve order).",    2},
 	{"points",       OPT_POINTS,    "TYPE",   0,                 "Generate points of given type (random/prime/all/nonprime/none).",                       2},
-	{"ansi",         OPT_ANSI,      "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure).",     2},
+	{"ansi",         OPT_ANSI,      "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure).",     					  2},
 	{"invalid",      OPT_INVALID,   0,        0,                 "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).",  2},
 	{"order",        OPT_ORDER,     "ORDER",  0,                 "Generate a curve with given order (using Complex Multiplication). **NOT IMPLEMENTED**", 2},
 	{"count",        OPT_COUNT,     "COUNT",  0,                 "Generate multiple curves.",                                                             2},
 
 	{0,              0,             0,        0,                 "Input/Output options:",                                                                 3},
-	{"format",       OPT_FORMAT,    "FORMAT", 0,                 "Format to output in. One of {csv, json}, default is json.",                              3},
+	{"format",       OPT_FORMAT,    "FORMAT", 0,                 "Format to output in. One of {csv, json}, default is json.",                             3},
 	{"input",        OPT_INPUT,     "FILE",   0,                 "Input from file.",                                                                      3},
 	{"output",       OPT_OUTPUT,    "FILE",   0,                 "Output into file. Overwrites any existing file!",                                       3},
 	{"append",       OPT_APPEND,    0,        0,                 "Append to output file (don't overwrite).",                                              3},
@@ -198,7 +198,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			break;
 		}
 		case OPT_ANSI:
-			cfg->ansi = true;
+			cfg->seed_algo = SEED_ANSI;
 			if (arg) {
 				if (!ansi_seed_valid(arg)) {
 					argp_failure(
@@ -234,13 +234,13 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				             "--f2m (but not both).");
 			}
 			// Invalid is not prime or seed by definition.
-			if (cfg->invalid && (cfg->prime || cfg->ansi || cfg->cofactor)) {
+			if (cfg->invalid && (cfg->prime || cfg->seed_algo || cfg->cofactor)) {
 				// not seed, not prime
 				argp_failure(state, 1, 0,
 				             "Invalid curve generation can not generate curves "
 				             "from seed, exhaustive or prime order.");
 			}
-			if (cfg->cm && (cfg->prime || cfg->ansi || cfg->invalid ||
+			if (cfg->cm && (cfg->prime || cfg->seed_algo || cfg->invalid ||
 			                cfg->cofactor || cfg->anomalous)) {
 				argp_failure(state, 1, 0,
 				             "Fixed order curve generation can not generate "
@@ -249,7 +249,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				             "prime.");
 			}
 			if (cfg->anomalous &&
-			    (cfg->binary_field || cfg->cofactor || cfg->ansi || cfg->cm ||
+			    (cfg->binary_field || cfg->cofactor || cfg->seed_algo || cfg->cm ||
 			     cfg->invalid || cfg->koblitz)) {
 				argp_failure(
 				    state, 1, 0,
@@ -270,6 +270,9 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			}
 			if (!cfg->thread_memory) {
 				cfg->thread_memory = cfg->bits * 2000000;
+			}
+			if (!cfg->points.type) {
+				cfg->points.type = POINTS_PRIME;
 			}
 			break;
 		case ARGP_KEY_NO_ARGS:

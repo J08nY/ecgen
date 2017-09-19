@@ -14,16 +14,24 @@
 enum field_e { FIELD_PRIME, FIELD_BINARY };
 enum format_e { FORMAT_JSON, FORMAT_CSV };
 enum points_e {
+	POINTS_NONE = 0,
 	POINTS_PRIME,
 	POINTS_RANDOM,
 	POINTS_ALL,
-	POINTS_NONPRIME,
-	POINTS_NONE
+	POINTS_NONPRIME
 };
 struct points_s {
 	enum points_e type;
 	size_t amount;
 };
+
+typedef enum {
+	SEED_NONE = 0,
+	SEED_ANSI,
+	SEED_BRAINPOOL,
+	SEED_BRAINPOOL_RFC,
+	SEED_FIPS
+} seed_e;
 
 typedef struct {
 	enum field_e field;
@@ -41,7 +49,7 @@ typedef struct {
 	long koblitz_value;
 	bool cofactor;
 	long cofactor_bound;
-	bool ansi;
+	seed_e seed_algo;
 	char *seed;
 	bool unique;
 	struct points_s points;

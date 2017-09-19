@@ -122,11 +122,6 @@ static bits_t *seed_process(seed_t *seed, const bits_t *first) {
 	return result;
 }
 
-UNROLL(ansi_unroll_seed) {
-	seed_free(&curve->seed);
-	return -1;
-}
-
 static GENERATOR(ansi_gen_equation_fp) {
 	pari_sp ltop = avma;
 	bits_t *c0 = bits_from_raw(curve->seed->hash20, 160);
