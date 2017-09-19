@@ -23,7 +23,7 @@ Tool for generating Elliptic curve domain parameters.
  - `-p / --prime`			Generate a curve with prime order.
  - `--points=TYPE`			Generate points of given `TYPE` (random/prime/all/nonprime/none).
  - `-r / --random`			Generate a random curve (using Random approach).
- - `-s / --seed[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure). **TODO - NOT IMPLEMENTED**
+ - `-s / --ansi[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
  - `-u / --unique`			Generate a curve with only one generator.
 
 #### IO options
