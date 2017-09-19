@@ -3,8 +3,8 @@
  * Copyright (C) 2017 J08nY
  */
 #include "output.h"
-#include "misc/types.h"
 #include "io/output.h"
+#include "misc/types.h"
 
 FILE *read_out = NULL;
 FILE *read_err = NULL;

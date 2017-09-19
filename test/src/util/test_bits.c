@@ -409,6 +409,7 @@ void sha1_params_cleanup(struct criterion_test_params *ctp) {
 
 ParameterizedTestParameters(bits, test_bits_sha1) {
 	static struct sha1_params params[5] = {};
+	// clang-format off
 	params[0].data = cr_strdup("The quick brown fox jumps over the lazy dog");
 	params[0].hashout = cr_memdup("\x2f\xd4\xe1\xc6\x7a\x2d\x28\xfc\xed\x84\x9e\xe1\xbb\x76\xe7\x39\x1b\x93\xeb\x12", 20);
 	params[1].data = cr_strdup("abc");
@@ -419,13 +420,16 @@ ParameterizedTestParameters(bits, test_bits_sha1) {
 	params[3].hashout = cr_memdup("\x84\x98\x3e\x44\x1c\x3b\xd2\x6e\xba\xae\x4a\xa1\xf9\x51\x29\xe5\xe5\x46\x70\xf1", 20);
 	params[4].data = cr_strdup("abcdefghbcdefghicdefghijdefghijkefghijklfghijklmghijklmnhijklmnoijklmnopjklmnopqklmnopqrlmnopqrsmnopqrstnopqrstu");
 	params[4].hashout = cr_memdup("\xa4\x9b\x24\x46\xa0\x2c\x64\x5b\xf4\x19\xf9\x95\xb6\x70\x91\x25\x3a\x04\xa2\x59", 20);
+	// clang-format on
 
 	size_t nb_params = sizeof(params) / sizeof(struct sha1_params);
-	return cr_make_param_array(struct sha1_params, params, nb_params, sha1_params_cleanup);
+	return cr_make_param_array(struct sha1_params, params, nb_params,
+	                           sha1_params_cleanup);
 }
 
 ParameterizedTest(struct sha1_params *param, bits, test_bits_sha1) {
-	bits_t *bits = bits_from_raw((unsigned char *)param->data, strlen(param->data) * 8);
+	bits_t *bits =
+	    bits_from_raw((unsigned char *)param->data, strlen(param->data) * 8);
 	unsigned char hashout[20] = {};
 	bits_sha1(bits, hashout);
 

@@ -5,14 +5,13 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
-#include "misc/types.h"
-#include "math/poly.h"
 #include "exhaustive/ansi.h"
-#include "gen/seed.h"
 #include "gen/field.h"
+#include "gen/seed.h"
+#include "math/poly.h"
 #include "test/default.h"
-#include "test/memory.h"
 #include "test/input.h"
+#include "test/memory.h"
 #include "test/output.h"
 #include "util/bits.h"
 #include "util/memory.h"
@@ -119,6 +118,7 @@ void prime_params_cleanup(struct criterion_test_params *ctp) {
 ParameterizedTestParameters(ansi, test_seed_prime_examples) {
 	static struct prime_params params[7] = {};
 	// Taken from ANSI X9.62 J.5.1 - J.5.3; p. 115 - 117
+	// clang-format off
 	params[0].bits = 192;
 	params[0].p = cr_strdup("fffffffffffffffffffffffffffffffeffffffffffffffff");
 	params[0].seed = cr_strdup("3045AE6FC8422F64ED579528D38120EAE12196D5");
@@ -161,6 +161,7 @@ ParameterizedTestParameters(ansi, test_seed_prime_examples) {
 	params[6].r = cr_strdup("7EFBA1662985BE9403CB055C75D4F7E0CE8D84A9C5114ABCAF3177680104FA0D");
 	params[6].a = cr_strdup("FFFFFFFF00000001000000000000000000000000FFFFFFFFFFFFFFFFFFFFFFFC");
 	params[6].b = cr_strdup("5AC635D8AA3A93E7B3EBBD55769886BC651D06B0CC53B0F63BCE3C3E27D2604B");
+	// clang-format on
 
 	size_t nb_params = sizeof(params) / sizeof(struct prime_params);
 	return cr_make_param_array(struct prime_params, params, nb_params, NULL);
@@ -175,12 +176,12 @@ ParameterizedTest(struct prime_params *param, ansi, test_seed_prime_examples) {
 	curve.field = bits_to_i(p);
 
 	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL);
-	cr_assert_eq(ret, 1,);
+	cr_assert_eq(ret, 1, );
 
 	ret = ansi_gen_equation(&curve, &cfg, NULL);
-	cr_assert_eq(ret, 1,);
+	cr_assert_eq(ret, 1, );
 	GEN expected_r = bits_to_i(bits_from_hex(param->r));
-	cr_assert(gequal(curve.seed->ansi.r, expected_r),);
+	cr_assert(gequal(curve.seed->ansi.r, expected_r), );
 
 	bits_free(&p);
 	seed_free(&curve.seed);
@@ -204,6 +205,7 @@ void binary_params_cleanup(struct criterion_test_params *ctp) {
 ParameterizedTestParameters(ansi, test_seed_binary_examples) {
 	static struct binary_params params[10] = {};
 	// Taken from ANSI X9.62 J.4.1, J.4.3, J.4.5 and J.4.8; p. 107 - 113
+	// clang-format off
 	polynomial_t p163 = {163, 9, 3, 2};
 	params[0].bits = 163;
 	params[0].field = p163;
@@ -258,11 +260,14 @@ ParameterizedTestParameters(ansi, test_seed_binary_examples) {
 	params[9].seed = cr_strdup("2B354920B724D696E67687561517585BA1332DC6");
 	params[9].a = cr_strdup("5667676A654B20754F356EA92017D946567C46675556F19556A04616B567D223A5E05656FB549016A96656A557");
 	params[9].b = cr_strdup("2472E2D0197C49363F1FE7F5B6DB075D52B6947D135D8CA445805D39BC345626089687742B6329E70680231988");
+	// clang-format on
 
 	size_t nb_params = sizeof(params) / sizeof(struct binary_params);
-	return cr_make_param_array(struct binary_params, params, nb_params, binary_params_cleanup);
+	return cr_make_param_array(struct binary_params, params, nb_params,
+	                           binary_params_cleanup);
 }
-ParameterizedTest(struct binary_params *param, ansi, test_seed_binary_examples) {
+ParameterizedTest(struct binary_params *param, ansi,
+                  test_seed_binary_examples) {
 	config_t cfg = {};
 	cfg.bits = param->bits;
 	cfg.field = FIELD_BINARY;
@@ -274,12 +279,12 @@ ParameterizedTest(struct binary_params *param, ansi, test_seed_binary_examples) 
 	bits_t *b = bits_from_i(expected_b);
 
 	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL);
-	cr_assert_eq(ret, 1,);
+	cr_assert_eq(ret, 1, );
 
 	ret = ansi_gen_equation(&curve, &cfg, NULL);
-	cr_assert_eq(ret, 1,);
+	cr_assert_eq(ret, 1, );
 	GEN curve_b = field_elementi(curve.b);
-	cr_assert(gequal(curve_b, expected_b),);
+	cr_assert(gequal(curve_b, expected_b), );
 
 	bits_free(&b);
 	seed_free(&curve.seed);

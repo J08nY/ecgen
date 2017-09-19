@@ -1,7 +1,10 @@
-
-#include <string.h>
-#include <criterion/alloc.h>
+/*
+ * ecgen, tool for generating Elliptic curve domain parameters
+ * Copyright (C) 2017 J08nY
+ */
 #include "memory.h"
+#include <criterion/alloc.h>
+#include <string.h>
 
 char *cr_strdup(const char *str) {
 	size_t len = strlen(str);
