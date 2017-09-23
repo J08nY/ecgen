@@ -47,6 +47,7 @@ void seed_free(seed_t **seed) {
 			case SEED_BRAINPOOL:break;
 			case SEED_BRAINPOOL_RFC:break;
 			case SEED_FIPS:break;
+			case SEED_NONE:break;
 		}
 		try_free(*seed);
 		*seed = NULL;
