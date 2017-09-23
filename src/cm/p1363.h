@@ -10,7 +10,7 @@
 
 #include <pari/pari.h>
 
-typedef struct form_t {
+typedef struct {
 	GEN A;
 	GEN B;
 	GEN C;
@@ -26,14 +26,14 @@ typedef struct form_t {
 
 	GEN lambda;
 	GEN theta;
-} form_t;
+} p1363_form_t;
 
-size_t p1363_forms(GEN D, form_t ***forms);
+size_t p1363_forms(GEN D, p1363_form_t ***forms);
 
-void p1363_free(form_t ***forms, size_t nforms);
+void p1363_free(p1363_form_t ***forms, size_t nforms);
 
-GEN p1363_invariant(GEN D, form_t *form);
+GEN p1363_invariant(GEN D, p1363_form_t *form);
 
-GEN p1363_poly(GEN D, form_t **forms, size_t nforms);
+GEN p1363_poly(GEN D, p1363_form_t **forms, size_t nforms);
 
 #endif  // ECGEN_CM_P1363_H

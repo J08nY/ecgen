@@ -12,7 +12,7 @@ int cm_do() {
 	fprintf(err, "This is *NOT IMPLEMENTED* currently.\n");
 
 	GEN D = stoi(71);
-	form_t **forms;
+	p1363_form_t **forms;
 	size_t nforms = p1363_forms(D, &forms);
 	for (size_t i = 0; i < nforms; ++i) {
 		p1363_invariant(D, forms[i]);

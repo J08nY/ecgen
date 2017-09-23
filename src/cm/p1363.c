@@ -51,13 +51,13 @@ GEN p1363_group(GEN D) {
 
 long p1363_num(GEN group) { return glength(group); }
 
-size_t p1363_forms(GEN D, form_t ***forms) {
+size_t p1363_forms(GEN D, p1363_form_t ***forms) {
 	GEN group = p1363_group(D);
 	size_t nforms = (size_t)p1363_num(group);
-	*forms = try_calloc(nforms * sizeof(form_t *));
+	*forms = try_calloc(nforms * sizeof(p1363_form_t *));
 
 	for (size_t i = 0; i < nforms; ++i) {
-		(*forms)[i] = try_calloc(sizeof(form_t));
+		(*forms)[i] = try_calloc(sizeof(p1363_form_t));
 		(*forms)[i]->A = gel(gel(group, i + 1), 1);
 		(*forms)[i]->B = gel(gel(group, i + 1), 2);
 		(*forms)[i]->C = gel(gel(group, i + 1), 3);
@@ -66,7 +66,7 @@ size_t p1363_forms(GEN D, form_t ***forms) {
 	return nforms;
 }
 
-void p1363_free(form_t ***forms, size_t nforms) {
+void p1363_free(p1363_form_t ***forms, size_t nforms) {
 	if (*forms) {
 		for (size_t i = 0; i < nforms; ++i) {
 			if ((*forms)[i]) {
@@ -117,7 +117,7 @@ GEN p1363_func_F(GEN z) {
 	return gerepilecopy(ltop, sum);
 }
 
-GEN p1363_func_fzero(GEN D, form_t *form) {
+GEN p1363_func_fzero(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 
 	GEN upper = p1363_func_F(gneg(form->theta));
@@ -129,7 +129,7 @@ GEN p1363_func_fzero(GEN D, form_t *form) {
 	return gerepilecopy(ltop, result);
 }
 
-GEN p1363_func_fone(GEN D, form_t *form) {
+GEN p1363_func_fone(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 
 	GEN upper = p1363_func_F(form->theta);
@@ -141,7 +141,7 @@ GEN p1363_func_fone(GEN D, form_t *form) {
 	return gerepilecopy(ltop, result);
 }
 
-GEN p1363_func_ftwo(GEN D, form_t *form) {
+GEN p1363_func_ftwo(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 
 	GEN upper = p1363_func_F(gpowgs(form->theta, 4));
@@ -154,9 +154,9 @@ GEN p1363_func_ftwo(GEN D, form_t *form) {
 	return gerepilecopy(ltop, result);
 }
 
-void p1363_m8(GEN D, form_t *form) { form->m8 = mod8(D); }
+void p1363_m8(GEN D, p1363_form_t *form) { form->m8 = mod8(D); }
 
-void p1363_I(GEN D, form_t *form) {
+void p1363_I(GEN D, p1363_form_t *form) {
 	switch (form->m8) {
 		case 1:
 		case 2:
@@ -179,7 +179,7 @@ void p1363_I(GEN D, form_t *form) {
 	}
 }
 
-void p1363_J(GEN D, form_t *form) {
+void p1363_J(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 	GEN ac = mulii(form->A, form->C);
 
@@ -197,7 +197,7 @@ void p1363_J(GEN D, form_t *form) {
 	avma = ltop;
 }
 
-void p1363_K(GEN D, form_t *form) {
+void p1363_K(GEN D, p1363_form_t *form) {
 	switch (form->m8) {
 		case 1:
 		case 2:
@@ -216,7 +216,7 @@ void p1363_K(GEN D, form_t *form) {
 	}
 }
 
-void p1363_L(GEN D, form_t *form) {
+void p1363_L(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 	GEN ac = mulii(form->A, form->C);
 	long a2 = mod2(form->A);
@@ -243,7 +243,7 @@ void p1363_L(GEN D, form_t *form) {
 	form->L = gerepileupto(ltop, form->L);
 }
 
-void p1363_M(GEN D, form_t *form) {
+void p1363_M(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 	GEN quot;
 	if (mod2(form->A) == 0) {
@@ -254,7 +254,7 @@ void p1363_M(GEN D, form_t *form) {
 	form->M = gerepileupto(ltop, powii(gen_m1, quot));
 }
 
-void p1363_N(GEN D, form_t *form) {
+void p1363_N(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 	long ac2 = mod2(mulii(form->A, form->C));
 
@@ -287,14 +287,14 @@ void p1363_N(GEN D, form_t *form) {
 	form->N = gerepileupto(ltop, form->N);
 }
 
-void p1363_lambda(GEN D, form_t *form) {
+void p1363_lambda(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 	GEN pik = mulri(mppi(BIGDEFAULTPREC), stoi(form->K));
 	GEN quot = divrs(pik, 24);
 	form->lambda = gerepileupto(ltop, expIr(quot));
 }
 
-void p1363_theta(GEN D, form_t *form) {
+void p1363_theta(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 
 	GEN upper = gadd(gneg(gsqrt(D, BIGDEFAULTPREC)), gmul(form->B, gen_I()));
@@ -303,7 +303,7 @@ void p1363_theta(GEN D, form_t *form) {
 	form->theta = gerepileupto(ltop, gexp(quot, BIGDEFAULTPREC));
 }
 
-GEN p1363_invariant(GEN D, form_t *form) {
+GEN p1363_invariant(GEN D, p1363_form_t *form) {
 	pari_printf("[A,B,C] = %Pi %Pi %Pi\n", form->A, form->B, form->C);
 	pari_sp ltop = avma;
 
@@ -368,7 +368,7 @@ GEN p1363_invariant(GEN D, form_t *form) {
 	return gerepilecopy(ltop, result);
 }
 
-GEN p1363_poly(GEN D, form_t **forms, size_t nforms) {
+GEN p1363_poly(GEN D, p1363_form_t **forms, size_t nforms) {
 	pari_sp ltop = avma;
 	long v = fetch_var();
 	name_var(v, "t");
