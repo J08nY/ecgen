@@ -10,9 +10,12 @@
 
 #include "misc/types.h"
 
+/**
+ * @brief
+ */
 typedef struct {
 	gen_f *generators;
-	check_f *validators;
+	check_t **validators;
 	arg_t **argss;
 	unroll_f *unrolls;
 } exhaustive_t;

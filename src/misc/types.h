@@ -141,12 +141,19 @@ typedef UNROLL((*unroll_f));
  * @brief A check function type.
  * @param curve A curve_t being checked
  * @param cfg An application config
- * @param args Current optional check argument
  * @return state diff
  */
-#define CHECK(check_name) GENERATOR(check_name)
+#define CHECK(check_name) int check_name(curve_t *curve, const config_t *cfg)
 
 typedef CHECK((*check_f));
+
+/**
+ * @brief
+ */
+typedef struct {
+	check_f *checks;
+	size_t nchecks;
+} check_t;
 
 /**
  * GENERATOR(gen_f)
