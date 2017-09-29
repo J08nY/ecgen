@@ -123,7 +123,7 @@ static void exhaustive_ginit(gen_f *generators, const config_t *cfg) {
 	}
 }
 
-static void exhaustive_cinit(check_t *validators, const config_t *cfg) {}
+static void exhaustive_cinit(check_f *validators, const config_t *cfg) {}
 
 static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 	if (cfg->anomalous) {
@@ -182,7 +182,7 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 		return 0;
 	}
 	gen_f *generators = setup->generators;
-	check_t *validators = setup->validators;
+	check_f *validators = setup->validators;
 	arg_t **argss = setup->argss;
 	unroll_f *unrolls = setup->unrolls;
 
@@ -272,7 +272,7 @@ int exhaustive_do(config_t *cfg) {
 	debug_log_start("Starting Exhaustive method");
 
 	gen_f generators[OFFSET_END] = {NULL};
-	check_t validators[OFFSET_END] = {NULL};
+	check_f validators[OFFSET_END] = {NULL};
 	arg_t *argss[OFFSET_END] = {NULL};
 	unroll_f unrolls[OFFSET_END] = {NULL};
 

@@ -146,7 +146,7 @@ typedef UNROLL((*unroll_f));
  */
 #define CHECK(check_name) GENERATOR(check_name)
 
-typedef CHECK((*check_t));
+typedef CHECK((*check_f));
 
 /**
  * GENERATOR(gen_f)
@@ -159,7 +159,7 @@ typedef CHECK((*check_t));
 GENERATOR(gen_skip);
 
 /**
- * CHECK(check_t)
+ * CHECK(check_f)
  *
  * @param curve A curve_t being checked
  * @param cfg An application config

@@ -12,7 +12,7 @@
 
 typedef struct {
 	gen_f *generators;
-	check_t *validators;
+	check_f *validators;
 	arg_t **argss;
 	unroll_f *unrolls;
 } exhaustive_t;
