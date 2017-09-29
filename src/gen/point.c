@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "point.h"
+#include "exhaustive/arg.h"
 #include "io/output.h"
 #include "math/subgroups.h"
 #include "util/memory.h"
@@ -103,10 +104,7 @@ GENERATOR(point_gen_random) {
 }
 
 GENERATOR(points_gen_random) {
-	if (!args) {
-		fprintf(err, "No args to an arged function. points_gen_random\n");
-		return INT_MIN;
-	}
+	HAS_ARG(args);
 
 	size_t npoints = *(size_t *)args->args;
 
@@ -160,10 +158,7 @@ static int points_from_orders(curve_t *curve, GEN orders) {
 }
 
 GENERATOR(points_gen_trial) {
-	if (!args) {
-		fprintf(err, "No args to an arged function. points_gen_trial\n");
-		return INT_MIN;
-	}
+	HAS_ARG(args);
 
 	pari_ulong *primes = (pari_ulong *)args->args;
 	size_t nprimes = args->nargs;

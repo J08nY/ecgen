@@ -10,6 +10,12 @@
 
 #include "misc/types.h"
 
+#define HAS_ARG(args)                                                 \
+	if (!(args)) {                                                    \
+		fprintf(err, "No args to an arged function. %s\n", __func__); \
+		return INT_MIN;                                               \
+	}
+
 /**
  * @brief
  * @return

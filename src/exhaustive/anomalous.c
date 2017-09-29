@@ -89,10 +89,7 @@ static GEN anomalous_c(size_t i, GEN p) {
 }
 
 GENERATOR(anomalous_gen_field) {
-	if (!args) {
-		fprintf(err, "No args to an arged function. anomalous_field\n");
-		return INT_MIN;
-	}
+	HAS_ARG(args);
 	size_t i = *(size_t *)args->args;
 
 	// find suitable prime field
@@ -108,10 +105,7 @@ GENERATOR(anomalous_gen_field) {
 }
 
 GENERATOR(anomalous_gen_equation) {
-	if (!args) {
-		fprintf(err, "No args to an arged function. anomalous_gen_equation\n");
-		return INT_MIN;
-	}
+	HAS_ARG(args);
 	size_t i = *(size_t *)args->args;
 
 	pari_sp ltop = avma;

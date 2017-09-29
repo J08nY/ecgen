@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "order.h"
+#include "exhaustive/arg.h"
 #include "io/input.h"
 #include "io/output.h"
 
@@ -43,11 +44,7 @@ GENERATOR(order_gen_sea) {
 }
 
 GENERATOR(order_gen_smallfact) {
-	if (!args) {
-		fprintf(err, "No args to an arged function. order_gen_smallfact\n");
-		return INT_MIN;
-	}
-
+	HAS_ARG(args);
 	pari_ulong smallfact = *(pari_ulong *)args->args;
 	pari_sp ltop = avma;
 	GEN fact = mpfact(smallfact);

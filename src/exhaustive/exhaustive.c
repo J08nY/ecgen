@@ -123,10 +123,7 @@ static void exhaustive_ginit(gen_f *generators, const config_t *cfg) {
 	}
 }
 
-static void exhaustive_cinit(check_t **validators, const config_t *cfg) {
-
-
-}
+static void exhaustive_cinit(check_t **validators, const config_t *cfg) {}
 
 static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 	if (cfg->anomalous) {

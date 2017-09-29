@@ -144,8 +144,7 @@ typedef UNROLL((*unroll_f));
  * @param args Current optional generator argument
  * @return state diff
  */
-#define CHECK(check_name) \
-	GENERATOR(check_name)
+#define CHECK(check_name) GENERATOR(check_name)
 
 typedef CHECK((*check_f));
 

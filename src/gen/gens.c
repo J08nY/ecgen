@@ -37,9 +37,7 @@ GENERATOR(gens_gen_one) {
 	return gens_put(curve, generators, len);
 }
 
-CHECK(gens_check_cofactor) {
-	return INT_MIN;
-}
+CHECK(gens_check_cofactor) { return INT_MIN; }
 
 UNROLL(gens_unroll) {
 	if (curve->generators) {
