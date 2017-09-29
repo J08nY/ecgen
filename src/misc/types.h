@@ -135,7 +135,7 @@ typedef GENERATOR((*gen_f));
 	int unroll_name(curve_t *curve, const config_t *cfg, pari_sp from, \
 	                pari_sp to)
 
-typedef UNROLL((*unroll_t));
+typedef UNROLL((*unroll_f));
 
 /**
  * @brief A check function type.
@@ -169,7 +169,7 @@ GENERATOR(gen_skip);
 CHECK(check_skip);
 
 /**
- * UNROLL(unroll_t)
+ * UNROLL(unroll_f)
  *
  * @param curve
  * @param cfg

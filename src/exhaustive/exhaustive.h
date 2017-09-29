@@ -14,7 +14,7 @@ typedef struct {
 	gen_f *generators;
 	check_t *validators;
 	arg_t **argss;
-	unroll_t *unrolls;
+	unroll_f *unrolls;
 } exhaustive_t;
 
 /**
@@ -22,7 +22,7 @@ typedef struct {
  * @param unrolls
  * @param cfg
  */
-void exhaustive_uinit(unroll_t *unrolls, const config_t *cfg);
+void exhaustive_uinit(unroll_f *unrolls, const config_t *cfg);
 
 /**
  *

@@ -279,7 +279,7 @@ int invalid_do(config_t *cfg) {
 
 	gen_f original_gens[OFFSET_END];
 	arg_t *original_argss[OFFSET_END];
-	unroll_t common_unrolls[OFFSET_END];
+	unroll_f common_unrolls[OFFSET_END];
 	invalid_original_ginit(original_gens, cfg);
 	exhaustive_uinit(common_unrolls, cfg);
 	exhaustive_t original_setup = {.generators = original_gens,

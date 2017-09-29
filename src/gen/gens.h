@@ -32,7 +32,7 @@ GENERATOR(gens_gen_any);
 GENERATOR(gens_gen_one);
 
 /**
- * UNROLL(unroll_t)
+ * UNROLL(unroll_f)
  *
  * @param curve
  * @param cfg

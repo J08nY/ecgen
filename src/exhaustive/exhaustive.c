@@ -157,7 +157,7 @@ static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 	}
 }
 
-void exhaustive_uinit(unroll_t *unrolls, const config_t *cfg) {
+void exhaustive_uinit(unroll_f *unrolls, const config_t *cfg) {
 	if (cfg->seed_algo) {
 		unrolls[OFFSET_SEED] = &seed_unroll;
 	} else {
@@ -184,7 +184,7 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 	gen_f *generators = setup->generators;
 	check_t *validators = setup->validators;
 	arg_t **argss = setup->argss;
-	unroll_t *unrolls = setup->unrolls;
+	unroll_f *unrolls = setup->unrolls;
 
 	pari_sp stack_tops[OFFSET_END] = {0};
 	int gen_tries[OFFSET_END] = {0};
@@ -274,7 +274,7 @@ int exhaustive_do(config_t *cfg) {
 	gen_f generators[OFFSET_END] = {NULL};
 	check_t validators[OFFSET_END] = {NULL};
 	arg_t *argss[OFFSET_END] = {NULL};
-	unroll_t unrolls[OFFSET_END] = {NULL};
+	unroll_f unrolls[OFFSET_END] = {NULL};
 
 	exhaustive_t setup = {.generators = generators,
 	                      .validators = validators,

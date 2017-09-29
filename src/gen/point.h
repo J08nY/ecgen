@@ -179,7 +179,7 @@ GENERATOR(points_gen_allgroups);
 GENERATOR(points_gen_nonprime);
 
 /**
- * UNROLL(unroll_t)
+ * UNROLL(unroll_f)
  *
  * @param curve
  * @param cfg
