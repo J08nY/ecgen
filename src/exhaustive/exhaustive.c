@@ -123,7 +123,10 @@ static void exhaustive_ginit(gen_f *generators, const config_t *cfg) {
 	}
 }
 
-static void exhaustive_cinit(check_t **validators, const config_t *cfg) {}
+static void exhaustive_cinit(check_t **validators, const config_t *cfg) {
+
+
+}
 
 static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 	if (cfg->anomalous) {
@@ -193,14 +196,16 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 	while (state < end_offset) {
 		stack_tops[state] = avma;
 
-		int diff = generators[state](curve, cfg, argss ? argss[state] : NULL);
+		arg_t *arg = argss ? argss[state] : NULL;
+
+		int diff = generators[state](curve, cfg, arg);
 		int new_state = state + diff;
 		if (new_state < start_offset) new_state = start_offset;
 
 		if (diff > 0 && validators && validators[state]) {
 			check_t *validator = validators[state];
 			for (size_t i = 0; i < validator->nchecks; ++i) {
-				int new_diff = validator->checks[state](curve, cfg);
+				int new_diff = validator->checks[state](curve, cfg, arg);
 				if (new_diff <= 0) {
 					diff = new_diff;
 					break;
