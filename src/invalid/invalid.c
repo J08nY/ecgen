@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "invalid.h"
+#include <exhaustive/exhaustive.h>
 #include "exhaustive/exhaustive.h"
 #include "gen/curve.h"
 #include "gen/equation.h"
@@ -79,10 +80,11 @@ static size_t invalid_primes(GEN order, pari_ulong **primes) {
 	return nprimes;
 }
 
-static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
-                             size_t nprimes, curve_t **curves,
-                             gen_t invalid_gen[], unroll_t unrolls[]) {
+static size_t invalid_curves(const curve_t *curve, const config_t *cfg,
+                             pari_ulong *primes, size_t nprimes,
+                             curve_t **curves, exhaustive_t *setup) {
 	arg_t *invalid_argss[OFFSET_END];
+	setup->argss = invalid_argss;
 
 	// Alloc a curve, and only alloc a new one when this pointer is saved into
 	// **curves
@@ -95,8 +97,7 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 	while (ncurves < nprimes) {
 		pari_sp btop = avma;
 		// generate a curve with random b
-		exhaustive_gen(invalid, cfg, invalid_gen, NULL, unrolls, OFFSET_B,
-		               OFFSET_GENERATORS);
+		exhaustive_gen(invalid, cfg, setup, OFFSET_B, OFFSET_GENERATORS);
 
 		// does some small prime from our array divide the curve order?
 		// if so how many?
@@ -114,8 +115,8 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 		}
 
 		if (total > 0) {
-			if (!exhaustive_gen_retry(invalid, cfg, invalid_gen, NULL, unrolls,
-			                          OFFSET_GENERATORS, OFFSET_POINTS, 1)) {
+			if (!exhaustive_gen_retry(invalid, cfg, setup, OFFSET_GENERATORS,
+			                          OFFSET_POINTS, 1)) {
 				curve_unroll(invalid, cfg, avma,
 				             btop);  // necessary to free the ellinit
 				avma = btop;
@@ -143,8 +144,7 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 
 			// generate prime order points, this is expensive (order needs to be
 			// factorised, so only do it if we want the curve)
-			exhaustive_gen(invalid, cfg, invalid_gen, invalid_argss, unrolls,
-			               OFFSET_POINTS, OFFSET_END);
+			exhaustive_gen(invalid, cfg, setup, OFFSET_POINTS, OFFSET_END);
 
 			size_t count = 0;
 			for (size_t i = nprimes; i-- > 0;) {
@@ -196,10 +196,9 @@ static size_t invalid_curves(curve_t *curve, config_t *cfg, pari_ulong *primes,
 	return ncurves;
 }
 
-static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
+static size_t invalid_curves_threaded(const curve_t *curve, const config_t *cfg,
                                       pari_ulong *primes, size_t nprimes,
-                                      curve_t **curves, gen_t invalid_gen[],
-                                      unroll_t unrolls[]) {
+                                      curve_t **curves, exhaustive_t *setup) {
 	pthread_t pthreads[cfg->threads];
 	thread_t threads[cfg->threads];
 	struct pari_thread pari_threads[cfg->threads];
@@ -230,8 +229,7 @@ static size_t invalid_curves_threaded(curve_t *curve, config_t *cfg,
 		threads[i].mutex_state = &state_mutex;
 		threads[i].cond_generated = &generated_cond;
 		threads[i].cfg = cfg;
-		threads[i].gens = invalid_gen;
-		threads[i].unrolls = unrolls;
+		threads[i].setup = setup;
 	}
 
 	pthread_mutex_lock(&state_mutex);
@@ -284,11 +282,15 @@ int invalid_do(config_t *cfg) {
 	unroll_t common_unrolls[OFFSET_END];
 	invalid_original_ginit(original_gens, cfg);
 	exhaustive_uinit(common_unrolls, cfg);
+	exhaustive_t original_setup = {.generators = original_gens,
+	                               .validators = NULL,
+	                               .argss = original_argss,
+	                               .unrolls = common_unrolls};
 
 	debug_log_start("Starting to create curve to invalidate");
 	curve_t *curve = curve_new();
-	if (!exhaustive_gen(curve, cfg, original_gens, original_argss,
-	                    common_unrolls, OFFSET_FIELD, OFFSET_POINTS)) {
+	if (!exhaustive_gen(curve, cfg, &original_setup, OFFSET_FIELD,
+	                    OFFSET_POINTS)) {
 		curve_free(&curve);
 		return EXIT_FAILURE;
 	}
@@ -310,15 +312,19 @@ int invalid_do(config_t *cfg) {
 	// init the invalid curve gen_t
 	gen_t invalid_gens[OFFSET_END];
 	invalid_invalid_ginit(invalid_gens, cfg);
+	exhaustive_t invalid_setup = {.generators = invalid_gens,
+	                              .validators = NULL,
+	                              .argss = NULL,
+	                              .unrolls = common_unrolls};
 
 	debug_log_start("Starting to generate invalid curves");
 	size_t ncurves;
 	if (cfg->threads == 1) {
-		ncurves = invalid_curves(curve, cfg, primes, nprimes, curves,
-		                         invalid_gens, common_unrolls);
+		ncurves =
+		    invalid_curves(curve, cfg, primes, nprimes, curves, &invalid_setup);
 	} else {
 		ncurves = invalid_curves_threaded(curve, cfg, primes, nprimes, curves,
-		                                  invalid_gens, common_unrolls);
+		                                  &invalid_setup);
 	}
 	debug_log_end("Finished generating invalid curves");
 	output_o_end(cfg);

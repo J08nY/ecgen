@@ -3,8 +3,8 @@
  * Copyright (C) 2017 J08nY
  */
 
-#include <misc/types.h>
 #include "seed.h"
+#include <misc/types.h>
 #include "util/bits.h"
 #include "util/memory.h"
 
@@ -43,11 +43,16 @@ void seed_free(seed_t **seed) {
 			try_free((*seed)->hash20);
 		}
 		switch ((*seed)->type) {
-			case SEED_ANSI:break;
-			case SEED_BRAINPOOL:break;
-			case SEED_BRAINPOOL_RFC:break;
-			case SEED_FIPS:break;
-			case SEED_NONE:break;
+			case SEED_ANSI:
+				break;
+			case SEED_BRAINPOOL:
+				break;
+			case SEED_BRAINPOOL_RFC:
+				break;
+			case SEED_FIPS:
+				break;
+			case SEED_NONE:
+				break;
 		}
 		try_free(*seed);
 		*seed = NULL;

@@ -10,7 +10,7 @@
 
 #include <limits.h>
 #include <pari/pari.h>
-#include "misc/config.h"
+#include "config.h"
 
 /**
  * @brief
@@ -138,8 +138,18 @@ typedef GENERATOR((*gen_t));
 typedef UNROLL((*unroll_t));
 
 /**
+ * @brief A check function type.
+ * @param curve A curve_t being checked
+ * @param cfg An application config
+ * @param args Current optional check argument
+ * @return state diff
+ */
+#define CHECK(check_name) GENERATOR(check_name)
+
+typedef CHECK((*check_t));
+
+/**
  * GENERATOR(gen_t)
- *
  *
  * @param curve A curve_t being generated
  * @param cfg An application config
@@ -147,6 +157,16 @@ typedef UNROLL((*unroll_t));
  * @return state diff
  */
 GENERATOR(gen_skip);
+
+/**
+ * CHECK(check_t)
+ *
+ * @param curve A curve_t being checked
+ * @param cfg An application config
+ * @param args unused
+ * @return
+ */
+CHECK(check_skip);
 
 /**
  * UNROLL(unroll_t)

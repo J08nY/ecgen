@@ -6,4 +6,6 @@
 
 GENERATOR(gen_skip) { return 1; }
 
+CHECK(check_skip) { return 1; }
+
 UNROLL(unroll_skip) { return -1; }

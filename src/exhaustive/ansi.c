@@ -48,7 +48,7 @@ static void seed_tsh(seed_t *seed, const config_t *cfg) {
 	pari_sp ltop = avma;
 	seed->ansi.t = utoi(cfg->bits);
 	seed->ansi.s =
-		floorr(rdivii(subis(seed->ansi.t, 1), stoi(160), DEFAULTPREC));
+	    floorr(rdivii(subis(seed->ansi.t, 1), stoi(160), DEFAULTPREC));
 	seed->ansi.h = subii(seed->ansi.t, mulis(seed->ansi.s, 160));
 	gerepileall(ltop, 3, &seed->ansi.t, &seed->ansi.s, &seed->ansi.h);
 }
@@ -182,9 +182,12 @@ static GENERATOR(ansi_gen_equation_f2m) {
 
 GENERATOR(ansi_gen_equation) {
 	switch (cfg->field) {
-		case FIELD_PRIME: return ansi_gen_equation_fp(curve, cfg, args);
-		case FIELD_BINARY: return ansi_gen_equation_f2m(curve, cfg, args);
-		default: pari_err_BUG("Field not prime or binary?");
+		case FIELD_PRIME:
+			return ansi_gen_equation_fp(curve, cfg, args);
+		case FIELD_BINARY:
+			return ansi_gen_equation_f2m(curve, cfg, args);
+		default:
+			pari_err_BUG("Field not prime or binary?");
 			return INT_MIN; /* NOT REACHABLE */
 	}
 }

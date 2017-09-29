@@ -10,6 +10,13 @@
 
 #include "misc/types.h"
 
+typedef struct {
+	gen_t *generators;
+	check_t *validators;
+	arg_t **argss;
+	unroll_t *unrolls;
+} exhaustive_t;
+
 /**
  *
  * @param unrolls
@@ -21,31 +28,27 @@ void exhaustive_uinit(unroll_t *unrolls, const config_t *cfg);
  *
  * @param curve
  * @param cfg
- * @param generators
- * @param argss
- * @param unrolls
+ * @param setup
  * @param start_offset
  * @param end_offset
  * @param retry
  * @return
  */
 int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
-                         gen_t generators[], arg_t *argss[], unroll_t unrolls[],
-                         offset_e start_offset, offset_e end_offset, int retry);
+                         const exhaustive_t *setup, offset_e start_offset,
+                         offset_e end_offset, int retry);
 
 /**
  *
  * @param curve
  * @param config
- * @param generators
- * @param argss
- * @param unrolls
+ * @param setup
  * @param start_offset
  * @param end_offset
  * @return
  */
-int exhaustive_gen(curve_t *curve, const config_t *cfg, gen_t generators[],
-                   arg_t *argss[], unroll_t unrolls[], offset_e start_offset,
+int exhaustive_gen(curve_t *curve, const config_t *cfg,
+                   const exhaustive_t *setup, offset_e start_offset,
                    offset_e end_offset);
 
 /**

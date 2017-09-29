@@ -234,7 +234,8 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				             "--f2m (but not both).");
 			}
 			// Invalid is not prime or seed by definition.
-			if (cfg->invalid && (cfg->prime || cfg->seed_algo || cfg->cofactor)) {
+			if (cfg->invalid &&
+			    (cfg->prime || cfg->seed_algo || cfg->cofactor)) {
 				// not seed, not prime
 				argp_failure(state, 1, 0,
 				             "Invalid curve generation can not generate curves "
@@ -249,8 +250,8 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				             "prime.");
 			}
 			if (cfg->anomalous &&
-			    (cfg->binary_field || cfg->cofactor || cfg->seed_algo || cfg->cm ||
-			     cfg->invalid || cfg->koblitz)) {
+			    (cfg->binary_field || cfg->cofactor || cfg->seed_algo ||
+			     cfg->cm || cfg->invalid || cfg->koblitz)) {
 				argp_failure(
 				    state, 1, 0,
 				    "Anomalous curve generation can not generate "
