@@ -121,7 +121,7 @@ typedef struct {
 #define GENERATOR(gen_name) \
 	int gen_name(curve_t *curve, const config_t *cfg, arg_t *args)
 
-typedef GENERATOR((*gen_t));
+typedef GENERATOR((*gen_f));
 
 /**
  * @brief An unroll function type
@@ -149,7 +149,7 @@ typedef UNROLL((*unroll_t));
 typedef CHECK((*check_t));
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
  * @param cfg An application config

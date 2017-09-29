@@ -15,7 +15,7 @@
 #include "io/output.h"
 #include "util/memory.h"
 
-static void exhaustive_ginit(gen_t *generators, const config_t *cfg) {
+static void exhaustive_ginit(gen_f *generators, const config_t *cfg) {
 	if (cfg->seed_algo) {
 		switch (cfg->seed_algo) {
 			case SEED_ANSI: {
@@ -181,7 +181,7 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 	if (start_offset > end_offset) {
 		return 0;
 	}
-	gen_t *generators = setup->generators;
+	gen_f *generators = setup->generators;
 	check_t *validators = setup->validators;
 	arg_t **argss = setup->argss;
 	unroll_t *unrolls = setup->unrolls;
@@ -271,7 +271,7 @@ static void exhaustive_quit(arg_t *argss[]) {
 int exhaustive_do(config_t *cfg) {
 	debug_log_start("Starting Exhaustive method");
 
-	gen_t generators[OFFSET_END] = {NULL};
+	gen_f generators[OFFSET_END] = {NULL};
 	check_t validators[OFFSET_END] = {NULL};
 	arg_t *argss[OFFSET_END] = {NULL};
 	unroll_t unrolls[OFFSET_END] = {NULL};

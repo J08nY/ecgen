@@ -107,7 +107,7 @@ void points_free(point_t ***point);
 void points_free_deep(point_t ***points, size_t npoints);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
  * @param cfg An application config
@@ -117,7 +117,7 @@ void points_free_deep(point_t ***points, size_t npoints);
 GENERATOR(point_gen_random);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
  * @param cfg An application config
@@ -127,7 +127,7 @@ GENERATOR(point_gen_random);
 GENERATOR(points_gen_random);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  * Generates prime order points using trial division.
  *
  * Assumes the primes divide curve order, thus that points with all
@@ -141,7 +141,7 @@ GENERATOR(points_gen_random);
 GENERATOR(points_gen_trial);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  *
  * Cauchy:
  *   Let G be a finite group and p be a prime. If p divides the order of G, then
@@ -155,7 +155,7 @@ GENERATOR(points_gen_trial);
 GENERATOR(points_gen_prime);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  *
  * Generates points on all subgroups of the curve. Prime and non-prime order.
  *
@@ -167,7 +167,7 @@ GENERATOR(points_gen_prime);
 GENERATOR(points_gen_allgroups);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  *
  * Generates points on non-prime order of the curve.
  *

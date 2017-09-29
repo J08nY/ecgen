@@ -12,7 +12,7 @@
 #include "misc/types.h"
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
  * @param cfg An application config
@@ -22,7 +22,7 @@
 GENERATOR(gens_gen_any);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
  * @param cfg An application config

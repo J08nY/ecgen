@@ -15,7 +15,7 @@
 #include "io/output.h"
 #include "util/memory.h"
 
-static void invalid_original_ginit(gen_t *generators, const config_t *cfg) {
+static void invalid_original_ginit(gen_f *generators, const config_t *cfg) {
 	generators[OFFSET_SEED] = &gen_skip;
 	if (cfg->random) {
 		generators[OFFSET_FIELD] = &field_gen_random;
@@ -31,7 +31,7 @@ static void invalid_original_ginit(gen_t *generators, const config_t *cfg) {
 	generators[OFFSET_ORDER] = &order_gen_any;
 }
 
-static void invalid_invalid_ginit(gen_t *generators, const config_t *cfg) {
+static void invalid_invalid_ginit(gen_f *generators, const config_t *cfg) {
 	generators[OFFSET_SEED] = &gen_skip;
 	generators[OFFSET_FIELD] = &gen_skip;
 	generators[OFFSET_A] = &gen_skip;
@@ -277,7 +277,7 @@ static size_t invalid_curves_threaded(const curve_t *curve, const config_t *cfg,
 int invalid_do(config_t *cfg) {
 	debug_log_start("Starting Invalid curve method");
 
-	gen_t original_gens[OFFSET_END];
+	gen_f original_gens[OFFSET_END];
 	arg_t *original_argss[OFFSET_END];
 	unroll_t common_unrolls[OFFSET_END];
 	invalid_original_ginit(original_gens, cfg);
@@ -309,8 +309,8 @@ int invalid_do(config_t *cfg) {
 
 	curve_t **curves = try_calloc(nprimes * sizeof(curve_t *));
 
-	// init the invalid curve gen_t
-	gen_t invalid_gens[OFFSET_END];
+	// init the invalid curve gen_f
+	gen_f invalid_gens[OFFSET_END];
 	invalid_invalid_ginit(invalid_gens, cfg);
 	exhaustive_t invalid_setup = {.generators = invalid_gens,
 	                              .validators = NULL,

@@ -11,7 +11,7 @@
 #include "misc/types.h"
 
 typedef struct {
-	gen_t *generators;
+	gen_f *generators;
 	check_t *validators;
 	arg_t **argss;
 	unroll_t *unrolls;

@@ -20,7 +20,7 @@ typedef struct disc_t {
 } disc_t;
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
  * @param cfg An application config
@@ -30,7 +30,7 @@ typedef struct disc_t {
 GENERATOR(anomalous_gen_field);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
  * @param cfg An application config
@@ -40,7 +40,7 @@ GENERATOR(anomalous_gen_field);
 GENERATOR(anomalous_gen_equation);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
  * @param cfg An application config

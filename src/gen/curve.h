@@ -12,7 +12,7 @@
 #include "misc/types.h"
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  * Creates a curve GEN in curve_t curve from field, a and b.
  * Always succeeds.
  *
@@ -24,7 +24,7 @@
 GENERATOR(curve_gen_any);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  * Creates a curve GEN in curve_t curve from field, a and b.
  * Succeeds if a curve exists(non-zero discriminant).
  *

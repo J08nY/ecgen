@@ -11,7 +11,7 @@
 #include "misc/types.h"
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  * Creates a random field.
  * Always succeeds.
  *
@@ -23,7 +23,7 @@
 GENERATOR(field_gen_random);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  * Creates a field by reading:
  *  - a prime number in the prime field case
  *  - three short exponents of the reduction polynomial in the binary case
@@ -36,7 +36,7 @@ GENERATOR(field_gen_random);
 GENERATOR(field_gen_input);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  * Creates the field by reading it once.
  *
  * @param curve A curve_t being generated

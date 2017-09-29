@@ -11,7 +11,7 @@
 #include "misc/types.h"
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  * Reads the curve order from input, does not verify it.
  *
  * @param curve A curve_t being generated
@@ -23,7 +23,7 @@
 GENERATOR(order_gen_input);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  * Calculates the curve order, using a general algorithm.
  * Always succeeds.
  *
@@ -35,7 +35,7 @@ GENERATOR(order_gen_input);
 GENERATOR(order_gen_any);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  * Calculates the curve order, using the SEA algorithm.
  *
  * @param curve A curve_t being generated
@@ -46,7 +46,7 @@ GENERATOR(order_gen_any);
 GENERATOR(order_gen_sea);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
  * @param cfg An application config
@@ -56,7 +56,7 @@ GENERATOR(order_gen_sea);
 GENERATOR(order_gen_smallfact);
 
 /**
- * GENERATOR(gen_t)
+ * GENERATOR(gen_f)
  * Calculates the curve order, always using the SEA algorithm,
  * gives up early in case the order is divisible by "something".
  * Succeeds if the curve has a prime order.
