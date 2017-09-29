@@ -116,14 +116,8 @@ GENERATOR(curve_gen_any) {
 	}
 }
 
-GENERATOR(curve_gen_nonzero) {
-	pari_sp ltop = avma;
-	int any = curve_gen_any(curve, cfg, args);
-	if (any <= 0) {
-		return any;
-	}
+CHECK(curve_check_nonzero) {
 	if (gequal0(ell_get_disc(curve->curve))) {
-		avma = ltop;
 		return -3;
 	} else {
 		return 1;

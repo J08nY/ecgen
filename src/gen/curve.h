@@ -24,16 +24,15 @@
 GENERATOR(curve_gen_any);
 
 /**
- * GENERATOR(gen_f)
- * Creates a curve GEN in curve_t curve from field, a and b.
- * Succeeds if a curve exists(non-zero discriminant).
+ * CHECK(check_f)
+ * Checks that the curve has non-zero discriminant.
  *
- * @param curve A curve_t being generated
- * @param cfg An application config
- * @param args unused
- * @return state diff
+ * @param curve
+ * @param cfg
+ * @param args
+ * @return
  */
-GENERATOR(curve_gen_nonzero);
+CHECK(curve_check_nonzero);
 
 /**
  *

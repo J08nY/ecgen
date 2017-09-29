@@ -14,7 +14,7 @@
  * @brief
  * @return
  */
-check_t *check_new(void);
+check_t *check_new(check_f one, ...);
 
 /**
  * @brief

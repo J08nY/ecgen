@@ -3,8 +3,10 @@
  * Copyright (C) 2017 J08nY
  */
 #include "exhaustive.h"
+#include <misc/types.h>
 #include "anomalous.h"
 #include "ansi.h"
+#include "check.h"
 #include "gen/curve.h"
 #include "gen/equation.h"
 #include "gen/field.h"
@@ -41,7 +43,6 @@ static void exhaustive_ginit(gen_f *generators, const config_t *cfg) {
 			default:
 				break;
 		}
-		generators[OFFSET_CURVE] = &curve_gen_nonzero;
 		generators[OFFSET_ORDER] = &order_gen_any;
 	} else {
 		// setup normal generators
@@ -72,8 +73,6 @@ static void exhaustive_ginit(gen_f *generators, const config_t *cfg) {
 			generators[OFFSET_B] = &b_gen_one;
 		}
 
-		generators[OFFSET_CURVE] = &curve_gen_nonzero;
-
 		if (cfg->prime) {
 			generators[OFFSET_ORDER] = &order_gen_prime;
 		} else if (cfg->cofactor) {
@@ -84,8 +83,9 @@ static void exhaustive_ginit(gen_f *generators, const config_t *cfg) {
 			generators[OFFSET_ORDER] = &order_gen_any;
 		}
 	}
-
 	// setup common generators
+	generators[OFFSET_CURVE] = &curve_gen_any;
+
 	if (cfg->unique) {
 		generators[OFFSET_GENERATORS] = &gens_gen_one;
 	} else {
@@ -123,7 +123,10 @@ static void exhaustive_ginit(gen_f *generators, const config_t *cfg) {
 	}
 }
 
-static void exhaustive_cinit(check_t **validators, const config_t *cfg) {}
+static void exhaustive_cinit(check_t **validators, const config_t *cfg) {
+	check_t *curve_check = check_new(curve_check_nonzero, NULL);
+	validators[OFFSET_CURVE] = curve_check;
+}
 
 static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 	if (cfg->anomalous) {
@@ -202,7 +205,7 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 		if (diff > 0 && validators && validators[state]) {
 			check_t *validator = validators[state];
 			for (size_t i = 0; i < validator->nchecks; ++i) {
-				int new_diff = validator->checks[state](curve, cfg, arg);
+				int new_diff = validator->checks[i](curve, cfg, arg);
 				if (new_diff <= 0) {
 					diff = new_diff;
 					break;
@@ -271,12 +274,15 @@ static void exhaustive_init(exhaustive_t *setup, const config_t *cfg) {
 	anomalous_init();
 }
 
-static void exhaustive_quit(arg_t *argss[]) {
+static void exhaustive_quit(exhaustive_t *setup) {
 	equation_quit();
 	anomalous_quit();
 	for (size_t i = 0; i < OFFSET_END; ++i) {
-		if (argss[i]) {
-			arg_free(&(argss[i]));
+		if (setup->argss[i]) {
+			arg_free(&(setup->argss[i]));
+		}
+		if (setup->validators[i]) {
+			check_free(&(setup->validators[i]));
 		}
 	}
 }
@@ -313,7 +319,7 @@ int exhaustive_do(config_t *cfg) {
 	}
 	output_o_end(cfg);
 
-	exhaustive_quit(setup.argss);
+	exhaustive_quit(&setup);
 	debug_log_end("Finished Exhaustive method");
 	return EXIT_SUCCESS;
 }

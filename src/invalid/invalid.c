@@ -3,7 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "invalid.h"
-#include <exhaustive/exhaustive.h>
+#include "exhaustive/check.h"
 #include "exhaustive/exhaustive.h"
 #include "gen/curve.h"
 #include "gen/equation.h"
@@ -27,7 +27,7 @@ static void invalid_original_ginit(gen_f *generators, const config_t *cfg) {
 		generators[OFFSET_B] = &b_gen_input;
 	}
 	generators[OFFSET_GENERATORS] = &gens_gen_any;
-	generators[OFFSET_CURVE] = &curve_gen_nonzero;
+	generators[OFFSET_CURVE] = &curve_gen_any;
 	generators[OFFSET_ORDER] = &order_gen_any;
 }
 
@@ -36,7 +36,7 @@ static void invalid_invalid_ginit(gen_f *generators, const config_t *cfg) {
 	generators[OFFSET_FIELD] = &gen_skip;
 	generators[OFFSET_A] = &gen_skip;
 	generators[OFFSET_B] = &b_gen_random;
-	generators[OFFSET_CURVE] = &curve_gen_nonzero;
+	generators[OFFSET_CURVE] = &curve_gen_any;
 	generators[OFFSET_ORDER] = &order_gen_any;
 	if (cfg->unique) {
 		generators[OFFSET_GENERATORS] = &gens_gen_one;
@@ -44,6 +44,11 @@ static void invalid_invalid_ginit(gen_f *generators, const config_t *cfg) {
 		generators[OFFSET_GENERATORS] = &gens_gen_any;
 	}
 	generators[OFFSET_POINTS] = &points_gen_trial;
+}
+
+static void invalid_cinit(check_t **validators, const config_t *cfg) {
+	check_t *curve_check = check_new(curve_check_nonzero, NULL);
+	validators[OFFSET_CURVE] = curve_check;
 }
 
 static size_t invalid_primes(GEN order, pari_ulong **primes) {
@@ -277,13 +282,15 @@ static size_t invalid_curves_threaded(const curve_t *curve, const config_t *cfg,
 int invalid_do(config_t *cfg) {
 	debug_log_start("Starting Invalid curve method");
 
-	gen_f original_gens[OFFSET_END];
-	arg_t *original_argss[OFFSET_END];
-	unroll_f common_unrolls[OFFSET_END];
+	gen_f original_gens[OFFSET_END] = {NULL};
+	check_t *common_validators[OFFSET_END] = {NULL};
+	arg_t *original_argss[OFFSET_END] = {NULL};
+	unroll_f common_unrolls[OFFSET_END] = {NULL};
 	invalid_original_ginit(original_gens, cfg);
+	invalid_cinit(common_validators, cfg);
 	exhaustive_uinit(common_unrolls, cfg);
 	exhaustive_t original_setup = {.generators = original_gens,
-	                               .validators = NULL,
+	                               .validators = common_validators,
 	                               .argss = original_argss,
 	                               .unrolls = common_unrolls};
 
@@ -313,7 +320,7 @@ int invalid_do(config_t *cfg) {
 	gen_f invalid_gens[OFFSET_END];
 	invalid_invalid_ginit(invalid_gens, cfg);
 	exhaustive_t invalid_setup = {.generators = invalid_gens,
-	                              .validators = NULL,
+	                              .validators = common_validators,
 	                              .argss = NULL,
 	                              .unrolls = common_unrolls};
 
