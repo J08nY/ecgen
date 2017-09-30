@@ -236,7 +236,7 @@ void bits_notz(bits_t *bits) {
 	if (bits->bitlen % 8 != 0) {
 		size_t mask_len = bits->bitlen % 8;
 		unsigned char mask = 0;
-		for (size_t i = 7; i >= 0; --i) {
+		for (size_t i = 7; i > 0; --i) {
 			mask |= 1 << i;
 			if (--mask_len == 0) break;
 		}
@@ -417,7 +417,7 @@ bool bits_eq(const bits_t *one, const bits_t *other) {
 	if (one->bitlen % 8 != 0) {
 		size_t mask_len = one->bitlen % 8;
 		unsigned char mask = 0;
-		for (size_t i = 7; i >= 0; --i) {
+		for (size_t i = 7; i > 0; --i) {
 			mask |= 1 << i;
 			if (--mask_len == 0) break;
 		}
