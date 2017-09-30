@@ -237,8 +237,8 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 		if (diff > 0 && validators && validators[state]) {
 			check_t *validator = validators[state];
 			for (size_t i = 0; i < validator->nchecks; ++i) {
-				int new_diff = validator->checks[i](curve, cfg, arg,
-													(offset_e)state);
+				int new_diff =
+				    validator->checks[i](curve, cfg, arg, (offset_e)state);
 				if (new_diff <= 0) {
 					diff = new_diff;
 					break;

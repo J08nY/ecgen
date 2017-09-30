@@ -119,8 +119,9 @@ typedef struct {
  * @param state The current generation state
  * @return state diff
  */
-#define GENERATOR(gen_name) \
-	int gen_name(curve_t *curve, const config_t *cfg, arg_t *args, offset_e state)
+#define GENERATOR(gen_name)                                        \
+	int gen_name(curve_t *curve, const config_t *cfg, arg_t *args, \
+	             offset_e state)
 
 typedef GENERATOR((*gen_f));
 
