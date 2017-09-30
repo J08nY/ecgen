@@ -16,9 +16,9 @@ Tool for generating Elliptic curve domain parameters.
 
  - `-c / --count=COUNT`		Generate multiple curves.
  - `-i / --invalid`			Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).
- - `-k / --cofactor=BOUND`	Generate a curve with cofactor up to `BOUND` **TODO - NOT FINISHED**
+ - `-k / --cofactor=BOUND`	Generate a curve with cofactor up to `BOUND`.
  - `--anomalous`            Generate an anomalous curve (of trace one, with field order equal to curve order).
- - `-K / --koblitz`			Generate a Koblitz curve (a = 0).
+ - `-K / --koblitz[=A]`		Generate a Koblitz curve (a in {0, 1}, b = 1).
  - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication). **TODO - NOT IMPLEMENTED**
  - `-p / --prime`			Generate a curve with prime order.
  - `--points=TYPE`			Generate points of given `TYPE` (random/prime/all/nonprime/none).
