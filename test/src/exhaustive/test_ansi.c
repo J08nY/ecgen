@@ -33,7 +33,7 @@ TestSuite(ansi, .init = ansi_suite_setup, .fini = ansi_suite_teardown);
 Test(ansi, test_seed_random) {
 	curve_t curve = {};
 	config_t cfg = {.bits = 256};
-	int ret = ansi_gen_seed_random(&curve, &cfg, NULL);
+	int ret = ansi_gen_seed_random(&curve, &cfg, NULL, OFFSET_SEED);
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
@@ -45,7 +45,7 @@ Test(ansi, test_seed_argument) {
 	curve_t curve = {};
 	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	config_t cfg = {.seed = seed, .bits = 256};
-	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL);
+	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL, OFFSET_SEED);
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
@@ -60,7 +60,7 @@ Test(ansi, test_seed_argument_hex) {
 	curve_t curve = {};
 	char *seed = "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	config_t cfg = {.seed = seed, .bits = 256};
-	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL);
+	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL, OFFSET_SEED);
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
@@ -76,7 +76,7 @@ Test(ansi, test_seed_input) {
 	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	config_t cfg = {.bits = 256};
 	fprintf(write_in, "%s\n", seed);
-	int ret = ansi_gen_seed_input(&curve, &cfg, NULL);
+	int ret = ansi_gen_seed_input(&curve, &cfg, NULL, OFFSET_SEED);
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
@@ -92,7 +92,7 @@ Test(ansi, test_seed_input_short) {
 	char *seed = "abcdef";
 	config_t cfg = {};
 	fprintf(write_in, "%s\n", seed);
-	int ret = ansi_gen_seed_input(&curve, &cfg, NULL);
+	int ret = ansi_gen_seed_input(&curve, &cfg, NULL, OFFSET_SEED);
 
 	cr_assert_eq(ret, 0, );
 }
@@ -175,10 +175,10 @@ ParameterizedTest(struct prime_params *param, ansi, test_seed_prime_examples) {
 	bits_t *p = bits_from_hex(param->p);
 	curve.field = bits_to_i(p);
 
-	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL);
+	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
 
-	ret = ansi_gen_equation(&curve, &cfg, NULL);
+	ret = ansi_gen_equation(&curve, &cfg, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
 	GEN expected_r = bits_to_i(bits_from_hex(param->r));
 	cr_assert(gequal(curve.seed->ansi.r, expected_r), );
@@ -278,10 +278,10 @@ ParameterizedTest(struct binary_params *param, ansi,
 	GEN expected_b = bits_to_i(bits_from_hex(param->b));
 	bits_t *b = bits_from_i(expected_b);
 
-	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL);
+	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
 
-	ret = ansi_gen_equation(&curve, &cfg, NULL);
+	ret = ansi_gen_equation(&curve, &cfg, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
 	GEN curve_b = field_elementi(curve.b);
 	cr_assert(gequal(curve_b, expected_b), );
