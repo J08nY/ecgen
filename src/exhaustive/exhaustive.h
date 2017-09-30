@@ -21,6 +21,35 @@ typedef struct {
 } exhaustive_t;
 
 /**
+ * @brief
+ * @return
+ */
+exhaustive_t *exhaustive_new(void);
+
+/**
+ * @brief
+ * @param generators
+ * @param validators
+ * @param argss
+ * @param unrolls
+ * @return
+ */
+exhaustive_t *exhaustive_create(gen_f *generators, check_t **validators,
+                                arg_t **argss, unroll_f *unrolls);
+
+/**
+ * @brief
+ * @param setup
+ */
+void exhaustive_clear(exhaustive_t *setup);
+
+/**
+ * @brief
+ * @param setup
+ */
+void exhaustive_free(exhaustive_t **setup);
+
+/**
  *
  * @param unrolls
  * @param cfg

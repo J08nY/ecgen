@@ -13,7 +13,7 @@ void *invalid_thread(void *arg) {
 	thread_t *thread = (thread_t *)arg;
 	pari_thread_start(thread->pari_thread);
 	random_init();
-	arg_t *invalid_argss[OFFSET_END];
+	arg_t *invalid_argss[OFFSET_END] = {NULL};
 	exhaustive_t invalid_setup = {.generators = thread->setup->generators,
 	                              .validators = thread->setup->validators,
 	                              .argss = invalid_argss,

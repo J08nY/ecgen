@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include "exhaustive.h"
-#include <misc/types.h>
 #include "anomalous.h"
 #include "ansi.h"
 #include "check.h"
@@ -16,6 +15,39 @@
 #include "gen/seed.h"
 #include "io/output.h"
 #include "util/memory.h"
+
+exhaustive_t *exhaustive_new(void) { return try_calloc(sizeof(exhaustive_t)); }
+
+exhaustive_t *exhaustive_create(gen_f *generators, check_t **validators,
+                                arg_t **argss, unroll_f *unrolls) {
+	exhaustive_t *result = exhaustive_new();
+	result->generators = generators;
+	result->validators = validators;
+	result->argss = argss;
+	result->unrolls = unrolls;
+	return result;
+}
+
+void exhaustive_clear(exhaustive_t *setup) {
+	if (setup->validators) {
+		for (size_t i = 0; i < OFFSET_END; ++i) {
+			check_free(&setup->validators[i]);
+		}
+	}
+	if (setup->argss) {
+		for (size_t i = 0; i < OFFSET_END; ++i) {
+			arg_free(&setup->argss[i]);
+		}
+	}
+}
+
+void exhaustive_free(exhaustive_t **setup) {
+	if (*setup) {
+		exhaustive_clear(*setup);
+		try_free(*setup);
+		*setup = NULL;
+	}
+}
 
 static void exhaustive_ginit(gen_f *generators, const config_t *cfg) {
 	if (cfg->seed_algo) {
