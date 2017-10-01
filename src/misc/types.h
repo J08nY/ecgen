@@ -116,10 +116,12 @@ typedef struct {
  * @param curve A curve_t being generated
  * @param cfg An application config
  * @param args Current optional generator argument
+ * @param state The current generation state
  * @return state diff
  */
-#define GENERATOR(gen_name) \
-	int gen_name(curve_t *curve, const config_t *cfg, arg_t *args)
+#define GENERATOR(gen_name)                                        \
+	int gen_name(curve_t *curve, const config_t *cfg, arg_t *args, \
+	             offset_e state)
 
 typedef GENERATOR((*gen_f));
 

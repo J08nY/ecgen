@@ -183,9 +183,9 @@ static GENERATOR(ansi_gen_equation_f2m) {
 GENERATOR(ansi_gen_equation) {
 	switch (cfg->field) {
 		case FIELD_PRIME:
-			return ansi_gen_equation_fp(curve, cfg, args);
+			return ansi_gen_equation_fp(curve, cfg, args, state);
 		case FIELD_BINARY:
-			return ansi_gen_equation_f2m(curve, cfg, args);
+			return ansi_gen_equation_f2m(curve, cfg, args, state);
 		default:
 			pari_err_BUG("Field not prime or binary?");
 			return INT_MIN; /* NOT REACHABLE */
