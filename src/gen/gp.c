@@ -118,3 +118,59 @@ GENERATOR(gp_gen) {
 	}
 	return 1;
 }
+
+CHECK(gp_check) {
+	HAS_ARG(args);
+	pari_sp ltop = avma;
+	GEN closure = compile_str(args->args);
+	GEN params = zerovec(state - OFFSET_SEED + 1);
+
+	if (state >= OFFSET_SEED) {
+		if (curve->seed && curve->seed->seed) {
+			gel(params, 1) = bits_to_bitvec(curve->seed->seed);
+		}
+	}
+
+	if (state >= OFFSET_FIELD) {
+		gel(params, 2) = curve->field;
+	}
+
+	if (state >= OFFSET_A) {
+		gel(params, 3) = curve->a;
+	}
+
+	if (state >= OFFSET_B) {
+		gel(params, 4) = curve->b;
+	}
+
+	if (state >= OFFSET_CURVE) {
+		gel(params, 5) = curve->curve;
+	}
+
+	if (state >= OFFSET_ORDER) {
+		gel(params, 6) = curve->order;
+	}
+
+	if (state >= OFFSET_GENERATORS) {
+		GEN gens = zerovec(curve->ngens);
+		for (size_t i = 0; i < curve->ngens; ++i) {
+			gel(gens, i + 1) = curve->generators[i]->point;
+		}
+		gel(params, 7) = gens;
+	}
+
+	if (state >= OFFSET_POINTS) {
+		GEN points = zerovec(curve->npoints);
+		for (size_t i = 0; i < curve->npoints; ++i) {
+			gel(points, i + 1) = curve->points[i]->point;
+		}
+		gel(params, 8) = points;
+	}
+
+	GEN res = call0(closure, zerovec(0));
+	res = call0(res, params);
+
+	int result = (int)itos(res);
+	avma = ltop;
+	return result;
+}
