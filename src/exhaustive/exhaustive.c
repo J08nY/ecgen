@@ -271,24 +271,22 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 				}
 			}
 
-			if (cfg->verbose) {
-				if (diff < 0) {
-					fprintf(verbose, "-");
-				} else {
-					fprintf(verbose, ".");
-				}
+			if (diff < 0) {
+				verbose_log("-");
+			} else {
+				verbose_log(".");
 			}
 			// unroll stack
 			avma = stack_tops[new_state];
 		} else {
 			// we are going forward, reset tries
 			gen_tries[state] = 0;
-			if (cfg->verbose) fprintf(verbose, "+");
+			verbose_log("+");
 		}
 		state = new_state;
 	}
 
-	if (cfg->verbose) fprintf(verbose, "\n");
+	verbose_log("\n");
 
 	return 1;
 }
