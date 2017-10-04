@@ -29,6 +29,7 @@
 #include "invalid/invalid.h"
 #include "io/input.h"
 #include "io/output.h"
+#include "util/timeout.h"
 
 const char *argp_program_version =
     "ecgen 0.6.0\n"
@@ -49,6 +50,9 @@ bool init(void) {
 
 	// init PARI PRNG
 	if (!random_init()) return false;
+
+	// init the signal handlers, etc. for timeout handling
+	if (!timeout_init(&cfg)) return false;
 
 	// set datadir if specified
 	if (cfg.datadir) {

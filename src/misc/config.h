@@ -58,6 +58,7 @@ typedef struct {
 	unsigned long memory;
 	unsigned long threads;
 	unsigned long thread_memory;
+	unsigned long timeout;
 
 	enum format_e format;
 	char *output;
