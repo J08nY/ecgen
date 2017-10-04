@@ -74,6 +74,12 @@ function exhaustive() {
 	assert_raises "${ecgen} --fp -r -c 5 10"
 }
 
+function ansix962() {
+	start_test
+	assert_raises "${ecgen} --fp -r --ansi 10"
+	assert_raises "${ecgen} --f2m -r --ansi 10"
+}
+
 function anomalous() {
 	start_test
 	assert_raises "${ecgen} --fp --anomalous -r 20"
@@ -111,6 +117,7 @@ runs
 csv
 json
 exhaustive
+ansix962
 anomalous
 invalid
 cli
