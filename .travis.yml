@@ -26,8 +26,10 @@ before_install:
   - wget mirrors.kernel.org/ubuntu/pool/main/r/readline/libreadline7_7.0-0ubuntu2_amd64.deb
   - sudo dpkg --force-all -i libreadline7_7.0-0ubuntu2_amd64.deb libpari-gmp-tls5_2.9.3-1_amd64.deb libpari-dev_2.9.3-1_amd64.deb pari-gp_2.9.3-1_amd64.deb
 
-script:
-  - TEST=1 make -j2 unittest
+script: # Test, clean, build for release
+  - TEST=1 make unittest
+  - TEST=1 make clean
+  - make -j2
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)

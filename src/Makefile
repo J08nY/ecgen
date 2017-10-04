@@ -11,9 +11,9 @@ CFLAGS = -Wall
 DEBUG ?= 0
 TEST ?= 0
 ifeq ($(DEBUG), 1)
-    CFLAGS += -DDEBUG -g -Werror -pedantic
+	CFLAGS += -DDEBUG -g -Werror -pedantic
 else ifeq ($(TEST), 1)
-    CFLAGS += --coverage -g -O0
+	CFLAGS += --coverage -g -O0
 else
 	CFLAGS += -DNDEBUG -O3
 endif
@@ -50,12 +50,14 @@ econvert: econvert.o $(ECONVERT_OBJ)
 
 ####
 
-clean-all: clean
+clean-all: clean clean-cov
 	rm -f ../ecgen
 	rm -f ../econvert
 
 clean:
 	find . -type f -name '*.o' -exec rm {} +
+
+clean-cov:
 	find . -type f -name '*.gcda' -exec rm {} +
 	find . -type f -name '*.gcno' -exec rm {} +
 	find . -type f -name '*.gcov' -exec rm {} +

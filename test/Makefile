@@ -23,5 +23,5 @@ clean:
 	+$(MAKE) -C src clean
 
 clean-all:
-	cd lib/criterion && rm -r build
+	cd lib/criterion && rm -rf build
 	+$(MAKE) -C src clean-all

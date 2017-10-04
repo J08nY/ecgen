@@ -10,7 +10,7 @@ CC ?= gcc
 CFLAGS = -Wall
 TEST ?= 0
 ifeq ($(TEST), 1)
-    CFLAGS += --coverage -g -O0
+	CFLAGS += --coverage -g -O0
 endif
 LDFLAGS = -L../../lib/parson -L../../lib/sha1 -L../../lib/pari -L../lib/criterion/build
 INCLUDES = -I. -I../../src -I../../lib -I../lib/criterion/include
@@ -32,11 +32,13 @@ test_ecgen: $(TEST_OBJ) $(ECGEN_OBJ)
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
-clean-all: clean
+clean-all: clean clean-cov
 	rm -f ./test_ecgen
 
 clean:
 	find . -type f -name '*.o' -exec rm {} +
+
+clean-cov:
 	find . -type f -name '*.gcda' -exec rm {} +
 	find . -type f -name '*.gcno' -exec rm {} +
 	find . -type f -name '*.gcov' -exec rm {} +
