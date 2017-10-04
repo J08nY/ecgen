@@ -76,7 +76,13 @@ static void exhaustive_ginit(gen_f *generators, const config_t *cfg) {
 			default:
 				break;
 		}
-		generators[OFFSET_ORDER] = &order_gen_any;
+		if (cfg->prime) {
+			generators[OFFSET_ORDER] = &order_gen_prime;
+		} else if (cfg->cofactor) {
+			generators[OFFSET_ORDER] = &order_gen_smallfact;
+		} else {
+			generators[OFFSET_ORDER] = &order_gen_any;
+		}
 	} else {
 		// setup normal generators
 		generators[OFFSET_SEED] = &gen_skip;
