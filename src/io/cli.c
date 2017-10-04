@@ -4,7 +4,6 @@
  */
 #include "cli.h"
 #include <string.h>
-#include <unistd.h>
 #include "exhaustive/ansi.h"
 
 char cli_doc[] =
@@ -34,6 +33,7 @@ enum opt_keys {
 	OPT_POINTS,
 	OPT_THREADS,
 	OPT_TSTACK,
+	OPT_TIMEOUT,
 	OPT_ANOMALOUS
 };
 
@@ -68,6 +68,7 @@ struct argp_option cli_options[] = {
 	{"memory",       OPT_MEMORY,    "SIZE",   0,                 "Use PARI stack of SIZE (can have suffix k/m/g).",                                       4},
 	{"threads",      OPT_THREADS,   "NUM",    0,                 "Use NUM threads.",                                                                      4},
 	{"thread-stack", OPT_TSTACK,    "SIZE",   0,                 "Use PARI stack of SIZE (per thread, can have suffix k/m/g).",                           4},
+	{"timeout",      OPT_TIMEOUT,   "TIME",   0,                 "Timeout computation of a curve parameter after TIME (can have suffix s/m/h/d).",        4},
 	{0}
 };
 // clang-format on
@@ -87,6 +88,21 @@ static unsigned long cli_parse_memory(const char *str) {
 	return read;
 }
 
+static unsigned long cli_parse_time(const char *str) {
+	char *suffix = NULL;
+	unsigned long read = strtoul(str, &suffix, 10);
+	if (suffix) {
+		if (*suffix == 'm' || *suffix == 'M') {
+			read *= 60;
+		} else if (*suffix == 'h' || *suffix == 'H') {
+			read *= 3600;
+		} else if (*suffix == 'd' || *suffix == 'D') {
+			read *= 86400;
+		}
+	}
+	return read;
+}
+
 error_t cli_parse(int key, char *arg, struct argp_state *state) {
 	config_t *cfg = state->input;
 
@@ -99,6 +115,9 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			break;
 		case OPT_TSTACK:
 			cfg->thread_memory = cli_parse_memory(arg);
+			break;
+		case OPT_TIMEOUT:
+			cfg->timeout = cli_parse_time(arg);
 			break;
 		case OPT_THREADS:
 			if (!strcmp(arg, "auto") || !strcmp(arg, "AUTO")) {

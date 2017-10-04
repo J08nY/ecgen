@@ -5,7 +5,7 @@
 #include "timeout.h"
 
 __thread jmp_buf timeout_ptr;
-__thread bool timeout_in;
+__thread bool timeout_in = false;
 __thread timer_t timeout_timer;
 
 void timeout_handle(int signum, siginfo_t *siginfo, void *other) {

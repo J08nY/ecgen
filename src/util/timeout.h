@@ -16,8 +16,11 @@ extern __thread sigjmp_buf timeout_ptr;
 extern __thread bool timeout_in;
 extern __thread timer_t timeout_timer;
 
+/**
+ * @brief
+ */
 #define timeout_start(seconds)                                \
-	{                                                         \
+	if ((seconds) != 0) {                                     \
 		struct sigevent sevp;                                 \
 		sevp.sigev_notify = SIGEV_THREAD_ID;                  \
 		sevp.sigev_signo = SIGALRM;                           \
@@ -30,12 +33,17 @@ extern __thread timer_t timeout_timer;
 		timer_settime(timeout_timer, 0, &timer_time, NULL);   \
 		timeout_in = true;                                    \
 	};                                                        \
-	if (sigsetjmp(timeout_ptr, 1) == 1)
+	if ((seconds) != 0 && sigsetjmp(timeout_ptr, 1) == 1)
 
-#define timeout_stop()               \
-	{                                \
-		timeout_in = false;          \
-		timer_delete(timeout_timer); \
+/**
+ * @brief
+ */
+#define timeout_stop()                   \
+	{                                    \
+		if (timeout_in) {                \
+			timeout_in = false;          \
+			timer_delete(timeout_timer); \
+		}                                \
 	}
 
 /**

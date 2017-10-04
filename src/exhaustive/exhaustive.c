@@ -15,6 +15,7 @@
 #include "gen/seed.h"
 #include "io/output.h"
 #include "util/memory.h"
+#include "util/timeout.h"
 
 exhaustive_t *exhaustive_new(void) { return try_calloc(sizeof(exhaustive_t)); }
 
@@ -230,7 +231,15 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 
 		arg_t *arg = argss ? argss[state] : NULL;
 
-		int diff = generators[state](curve, cfg, arg, (offset_e)state);
+		int diff;
+		timeout_start(cfg->timeout) {
+			// This is not the best, but currently the best idea I have.
+			diff = start_offset - state;
+		}
+		else {
+			diff = generators[state](curve, cfg, arg, (offset_e)state);
+		}
+		timeout_stop();
 		int new_state = state + diff;
 		if (new_state < start_offset) new_state = start_offset;
 
