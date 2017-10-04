@@ -73,9 +73,13 @@ struct argp_option cli_options[] = {
 };
 // clang-format on
 
-static unsigned long cli_parse_memory(const char *str) {
+static unsigned long cli_parse_memory(const char *str,
+                                      struct argp_state *state) {
 	char *suffix = NULL;
 	unsigned long read = strtoul(str, &suffix, 10);
+	if (suffix == str) {
+		argp_failure(state, 1, 0, "Wrong memory value.");
+	}
 	if (suffix) {
 		if (*suffix == 'k' || *suffix == 'K') {
 			read *= 1000;
@@ -88,9 +92,12 @@ static unsigned long cli_parse_memory(const char *str) {
 	return read;
 }
 
-static unsigned long cli_parse_time(const char *str) {
+static unsigned long cli_parse_time(const char *str, struct argp_state *state) {
 	char *suffix = NULL;
 	unsigned long read = strtoul(str, &suffix, 10);
+	if (suffix == str) {
+		argp_failure(state, 1, 0, "Wrong time value.");
+	}
 	if (suffix) {
 		if (*suffix == 'm' || *suffix == 'M') {
 			read *= 60;
@@ -111,13 +118,13 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			cfg->datadir = arg;
 			break;
 		case OPT_MEMORY:
-			cfg->memory = cli_parse_memory(arg);
+			cfg->memory = cli_parse_memory(arg, state);
 			break;
 		case OPT_TSTACK:
-			cfg->thread_memory = cli_parse_memory(arg);
+			cfg->thread_memory = cli_parse_memory(arg, state);
 			break;
 		case OPT_TIMEOUT:
-			cfg->timeout = cli_parse_time(arg);
+			cfg->timeout = cli_parse_time(arg, state);
 			break;
 		case OPT_THREADS:
 			if (!strcmp(arg, "auto") || !strcmp(arg, "AUTO")) {

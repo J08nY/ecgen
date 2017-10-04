@@ -53,3 +53,13 @@ Test(cli, test_auto_threads) {
 	cr_assert_eq(ret, 0, );
 	cr_assert_eq(cfg.threads, sysconf(_SC_NPROCESSORS_ONLN), );
 }
+
+Test(cli, test_timeout) {
+	int argc = 4;
+	char *argv[] = {"ecgen", "--timeout=10m", "--fp", "1"};
+	config_t cfg;
+	memset(&cfg, 0, sizeof(cfg));
+	int ret = argp_parse(&test_argp, argc, argv, 0, 0, &cfg);
+	cr_assert_eq(ret, 0, );
+	cr_assert_eq(cfg.timeout, 600, );
+}
