@@ -4,9 +4,7 @@
  */
 
 #include "invalid_thread.h"
-#include "exhaustive/exhaustive.h"
 #include "gen/curve.h"
-#include "io/output.h"
 #include "util/random.h"
 
 void *invalid_thread(void *arg) {
@@ -35,7 +33,6 @@ void *invalid_thread(void *arg) {
 			}
 		}
 
-		debug("ndivides = %lu\n", ndivides);
 		if (ndivides > 0 &&
 		    exhaustive_gen_retry(invalid, thread->cfg, &invalid_setup,
 		                         OFFSET_GENERATORS, OFFSET_POINTS, 1)) {
@@ -52,7 +49,6 @@ void *invalid_thread(void *arg) {
 					nfree++;
 				}
 			}
-			debug("nfree = %lu\n", nfree);
 			pthread_mutex_unlock(thread->mutex_state);
 
 			if (nfree > 0) {
@@ -65,17 +61,12 @@ void *invalid_thread(void *arg) {
 				size_t count = 0;
 				for (size_t i = thread->nprimes; i-- > 0;) {
 					if (count < nprimes && primes[count] == thread->primes[i]) {
-						debug("[i] = %lu, prime = %lu\n", i, primes[count]);
-						debug("state = %i\n", thread->states[i]);
 						thread->states[i] = STATE_GENERATED;
 						thread->curves[i] = curve_new_copy(invalid);
 						count++;
 					}
 				}
-				debug("count = %lu, generated = %lu\n", count,
-				      *(thread->generated));
 				*(thread->generated) += count;
-				debug("generated = %lu\n", *(thread->generated));
 				pthread_cond_signal(thread->cond_generated);
 				pthread_mutex_unlock(thread->mutex_state);
 
@@ -86,7 +77,7 @@ void *invalid_thread(void *arg) {
 			}
 		}
 
-		// We were unsuccessful for some reasol, unroll
+		// We were unsuccessful for some reason, unroll
 		curve_unroll(invalid, thread->cfg, avma, btop);
 		avma = btop;
 	}

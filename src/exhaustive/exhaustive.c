@@ -17,18 +17,6 @@
 #include "util/memory.h"
 #include "util/timeout.h"
 
-exhaustive_t *exhaustive_new(void) { return try_calloc(sizeof(exhaustive_t)); }
-
-exhaustive_t *exhaustive_create(gen_f *generators, check_t **validators,
-                                arg_t **argss, unroll_f *unrolls) {
-	exhaustive_t *result = exhaustive_new();
-	result->generators = generators;
-	result->validators = validators;
-	result->argss = argss;
-	result->unrolls = unrolls;
-	return result;
-}
-
 void exhaustive_clear(exhaustive_t *setup) {
 	if (setup->validators) {
 		for (size_t i = 0; i < OFFSET_END; ++i) {
@@ -39,14 +27,6 @@ void exhaustive_clear(exhaustive_t *setup) {
 		for (size_t i = 0; i < OFFSET_END; ++i) {
 			arg_free(&setup->argss[i]);
 		}
-	}
-}
-
-void exhaustive_free(exhaustive_t **setup) {
-	if (*setup) {
-		exhaustive_clear(*setup);
-		try_free(*setup);
-		*setup = NULL;
 	}
 }
 
@@ -323,14 +303,7 @@ static void exhaustive_init(exhaustive_t *setup, const config_t *cfg) {
 static void exhaustive_quit(exhaustive_t *setup) {
 	equation_quit();
 	anomalous_quit();
-	for (size_t i = 0; i < OFFSET_END; ++i) {
-		if (setup->argss[i]) {
-			arg_free(&(setup->argss[i]));
-		}
-		if (setup->validators[i]) {
-			check_free(&(setup->validators[i]));
-		}
-	}
+	exhaustive_clear(setup);
 }
 
 int exhaustive_do(config_t *cfg) {
