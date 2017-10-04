@@ -2,6 +2,9 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
+/**
+ * @file timeout.h
+ */
 #ifndef ECGEN_TIMEOUT_H
 #define ECGEN_TIMEOUT_H
 

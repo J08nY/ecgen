@@ -2,7 +2,9 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017 J08nY
  */
-
+/**
+ * @file bits.h
+ */
 #ifndef ECGEN_BITS_H
 #define ECGEN_BITS_H
 
