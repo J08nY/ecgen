@@ -17,7 +17,7 @@ void timeout_handle(int signum, siginfo_t *siginfo, void *other) {
 	if (timeout_in) siglongjmp(timeout_ptr, 1);
 }
 
-bool timeout_init(const config_t *cfg) {
+bool timeout_init() {
 	struct sigaction new_action;
 
 	new_action.sa_sigaction = timeout_handle;

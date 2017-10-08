@@ -20,7 +20,14 @@ extern __thread bool timeout_in;
 extern __thread timer_t timeout_timer;
 
 /**
- * @brief
+ * @brief Start a timer that times out after <code>seconds-</code>.
+ *
+ * The timer is thread-local. This function is an if-like statement,
+ * it runs the <code>else</code> part for the duration of the timeout or
+ * until <code>timeout_stop</code> is called. If that branch times out, then the
+ * <code>if</code> part is run. The times should be always stopped by
+ * <code>timeout_stop</code> when the timed interval ends.
+ * @param seconds how long to run the <code>else</code> branch for
  */
 #define timeout_start(seconds)                                \
 	if ((seconds) != 0) {                                     \
@@ -39,7 +46,7 @@ extern __thread timer_t timeout_timer;
 	if ((seconds) != 0 && sigsetjmp(timeout_ptr, 1) == 1)
 
 /**
- * @brief
+ * @brief Stop a timer.
  */
 #define timeout_stop()                   \
 	{                                    \
@@ -50,10 +57,9 @@ extern __thread timer_t timeout_timer;
 	}
 
 /**
- * @brief
- * @param cfg
- * @return
+ * @brief Initialize the timeout system.
+ * @return whether the initalization was successful
  */
-bool timeout_init(const config_t *cfg);
+bool timeout_init();
 
 #endif  // ECGEN_TIMEOUT_H
