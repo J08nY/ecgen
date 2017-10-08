@@ -13,7 +13,7 @@
 #include "io/cli.h"
 #include "misc/types.h"
 
-typedef struct disc_t {
+typedef struct {
 	GEN d;
 	GEN j;
 	GEN alpha;

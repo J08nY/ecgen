@@ -12,37 +12,37 @@
 #include "util/random.h"
 
 /**
- *
+ * @brief Input a prime, upto <code>bits</code> long.
  * @param prompt
  * @param bits
- * @return
+ * @return the prime as t_INT, or <code>-1</code> if a composite was given.
  */
 GEN input_prime(const char *prompt, unsigned long bits);
 
 /**
- *
+ * @brief Input an unsigned integer, upto <code>bits</code> long.
  * @param prompt
  * @param bits
- * @return
+ * @return the int as t_INT, or <code>-1</code> if invalid input was given.
  */
 GEN input_int(const char *prompt, unsigned long bits);
 
 /**
- *
+ * @brief Input a short unsigned integer. (16 bits wide).
  * @param prompt
- * @return
+ * @return the short as t_INT, or <code>-1</code> if invalid input was given.
  */
 GEN input_short(const char *prompt);
 
 /**
- *
+ * @brief Input a string.
  * @param prompt
- * @return
+ * @return the string as a t_STR
  */
 GEN input_string(const char *prompt);
 
 /**
- *
+ * @brief The input FILE * to read all input from, can be <code>stdin</code>.
  */
 extern FILE *in;
 

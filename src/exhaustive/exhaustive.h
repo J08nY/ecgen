@@ -5,8 +5,8 @@
 /**
  * @file exhaustive.h
  */
-#ifndef ECGEN_GENERATORS_H
-#define ECGEN_GENERATORS_H
+#ifndef ECGEN_EXHAUSTIVE_H
+#define ECGEN_EXHAUSTIVE_H
 
 #include "misc/types.h"
 
@@ -22,32 +22,9 @@ typedef struct {
 
 /**
  * @brief
- * @return
- */
-exhaustive_t *exhaustive_new(void);
-
-/**
- * @brief
- * @param generators
- * @param validators
- * @param argss
- * @param unrolls
- * @return
- */
-exhaustive_t *exhaustive_create(gen_f *generators, check_t **validators,
-                                arg_t **argss, unroll_f *unrolls);
-
-/**
- * @brief
  * @param setup
  */
 void exhaustive_clear(exhaustive_t *setup);
-
-/**
- * @brief
- * @param setup
- */
-void exhaustive_free(exhaustive_t **setup);
 
 /**
  *
@@ -90,4 +67,4 @@ int exhaustive_gen(curve_t *curve, const config_t *cfg,
  */
 int exhaustive_do(config_t *cfg);
 
-#endif  // ECGEN_GENERATORS_H
+#endif  // ECGEN_EXHAUSTIVE_H
