@@ -218,9 +218,11 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 		arg_t *arg = argss ? argss[state] : NULL;
 
 		int diff;
+		bool timeout = false;
 		timeout_start(cfg->timeout) {
 			// This is not the best, but currently the best idea I have.
 			diff = start_offset - state;
+			timeout = true;
 		}
 		else {
 			diff = generators[state](curve, cfg, arg, (offset_e)state);
@@ -266,10 +268,14 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 				}
 			}
 
-			if (diff < 0) {
-				verbose_log("-");
+			if (timeout) {
+				verbose_log("#");
 			} else {
-				verbose_log(".");
+				if (diff < 0) {
+					verbose_log("-");
+				} else {
+					verbose_log(".");
+				}
 			}
 			// unroll stack
 			avma = stack_tops[new_state];

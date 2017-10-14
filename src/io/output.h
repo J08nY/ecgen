@@ -23,7 +23,7 @@
 	clock_gettime(CLOCK_MONOTONIC, &ts); \
 	fprintf(verbose, "%" PRIdMAX ".%.9ld ", ts.tv_sec, ts.tv_nsec);
 
-#define debug(...) fprintf(verbose, __VA_ARGS__)
+#define debug(...) pari_fprintf(verbose, __VA_ARGS__)
 #define debug_log(...)          \
 	do {                        \
 		_debug_print(" -  ");   \
