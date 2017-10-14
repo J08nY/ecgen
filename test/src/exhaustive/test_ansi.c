@@ -5,7 +5,6 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
-#include <misc/config.h>
 #include "exhaustive/ansi.h"
 #include "gen/field.h"
 #include "gen/seed.h"

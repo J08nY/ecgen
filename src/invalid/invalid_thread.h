@@ -8,8 +8,8 @@
 #ifndef ECGEN_INVALID_THREAD_H
 #define ECGEN_INVALID_THREAD_H
 
-#include <exhaustive/exhaustive.h>
 #include <pthread.h>
+#include "exhaustive/exhaustive.h"
 #include "misc/types.h"
 
 typedef enum { STATE_FREE, STATE_GENERATING, STATE_GENERATED } state_e;

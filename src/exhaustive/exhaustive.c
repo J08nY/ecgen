@@ -195,7 +195,8 @@ void exhaustive_uinit(unroll_f *unrolls) {
 }
 
 int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
-						 offset_e start_offset, offset_e end_offset, int retry) {
+                         offset_e start_offset, offset_e end_offset,
+                         int retry) {
 	if (start_offset == end_offset) {
 		return 2;
 	}
@@ -291,7 +292,7 @@ int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
 }
 
 int exhaustive_gen(curve_t *curve, const exhaustive_t *setup,
-				   offset_e start_offset, offset_e end_offset) {
+                   offset_e start_offset, offset_e end_offset) {
 	return exhaustive_gen_retry(curve, setup, start_offset, end_offset, 0);
 }
 

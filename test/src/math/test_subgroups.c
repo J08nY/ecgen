@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include <criterion/criterion.h>
-#include <misc/config.h>
 #include "gen/point.h"
 #include "math/subgroups.h"
 #include "test/default.h"

@@ -17,6 +17,7 @@ INCLUDES = -I. -I../../src -I../../lib -I../lib/criterion/include
 LIBS = -lrt -lpari -lpthread -lparson -lsha1 -lcriterion
 
 TEST_SRC = $(wildcard *.c) $(wildcard */*.c)
+TEST_HDR = $(wildcard */*.h)
 TEST_OBJ = $(patsubst %.c,%.o, $(TEST_SRC))
 TESTS = $(patsubst %.c,%, $(TEST_SRC))
 
@@ -42,3 +43,7 @@ clean-cov:
 	find . -type f -name '*.gcda' -exec rm {} +
 	find . -type f -name '*.gcno' -exec rm {} +
 	find . -type f -name '*.gcov' -exec rm {} +
+
+format:
+	clang-format -i $(TEST_SRC)
+	clang-format -i $(TEST_HDR)

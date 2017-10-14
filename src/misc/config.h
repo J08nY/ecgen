@@ -48,7 +48,8 @@ typedef struct {
 	bool random;
 	/** @brief Whether the curves should have prime order. */
 	bool prime;
-	/** @brief Whether the curves should be generated as invalid, for some curve. */
+	/** @brief Whether the curves should be generated as invalid, for some
+	 * curve. */
 	bool invalid;
 	/** @brief Whether the Complex Multiplication method should be used. */
 	bool cm;
@@ -65,7 +66,8 @@ typedef struct {
 	seed_e seed_algo;
 	/** @brief What seed to use, if any, to generate the curves. */
 	char *seed;
-	/** @brief Whether the curves should be uniquely generated (one generator). */
+	/** @brief Whether the curves should be uniquely generated (one generator).
+	 */
 	bool unique;
 	/** @brief What points to generate on the curves. */
 	struct points_s points;
@@ -74,11 +76,13 @@ typedef struct {
 	char *datadir;
 	/** @brief How much memory to allocate for the PARI stack. */
 	unsigned long memory;
-	/** @brief How many threads to use, only useful for invalid generation(atm). */
+	/** @brief How many threads to use, only useful for invalid generation(atm).
+	 */
 	unsigned long threads;
 	/** @brief How much memory to allocate for the PARI stack, per thread. */
 	unsigned long thread_memory;
-	/** @brief How long of a timeout interval, if any, to give to parameter generation. */
+	/** @brief How long of a timeout interval, if any, to give to parameter
+	 * generation. */
 	unsigned long timeout;
 
 	/** @brief What output format to use. */

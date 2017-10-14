@@ -92,8 +92,8 @@ static size_t invalid_primes(GEN order, pari_ulong **primes) {
 }
 
 static size_t invalid_curves_single(const curve_t *curve, pari_ulong *primes,
-									size_t nprimes, curve_t **curves,
-									exhaustive_t *setup) {
+                                    size_t nprimes, curve_t **curves,
+                                    exhaustive_t *setup) {
 	arg_t *invalid_argss[OFFSET_END] = {NULL};
 	exhaustive_t invalid_setup = {.generators = setup->generators,
 	                              .validators = setup->validators,
@@ -129,7 +129,8 @@ static size_t invalid_curves_single(const curve_t *curve, pari_ulong *primes,
 		if (total > 0) {
 			if (!exhaustive_gen_retry(invalid, setup, OFFSET_GENERATORS,
 			                          OFFSET_POINTS, 1)) {
-				curve_unroll(invalid, avma, btop);  // necessary to free the ellinit
+				curve_unroll(invalid, avma,
+				             btop);  // necessary to free the ellinit
 				avma = btop;
 				continue;
 			}
@@ -156,8 +157,7 @@ static size_t invalid_curves_single(const curve_t *curve, pari_ulong *primes,
 			 * generate prime order points, this is expensive (order needs to be
 			 * factorised, so only do it if we want the curve)
 			 */
-			exhaustive_gen(invalid, &invalid_setup, OFFSET_POINTS,
-			               OFFSET_END);
+			exhaustive_gen(invalid, &invalid_setup, OFFSET_POINTS, OFFSET_END);
 
 			size_t count = 0;
 			for (size_t i = nprimes; i-- > 0;) {
@@ -209,8 +209,8 @@ static size_t invalid_curves_single(const curve_t *curve, pari_ulong *primes,
 }
 
 static size_t invalid_curves_threaded(const curve_t *curve, pari_ulong *primes,
-									  size_t nprimes, curve_t **curves,
-									  exhaustive_t *setup) {
+                                      size_t nprimes, curve_t **curves,
+                                      exhaustive_t *setup) {
 	pthread_t pthreads[cfg->threads];
 	thread_t threads[cfg->threads];
 	struct pari_thread pari_threads[cfg->threads];

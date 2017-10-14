@@ -19,6 +19,10 @@ clean-all:
 	rm -rf *.gcov
 	rm -rf doc/*
 
+format:
+	+$(MAKE) -C src format
+	+$(MAKE) -C test format
+
 docs:
 	doxygen Doxyfile
 
@@ -45,7 +49,7 @@ help:
 
 .PHONY: all clean clean-all docs test unittest help
 
-ifeq (, $(filter all clean clean-all docs test unittest help, $(MAKECMDGOALS)))
+ifeq (, $(filter all clean clean-all format docs test unittest help, $(MAKECMDGOALS)))
 # Just pass all targets to a Makefile in src
 $(MAKECMDGOALS):
 	+$(MAKE) -C src $@

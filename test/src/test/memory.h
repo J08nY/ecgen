@@ -13,4 +13,4 @@ void *cr_memdup(const void *str, size_t len);
 
 void *cr_simple_calloc(size_t size);
 
-#endif //ECGEN_TEST_MEMORY_H
+#endif  // ECGEN_TEST_MEMORY_H

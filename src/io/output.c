@@ -250,9 +250,7 @@ char *output_sjson(curve_t *curve) {
 	return result;
 }
 
-char *output_sjson_separator() {
-	return output_malloc(",\n");
-}
+char *output_sjson_separator() { return output_malloc(",\n"); }
 
 char *output_sjson_begin() { return output_malloc("[\n"); }
 
@@ -266,9 +264,7 @@ void output_f(FILE *out, curve_t *curve) {
 	}
 }
 
-void output_o(curve_t *curve) {
-	output_f(out, curve);
-}
+void output_o(curve_t *curve) { output_f(out, curve); }
 
 void output_f_separator(FILE *out) {
 	char *s = output_s_separator();

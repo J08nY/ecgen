@@ -137,19 +137,32 @@ Three different EC curve parameters generation methods are implemented.
 
 ### Build
 
+ecgen can be built using Make or CMake.
+
+#### Make
+
 	git clone https://github.com/J08nY/ecgen.git
 	cd ecgen
 	git submodule update --init
 	make
 
+#### CMake
+
+	git clone https://github.com/J08nY/ecgen.git
+	cd ecgen
+	git submodule update --init
+	mkdir build && cd build && cmake .. && make
+
 ### Requirements
 
  - PARI/GP
-
+ - gcc / clang
 
 ecgen uses the [PARI/GP](http://pari.math.u-bordeaux.fr/) library for elliptic
 curve arithmetic and it's SEA point counting algorithm implementation. It also requires the 
 additional [seadata](http://pari.math.u-bordeaux.fr/packages.html) package (seadata and seadata-big recommended for large curves).
+
+ecgen uses some extensions supported by the gcc and clang compilers, namely `__thread`-local storage.
 
 ### Libraries
 

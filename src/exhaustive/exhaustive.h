@@ -41,7 +41,7 @@ void exhaustive_uinit(unroll_f *unrolls);
  * @return
  */
 int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
-						 offset_e start_offset, offset_e end_offset, int retry);
+                         offset_e start_offset, offset_e end_offset, int retry);
 
 /**
  *
@@ -52,7 +52,7 @@ int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
  * @return
  */
 int exhaustive_gen(curve_t *curve, const exhaustive_t *setup,
-				   offset_e start_offset, offset_e end_offset);
+                   offset_e start_offset, offset_e end_offset);
 
 /**
  *

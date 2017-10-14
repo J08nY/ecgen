@@ -24,12 +24,12 @@
  * @copyright GPL v2.0
  */
 #include <pari/pari.h>
-#include "misc/config.h"
 #include "cm/cm.h"
 #include "exhaustive/exhaustive.h"
 #include "invalid/invalid.h"
 #include "io/input.h"
 #include "io/output.h"
+#include "misc/config.h"
 #include "util/timeout.h"
 
 const char *argp_program_version =
@@ -70,10 +70,10 @@ bool init(void) {
 	pari_ENDCATCH avma = ltop;
 
 	// open outfile
-	if (!output_init(cfg)) return false;
+	if (!output_init()) return false;
 
 	// open infile
-	if (!input_init(cfg)) return false;
+	if (!input_init()) return false;
 
 	return true;
 }
@@ -137,7 +137,7 @@ int quit(int status) {
  */
 int main(int argc, char *argv[]) {
 	// Parse cli args
-	memset(cfg, 0, sizeof(cfg_s));
+	memset(cfg, 0, sizeof(config_t));
 	argp_parse(&argp, argc, argv, 0, 0, cfg);
 
 	if (!init()) {

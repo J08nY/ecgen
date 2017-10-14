@@ -118,7 +118,7 @@ typedef struct {
  * @param state The current generation state
  * @return state diff
  */
-#define GENERATOR(gen_name)                                        \
+#define GENERATOR(gen_name) \
 	int gen_name(curve_t *curve, arg_t *args, offset_e state)
 
 typedef GENERATOR((*gen_f));
@@ -130,7 +130,7 @@ typedef GENERATOR((*gen_f));
  * @param to
  * @return
  */
-#define UNROLL(unroll_name)                                            \
+#define UNROLL(unroll_name) \
 	int unroll_name(curve_t *curve, pari_sp from, pari_sp to)
 
 typedef UNROLL((*unroll_f));
