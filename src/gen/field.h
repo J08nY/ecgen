@@ -74,4 +74,9 @@ GEN field_elementi(GEN element);
  */
 GEN field_ielement(GEN field, GEN in);
 
+/**
+ * @brief
+ */
+void field_quit(void);
+
 #endif  // ECGEN_FIELD_H

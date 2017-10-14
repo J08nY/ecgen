@@ -52,17 +52,17 @@ GENERATOR(field_gen_input) {
 			}
 
 			GEN e1 = input_short("e1:");
-			if (equalii(e1, gen_m1)) {
+			if (equalii(e1, gen_m1) || gcmp(e1, m) > 0) {
 				avma = ltop;
 				return 0;
 			}
 			GEN e2 = input_short("e2:");
-			if (equalii(e2, gen_m1)) {
+			if (equalii(e2, gen_m1) || gcmp(e2, m) > 0) {
 				avma = ltop;
 				return 0;
 			}
 			GEN e3 = input_short("e3:");
-			if (equalii(e3, gen_m1)) {
+			if (equalii(e3, gen_m1) || gcmp(e3, m) > 0) {
 				avma = ltop;
 				return 0;
 			}
@@ -171,5 +171,11 @@ GEN field_ielement(GEN field, GEN in) {
 		default:
 			pari_err_TYPE("field_ielement, field is unknown type. ", field);
 			return gen_m1; /* NOT REACHABLE */
+	}
+}
+
+void field_quit(void) {
+	if (field && isclone(field)) {
+		gunclone(field);
 	}
 }

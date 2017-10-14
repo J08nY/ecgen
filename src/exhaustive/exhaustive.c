@@ -305,6 +305,7 @@ static void exhaustive_init(exhaustive_t *setup) {
 }
 
 static void exhaustive_quit(exhaustive_t *setup) {
+	field_quit();
 	equation_quit();
 	anomalous_quit();
 	exhaustive_clear(setup);

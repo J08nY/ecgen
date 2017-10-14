@@ -24,6 +24,7 @@ Test(equation, test_a_gen_random) {
 
 	int ret = a_gen_random(&curve, NULL, OFFSET_A);
 	cr_assert_eq(ret, 1, );
+	cr_assert_not_null(curve.a, );
 }
 
 Test(equation, test_a_gen_input) {
@@ -55,14 +56,14 @@ Test(equation, test_a_gen_once) {
 }
 
 Test(equation, test_a_gen_zero) {
-	curve_t curve = {};
+	curve_t curve = {0};
 	int ret = a_gen_zero(&curve, NULL, OFFSET_A);
 	cr_assert_eq(ret, 1, );
 	cr_assert(gequal(gen_0, curve.a), );
 }
 
 Test(equation, test_a_gen_one) {
-	curve_t curve = {};
+	curve_t curve = {0};
 	int ret = a_gen_one(&curve, NULL, OFFSET_A);
 	cr_assert_eq(ret, 1, );
 	cr_assert(gequal(gen_1, curve.a), );
@@ -73,6 +74,7 @@ Test(equation, test_b_gen_random) {
 
 	int ret = b_gen_random(&curve, NULL, OFFSET_B);
 	cr_assert_eq(ret, 1, );
+	cr_assert_not_null(curve.b, );
 }
 
 Test(equation, test_b_gen_input) {
@@ -104,14 +106,14 @@ Test(equation, test_b_gen_once) {
 }
 
 Test(equation, test_b_gen_zero) {
-	curve_t curve = {};
+	curve_t curve = {0};
 	int ret = b_gen_zero(&curve, NULL, OFFSET_B);
 	cr_assert_eq(ret, 1, );
 	cr_assert(gequal(gen_0, curve.b), );
 }
 
 Test(equation, test_b_gen_one) {
-	curve_t curve = {};
+	curve_t curve = {0};
 	int ret = b_gen_one(&curve, NULL, OFFSET_B);
 	cr_assert_eq(ret, 1, );
 	cr_assert(gequal(gen_1, curve.b), );
