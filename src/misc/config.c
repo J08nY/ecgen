@@ -4,4 +4,5 @@
  */
 #include "config.h"
 
-config_t cfg;
+config_t cfg_s;
+config_t *cfg = &cfg_s;

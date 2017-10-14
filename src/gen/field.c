@@ -104,7 +104,7 @@ GENERATOR(field_gen_once) {
 		return 1;
 	}
 
-	int inp = field_gen_input(curve, cfg, args, state);
+	int inp = field_gen_input(curve, args, state);
 	if (inp > 0) {
 		field = gclone(curve->field);
 		curve_field = curve;

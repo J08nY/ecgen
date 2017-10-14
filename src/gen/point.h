@@ -110,7 +110,6 @@ void points_free_deep(point_t ***points, size_t npoints);
  * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -120,7 +119,6 @@ GENERATOR(point_gen_random);
  * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args size_t number of points to generate
  * @return state diff
  */
@@ -134,7 +132,6 @@ GENERATOR(points_gen_random);
  * prime orders specified exist.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args pari_ulong array of primes length nargs
  * @return state diff
  */
@@ -148,7 +145,6 @@ GENERATOR(points_gen_trial);
  *   G has an element of order p.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -160,7 +156,6 @@ GENERATOR(points_gen_prime);
  * Generates points on all subgroups of the curve. Prime and non-prime order.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -172,7 +167,6 @@ GENERATOR(points_gen_allgroups);
  * Generates points on non-prime order of the curve.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -182,7 +176,6 @@ GENERATOR(points_gen_nonprime);
  * UNROLL(unroll_f)
  *
  * @param curve
- * @param cfg
  * @param from
  * @param to
  * @return

@@ -21,9 +21,7 @@ static void setup_stream(FILE **original_out, FILE **redirected_out) {
 }
 
 void output_setup(void) {
-	config_t cfg;
-	memset(&cfg, 0, sizeof(cfg));
-	output_init(&cfg);
+	output_init();
 
 	int in_fd[2];
 	pipe(in_fd);

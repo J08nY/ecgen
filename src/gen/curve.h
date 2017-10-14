@@ -17,7 +17,6 @@
  * Always succeeds.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -28,7 +27,6 @@ GENERATOR(curve_gen_any);
  * Checks that the curve has non-zero discriminant.
  *
  * @param curve
- * @param cfg
  * @param args
  * @return
  */
@@ -37,7 +35,6 @@ CHECK(curve_check_nonzero);
 /**
  *
  * @param curve
- * @param cfg
  * @param from
  * @param to
  * @return

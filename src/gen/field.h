@@ -16,7 +16,6 @@
  * Always succeeds.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -29,7 +28,6 @@ GENERATOR(field_gen_random);
  *  - three short exponents of the reduction polynomial in the binary case
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -40,7 +38,6 @@ GENERATOR(field_gen_input);
  * Creates the field by reading it once.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */

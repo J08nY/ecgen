@@ -36,7 +36,7 @@ GENERATOR(a_gen_once) {
 		return 1;
 	}
 
-	int inp = a_gen_input(curve, cfg, args, state);
+	int inp = a_gen_input(curve, args, state);
 	if (inp > 0) {
 		a = gclone(curve->a);
 		curve_a = curve;
@@ -86,7 +86,7 @@ GENERATOR(b_gen_once) {
 		return 1;
 	}
 
-	int inp = b_gen_input(curve, cfg, args, state);
+	int inp = b_gen_input(curve, args, state);
 	if (inp > 0) {
 		b = gclone(curve->b);
 		curve_b = curve;

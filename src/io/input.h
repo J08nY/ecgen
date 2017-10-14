@@ -48,10 +48,9 @@ extern FILE *in;
 
 /**
  * @brief Initialize input based on cfg.
- * @param cfg
  * @return whether the initialization was successful
  */
-bool input_init(const config_t *cfg);
+bool input_init();
 
 /**
  * @brief Deinitialize input.

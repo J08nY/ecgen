@@ -13,8 +13,7 @@ Test(point, test_point_random) {
 	// curve = ellinit([1, 3], 23), order = 27
 	GEN e = ellinit(mkvec2s(1, 3), stoi(23), -1);
 	curve_t curve = {.order = stoi(27), .curve = e};
-	config_t cfg = {};
-	int ret = point_gen_random(&curve, &cfg, NULL, OFFSET_POINTS);
+	int ret = point_gen_random(&curve, NULL, OFFSET_POINTS);
 
 	cr_assert_eq(ret, 1, "Point wasn't generated.");
 	cr_assert_eq(curve.npoints, 1, "Incorrect number of points.");
@@ -31,10 +30,9 @@ Test(point, test_points_random) {
 	// curve = ellinit([1, 3], 23), order = 27
 	GEN e = ellinit(mkvec2s(1, 3), stoi(23), -1);
 	curve_t curve = {.order = stoi(27), .curve = e};
-	config_t cfg = {};
 	size_t npoints = 3;
 	arg_t arg = {.args = &npoints, .nargs = 1};
-	int ret = points_gen_random(&curve, &cfg, &arg, OFFSET_POINTS);
+	int ret = points_gen_random(&curve, &arg, OFFSET_POINTS);
 
 	cr_assert_eq(ret, 1, "Points weren't generated.");
 	cr_assert_eq(curve.npoints, npoints, "Incorrect number of points.");
@@ -59,10 +57,9 @@ Test(point, test_points_trial) {
 	gens[0]->point = mkvec2(mkintmodu(15, 23), mkintmodu(14, 23));
 	curve_t curve = {
 	    .order = stoi(27), .curve = e, .ngens = 1, .generators = gens};
-	config_t cfg = {};
 	pari_ulong prime = 3;
 	arg_t arg = {.args = &prime, .nargs = 1};
-	int ret = points_gen_trial(&curve, &cfg, &arg, OFFSET_POINTS);
+	int ret = points_gen_trial(&curve, &arg, OFFSET_POINTS);
 
 	cr_assert_eq(ret, 1, "Points weren't generated.");
 	cr_assert_eq(curve.npoints, 1, "Incorrect number of points.");
@@ -88,9 +85,8 @@ Test(point, test_points_prime) {
 	gens[0]->point = mkvec2(mkintmodu(15, 23), mkintmodu(14, 23));
 	curve_t curve = {
 	    .order = stoi(27), .curve = e, .ngens = 1, .generators = gens};
-	config_t cfg = {};
 	pari_ulong prime = 3;
-	int ret = points_gen_prime(&curve, &cfg, NULL, OFFSET_POINTS);
+	int ret = points_gen_prime(&curve, NULL, OFFSET_POINTS);
 
 	cr_assert_eq(ret, 1, "Points weren't generated.");
 	cr_assert_eq(curve.npoints, 1, "Incorrect number of points.");
@@ -116,10 +112,9 @@ Test(point, test_points_all) {
 	gens[0]->point = mkvec2(mkintmodu(15, 23), mkintmodu(14, 23));
 	curve_t curve = {
 	    .order = stoi(27), .curve = e, .ngens = 1, .generators = gens};
-	config_t cfg = {};
 	GEN orders = mkvec3s(3, 9, 27);
 	size_t npoints = 3;
-	int ret = points_gen_allgroups(&curve, &cfg, NULL, OFFSET_POINTS);
+	int ret = points_gen_allgroups(&curve, NULL, OFFSET_POINTS);
 
 	cr_assert_eq(ret, 1, "Points weren't generated.");
 	cr_assert_eq(curve.npoints, npoints, "Incorrect number of points.");
@@ -147,10 +142,9 @@ Test(point, test_points_nonprime) {
 	gens[0]->point = mkvec2(mkintmodu(15, 23), mkintmodu(14, 23));
 	curve_t curve = {
 	    .order = stoi(27), .curve = e, .ngens = 1, .generators = gens};
-	config_t cfg = {};
 	GEN orders = mkvec2s(9, 27);
 	size_t npoints = 2;
-	int ret = points_gen_nonprime(&curve, &cfg, NULL, OFFSET_POINTS);
+	int ret = points_gen_nonprime(&curve, NULL, OFFSET_POINTS);
 
 	cr_assert_eq(ret, 1, "Points weren't generated.");
 	cr_assert_eq(curve.npoints, npoints, "Incorrect number of points.");

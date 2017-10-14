@@ -12,10 +12,9 @@ TestSuite(gp, .init = default_setup, .fini = default_teardown);
 
 Test(gp, test_gp_gen_seed) {
 	curve_t curve = {0};
-	config_t cfg = {};
 	arg_t arg = {.args = "() -> { return(Vecsmall([1,0])); }", .nargs = 1};
 
-	int ret = gp_gen(&curve, &cfg, &arg, OFFSET_SEED);
+	int ret = gp_gen(&curve, &arg, OFFSET_SEED);
 	cr_assert_eq(ret, 1,);
 	cr_assert_not_null(curve.seed,);
 	cr_assert_not_null(curve.seed->seed,);
@@ -24,40 +23,36 @@ Test(gp, test_gp_gen_seed) {
 
 Test(gp, test_gp_gen_field) {
 	curve_t curve = {0};
-	config_t cfg = {};
 	arg_t arg = {.args = "(seed) -> { return(19); }", .nargs = 1};
 
-	int ret = gp_gen(&curve, &cfg, &arg, OFFSET_FIELD);
+	int ret = gp_gen(&curve, &arg, OFFSET_FIELD);
 	cr_assert_eq(ret, 1,);
 	cr_assert(gequal(curve.field, stoi(19)),);
 }
 
 Test(gp, test_gp_gen_a) {
 	curve_t curve = {.field = stoi(19)};
-	config_t cfg = {};
 	arg_t arg = {.args = "(seed, field) -> { return(Mod(3,field)); }", .nargs = 1};
 
-	int ret = gp_gen(&curve, &cfg, &arg, OFFSET_A);
+	int ret = gp_gen(&curve, &arg, OFFSET_A);
 	cr_assert_eq(ret, 1,);
 	cr_assert(gequal(curve.a, mkintmodu(3, 19)),);
 }
 
 Test(gp, test_gp_gen_b) {
 	curve_t curve = {.field = stoi(19), .a = mkintmodu(3, 19)};
-	config_t cfg = {};
 	arg_t arg = {.args = "(seed, field, a) -> { return(a * 2); }", .nargs = 1};
 
-	int ret = gp_gen(&curve, &cfg, &arg, OFFSET_B);
+	int ret = gp_gen(&curve, &arg, OFFSET_B);
 	cr_assert_eq(ret, 1,);
 	cr_assert(gequal(curve.b, mkintmodu(6, 19)),);
 }
 
 Test(gp, test_gp_gen_curve) {
 	curve_t curve = {.field = stoi(19), .a = mkintmodu(3, 19), .b = mkintmodu(6, 19)};
-	config_t cfg = {};
 	arg_t arg = {.args = "(seed, field, a, b) -> { return(ellinit([a,b], field)); }", .nargs = 1};
 
-	int ret = gp_gen(&curve, &cfg, &arg, OFFSET_CURVE);
+	int ret = gp_gen(&curve, &arg, OFFSET_CURVE);
 	cr_assert_eq(ret, 1,);
 	cr_assert(gequal(curve.curve, ellinit(mkvec2(curve.a, curve.b), curve.field, 0)),);
 }
@@ -65,10 +60,9 @@ Test(gp, test_gp_gen_curve) {
 Test(gp, test_gp_gen_order) {
 	curve_t curve = {.field = stoi(19), .a = mkintmodu(3, 19), .b = mkintmodu(6, 19),
 	.curve = ellinit(mkvec2(stoi(3), stoi(6)), stoi(19), 0)};
-	config_t cfg = {};
 	arg_t arg = {.args = "(seed, field, a, b, curve) -> { return(ellsea(curve)); }", .nargs = 1};
 
-	int ret = gp_gen(&curve, &cfg, &arg, OFFSET_ORDER);
+	int ret = gp_gen(&curve, &arg, OFFSET_ORDER);
 	cr_assert_eq(ret, 1,);
 	cr_assert(gequal(ellsea(curve.curve, 0), curve.order),);
 }
@@ -77,10 +71,9 @@ Test(gp, test_gp_gen_generators) {
 	curve_t curve = {.field = stoi(19), .a = mkintmodu(3, 19), .b = mkintmodu(6, 19),
 		.curve = ellinit(mkvec2(stoi(3), stoi(6)), stoi(19), 0), .order = stoi(16)
 	};
-	config_t cfg = {};
 	arg_t arg = {.args = "(seed, field, a, b, curve, order) -> { return(ellgenerators(curve)); }", .nargs = 1};
 
-	int ret = gp_gen(&curve, &cfg, &arg, OFFSET_GENERATORS);
+	int ret = gp_gen(&curve, &arg, OFFSET_GENERATORS);
 	cr_assert_eq(ret, 1,);
 
 	GEN ellgens = ellgenerators(curve.curve);
@@ -100,10 +93,9 @@ Test(gp, test_gp_gen_points) {
 	curve.generators = generators;
 	curve.ngens = 1;
 
-	config_t cfg = {};
 	arg_t arg = {.args = "(seed, field, a, b, curve, order, gens) -> { return([ellmul(curve,gens[1],2)]); }", .nargs = 1};
 
-	int ret = gp_gen(&curve, &cfg, &arg, OFFSET_POINTS);
+	int ret = gp_gen(&curve, &arg, OFFSET_POINTS);
 	cr_assert_eq(ret, 1,);
 	cr_assert_eq(curve.npoints, 1,);
 	cr_assert(gequal(curve.points[0]->point, ellmul(curve.curve, gen.point, stoi(2))),);
@@ -113,10 +105,9 @@ Test(gp, test_gp_check_seed) {
 	seed_t seed = {.seed = bits_from_hex("ff")};
 	curve_t curve = {.seed = &seed};
 
-	config_t cfg = {};
 	arg_t arg = {.args="(seed) -> { return(1);}"};
 
-	int ret = gp_check(&curve, &cfg, &arg, OFFSET_SEED);
+	int ret = gp_check(&curve, &arg, OFFSET_SEED);
 	cr_assert_eq(ret, 1,);
 }
 
@@ -124,10 +115,9 @@ Test(gp, test_gp_check_field) {
 	seed_t seed = {.seed = bits_from_hex("ff")};
 	curve_t curve = {.seed = &seed, .field = stoi(19)};
 
-	config_t cfg = {};
 	arg_t arg = {.args="(seed, field) -> { if(field == 19, return(1));}"};
 
-	int ret = gp_check(&curve, &cfg, &arg, OFFSET_FIELD);
+	int ret = gp_check(&curve, &arg, OFFSET_FIELD);
 	cr_assert_eq(ret, 1,);
 }
 
@@ -135,10 +125,9 @@ Test(gp, test_gp_check_a) {
 	seed_t seed = {.seed = bits_from_hex("ff")};
 	curve_t curve = {.seed = &seed, .field = stoi(19), .a = mkintmodu(3, 19)};
 
-	config_t cfg = {};
 	arg_t arg = {.args="(seed, field, a) -> { if(a == Mod(3,19), return(1));}"};
 
-	int ret = gp_check(&curve, &cfg, &arg, OFFSET_A);
+	int ret = gp_check(&curve, &arg, OFFSET_A);
 	cr_assert_eq(ret, 1,);
 }
 
@@ -146,10 +135,9 @@ Test(gp, test_gp_check_b) {
 	seed_t seed = {.seed = bits_from_hex("ff")};
 	curve_t curve = {.seed = &seed, .field = stoi(19), .a = mkintmodu(3, 19), .b = mkintmodu(5, 19)};
 
-	config_t cfg = {};
 	arg_t arg = {.args="(seed, field, a, b) -> { if(b == Mod(5,19), return(1));}"};
 
-	int ret = gp_check(&curve, &cfg, &arg, OFFSET_B);
+	int ret = gp_check(&curve, &arg, OFFSET_B);
 	cr_assert_eq(ret, 1,);
 }
 
@@ -158,10 +146,9 @@ Test(gp, test_gp_check_curve) {
 	curve_t curve = {.seed = &seed, .field = stoi(19), .a = mkintmodu(3, 19), .b = mkintmodu(5, 19),
 		.curve = ellinit(mkvec2(stoi(3), stoi(5)), stoi(19), 0)};
 
-	config_t cfg = {};
 	arg_t arg = {.args="(seed, field, a, b, curve) -> { if(curve == ellinit([3, 5], 19), return(1));}"};
 
-	int ret = gp_check(&curve, &cfg, &arg, OFFSET_CURVE);
+	int ret = gp_check(&curve, &arg, OFFSET_CURVE);
 	cr_assert_eq(ret, 1,);
 }
 
@@ -170,10 +157,9 @@ Test(gp, test_gp_check_order) {
 	curve_t curve = {.seed = &seed, .field = stoi(19), .a = mkintmodu(3, 19), .b = mkintmodu(5, 19),
 		.curve = ellinit(mkvec2(stoi(3), stoi(5)), stoi(19), 0), .order = stoi(16)};
 
-	config_t cfg = {};
 	arg_t arg = {.args="(seed, field, a, b, curve, order) -> { if(order == 16, return(1));}"};
 
-	int ret = gp_check(&curve, &cfg, &arg, OFFSET_ORDER);
+	int ret = gp_check(&curve, &arg, OFFSET_ORDER);
 	cr_assert_eq(ret, 1,);
 }
 
@@ -187,10 +173,9 @@ Test(gp, test_gp_check_generators) {
 	curve.generators = generators;
 	curve.ngens = 1;
 
-	config_t cfg = {};
 	arg_t arg = {.args="(seed, field, a, b, curve, order, gens) -> { if(gens == ellgenerators(curve), return(1));}"};
 
-	int ret = gp_check(&curve, &cfg, &arg, OFFSET_GENERATORS);
+	int ret = gp_check(&curve, &arg, OFFSET_GENERATORS);
 	cr_assert_eq(ret, 1,);
 }
 
@@ -206,9 +191,8 @@ Test(gp, test_gp_check_points) {
 	curve.points = generators;
 	curve.npoints = 1;
 
-	config_t cfg = {};
 	arg_t arg = {.args="(seed, field, a, b, curve, order, gens, points) -> { if(points == ellgenerators(curve), return(1));}"};
 
-	int ret = gp_check(&curve, &cfg, &arg, OFFSET_POINTS);
+	int ret = gp_check(&curve, &arg, OFFSET_POINTS);
 	cr_assert_eq(ret, 1,);
 }

@@ -24,6 +24,7 @@
  * @copyright GPL v2.0
  */
 #include <pari/pari.h>
+#include "misc/config.h"
 #include "cm/cm.h"
 #include "exhaustive/exhaustive.h"
 #include "invalid/invalid.h"
@@ -45,17 +46,17 @@ static struct argp argp = {cli_options, cli_parse, cli_args_doc,
 
 bool init(void) {
 	// init PARI, 1GB stack, 1M primes
-	pari_init(cfg.memory, 1000000);
+	pari_init(cfg->memory, 1000000);
 
 	// init PARI PRNG
 	if (!random_init()) return false;
 
 	// init the signal handlers, etc. for timeout handling
-	if (!timeout_init(&cfg)) return false;
+	if (!timeout_init()) return false;
 
 	// set datadir if specified
-	if (cfg.datadir) {
-		default0("datadir", cfg.datadir);
+	if (cfg->datadir) {
+		default0("datadir", cfg->datadir);
 	}
 
 	// init the modular polynomial db from seadata
@@ -69,10 +70,10 @@ bool init(void) {
 	pari_ENDCATCH avma = ltop;
 
 	// open outfile
-	if (!output_init(&cfg)) return false;
+	if (!output_init(cfg)) return false;
 
 	// open infile
-	if (!input_init(&cfg)) return false;
+	if (!input_init(cfg)) return false;
 
 	return true;
 }
@@ -136,20 +137,20 @@ int quit(int status) {
  */
 int main(int argc, char *argv[]) {
 	// Parse cli args
-	memset(&cfg, 0, sizeof(cfg));
-	argp_parse(&argp, argc, argv, 0, 0, &cfg);
+	memset(cfg, 0, sizeof(cfg_s));
+	argp_parse(&argp, argc, argv, 0, 0, cfg);
 
 	if (!init()) {
 		return quit(EXIT_FAILURE);
 	}
 
 	int status;
-	if (cfg.cm) {
-		status = cm_do(&cfg);
-	} else if (cfg.invalid) {
-		status = invalid_do(&cfg);
+	if (cfg->cm) {
+		status = cm_do();
+	} else if (cfg->invalid) {
+		status = invalid_do();
 	} else {
-		status = exhaustive_do(&cfg);
+		status = exhaustive_do();
 	}
 	return quit(status);
 }

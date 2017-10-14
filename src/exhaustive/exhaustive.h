@@ -28,43 +28,36 @@ void exhaustive_clear(exhaustive_t *setup);
 
 /**
  *
- * @param unrolls
- * @param cfg
  */
-void exhaustive_uinit(unroll_f *unrolls, const config_t *cfg);
+void exhaustive_uinit(unroll_f *unrolls);
 
 /**
  *
  * @param curve
- * @param cfg
  * @param setup
  * @param start_offset
  * @param end_offset
  * @param retry
  * @return
  */
-int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
-                         const exhaustive_t *setup, offset_e start_offset,
-                         offset_e end_offset, int retry);
+int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
+						 offset_e start_offset, offset_e end_offset, int retry);
 
 /**
  *
  * @param curve
- * @param config
  * @param setup
  * @param start_offset
  * @param end_offset
  * @return
  */
-int exhaustive_gen(curve_t *curve, const config_t *cfg,
-                   const exhaustive_t *setup, offset_e start_offset,
-                   offset_e end_offset);
+int exhaustive_gen(curve_t *curve, const exhaustive_t *setup,
+				   offset_e start_offset, offset_e end_offset);
 
 /**
  *
- * @param cfg
  * @return
  */
-int exhaustive_do(config_t *cfg);
+int exhaustive_do();
 
 #endif  // ECGEN_EXHAUSTIVE_H

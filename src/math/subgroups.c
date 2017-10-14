@@ -125,7 +125,7 @@ static GEN subgroups_2n(const curve_t *curve, size_t min_bits) {
 	return subgroups_2n_gens(curve, min_bits);
 }
 
-GEN subgroups_prime(const curve_t *curve, const config_t *cfg) {
+GEN subgroups_prime(const curve_t *curve) {
 	if (cfg->prime || isprime(curve->order)) {
 		return gtovec(curve->order);
 	}
@@ -133,7 +133,7 @@ GEN subgroups_prime(const curve_t *curve, const config_t *cfg) {
 	return subgroups_factors(curve->order);
 }
 
-GEN subgroups_nonprime(const curve_t *curve, const config_t *cfg) {
+GEN subgroups_nonprime(const curve_t *curve) {
 	if (cfg->prime || isprime(curve->order)) {
 		return NULL;
 	}
@@ -141,7 +141,7 @@ GEN subgroups_nonprime(const curve_t *curve, const config_t *cfg) {
 	return subgroups_2n(curve, 1);
 }
 
-GEN subgroups_all(const curve_t *curve, const config_t *cfg) {
+GEN subgroups_all(const curve_t *curve) {
 	if (cfg->prime || isprime(curve->order)) {
 		return gtovec(curve->order);
 	}

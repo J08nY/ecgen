@@ -6,7 +6,7 @@
 #include "io/output.h"
 #include "p1363.h"
 
-int cm_do(config_t *cfg) {
+int cm_do() {
 	debug_log_start("Starting Complex Multiplication method");
 
 	fprintf(err, "This is *NOT IMPLEMENTED* currently.\n");

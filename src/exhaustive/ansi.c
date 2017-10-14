@@ -44,7 +44,7 @@ static void seed_hash(seed_t *seed) {
 	bits_sha1(seed->seed, seed->hash20);
 }
 
-static void seed_tsh(seed_t *seed, const config_t *cfg) {
+static void seed_tsh(seed_t *seed) {
 	pari_sp ltop = avma;
 	seed->ansi.t = utoi(cfg->bits);
 	seed->ansi.s =
@@ -57,7 +57,7 @@ GENERATOR(ansi_gen_seed_random) {
 	seed_t *seed = ansi_new();
 	seed->seed = bits_from_i(random_int(160));
 	seed_hash(seed);
-	seed_tsh(seed, cfg);
+	seed_tsh(seed);
 	curve->seed = seed;
 	return 1;
 }
@@ -66,7 +66,7 @@ GENERATOR(ansi_gen_seed_argument) {
 	seed_t *seed = ansi_new();
 	seed->seed = seed_stoi(cfg->seed);
 	seed_hash(seed);
-	seed_tsh(seed, cfg);
+	seed_tsh(seed);
 	curve->seed = seed;
 	return 1;
 }
@@ -85,7 +85,7 @@ GENERATOR(ansi_gen_seed_input) {
 	seed_t *seed = ansi_new();
 	seed->seed = seed_stoi(cstr);
 	seed_hash(seed);
-	seed_tsh(seed, cfg);
+	seed_tsh(seed);
 	curve->seed = seed;
 	return 1;
 }
@@ -183,9 +183,9 @@ static GENERATOR(ansi_gen_equation_f2m) {
 GENERATOR(ansi_gen_equation) {
 	switch (cfg->field) {
 		case FIELD_PRIME:
-			return ansi_gen_equation_fp(curve, cfg, args, state);
+			return ansi_gen_equation_fp(curve, args, state);
 		case FIELD_BINARY:
-			return ansi_gen_equation_f2m(curve, cfg, args, state);
+			return ansi_gen_equation_f2m(curve, args, state);
 		default:
 			pari_err_BUG("Field not prime or binary?");
 			return INT_MIN; /* NOT REACHABLE */

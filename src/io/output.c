@@ -19,7 +19,7 @@ char *output_malloc(const char *what) {
 	return s;
 }
 
-char *output_scsv(curve_t *curve, const config_t *cfg) {
+char *output_scsv(curve_t *curve) {
 	pari_sp ltop = avma;
 	char *params[OFFSET_END] = {NULL};
 
@@ -112,13 +112,13 @@ char *output_scsv(curve_t *curve, const config_t *cfg) {
 	return result;
 }
 
-char *output_scsv_separator(const config_t *cfg) { return output_malloc("\n"); }
+char *output_scsv_separator() { return output_malloc("\n"); }
 
-char *output_scsv_begin(const config_t *cfg) { return NULL; }
+char *output_scsv_begin() { return NULL; }
 
-char *output_scsv_end(const config_t *cfg) { return output_malloc("\n"); }
+char *output_scsv_end() { return output_malloc("\n"); }
 
-static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
+static JSON_Value *output_jjson(curve_t *curve) {
 	pari_sp ltop = avma;
 	// root object/value is curve
 	JSON_Value *root_value = json_value_init_object();
@@ -242,65 +242,65 @@ static JSON_Value *output_jjson(curve_t *curve, const config_t *cfg) {
 	return root_value;
 }
 
-char *output_sjson(curve_t *curve, const config_t *cfg) {
-	JSON_Value *root_value = output_jjson(curve, cfg);
+char *output_sjson(curve_t *curve) {
+	JSON_Value *root_value = output_jjson(curve);
 	char *result = json_serialize_to_string_pretty(root_value);
 	json_value_free(root_value);
 
 	return result;
 }
 
-char *output_sjson_separator(const config_t *cfg) {
+char *output_sjson_separator() {
 	return output_malloc(",\n");
 }
 
-char *output_sjson_begin(const config_t *cfg) { return output_malloc("[\n"); }
+char *output_sjson_begin() { return output_malloc("[\n"); }
 
-char *output_sjson_end(const config_t *cfg) { return output_malloc("]\n"); }
+char *output_sjson_end() { return output_malloc("]\n"); }
 
-void output_f(FILE *out, curve_t *curve, const config_t *cfg) {
-	char *s = output_s(curve, cfg);
+void output_f(FILE *out, curve_t *curve) {
+	char *s = output_s(curve);
 	if (s) {
 		fprintf(out, "%s", s);
 		try_free(s);
 	}
 }
 
-void output_o(curve_t *curve, const config_t *cfg) {
-	output_f(out, curve, cfg);
+void output_o(curve_t *curve) {
+	output_f(out, curve);
 }
 
-void output_f_separator(FILE *out, const config_t *cfg) {
-	char *s = output_s_separator(cfg);
+void output_f_separator(FILE *out) {
+	char *s = output_s_separator();
 	if (s) {
 		fprintf(out, "%s", s);
 		try_free(s);
 	}
 }
 
-void output_o_separator(const config_t *cfg) { output_f_separator(out, cfg); }
+void output_o_separator() { output_f_separator(out); }
 
-void output_f_begin(FILE *out, const config_t *cfg) {
-	char *s = output_s_begin(cfg);
+void output_f_begin(FILE *out) {
+	char *s = output_s_begin();
 	if (s) {
 		fprintf(out, "%s", s);
 		try_free(s);
 	}
 }
 
-void output_o_begin(const config_t *cfg) { output_f_begin(out, cfg); }
+void output_o_begin() { output_f_begin(out); }
 
-void output_f_end(FILE *out, const config_t *cfg) {
-	char *s = output_s_end(cfg);
+void output_f_end(FILE *out) {
+	char *s = output_s_end();
 	if (s) {
 		fprintf(out, "%s", s);
 		try_free(s);
 	}
 }
 
-void output_o_end(const config_t *cfg) { output_f_end(out, cfg); }
+void output_o_end() { output_f_end(out); }
 
-bool output_init(const config_t *cfg) {
+bool output_init() {
 	json_set_allocation_functions(try_malloc, try_free);
 
 	if (cfg->output) {

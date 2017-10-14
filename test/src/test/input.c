@@ -8,9 +8,7 @@
 FILE *write_in;
 
 void input_setup(void) {
-	config_t cfg;
-	memset(&cfg, 0, sizeof(cfg));
-	input_init(&cfg);
+	input_init();
 
 	int in_fd[2];
 	pipe(in_fd);

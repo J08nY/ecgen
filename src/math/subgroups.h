@@ -14,25 +14,22 @@
 /**
  * @brief Enumerates prime subgroup orders of a given curve.
  * @param curve
- * @param cfg
  * @return
  */
-GEN subgroups_prime(const curve_t *curve, const config_t *cfg);
+GEN subgroups_prime(const curve_t *curve);
 
 /**
  * @brief Enumerates nonprime subgroup orders of a given curve.
  * @param curve
- * @param cfg
  * @return
  */
-GEN subgroups_nonprime(const curve_t *curve, const config_t *cfg);
+GEN subgroups_nonprime(const curve_t *curve);
 
 /**
  * @brief Enumerates all subgroup orders of a given curve.
  * @param curve
- * @param cfg
  * @return
  */
-GEN subgroups_all(const curve_t *curve, const config_t *cfg);
+GEN subgroups_all(const curve_t *curve);
 
 #endif  // ECGEN_SUBGROUPS_H

@@ -100,6 +100,7 @@ typedef struct {
 	unsigned long hex_digits;
 } config_t;
 
-extern config_t cfg;
+extern config_t cfg_s;
+extern config_t *cfg;
 
 #endif  // ECGEN_CONFIG_H

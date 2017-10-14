@@ -114,35 +114,30 @@ typedef struct {
 /**
  * @brief A generator function type.
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args Current optional generator argument
  * @param state The current generation state
  * @return state diff
  */
 #define GENERATOR(gen_name)                                        \
-	int gen_name(curve_t *curve, const config_t *cfg, arg_t *args, \
-	             offset_e state)
+	int gen_name(curve_t *curve, arg_t *args, offset_e state)
 
 typedef GENERATOR((*gen_f));
 
 /**
  * @brief An unroll function type
  * @param curve
- * @param cfg
  * @param from
  * @param to
  * @return
  */
 #define UNROLL(unroll_name)                                            \
-	int unroll_name(curve_t *curve, const config_t *cfg, pari_sp from, \
-	                pari_sp to)
+	int unroll_name(curve_t *curve, pari_sp from, pari_sp to)
 
 typedef UNROLL((*unroll_f));
 
 /**
  * @brief A check function type.
  * @param curve A curve_t being checked
- * @param cfg An application config
  * @param args Current optional generator argument
  * @return state diff
  */
@@ -162,7 +157,6 @@ typedef struct {
  * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -172,7 +166,6 @@ GENERATOR(gen_skip);
  * CHECK(check_f)
  *
  * @param curve A curve_t being checked
- * @param cfg An application config
  * @param args unused
  * @return
  */
@@ -182,7 +175,6 @@ CHECK(check_skip);
  * UNROLL(unroll_f)
  *
  * @param curve
- * @param cfg
  * @param from
  * @param to
  * @return

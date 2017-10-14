@@ -15,7 +15,6 @@
  * Reads the curve order from input, does not verify it.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args Current optional generator argument
  * @return state diff
  * @return state diff
@@ -28,7 +27,6 @@ GENERATOR(order_gen_input);
  * Always succeeds.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args Current optional generator argument
  * @return state diff
  */
@@ -39,7 +37,6 @@ GENERATOR(order_gen_any);
  * Calculates the curve order, using the SEA algorithm.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -49,7 +46,6 @@ GENERATOR(order_gen_sea);
  * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args pari_ulong passed to ellsea(curve, smallfact)
  * @return state diff
  */
@@ -62,7 +58,6 @@ GENERATOR(order_gen_smallfact);
  * Succeeds if the curve has a prime order.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */

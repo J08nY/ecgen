@@ -17,7 +17,6 @@
  * Always succeeds.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -28,7 +27,6 @@ GENERATOR(a_gen_random);
  * Creates a parameter by reading from input.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -39,7 +37,6 @@ GENERATOR(a_gen_input);
  * Creates a parameter by reading once from input.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -50,7 +47,6 @@ GENERATOR(a_gen_once);
  * Creates a parameter set to zero.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -61,7 +57,6 @@ GENERATOR(a_gen_zero);
  * Creates a parameter set to one.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -71,7 +66,6 @@ GENERATOR(a_gen_one);
  * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -83,7 +77,6 @@ GENERATOR(a_gen_seed);
  * element from the curve field.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -94,7 +87,6 @@ GENERATOR(b_gen_random);
  * Creates b parameter by reading from input.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -105,7 +97,6 @@ GENERATOR(b_gen_input);
  * Creates b parameter by reading once from input.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -116,7 +107,6 @@ GENERATOR(b_gen_once);
  * Creates b parameter set to zero.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -127,7 +117,6 @@ GENERATOR(b_gen_zero);
  * Creates b parameter set to one.
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -137,7 +126,6 @@ GENERATOR(b_gen_one);
  * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */

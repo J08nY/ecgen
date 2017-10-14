@@ -15,7 +15,6 @@
  * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -25,7 +24,6 @@ GENERATOR(gens_gen_any);
  * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */
@@ -35,7 +33,6 @@ GENERATOR(gens_gen_one);
  * UNROLL(unroll_f)
  *
  * @param curve
- * @param cfg
  * @param from
  * @param to
  * @return

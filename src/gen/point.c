@@ -172,17 +172,17 @@ GENERATOR(points_gen_trial) {
 }
 
 GENERATOR(points_gen_prime) {
-	GEN primes = subgroups_prime(curve, cfg);
+	GEN primes = subgroups_prime(curve);
 	return points_from_orders(curve, primes);
 }
 
 GENERATOR(points_gen_allgroups) {
-	GEN groups = subgroups_all(curve, cfg);
+	GEN groups = subgroups_all(curve);
 	return points_from_orders(curve, groups);
 }
 
 GENERATOR(points_gen_nonprime) {
-	GEN groups = subgroups_nonprime(curve, cfg);
+	GEN groups = subgroups_nonprime(curve);
 	if (!groups) {
 		// No non-prime order points on curve.
 		return 1;

@@ -12,9 +12,8 @@
 
 /**
  *
- * @param cfg
  * @return
  */
-int invalid_do(config_t *cfg);
+int invalid_do();
 
 #endif  // ECGEN_INVALID_H

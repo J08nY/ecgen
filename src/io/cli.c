@@ -111,8 +111,6 @@ static unsigned long cli_parse_time(const char *str, struct argp_state *state) {
 }
 
 error_t cli_parse(int key, char *arg, struct argp_state *state) {
-	config_t *cfg = state->input;
-
 	switch (key) {
 		case OPT_DATADIR:
 			cfg->datadir = arg;

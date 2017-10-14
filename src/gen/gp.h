@@ -13,7 +13,6 @@
 /**
  * @brief
  * @param curve
- * @param cfg
  * @param args
  * @return
  */
@@ -22,7 +21,6 @@ GENERATOR(gp_gen);
 /**
  * @brief
  * @param curve
- * @param cfg
  * @param args
  * @param state
  * @return

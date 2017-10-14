@@ -23,7 +23,6 @@ typedef struct {
  * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args the index of the discriminant to use, in the disc_table
  * @return state diff
  */
@@ -33,7 +32,6 @@ GENERATOR(anomalous_gen_field);
  * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args the index of the discriminant to use, in the disc_table
  * @return state diff
  */
@@ -43,7 +41,6 @@ GENERATOR(anomalous_gen_equation);
  * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
- * @param cfg An application config
  * @param args unused
  * @return state diff
  */

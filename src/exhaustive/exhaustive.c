@@ -30,7 +30,7 @@ void exhaustive_clear(exhaustive_t *setup) {
 	}
 }
 
-static void exhaustive_ginit(gen_f *generators, const config_t *cfg) {
+static void exhaustive_ginit(gen_f *generators) {
 	if (cfg->seed_algo) {
 		switch (cfg->seed_algo) {
 			case SEED_ANSI: {
@@ -142,12 +142,12 @@ static void exhaustive_ginit(gen_f *generators, const config_t *cfg) {
 	}
 }
 
-static void exhaustive_cinit(check_t **validators, const config_t *cfg) {
+static void exhaustive_cinit(check_t **validators) {
 	check_t *curve_check = check_new(curve_check_nonzero, NULL);
 	validators[OFFSET_CURVE] = curve_check;
 }
 
-static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
+static void exhaustive_ainit(arg_t **argss) {
 	if (cfg->anomalous) {
 		arg_t *field_arg = arg_new();
 		arg_t *eq_arg = arg_new();
@@ -179,7 +179,7 @@ static void exhaustive_ainit(arg_t **argss, const config_t *cfg) {
 	}
 }
 
-void exhaustive_uinit(unroll_f *unrolls, const config_t *cfg) {
+void exhaustive_uinit(unroll_f *unrolls) {
 	if (cfg->seed_algo) {
 		unrolls[OFFSET_SEED] = &seed_unroll;
 	} else {
@@ -194,9 +194,8 @@ void exhaustive_uinit(unroll_f *unrolls, const config_t *cfg) {
 	unrolls[OFFSET_POINTS] = &points_unroll;
 }
 
-int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
-                         const exhaustive_t *setup, offset_e start_offset,
-                         offset_e end_offset, int retry) {
+int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
+						 offset_e start_offset, offset_e end_offset, int retry) {
 	if (start_offset == end_offset) {
 		return 2;
 	}
@@ -225,7 +224,7 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 			timeout = true;
 		}
 		else {
-			diff = generators[state](curve, cfg, arg, (offset_e)state);
+			diff = generators[state](curve, arg, (offset_e)state);
 		}
 		timeout_stop();
 		int new_state = state + diff;
@@ -235,7 +234,7 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 			check_t *validator = validators[state];
 			for (size_t i = 0; i < validator->nchecks; ++i) {
 				int new_diff =
-				    validator->checks[i](curve, cfg, arg, (offset_e)state);
+				    validator->checks[i](curve, arg, (offset_e)state);
 				if (new_diff <= 0) {
 					diff = new_diff;
 					break;
@@ -261,8 +260,7 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 			// unroll
 			for (int i = state; i > new_state;) {
 				if (unrolls && unrolls[i]) {
-					i += unrolls[i](curve, cfg, stack_tops[i],
-					                stack_tops[i - 1]);
+					i += unrolls[i](curve, stack_tops[i], stack_tops[i - 1]);
 				} else {
 					--i;
 				}
@@ -292,17 +290,16 @@ int exhaustive_gen_retry(curve_t *curve, const config_t *cfg,
 	return 1;
 }
 
-int exhaustive_gen(curve_t *curve, const config_t *cfg,
-                   const exhaustive_t *setup, offset_e start_offset,
-                   offset_e end_offset) {
-	return exhaustive_gen_retry(curve, cfg, setup, start_offset, end_offset, 0);
+int exhaustive_gen(curve_t *curve, const exhaustive_t *setup,
+				   offset_e start_offset, offset_e end_offset) {
+	return exhaustive_gen_retry(curve, setup, start_offset, end_offset, 0);
 }
 
-static void exhaustive_init(exhaustive_t *setup, const config_t *cfg) {
-	exhaustive_ginit(setup->generators, cfg);
-	exhaustive_cinit(setup->validators, cfg);
-	exhaustive_ainit(setup->argss, cfg);
-	exhaustive_uinit(setup->unrolls, cfg);
+static void exhaustive_init(exhaustive_t *setup) {
+	exhaustive_ginit(setup->generators);
+	exhaustive_cinit(setup->validators);
+	exhaustive_ainit(setup->argss);
+	exhaustive_uinit(setup->unrolls);
 	anomalous_init();
 }
 
@@ -312,7 +309,7 @@ static void exhaustive_quit(exhaustive_t *setup) {
 	exhaustive_clear(setup);
 }
 
-int exhaustive_do(config_t *cfg) {
+int exhaustive_do() {
 	debug_log_start("Starting Exhaustive method");
 
 	gen_f generators[OFFSET_END] = {NULL};
@@ -324,25 +321,25 @@ int exhaustive_do(config_t *cfg) {
 	                      .validators = validators,
 	                      .argss = argss,
 	                      .unrolls = unrolls};
-	exhaustive_init(&setup, cfg);
+	exhaustive_init(&setup);
 
-	output_o_begin(cfg);
+	output_o_begin();
 	for (unsigned long i = 0; i < cfg->count; ++i) {
 		debug_log_start("Generating new curve");
 		curve_t *curve = curve_new();
-		if (!exhaustive_gen(curve, cfg, &setup, OFFSET_SEED, OFFSET_END)) {
+		if (!exhaustive_gen(curve, &setup, OFFSET_SEED, OFFSET_END)) {
 			curve_free(&curve);
 			return EXIT_FAILURE;
 		}
 		debug_log_end("Generated new curve");
 
-		output_o(curve, cfg);
+		output_o(curve);
 		if (i != cfg->count - 1) {
-			output_o_separator(cfg);
+			output_o_separator();
 		}
 		curve_free(&curve);
 	}
-	output_o_end(cfg);
+	output_o_end();
 
 	exhaustive_quit(&setup);
 	debug_log_end("Finished Exhaustive method");

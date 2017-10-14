@@ -5,6 +5,7 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
+#include <misc/config.h>
 #include "exhaustive/ansi.h"
 #include "gen/field.h"
 #include "gen/seed.h"
@@ -32,8 +33,8 @@ TestSuite(ansi, .init = ansi_suite_setup, .fini = ansi_suite_teardown);
 
 Test(ansi, test_seed_random) {
 	curve_t curve = {};
-	config_t cfg = {.bits = 256};
-	int ret = ansi_gen_seed_random(&curve, &cfg, NULL, OFFSET_SEED);
+	cfg->bits = 256;
+	int ret = ansi_gen_seed_random(&curve, NULL, OFFSET_SEED);
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
@@ -44,8 +45,9 @@ Test(ansi, test_seed_random) {
 Test(ansi, test_seed_argument) {
 	curve_t curve = {};
 	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
-	config_t cfg = {.seed = seed, .bits = 256};
-	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL, OFFSET_SEED);
+	cfg->seed = seed;
+	cfg->bits = 256;
+	int ret = ansi_gen_seed_argument(&curve, NULL, OFFSET_SEED);
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
@@ -59,8 +61,9 @@ Test(ansi, test_seed_argument) {
 Test(ansi, test_seed_argument_hex) {
 	curve_t curve = {};
 	char *seed = "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd";
-	config_t cfg = {.seed = seed, .bits = 256};
-	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL, OFFSET_SEED);
+	cfg->seed = seed;
+	cfg->bits = 256;
+	int ret = ansi_gen_seed_argument(&curve, NULL, OFFSET_SEED);
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
@@ -74,9 +77,9 @@ Test(ansi, test_seed_argument_hex) {
 Test(ansi, test_seed_input) {
 	curve_t curve = {};
 	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
-	config_t cfg = {.bits = 256};
+	cfg->bits = 256;
 	fprintf(write_in, "%s\n", seed);
-	int ret = ansi_gen_seed_input(&curve, &cfg, NULL, OFFSET_SEED);
+	int ret = ansi_gen_seed_input(&curve, NULL, OFFSET_SEED);
 
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.seed, );
@@ -90,9 +93,8 @@ Test(ansi, test_seed_input) {
 Test(ansi, test_seed_input_short) {
 	curve_t curve = {};
 	char *seed = "abcdef";
-	config_t cfg = {};
 	fprintf(write_in, "%s\n", seed);
-	int ret = ansi_gen_seed_input(&curve, &cfg, NULL, OFFSET_SEED);
+	int ret = ansi_gen_seed_input(&curve, NULL, OFFSET_SEED);
 
 	cr_assert_eq(ret, 0, );
 }
@@ -167,18 +169,17 @@ ParameterizedTestParameters(ansi, test_seed_prime_examples) {
 	return cr_make_param_array(struct prime_params, params, nb_params, NULL);
 }
 ParameterizedTest(struct prime_params *param, ansi, test_seed_prime_examples) {
-	config_t cfg = {};
-	cfg.bits = param->bits;
-	cfg.field = FIELD_PRIME;
-	cfg.seed = param->seed;
+	cfg->bits = param->bits;
+	cfg->field = FIELD_PRIME;
+	cfg->seed = param->seed;
 	curve_t curve = {};
 	bits_t *p = bits_from_hex(param->p);
 	curve.field = bits_to_i(p);
 
-	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL, OFFSET_SEED);
+	int ret = ansi_gen_seed_argument(&curve, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
 
-	ret = ansi_gen_equation(&curve, &cfg, NULL, OFFSET_SEED);
+	ret = ansi_gen_equation(&curve, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
 	GEN expected_r = bits_to_i(bits_from_hex(param->r));
 	cr_assert(gequal(curve.seed->ansi.r, expected_r), );
@@ -268,20 +269,19 @@ ParameterizedTestParameters(ansi, test_seed_binary_examples) {
 }
 ParameterizedTest(struct binary_params *param, ansi,
                   test_seed_binary_examples) {
-	config_t cfg = {};
-	cfg.bits = param->bits;
-	cfg.field = FIELD_BINARY;
-	cfg.seed = param->seed;
+	cfg->bits = param->bits;
+	cfg->field = FIELD_BINARY;
+	cfg->seed = param->seed;
 	curve_t curve = {};
 	curve.field = poly_gen(&param->field);
 
 	GEN expected_b = bits_to_i(bits_from_hex(param->b));
 	bits_t *b = bits_from_i(expected_b);
 
-	int ret = ansi_gen_seed_argument(&curve, &cfg, NULL, OFFSET_SEED);
+	int ret = ansi_gen_seed_argument(&curve, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
 
-	ret = ansi_gen_equation(&curve, &cfg, NULL, OFFSET_SEED);
+	ret = ansi_gen_equation(&curve, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
 	GEN curve_b = field_elementi(curve.b);
 	cr_assert(gequal(curve_b, expected_b), );
