@@ -42,7 +42,6 @@ const char *argp_program_bug_address = "<johny+ecgen@neuromancer.sk>";
 
 static struct argp argp = {cli_options, cli_parse, cli_args_doc,
                            cli_doc,     0,         cli_filter};
-static config_t cfg;
 
 bool init(void) {
 	// init PARI, 1GB stack, 1M primes
