@@ -3,6 +3,8 @@
  * Copyright (C) 2017 J08nY
  */
 #include "gens.h"
+#include <misc/types.h>
+#include "exhaustive/arg.h"
 #include "point.h"
 
 static int gens_put(curve_t *curve, GEN generators, long len) {
@@ -35,6 +37,44 @@ GENERATOR(gens_gen_one) {
 		return -5;
 	}
 	return gens_put(curve, generators, len);
+}
+
+CHECK(gens_check_anomalous) {
+	if (cfg->field == FIELD_BINARY) return 1;
+	pari_sp ltop = avma;
+	for (size_t i = 0; i < curve->ngens; ++i) {
+		if (mpcmp(curve->field, curve->generators[i]->order) == 0) {
+			avma = ltop;
+			return -5;
+		}
+	}
+	return 1;
+}
+
+CHECK(gens_check_embedding) {
+	HAS_ARG(args);
+	if (cfg->field == FIELD_BINARY) return 1;
+	pari_sp ltop = avma;
+
+	const char *min_degree = args->args;
+	GEN mind = strtoi(min_degree);
+
+	for (size_t i = 0; i < curve->ngens; ++i) {
+		GEN power = gen_0;
+		GEN pm;
+		do {
+			power = addii(power, gen_1);
+			GEN ppow = powii(curve->field, power);
+			pm = subii(ppow, gen_1);
+		} while (!dvdii(pm, curve->generators[i]->order));
+
+		if (mpcmp(power, mind) <= 0) {
+			avma = ltop;
+			return -5;
+		}
+	}
+	avma = ltop;
+	return 1;
 }
 
 UNROLL(gens_unroll) {

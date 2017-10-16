@@ -3,9 +3,9 @@
  * Copyright (C) 2017 J08nY
  */
 #include "order.h"
+#include <misc/types.h>
 #include "exhaustive/arg.h"
 #include "io/input.h"
-#include "io/output.h"
 
 GENERATOR(order_gen_input) {
 	pari_sp ltop = avma;
@@ -91,4 +91,65 @@ GENERATOR(order_gen_prime) {
 		obj_insert_shallow(curve->curve, 1, curve->order);
 		return 1;
 	}
+}
+
+CHECK(order_check_pohlig_hellman) {
+	HAS_ARG(args);
+	pari_sp ltop = avma;
+
+	const char *min_fact = args->args;
+	GEN minf = strtoi(min_fact);
+
+	GEN factors = factor(curve->order);
+	GEN primes = gel(factors, 1);
+
+	long len = glength(primes);
+	if (mpcmp(gel(primes, len), minf) <= 0) {
+		avma = ltop;
+		return -4;
+	} else {
+		avma = ltop;
+		return 1;
+	}
+}
+
+CHECK(order_check_discriminant) {
+	HAS_ARG(args);
+	if (cfg->field == FIELD_BINARY) return 1;
+	pari_sp ltop = avma;
+
+	const char *min_disc = args->args;
+	GEN mind = strtoi(min_disc);
+
+	GEN t = negi(subii(curve->order, addii(curve->field, gen_1)));
+	GEN tp = subii(sqri(t), mulis(curve->field, 4));
+	GEN tp_factors = factor(tp);
+
+	GEN tp_primes = gel(tp_factors, 1);
+	GEN tp_pows = gel(tp_factors, 2);
+	long tp_pow_len = glength(tp_pows);
+	GEN max_value = gen_1;
+	for (long i = 1; i <= tp_pow_len; ++i) {
+		if (!dvdis(gel(tp_pows, i), 2)) {
+			continue;
+		}
+
+		GEN value = powii(gel(tp_primes, i), gel(tp_pows, i));
+		if (mpcmp(max_value, value) < 0) {
+			max_value = value;
+		}
+	}
+	GEN s = max_value;
+
+	GEN D = divii(tp, s);
+	if (mod4(D) != 1) {
+		D = mulis(D, 4);
+	}
+
+	if (mpcmp(D, mind) <= 0) {
+		avma = ltop;
+		return -4;
+	}
+	avma = ltop;
+	return 1;
 }

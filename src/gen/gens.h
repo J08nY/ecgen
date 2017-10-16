@@ -30,6 +30,24 @@ GENERATOR(gens_gen_any);
 GENERATOR(gens_gen_one);
 
 /**
+ *
+ * @param curve
+ * @param args
+ * @param state
+ * @return
+ */
+CHECK(gens_check_anomalous);
+
+/**
+ *
+ * @param curve
+ * @param args
+ * @param state
+ * @return
+ */
+CHECK(gens_check_embedding);
+
+/**
  * UNROLL(unroll_f)
  *
  * @param curve

@@ -6,23 +6,9 @@
 #include "gen/field.h"
 #include "math/poly.h"
 #include "misc/types.h"
-#include "test/default.h"
-#include "test/input.h"
-#include "test/output.h"
+#include "test/io.h"
 
-void field_setup() {
-	default_setup();
-	input_setup();
-	output_setup();
-}
-
-void field_teardown() {
-	default_teardown();
-	input_teardown();
-	output_teardown();
-}
-
-TestSuite(field, .init = field_setup, .fini = field_teardown);
+TestSuite(field, .init = io_setup, .fini = io_teardown);
 
 Test(field, test_field_gen_random_fp) {
 	curve_t curve = {0};

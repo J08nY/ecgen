@@ -8,6 +8,7 @@
 #ifndef ECGEN_ARG_H
 #define ECGEN_ARG_H
 
+#include "io/output.h"
 #include "misc/types.h"
 
 #define HAS_ARG(args)                                                 \

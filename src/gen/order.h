@@ -16,7 +16,7 @@
  *
  * @param curve A curve_t being generated
  * @param args Current optional generator argument
- * @return state diff
+ * @param state
  * @return state diff
  */
 GENERATOR(order_gen_input);
@@ -28,6 +28,7 @@ GENERATOR(order_gen_input);
  *
  * @param curve A curve_t being generated
  * @param args Current optional generator argument
+ * @param state
  * @return state diff
  */
 GENERATOR(order_gen_any);
@@ -38,6 +39,7 @@ GENERATOR(order_gen_any);
  *
  * @param curve A curve_t being generated
  * @param args unused
+ * @param state
  * @return state diff
  */
 GENERATOR(order_gen_sea);
@@ -47,6 +49,7 @@ GENERATOR(order_gen_sea);
  *
  * @param curve A curve_t being generated
  * @param args pari_ulong passed to ellsea(curve, smallfact)
+ * @param state
  * @return state diff
  */
 GENERATOR(order_gen_smallfact);
@@ -59,8 +62,27 @@ GENERATOR(order_gen_smallfact);
  *
  * @param curve A curve_t being generated
  * @param args unused
+ * @param state
  * @return state diff
  */
 GENERATOR(order_gen_prime);
+
+/**
+ *
+ * @param curve
+ * @param args
+ * @param state
+ * @return
+ */
+CHECK(order_check_pohlig_hellman);
+
+/**
+ *
+ * @param curve
+ * @param args
+ * @param state
+ * @return
+ */
+CHECK(order_check_discriminant);
 
 #endif  // ECGEN_ORDER_H
