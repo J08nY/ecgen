@@ -9,8 +9,8 @@
 #include "gen/field.h"
 #include "gen/seed.h"
 #include "math/poly.h"
-#include "test/memory.h"
 #include "test/io.h"
+#include "test/memory.h"
 #include "util/bits.h"
 #include "util/memory.h"
 
