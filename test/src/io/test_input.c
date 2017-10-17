@@ -5,23 +5,9 @@
 
 #include <criterion/criterion.h>
 #include "io/input.h"
-#include "test/default.h"
-#include "test/input.h"
-#include "test/output.h"
+#include "test/io.h"
 
-void input_suite_setup(void) {
-	default_setup();
-	input_setup();
-	output_setup();
-}
-
-void input_suite_teardown(void) {
-	default_teardown();
-	input_teardown();
-	output_teardown();
-}
-
-TestSuite(input, .init = input_suite_setup, .fini = input_suite_teardown);
+TestSuite(input, .init = io_setup, .fini = io_teardown);
 
 Test(input, test_prime) {
 	fprintf(write_in, "5\n");

@@ -9,26 +9,12 @@
 #include "gen/field.h"
 #include "gen/seed.h"
 #include "math/poly.h"
-#include "test/default.h"
-#include "test/input.h"
 #include "test/memory.h"
-#include "test/output.h"
+#include "test/io.h"
 #include "util/bits.h"
 #include "util/memory.h"
 
-void ansi_suite_setup(void) {
-	default_setup();
-	input_setup();
-	output_setup();
-}
-
-void ansi_suite_teardown(void) {
-	default_teardown();
-	input_teardown();
-	output_teardown();
-}
-
-TestSuite(ansi, .init = ansi_suite_setup, .fini = ansi_suite_teardown);
+TestSuite(ansi, .init = io_setup, .fini = io_teardown);
 
 Test(ansi, test_seed_random) {
 	curve_t curve = {};

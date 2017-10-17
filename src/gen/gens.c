@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include "gens.h"
-#include <misc/types.h>
 #include "exhaustive/arg.h"
 #include "point.h"
 
