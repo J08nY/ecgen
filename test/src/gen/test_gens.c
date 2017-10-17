@@ -15,7 +15,7 @@ Test(gens, test_gens_gen_any) {
 	                 .a = mkintmodu(3, 19),
 	                 .b = mkintmodu(5, 19),
 	                 .curve = ellinit(mkvec2(stoi(3), stoi(5)), stoi(19), 0),
-	                 .order = stoi(16)};
+	                 .order = stoi(26)};
 
 	pari_sp to = avma;
 	int ret = gens_gen_any(&curve, NULL, OFFSET_GENERATORS);
@@ -45,7 +45,7 @@ Test(gens, test_gens_gen_one) {
 	                 .a = mkintmodu(3, 19),
 	                 .b = mkintmodu(5, 19),
 	                 .curve = ellinit(mkvec2(stoi(3), stoi(5)), stoi(19), 0),
-	                 .order = stoi(16)};
+	                 .order = stoi(26)};
 
 	pari_sp to = avma;
 	int ret = gens_gen_one(&curve, NULL, OFFSET_GENERATORS);

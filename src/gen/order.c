@@ -146,7 +146,7 @@ CHECK(order_check_discriminant) {
 		D = mulis(D, 4);
 	}
 
-	if (mpcmp(D, mind) <= 0) {
+	if (abscmpii(D, mind) <= 0) {
 		avma = ltop;
 		return -4;
 	}
