@@ -341,7 +341,7 @@ int invalid_do() {
 		                                  &invalid_setup);
 	}
 	debug_log_end("Finished generating invalid curves");
-	output_o_end(cfg);
+	output_o_end();
 
 	for (size_t i = 0; i < ncurves; ++i) {
 		curve_free(&curves[i]);

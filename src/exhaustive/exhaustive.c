@@ -67,7 +67,7 @@ static void exhaustive_ginit(gen_f *generators) {
 		// setup normal generators
 		generators[OFFSET_SEED] = &gen_skip;
 
-		if (cfg->anomalous) {
+		if (cfg->method == METHOD_ANOMALOUS) {
 			generators[OFFSET_A] = &gen_skip;
 			generators[OFFSET_B] = &anomalous_gen_equation;
 		} else if (cfg->random) {
@@ -96,7 +96,7 @@ static void exhaustive_ginit(gen_f *generators) {
 			generators[OFFSET_ORDER] = &order_gen_prime;
 		} else if (cfg->cofactor) {
 			generators[OFFSET_ORDER] = &order_gen_smallfact;
-		} else if (cfg->anomalous) {
+		} else if (cfg->method == METHOD_ANOMALOUS) {
 			generators[OFFSET_ORDER] = &anomalous_gen_order;
 		} else {
 			generators[OFFSET_ORDER] = &order_gen_any;
@@ -111,7 +111,7 @@ static void exhaustive_ginit(gen_f *generators) {
 		generators[OFFSET_GENERATORS] = &gens_gen_any;
 	}
 
-	if (cfg->anomalous) {
+	if (cfg->method == METHOD_ANOMALOUS) {
 		generators[OFFSET_FIELD] = &anomalous_gen_field;
 	} else if (cfg->random) {
 		generators[OFFSET_FIELD] = &field_gen_random;
@@ -148,7 +148,7 @@ static void exhaustive_cinit(check_t **validators) {
 }
 
 static void exhaustive_ainit(arg_t **argss) {
-	if (cfg->anomalous) {
+	if (cfg->method == METHOD_ANOMALOUS) {
 		arg_t *field_arg = arg_new();
 		arg_t *eq_arg = arg_new();
 		size_t *i = try_calloc(sizeof(size_t));

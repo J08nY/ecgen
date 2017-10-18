@@ -145,9 +145,9 @@ int main(int argc, char *argv[]) {
 	}
 
 	int status;
-	if (cfg->cm) {
+	if (cfg->method == METHOD_CM) {
 		status = cm_do();
-	} else if (cfg->invalid) {
+	} else if (cfg->method == METHOD_INVALID) {
 		status = invalid_do();
 	} else {
 		status = exhaustive_do();

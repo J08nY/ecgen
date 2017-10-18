@@ -13,7 +13,6 @@ TestSuite(field, .init = io_setup, .fini = io_teardown);
 Test(field, test_field_gen_random_fp) {
 	curve_t curve = {0};
 	cfg->bits = 10;
-	cfg->prime_field = true;
 	cfg->field = FIELD_PRIME;
 
 	int ret = field_gen_random(&curve, NULL, OFFSET_FIELD);
@@ -25,7 +24,6 @@ Test(field, test_field_gen_random_fp) {
 Test(field, test_field_gen_random_f2m) {
 	curve_t curve = {0};
 	cfg->bits = 10;
-	cfg->binary_field = true;
 	cfg->field = FIELD_BINARY;
 
 	int ret = field_gen_random(&curve, NULL, OFFSET_FIELD);
@@ -40,7 +38,6 @@ Test(field, test_field_gen_random_f2m) {
 Test(field, test_field_gen_input_fp) {
 	curve_t curve = {0};
 	cfg->bits = 10;
-	cfg->prime_field = true;
 	cfg->field = FIELD_PRIME;
 
 	unsigned int p = 5;
@@ -70,7 +67,6 @@ Test(field, test_field_gen_input_fp) {
 Test(field, test_field_gen_input_f2m) {
 	curve_t curve = {0};
 	cfg->bits = 10;
-	cfg->binary_field = true;
 	cfg->field = FIELD_BINARY;
 
 	unsigned int m = 9;
@@ -139,7 +135,6 @@ Test(field, test_field_gen_input_f2m) {
 Test(field, test_field_gen_once_fp) {
 	curve_t curve = {0};
 	cfg->bits = 10;
-	cfg->prime_field = true;
 	cfg->field = FIELD_PRIME;
 
 	unsigned int p = 5;
@@ -161,7 +156,6 @@ Test(field, test_field_gen_once_fp) {
 Test(field, test_field_gen_once_f2m) {
 	curve_t curve = {0};
 	cfg->bits = 10;
-	cfg->binary_field = true;
 	cfg->field = FIELD_BINARY;
 
 	unsigned int m = 10;

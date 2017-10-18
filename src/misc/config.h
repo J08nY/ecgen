@@ -11,7 +11,7 @@
 #include <stdbool.h>
 #include <stddef.h>
 
-enum field_e { FIELD_PRIME, FIELD_BINARY };
+enum field_e { FIELD_PRIME = 1 << 0, FIELD_BINARY = 1 << 1 };
 enum format_e { FORMAT_JSON, FORMAT_CSV };
 enum points_e {
 	POINTS_NONE = 0,
@@ -25,6 +25,20 @@ struct points_s {
 	size_t amount;
 };
 
+/**
+ * @brief
+ */
+typedef enum {
+	METHOD_DEFAULT = 0,
+	METHOD_CM = 1 << 0,
+	METHOD_ANOMALOUS = 1 << 1,
+	METHOD_SEED = 1 << 2,
+	METHOD_INVALID = 1 << 3
+} method_e;
+
+/**
+ * @brief
+ */
 typedef enum {
 	SEED_NONE = 0,
 	SEED_ANSI,
@@ -39,23 +53,18 @@ typedef enum {
 typedef struct {
 	/** @brief What field should the curves be generated over. */
 	enum field_e field;
-	bool binary_field;
-	bool prime_field;
 
-	/** @brief How many curves should be generater. */
+	/** @brief Generation method. */
+	method_e method;
+
+	/** @brief How many curves should be generated. */
 	long count;
 	/** @brief Whether the curves should be generated at random (no input). */
 	bool random;
 	/** @brief Whether the curves should have prime order. */
 	bool prime;
-	/** @brief Whether the curves should be generated as invalid, for some
-	 * curve. */
-	bool invalid;
 	/** @brief Whether the Complex Multiplication method should be used. */
-	bool cm;
-	char *order;
-	/** @brief Whether the curves should be trace one (Anomalous). */
-	bool anomalous;
+	char *cm_order;
 	/** @brief Whether the curves should be Koblitz (a \\in {0, 1}, b = 1). */
 	bool koblitz;
 	long koblitz_value;
