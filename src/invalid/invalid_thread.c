@@ -14,7 +14,7 @@ void *invalid_thread(void *arg) {
 	arg_t *invalid_argss[OFFSET_END] = {NULL};
 	exhaustive_t invalid_setup = {.generators = thread->setup->generators,
 	                              .validators = thread->setup->validators,
-	                              .argss = invalid_argss,
+	                              .gen_argss = invalid_argss,
 	                              .unrolls = thread->setup->unrolls};
 
 	curve_t *invalid = curve_new();

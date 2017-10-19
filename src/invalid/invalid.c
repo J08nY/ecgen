@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 #include "invalid.h"
+#include <exhaustive/exhaustive.h>
 #include "exhaustive/arg.h"
 #include "exhaustive/check.h"
 #include "exhaustive/exhaustive.h"
@@ -96,8 +97,9 @@ static size_t invalid_curves_single(const curve_t *curve, pari_ulong *primes,
                                     exhaustive_t *setup) {
 	arg_t *invalid_argss[OFFSET_END] = {NULL};
 	exhaustive_t invalid_setup = {.generators = setup->generators,
+	                              .gen_argss = invalid_argss,
 	                              .validators = setup->validators,
-	                              .argss = invalid_argss,
+	                              .check_argss = setup->check_argss,
 	                              .unrolls = setup->unrolls};
 
 	curve_t *invalid = curve_new();
@@ -301,19 +303,22 @@ int invalid_do() {
 	gen_f original_gens[OFFSET_END] = {NULL};
 	gen_f invalid_gens[OFFSET_END] = {NULL};
 	check_t *common_validators[OFFSET_END] = {NULL};
-	arg_t *common_argss[OFFSET_END] = {NULL};
+	arg_t *common_gen_argss[OFFSET_END] = {NULL};
+	arg_t *common_check_argss[OFFSET_END] = {NULL};
 	unroll_f common_unrolls[OFFSET_END] = {NULL};
 
 	exhaustive_t original_setup = {.generators = original_gens,
+	                               .gen_argss = common_gen_argss,
 	                               .validators = common_validators,
-	                               .argss = common_argss,
+	                               .check_argss = common_check_argss,
 	                               .unrolls = common_unrolls};
 	invalid_init(&original_setup);
 	invalid_original_ginit(original_gens);
 
 	exhaustive_t invalid_setup = {.generators = invalid_gens,
+	                              .gen_argss = common_gen_argss,
 	                              .validators = common_validators,
-	                              .argss = common_argss,
+	                              .check_argss = common_check_argss,
 	                              .unrolls = common_unrolls};
 	invalid_invalid_ginit(invalid_gens);
 

@@ -35,7 +35,10 @@ enum opt_keys {
 	OPT_THREADS,
 	OPT_TSTACK,
 	OPT_TIMEOUT,
-	OPT_ANOMALOUS
+	OPT_ANOMALOUS,
+	OPT_GPGEN,
+	OPT_GPCHECK,
+	OPT_HEXCHECK
 };
 
 // clang-format off
@@ -56,6 +59,9 @@ struct argp_option cli_options[] = {
 	{"cofactor",     OPT_COFACTOR,  "BOUND",  0,                 "Generate a curve with cofactor up to BOUND.",                                           3},
 	{"koblitz",      OPT_KOBLITZ,   "A",     OPTION_ARG_OPTIONAL,"Generate a Koblitz curve (a in {0, 1}, b = 1).",                                        3},
 	{"unique",       OPT_UNIQUE,    0,        0,                 "Generate a curve with only one generator.",                                             3},
+	{"gp-gen",		 OPT_GPGEN,     "FUNC",   0,				 "Generate a curve param using a GP function. **NOT IMPLEMENTED**", 					  3},
+	{"gp-check",	 OPT_GPCHECK,   "FUNC",   0, 				 "Check a generated curve param using a GP function. **NOT IMPLEMENTED**",				  3},
+	{"hex-check",	 OPT_HEXCHECK,  "HEX",	  0,				 "Check a generated curve param hex expansion for the HEX string.",						  3},
 	{"points",       OPT_POINTS,    "TYPE",   0,                 "Generate points of given type (random/prime/all/nonprime/none).",                       3},
 	{"count",        OPT_COUNT,     "COUNT",  0,                 "Generate multiple curves.",                                                             3},
 
@@ -249,6 +255,31 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 		case OPT_UNIQUE:
 			cfg->unique = true;
 			break;
+		case OPT_GPGEN:
+			cfg->gp_gens[cfg->gp_gens_size++] = arg;
+			break;
+		case OPT_GPCHECK:
+			cfg->gp_checks[cfg->gp_checks_size++] = arg;
+			break;
+		case OPT_HEXCHECK: {
+			char *str_start = arg;
+			if (strlen(arg) > 2) {
+				if (arg[0] == '0' && (arg[1] == 'x' || arg[1] == 'X')) {
+					str_start = arg + 2;
+				}
+			}
+			char *p = str_start;
+			while (*p != 0) {
+				char c = *p++;
+				if (!isxdigit(c)) {
+					argp_failure(
+					    state, 1, 0,
+					    "Hex check argument contains non hex char '%c'", c);
+				}
+			}
+			cfg->hex_check = str_start;
+			break;
+		}
 		case OPT_POINTS: {
 			char *num_end;
 			long amount = strtol(arg, &num_end, 10);

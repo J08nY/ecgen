@@ -10,6 +10,7 @@
 #include "gen/equation.h"
 #include "gen/field.h"
 #include "gen/gens.h"
+#include "gen/hex.h"
 #include "gen/order.h"
 #include "gen/point.h"
 #include "gen/seed.h"
@@ -23,9 +24,14 @@ void exhaustive_clear(exhaustive_t *setup) {
 			check_free(&setup->validators[i]);
 		}
 	}
-	if (setup->argss) {
+	if (setup->gen_argss) {
 		for (size_t i = 0; i < OFFSET_END; ++i) {
-			arg_free(&setup->argss[i]);
+			arg_free(&setup->gen_argss[i]);
+		}
+	}
+	if (setup->check_argss) {
+		for (size_t i = 0; i < OFFSET_END; ++i) {
+			arg_free(&setup->check_argss[i]);
 		}
 	}
 }
@@ -145,9 +151,14 @@ static void exhaustive_ginit(gen_f *generators) {
 static void exhaustive_cinit(check_t **validators) {
 	check_t *curve_check = check_new(curve_check_nonzero, NULL);
 	validators[OFFSET_CURVE] = curve_check;
+
+	if (cfg->hex_check) {
+		check_t *hex_check = check_new(hex_check_param, NULL);
+		validators[OFFSET_POINTS] = hex_check;
+	}
 }
 
-static void exhaustive_ainit(arg_t **argss) {
+static void exhaustive_ainit(arg_t **gen_argss, arg_t **check_argss) {
 	if (cfg->method == METHOD_ANOMALOUS) {
 		arg_t *field_arg = arg_new();
 		arg_t *eq_arg = arg_new();
@@ -158,14 +169,14 @@ static void exhaustive_ainit(arg_t **argss) {
 		eq_arg->args = i;
 		eq_arg->nargs = 1;
 		eq_arg->allocd = i;
-		argss[OFFSET_FIELD] = field_arg;
-		argss[OFFSET_B] = eq_arg;
+		gen_argss[OFFSET_FIELD] = field_arg;
+		gen_argss[OFFSET_B] = eq_arg;
 	}
 	if (cfg->points.type == POINTS_RANDOM) {
 		arg_t *points_arg = arg_new();
 		points_arg->args = &cfg->points.amount;
 		points_arg->nargs = 1;
-		argss[OFFSET_POINTS] = points_arg;
+		gen_argss[OFFSET_POINTS] = points_arg;
 	}
 	if (cfg->cofactor) {
 		arg_t *order_arg = arg_new();
@@ -174,8 +185,15 @@ static void exhaustive_ainit(arg_t **argss) {
 		order_arg->nargs = 1;
 		gens_arg->args = &cfg->cofactor_bound;
 		gens_arg->nargs = 1;
-		argss[OFFSET_ORDER] = order_arg;
-		argss[OFFSET_GENERATORS] = gens_arg;
+		gen_argss[OFFSET_ORDER] = order_arg;
+		gen_argss[OFFSET_GENERATORS] = gens_arg;
+	}
+
+	if (cfg->hex_check) {
+		arg_t *point_arg = arg_new();
+		point_arg->args = cfg->hex_check;
+		point_arg->nargs = 1;
+		check_argss[OFFSET_POINTS] = point_arg;
 	}
 }
 
@@ -203,10 +221,6 @@ int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
 	if (start_offset > end_offset) {
 		return 0;
 	}
-	gen_f *generators = setup->generators;
-	check_t **validators = setup->validators;
-	arg_t **argss = setup->argss;
-	unroll_f *unrolls = setup->unrolls;
 
 	pari_sp stack_tops[OFFSET_END] = {0};
 	int gen_tries[OFFSET_END] = {0};
@@ -215,7 +229,9 @@ int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
 	while (state < end_offset) {
 		stack_tops[state] = avma;
 
-		arg_t *arg = argss ? argss[state] : NULL;
+		arg_t *gen_arg = setup->gen_argss ? setup->gen_argss[state] : NULL;
+		arg_t *check_arg =
+		    setup->check_argss ? setup->check_argss[state] : NULL;
 
 		int diff;
 		bool timeout = false;
@@ -225,23 +241,23 @@ int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
 			timeout = true;
 		}
 		else {
-			diff = generators[state](curve, arg, (offset_e)state);
+			diff = setup->generators[state](curve, gen_arg, (offset_e)state);
 		}
 		timeout_stop();
-		int new_state = state + diff;
-		if (new_state < start_offset) new_state = start_offset;
-
-		if (diff > 0 && validators && validators[state]) {
-			check_t *validator = validators[state];
+		if (diff > 0 && setup->validators && setup->validators[state]) {
+			check_t *validator = setup->validators[state];
 			for (size_t i = 0; i < validator->nchecks; ++i) {
 				int new_diff =
-				    validator->checks[i](curve, arg, (offset_e)state);
+				    validator->checks[i](curve, check_arg, (offset_e)state);
 				if (new_diff <= 0) {
 					diff = new_diff;
 					break;
 				}
 			}
 		}
+
+		int new_state = state + diff;
+		if (new_state < start_offset) new_state = start_offset;
 
 		if (diff <= 0) {
 			if (diff == INT_MIN || state + diff < 0) {
@@ -260,8 +276,9 @@ int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
 
 			// unroll
 			for (int i = state; i > new_state;) {
-				if (unrolls && unrolls[i]) {
-					i += unrolls[i](curve, stack_tops[i], stack_tops[i - 1]);
+				if (setup->unrolls && setup->unrolls[i]) {
+					i += setup->unrolls[i](curve, stack_tops[i],
+					                       stack_tops[i - 1]);
 				} else {
 					--i;
 				}
@@ -299,7 +316,7 @@ int exhaustive_gen(curve_t *curve, const exhaustive_t *setup,
 static void exhaustive_init(exhaustive_t *setup) {
 	exhaustive_ginit(setup->generators);
 	exhaustive_cinit(setup->validators);
-	exhaustive_ainit(setup->argss);
+	exhaustive_ainit(setup->gen_argss, setup->check_argss);
 	exhaustive_uinit(setup->unrolls);
 	anomalous_init();
 }
@@ -315,13 +332,15 @@ int exhaustive_do() {
 	debug_log_start("Starting Exhaustive method");
 
 	gen_f generators[OFFSET_END] = {NULL};
+	arg_t *gen_argss[OFFSET_END] = {NULL};
 	check_t *validators[OFFSET_END] = {NULL};
-	arg_t *argss[OFFSET_END] = {NULL};
+	arg_t *check_argss[OFFSET_END] = {NULL};
 	unroll_f unrolls[OFFSET_END] = {NULL};
 
 	exhaustive_t setup = {.generators = generators,
+	                      .gen_argss = gen_argss,
 	                      .validators = validators,
-	                      .argss = argss,
+	                      .check_argss = check_argss,
 	                      .unrolls = unrolls};
 	exhaustive_init(&setup);
 

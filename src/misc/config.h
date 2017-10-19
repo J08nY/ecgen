@@ -78,6 +78,14 @@ typedef struct {
 	/** @brief Whether the curves should be uniquely generated (one generator).
 	 */
 	bool unique;
+	/** @brief The GP gen functions. */
+	char *gp_gens[10];
+	size_t gp_gens_size;
+	/** @brief The GP check functions. */
+	char *gp_checks[10];
+	size_t gp_checks_size;
+	/** @brief */
+	char *hex_check;
 	/** @brief What points to generate on the curves. */
 	struct points_s points;
 

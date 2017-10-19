@@ -15,8 +15,9 @@
  */
 typedef struct {
 	gen_f *generators;
+	arg_t **gen_argss;
 	check_t **validators;
-	arg_t **argss;
+	arg_t **check_argss;
 	unroll_f *unrolls;
 } exhaustive_t;
 

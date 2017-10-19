@@ -110,6 +110,10 @@ function cli() {
 	assert_raises "${ecgen} --fp --f2m 1" 1
 }
 
+function hex() {
+	start_test
+	assert_raises "${ecgen} --fp -r --hex-check=\"abc\" 32 | grep \"abc\""
+}
 
 . ${ASSERT} -v
 start_suite
@@ -121,4 +125,5 @@ ansix962
 anomalous
 invalid
 cli
+hex
 end_suite ecgen
