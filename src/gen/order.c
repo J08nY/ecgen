@@ -127,18 +127,15 @@ CHECK(order_check_discriminant) {
 	GEN tp_primes = gel(tp_factors, 1);
 	GEN tp_pows = gel(tp_factors, 2);
 	long tp_pow_len = glength(tp_pows);
-	GEN max_value = gen_1;
+	GEN value = gen_1;
 	for (long i = 1; i <= tp_pow_len; ++i) {
 		if (!dvdis(gel(tp_pows, i), 2)) {
 			continue;
 		}
-
-		GEN value = powii(gel(tp_primes, i), gel(tp_pows, i));
-		if (mpcmp(max_value, value) < 0) {
-			max_value = value;
-		}
+		GEN one_value = powii(gel(tp_primes, i), divis(gel(tp_pows, i), 2));
+		muliiz(value, one_value, value);
 	}
-	GEN s = max_value;
+	GEN s = value;
 
 	GEN D = divii(tp, s);
 	if (mod4(D) != 1) {
