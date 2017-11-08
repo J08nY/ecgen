@@ -48,6 +48,17 @@ Test(bits, test_bits_from_i) {
 	bits_free(&bits);
 }
 
+Test(bits, test_bits_from_i_len) {
+	GEN i = int2n(5);
+
+	bits_t *bits = bits_from_i_len(i, 7);
+	cr_assert_not_null(bits, );
+	cr_assert_eq(bits->bitlen, 7, );
+	cr_assert_eq(bits->allocated, 1, );
+	cr_assert_eq(bits->bits[0], 0b01000000, );
+	bits_free(&bits);
+}
+
 Test(bits, test_bits_from_hex) {
 	char *hex = "0ab";
 

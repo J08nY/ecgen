@@ -49,6 +49,24 @@ bits_t *bits_from_i(GEN i) {
 	return result;
 }
 
+bits_t *bits_from_i_len(GEN i, size_t bit_len) {
+	pari_sp ltop = avma;
+	GEN bitvec = binary_zv(i);
+	size_t i_len = (size_t)glength(bitvec);
+	bits_t *result = bits_new(bit_len);
+	size_t offset = 0;
+	if (i_len < bit_len) {
+		offset = bit_len - i_len;
+	}
+	for (size_t j = 0; j < bit_len; ++j) {
+		if (j < i_len && gel(bitvec, j + 1) == (GEN)1) {
+			result->bits[(j + offset) / 8] |= 1 << (7 - ((j + offset) % 8));
+		}
+	}
+	avma = ltop;
+	return result;
+}
+
 bits_t *bits_from_hex(const char *hex_str) {
 	size_t nibble_len = strlen(hex_str);
 	bits_t *result = bits_new(nibble_len * 4);

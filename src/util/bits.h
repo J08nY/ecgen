@@ -35,6 +35,8 @@ void bits_free(bits_t **bits);
 
 bits_t *bits_from_i(GEN i);
 
+bits_t *bits_from_i_len(GEN i, size_t bitlen);
+
 bits_t *bits_from_hex(const char *hex_str);
 
 bits_t *bits_from_bin(const char *bin_str);
