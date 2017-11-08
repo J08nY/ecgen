@@ -16,4 +16,4 @@ GENERATOR(brainpool_gen_seed_input);
 
 GENERATOR(brainpool_gen_equation);
 
-#endif //ECGEN_BRAINPOOL_H
+#endif  // ECGEN_BRAINPOOL_H

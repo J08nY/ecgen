@@ -5,8 +5,8 @@
 #include "exhaustive.h"
 #include "anomalous.h"
 #include "ansi.h"
-#include "check.h"
 #include "brainpool.h"
+#include "check.h"
 #include "gen/curve.h"
 #include "gen/equation.h"
 #include "gen/field.h"
@@ -53,8 +53,7 @@ static void exhaustive_ginit(gen_f *generators) {
 				}
 				generators[OFFSET_A] = &gen_skip;
 				generators[OFFSET_B] = &ansi_gen_equation;
-			}
-				break;
+			} break;
 			case SEED_BRAINPOOL: {
 				if (cfg->seed) {
 					generators[OFFSET_SEED] = &brainpool_gen_seed_argument;
@@ -67,11 +66,13 @@ static void exhaustive_ginit(gen_f *generators) {
 				}
 				generators[OFFSET_A] = &gen_skip;
 				generators[OFFSET_B] = &brainpool_gen_equation;
-			}
+			} break;
+			case SEED_BRAINPOOL_RFC:
 				break;
-			case SEED_BRAINPOOL_RFC:break;
-			case SEED_FIPS:break;
-			default:break;
+			case SEED_FIPS:
+				break;
+			default:
+				break;
 		}
 
 		if (cfg->prime) {
