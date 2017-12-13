@@ -44,7 +44,7 @@ typedef struct {
 			GEN r;
 		} ansi;
 		struct {
-			bool first;
+			bool update_seed;
 			long w;
 			long v;
 			bits_t *seed_a;

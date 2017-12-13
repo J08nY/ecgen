@@ -53,6 +53,11 @@ static void exhaustive_ginit(gen_f *generators) {
 				}
 				generators[OFFSET_A] = &gen_skip;
 				generators[OFFSET_B] = &ansi_gen_equation;
+				if (cfg->random) {
+					generators[OFFSET_FIELD] = &field_gen_random;
+				} else {
+					generators[OFFSET_FIELD] = &field_gen_input;
+				}
 			} break;
 			case SEED_BRAINPOOL: {
 				if (cfg->seed) {
@@ -64,7 +69,8 @@ static void exhaustive_ginit(gen_f *generators) {
 						generators[OFFSET_SEED] = &brainpool_gen_seed_input;
 					}
 				}
-				generators[OFFSET_A] = &gen_skip;
+				generators[OFFSET_FIELD] = &brainpool_gen_field;
+ 				generators[OFFSET_A] = &gen_skip;
 				generators[OFFSET_B] = &brainpool_gen_equation;
 			} break;
 			case SEED_BRAINPOOL_RFC:
@@ -120,6 +126,14 @@ static void exhaustive_ginit(gen_f *generators) {
 		} else {
 			generators[OFFSET_ORDER] = &order_gen_any;
 		}
+
+		if (cfg->method == METHOD_ANOMALOUS) {
+			generators[OFFSET_FIELD] = &anomalous_gen_field;
+		} else if (cfg->random) {
+			generators[OFFSET_FIELD] = &field_gen_random;
+		} else {
+			generators[OFFSET_FIELD] = &field_gen_input;
+		}
 	}
 	// setup common generators
 	generators[OFFSET_CURVE] = &curve_gen_any;
@@ -130,13 +144,6 @@ static void exhaustive_ginit(gen_f *generators) {
 		generators[OFFSET_GENERATORS] = &gens_gen_any;
 	}
 
-	if (cfg->method == METHOD_ANOMALOUS) {
-		generators[OFFSET_FIELD] = &anomalous_gen_field;
-	} else if (cfg->random) {
-		generators[OFFSET_FIELD] = &field_gen_random;
-	} else {
-		generators[OFFSET_FIELD] = &field_gen_input;
-	}
 
 	switch (cfg->points.type) {
 		case POINTS_RANDOM:

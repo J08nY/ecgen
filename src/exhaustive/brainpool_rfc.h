@@ -3,17 +3,19 @@
  * Copyright (C) 2017 J08nY
  */
 
-#ifndef ECGEN_BRAINPOOL_H
-#define ECGEN_BRAINPOOL_H
+#ifndef ECGEN_BRAINPOOL_RFC_H
+#define ECGEN_BRAINPOOL_RFC_H
 
 #include "misc/types.h"
 
 /**
  * @brief
- * @param hex_str
+ * @param curve
+ * @param args
+ * @param state
  * @return
  */
-bool brainpool_seed_valid(const char *hex_str);
+GENERATOR(brainpool_rfc_gen_seed_random);
 
 /**
  * @brief
@@ -22,7 +24,7 @@ bool brainpool_seed_valid(const char *hex_str);
  * @param state
  * @return
  */
-GENERATOR(brainpool_gen_seed_random);
+GENERATOR(brainpool_rfc_gen_seed_argument);
 
 /**
  * @brief
@@ -31,7 +33,7 @@ GENERATOR(brainpool_gen_seed_random);
  * @param state
  * @return
  */
-GENERATOR(brainpool_gen_seed_argument);
+GENERATOR(brainpool_rfc_gen_seed_input);
 
 /**
  * @brief
@@ -40,24 +42,6 @@ GENERATOR(brainpool_gen_seed_argument);
  * @param state
  * @return
  */
-GENERATOR(brainpool_gen_seed_input);
+GENERATOR(brainpool_rfc_gen_equation);
 
-/**
- *
- * @param curve
- * @param args
- * @param state
- * @return
- */
-GENERATOR(brainpool_gen_field);
-
-/**
- * @brief
- * @param curve
- * @param args
- * @param state
- * @return
- */
-GENERATOR(brainpool_gen_equation);
-
-#endif  // ECGEN_BRAINPOOL_H
+#endif //ECGEN_BRAINPOOL_RFC_H

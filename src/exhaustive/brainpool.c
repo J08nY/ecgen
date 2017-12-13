@@ -3,17 +3,16 @@
  * Copyright (C) 2017 J08nY
  */
 
+#include <misc/types.h>
 #include "brainpool.h"
 #include "gen/seed.h"
 #include "io/output.h"
 #include "util/bits.h"
 #include "util/str.h"
-#include "util/memory.h"
 
 static seed_t *brainpool_new() {
 	seed_t *result = seed_new();
 	result->type = SEED_BRAINPOOL;
-	result->brainpool.first = true;
 	return result;
 }
 
@@ -22,7 +21,7 @@ static void seed_wv(seed_t *seed) {
 	GEN L = utoi(cfg->bits);
 	seed->brainpool.v = itou(gfloor(gdivgs(subis(L, 1), 160)));
 	seed->brainpool.w =
-	    itou(subis(subis(L, 160 * seed->brainpool.v), 1));
+			itou(subis(subis(L, 160 * seed->brainpool.v), 1));
 	avma = ltop;
 }
 
@@ -41,7 +40,7 @@ static bits_t *brainpool_hash(const bits_t *s, long w, long v) {
 	unsigned char h0[20];
 	bits_sha1(s, h0);
 	unsigned char hashout[w + 20 * v];
-	memcpy(hashout, h0, (size_t)w);
+	memcpy(hashout, h0, (size_t) w);
 
 	GEN z = bits_to_i(s);
 	GEN m = int2n(160);
@@ -50,7 +49,7 @@ static bits_t *brainpool_hash(const bits_t *s, long w, long v) {
 		bits_sha1(si, hashout + w + 20 * i);
 		bits_free(&si);
 	}
-	bits_t *result = bits_from_raw(hashout, (size_t)(w + (20 * v)));
+	bits_t *result = bits_from_raw(hashout, (size_t) (w + (20 * v)));
 	avma = ltop;
 	return result;
 }
@@ -94,19 +93,57 @@ GENERATOR(brainpool_gen_seed_input) {
 	return 1;
 }
 
+GENERATOR(brainpool_gen_field) {
+	pari_sp btop = avma;
+	seed_t *seed = curve->seed;
+	do {
+		if (seed->brainpool.update_seed) {
+			brainpool_update_seed(seed->seed);
+			seed->brainpool.update_seed = false;
+		}
+		bits_t *p_bits = brainpool_hash(seed->seed, seed->brainpool.w + 1, seed->brainpool.v);
+		GEN c = bits_to_i(p_bits);
+		bits_free(&p_bits);
+		GEN p = c;
+		do {
+			p = nextprime(p);
+		} while (mod4(p) != 3);
+
+		long p_len = glength(binary_zv(p));
+		if (p_len >= cfg->bits || p_len <= cfg->bits - 1) {
+			brainpool_update_seed(seed->seed);
+			avma = btop;
+			continue;
+		}
+
+		if (!isprime(p)) {
+			brainpool_update_seed(seed->seed);
+			avma = btop;
+			continue;
+		}
+
+		curve->field = p;
+		gerepileall(btop, 1, &curve->field);
+		break;
+	} while (true);
+
+	seed->brainpool.update_seed = true;
+	return 1;
+}
+
 GENERATOR(brainpool_gen_equation) {
 	// field is definitely prime
 	pari_sp btop = avma;
 	seed_t *seed = curve->seed;
 	do {
-		if (seed->brainpool.first) {
+		if (seed->brainpool.update_seed) {
 			brainpool_update_seed(seed->seed);
-			seed->brainpool.first = false;
+			seed->brainpool.update_seed = false;
 		}
 
 		GEN z;
 		bits_t *a_bits =
-		    brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
+				brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
 		GEN a = bits_to_i(a_bits);
 		bits_free(&a_bits);
 		z = Fp_sqrtn(a, stoi(4), curve->field, NULL);
@@ -120,7 +157,7 @@ GENERATOR(brainpool_gen_equation) {
 		brainpool_update_seed(seed->seed);
 
 		bits_t *b_bits =
-		    brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
+				brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
 		GEN b = bits_to_i(b_bits);
 		bits_free(&b_bits);
 		if (!Fp_issquare(b, curve->field)) {
@@ -135,7 +172,7 @@ GENERATOR(brainpool_gen_equation) {
 		GEN mod_b = gmodulo(b, curve->field);
 
 		if (gequal0(gmulsg(-16, gadd(gmulsg(4, gpowgs(mod_a, 3)),
-		                             gmulsg(27, gsqr(mod_b)))))) {
+									 gmulsg(27, gsqr(mod_b)))))) {
 			brainpool_update_seed(seed->seed);
 			bits_free(&seed->brainpool.seed_a);
 			bits_free(&seed->brainpool.seed_b);
@@ -147,7 +184,7 @@ GENERATOR(brainpool_gen_equation) {
 		seed->brainpool.seed_bp = bits_copy(seed->seed);
 
 		bits_t *mult_bits =
-		    brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
+				brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
 		seed->brainpool.mult = bits_to_i(mult_bits);
 
 		curve->a = mod_a;
@@ -156,5 +193,6 @@ GENERATOR(brainpool_gen_equation) {
 		break;
 	} while (true);
 
+	seed->brainpool.update_seed = true;
 	return 1;
 }
