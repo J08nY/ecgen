@@ -6,6 +6,7 @@
 #include <misc/config.h>
 #include <string.h>
 #include "exhaustive/ansi.h"
+#include "exhaustive/brainpool.h"
 
 char cli_doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
@@ -19,6 +20,7 @@ enum opt_keys {
 	OPT_COFACTOR = 'k',
 	OPT_RANDOM = 'r',
 	OPT_ANSI = 's',
+	OPT_BRAINPOOL = 'b',
 	OPT_INVALID = 'i',
 	OPT_ORDER = 'n',
 	OPT_KOBLITZ = 'K',
@@ -51,6 +53,7 @@ struct argp_option cli_options[] = {
 	{"order",        OPT_ORDER,     "ORDER",  0,                 "Generate a curve with given order (using Complex Multiplication). **NOT IMPLEMENTED**", 2},
 	{"anomalous",    OPT_ANOMALOUS, 0,        0,                 "Generate an anomalous curve (of trace one, with field order equal to curve order).",    2},
 	{"ansi",         OPT_ANSI,      "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure).",     					  2},
+	{"brainpool",    OPT_BRAINPOOL, "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (Brainpool procedure).",                                     2},
 	{"invalid",      OPT_INVALID,   0,        0,                 "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).",  2},
 
 	{0,				 0, 			0, 		  0,				 "Generation options:",																	  3},
@@ -130,13 +133,9 @@ static void cli_end(struct argp_state *state) {
 	// Only one gen method
 	switch (cfg->method) {
 		case METHOD_DEFAULT:
-			break;
 		case METHOD_CM:
-			break;
 		case METHOD_ANOMALOUS:
-			break;
 		case METHOD_SEED:
-			break;
 		case METHOD_INVALID:
 			break;
 		default:
@@ -146,6 +145,11 @@ static void cli_end(struct argp_state *state) {
 			break;
 	}
 
+	if (cfg->method == METHOD_SEED && cfg->seed_algo == SEED_BRAINPOOL &&
+	    cfg->field == FIELD_BINARY) {
+		argp_failure(state, 1, 0,
+		             "Brainpool algorithm only creates prime field curves.");
+	}
 	/*
 	// Invalid is not prime or seed by definition.
 	if (cfg->invalid &&
@@ -223,6 +227,18 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 					argp_failure(
 					    state, 1, 0,
 					    "SEED must be at least 160 bits (40 characters).");
+				}
+				cfg->seed = arg;
+			}
+			break;
+		case OPT_BRAINPOOL:
+			cfg->method |= METHOD_SEED;
+			cfg->seed_algo = SEED_BRAINPOOL;
+			if (arg) {
+				if (!brainpool_seed_valid(arg)) {
+					argp_failure(
+					    state, 1, 0,
+					    "SEED must be exactly 160 bits (40 hex characters).");
 				}
 				cfg->seed = arg;
 			}

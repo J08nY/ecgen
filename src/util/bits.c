@@ -4,6 +4,7 @@
  */
 
 #include "bits.h"
+#include <misc/types.h>
 #include <sha1/sha1.h>
 #include "util/memory.h"
 
@@ -14,6 +15,36 @@ bits_t *bits_new(size_t bit_len) {
 	result->allocated = byte_len;
 	result->bitlen = bit_len;
 	return result;
+}
+
+bits_t *bits_new_rand(size_t bit_len) {
+	bits_t *result = bits_new(bit_len);
+	for (size_t i = 0; i < result->allocated; ++i) {
+		if (i == result->allocated - 1) {
+			size_t last_bits = bit_len % 8;
+			result->bits[i] = (unsigned char)random_bits(last_bits)
+			                  << (8 - last_bits);
+		} else {
+			result->bits[i] = (unsigned char)random_bits(8);
+		}
+	}
+	return result;
+}
+
+void bits_cpy(bits_t *dest, const bits_t *src) {
+	if (src->bitlen == 0) {
+		return;
+	}
+
+	if (src->allocated < dest->allocated) {
+		memset(dest->bits + src->allocated, 0,
+		       dest->allocated - src->allocated);
+	} else if (src->allocated > dest->allocated) {
+		dest->bits = try_realloc(dest->bits, src->allocated);
+	}
+	memcpy(dest->bits, src->bits, src->allocated);
+	dest->allocated = src->allocated;
+	dest->bitlen = src->bitlen;
 }
 
 bits_t *bits_copy(const bits_t *bits) {

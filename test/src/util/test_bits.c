@@ -5,10 +5,12 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
+#include <misc/types.h>
 #include "test/default.h"
 #include "test/memory.h"
 #include "util/bits.h"
 #include "util/memory.h"
+#include "util/random.h"
 
 TestSuite(bits, .init = default_setup, .fini = default_teardown);
 
@@ -19,6 +21,22 @@ Test(bits, test_bits_new) {
 	cr_assert_eq(bits->allocated, 2, );
 	cr_assert_eq(bits->bits[0], 0, );
 	cr_assert_eq(bits->bits[1], 0, );
+	bits_free(&bits);
+}
+
+Test(bits, test_bits_new_rand) {
+	random_init();
+	GEN seed = getrand();
+	bits_t *bits = bits_new_rand(10);
+	cr_assert_not_null(bits, );
+	cr_assert_eq(bits->bitlen, 10, );
+	cr_assert_eq(bits->allocated, 2, );
+
+	setrand(seed);
+	unsigned char one = (unsigned char)random_bits(8);
+	unsigned char other = (unsigned char)random_bits(2) << 6;
+	cr_assert_eq(bits->bits[0], one, );
+	cr_assert_eq(bits->bits[1], other, );
 	bits_free(&bits);
 }
 

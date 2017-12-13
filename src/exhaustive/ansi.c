@@ -9,6 +9,7 @@
 #include "io/output.h"
 #include "util/bits.h"
 #include "util/memory.h"
+#include "util/str.h"
 
 static seed_t *ansi_new() {
 	seed_t *result = seed_new();
@@ -17,26 +18,8 @@ static seed_t *ansi_new() {
 }
 
 bool ansi_seed_valid(const char *hex_str) {
-	size_t len = strlen(hex_str);
-	if (len < 40) {
-		return false;
-	}
-	const char *str_start = hex_str;
-	if (hex_str[0] == '0' && (hex_str[1] == 'x' || hex_str[1] == 'X')) {
-		str_start = hex_str + 2;
-	}
-	while (*str_start != 0) {
-		char c = *str_start++;
-		if (!isxdigit(c)) return false;
-	}
-	return true;
-}
-
-static bits_t *seed_stoi(const char *cstr) {
-	const char *seed_str = cstr;
-	const char *prefix = strstr(cstr, "0x");
-	if (prefix != NULL) seed_str = prefix + 2;
-	return bits_from_hex(seed_str);
+	const char *seed = str_is_hex(hex_str);
+	return seed && strlen(seed) >= 40;
 }
 
 static void seed_hash(seed_t *seed) {
@@ -64,7 +47,7 @@ GENERATOR(ansi_gen_seed_random) {
 
 GENERATOR(ansi_gen_seed_argument) {
 	seed_t *seed = ansi_new();
-	seed->seed = seed_stoi(cfg->seed);
+	seed->seed = bits_from_hex(str_is_hex(cfg->seed));
 	seed_hash(seed);
 	seed_tsh(seed);
 	curve->seed = seed;
@@ -83,7 +66,7 @@ GENERATOR(ansi_gen_seed_input) {
 	}
 
 	seed_t *seed = ansi_new();
-	seed->seed = seed_stoi(cstr);
+	seed->seed = bits_from_hex(str_is_hex(cstr));
 	seed_hash(seed);
 	seed_tsh(seed);
 	curve->seed = seed;

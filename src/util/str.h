@@ -12,6 +12,13 @@
 
 /**
  * @brief
+ * @param hex_str
+ * @return
+ */
+const char *str_is_hex(const char *hex_str);
+
+/**
+ * @brief
  * @param strings
  * @param len
  * @return

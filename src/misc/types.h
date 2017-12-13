@@ -44,7 +44,13 @@ typedef struct {
 			GEN r;
 		} ansi;
 		struct {
-			bits_t *f;
+			bool first;
+			long w;
+			long v;
+			bits_t *seed_a;
+			bits_t *seed_b;
+			bits_t *seed_bp;
+			GEN mult;
 		} brainpool;
 	};
 } seed_t;

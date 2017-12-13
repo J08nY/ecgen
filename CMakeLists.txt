@@ -7,7 +7,7 @@ file(GLOB SRC "src/math/*.c" "src/gen/*.c" "src/cm/*.c" "src/invalid/*.c" "src/i
 set(ECGEN_SRC "src/ecgen.c" ${SRC})
 set(ECONVERT_SRC "src/econvert.c")
 
-set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG -g -Wall -Werror -pedantic")
+set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG -g -Wall -Werror")
 set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DNDEBUG -O3 -Wall")
 
 include_directories(src)

@@ -62,7 +62,7 @@ Test(field, test_field_gen_input_fp) {
 	ret = field_gen_input(&curve, NULL, OFFSET_FIELD);
 	cr_assert_eq(ret, 0, );
 	cr_assert_null(curve.field, );
-};
+}
 
 Test(field, test_field_gen_input_f2m) {
 	curve_t curve = {0};

@@ -17,7 +17,7 @@
 TestSuite(ansi, .init = io_setup, .fini = io_teardown);
 
 Test(ansi, test_seed_random) {
-	curve_t curve = {};
+	curve_t curve = {0};
 	cfg->bits = 256;
 	int ret = ansi_gen_seed_random(&curve, NULL, OFFSET_SEED);
 
@@ -28,7 +28,7 @@ Test(ansi, test_seed_random) {
 }
 
 Test(ansi, test_seed_argument) {
-	curve_t curve = {};
+	curve_t curve = {0};
 	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	cfg->seed = seed;
 	cfg->bits = 256;
@@ -44,7 +44,7 @@ Test(ansi, test_seed_argument) {
 }
 
 Test(ansi, test_seed_argument_hex) {
-	curve_t curve = {};
+	curve_t curve = {0};
 	char *seed = "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	cfg->seed = seed;
 	cfg->bits = 256;
@@ -60,7 +60,7 @@ Test(ansi, test_seed_argument_hex) {
 }
 
 Test(ansi, test_seed_input) {
-	curve_t curve = {};
+	curve_t curve = {0};
 	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	cfg->bits = 256;
 	fprintf(write_in, "%s\n", seed);
@@ -76,7 +76,7 @@ Test(ansi, test_seed_input) {
 }
 
 Test(ansi, test_seed_input_short) {
-	curve_t curve = {};
+	curve_t curve = {0};
 	char *seed = "abcdef";
 	fprintf(write_in, "%s\n", seed);
 	int ret = ansi_gen_seed_input(&curve, NULL, OFFSET_SEED);
@@ -103,7 +103,7 @@ void prime_params_cleanup(struct criterion_test_params *ctp) {
 }
 
 ParameterizedTestParameters(ansi, test_seed_prime_examples) {
-	static struct prime_params params[7] = {};
+	static struct prime_params params[7] = {{0}};
 	// Taken from ANSI X9.62 J.5.1 - J.5.3; p. 115 - 117
 	// clang-format off
 	params[0].bits = 192;
@@ -157,7 +157,7 @@ ParameterizedTest(struct prime_params *param, ansi, test_seed_prime_examples) {
 	cfg->bits = param->bits;
 	cfg->field = FIELD_PRIME;
 	cfg->seed = param->seed;
-	curve_t curve = {};
+	curve_t curve = {0};
 	bits_t *p = bits_from_hex(param->p);
 	curve.field = bits_to_i(p);
 
@@ -189,7 +189,7 @@ void binary_params_cleanup(struct criterion_test_params *ctp) {
 }
 
 ParameterizedTestParameters(ansi, test_seed_binary_examples) {
-	static struct binary_params params[10] = {};
+	static struct binary_params params[10] = {{0}};
 	// Taken from ANSI X9.62 J.4.1, J.4.3, J.4.5 and J.4.8; p. 107 - 113
 	// clang-format off
 	polynomial_t p163 = {163, 9, 3, 2};
@@ -257,7 +257,7 @@ ParameterizedTest(struct binary_params *param, ansi,
 	cfg->bits = param->bits;
 	cfg->field = FIELD_BINARY;
 	cfg->seed = param->seed;
-	curve_t curve = {};
+	curve_t curve = {0};
 	curve.field = poly_gen(&param->field);
 
 	GEN expected_b = bits_to_i(bits_from_hex(param->b));
