@@ -65,6 +65,21 @@ Test(brainpool, test_brainpool_seed_input_short) {
 	cr_assert_eq(ret, 0, );
 }
 
+Test(brainpool, test_brainpool_field) {
+	curve_t curve = {0};
+	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
+	cfg->seed = seed;
+	cfg->bits = 256;
+
+	brainpool_gen_seed_argument(&curve, NULL, OFFSET_SEED);
+
+	int ret = brainpool_gen_field(&curve, NULL, OFFSET_FIELD);
+	cr_assert_eq(ret, 1, );
+	cr_assert_not_null(curve.field, );
+	cr_assert(isprime(curve.field), );
+	cr_assert_eq(mod4(curve.field), 3, );
+}
+
 Test(brainpool, test_brainpool_equation) {
 	curve_t curve = {0};
 	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";

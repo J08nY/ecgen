@@ -37,19 +37,22 @@ static void brainpool_update_seed(bits_t *s) {
 
 static bits_t *brainpool_hash(const bits_t *s, long w, long v) {
 	pari_sp ltop = avma;
-	unsigned char h0[20];
-	bits_sha1(s, h0);
-	unsigned char hashout[w + 20 * v];
-	memcpy(hashout, h0, (size_t) w);
+	unsigned char h[20];
+	bits_sha1(s, h);
+	unsigned char hashout[20 * v];
 
 	GEN z = bits_to_i(s);
 	GEN m = int2n(160);
-	for (long i = 1; i < v; ++i) {
+	for (long i = 1; i <= v; ++i) {
 		bits_t *si = bits_from_i(Fp_add(z, stoi(i), m));
-		bits_sha1(si, hashout + w + 20 * i);
+		bits_sha1(si, hashout + (20 * (i - 1)));
 		bits_free(&si);
 	}
-	bits_t *result = bits_from_raw(hashout, (size_t) (w + (20 * v)));
+	bits_t *result = bits_from_raw(h, 20*8);
+	bits_shortenz(result, 20*8 - w);
+	bits_t *rest = bits_from_raw(hashout, (size_t) (20 * v * 8));
+	bits_concatz(result, rest, NULL);
+	bits_free(&rest);
 	avma = ltop;
 	return result;
 }
@@ -106,11 +109,12 @@ GENERATOR(brainpool_gen_field) {
 		bits_free(&p_bits);
 		GEN p = c;
 		do {
-			p = nextprime(p);
+			p = nextprime(addii(p, gen_1));
 		} while (mod4(p) != 3);
 
-		long p_len = glength(binary_zv(p));
-		if (p_len >= cfg->bits || p_len <= cfg->bits - 1) {
+		GEN lower_bound = subii(int2u(cfg->bits - 1), gen_1);
+		GEN upper_bound = int2u(cfg->bits);
+		if (mpcmp(p, lower_bound) <= 0 || mpcmp(p, upper_bound) >= 0) {
 			brainpool_update_seed(seed->seed);
 			avma = btop;
 			continue;
