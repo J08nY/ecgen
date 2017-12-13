@@ -16,7 +16,7 @@
 
 TestSuite(ansi, .init = io_setup, .fini = io_teardown);
 
-Test(ansi, test_seed_random) {
+Test(ansi, test_ansi_seed_random) {
 	curve_t curve = {0};
 	cfg->bits = 256;
 	int ret = ansi_gen_seed_random(&curve, NULL, OFFSET_SEED);
@@ -27,7 +27,7 @@ Test(ansi, test_seed_random) {
 	seed_free(&curve.seed);
 }
 
-Test(ansi, test_seed_argument) {
+Test(ansi, test_ansi_seed_argument) {
 	curve_t curve = {0};
 	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	cfg->seed = seed;
@@ -43,7 +43,7 @@ Test(ansi, test_seed_argument) {
 	seed_free(&curve.seed);
 }
 
-Test(ansi, test_seed_argument_hex) {
+Test(ansi, test_ansi_seed_argument_hex) {
 	curve_t curve = {0};
 	char *seed = "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	cfg->seed = seed;
@@ -59,7 +59,7 @@ Test(ansi, test_seed_argument_hex) {
 	seed_free(&curve.seed);
 }
 
-Test(ansi, test_seed_input) {
+Test(ansi, test_ansi_seed_input) {
 	curve_t curve = {0};
 	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	cfg->bits = 256;
@@ -75,7 +75,7 @@ Test(ansi, test_seed_input) {
 	seed_free(&curve.seed);
 }
 
-Test(ansi, test_seed_input_short) {
+Test(ansi, test_ansi_seed_input_short) {
 	curve_t curve = {0};
 	char *seed = "abcdef";
 	fprintf(write_in, "%s\n", seed);
@@ -102,7 +102,7 @@ void prime_params_cleanup(struct criterion_test_params *ctp) {
 	cr_free(params->b);
 }
 
-ParameterizedTestParameters(ansi, test_seed_prime_examples) {
+ParameterizedTestParameters(ansi, test_ansi_seed_prime_examples) {
 	static struct prime_params params[7] = {{0}};
 	// Taken from ANSI X9.62 J.5.1 - J.5.3; p. 115 - 117
 	// clang-format off
@@ -153,7 +153,7 @@ ParameterizedTestParameters(ansi, test_seed_prime_examples) {
 	size_t nb_params = sizeof(params) / sizeof(struct prime_params);
 	return cr_make_param_array(struct prime_params, params, nb_params, NULL);
 }
-ParameterizedTest(struct prime_params *param, ansi, test_seed_prime_examples) {
+ParameterizedTest(struct prime_params *param, ansi, test_ansi_seed_prime_examples) {
 	cfg->bits = param->bits;
 	cfg->field = FIELD_PRIME;
 	cfg->seed = param->seed;
@@ -164,7 +164,7 @@ ParameterizedTest(struct prime_params *param, ansi, test_seed_prime_examples) {
 	int ret = ansi_gen_seed_argument(&curve, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
 
-	ret = ansi_gen_equation(&curve, NULL, OFFSET_SEED);
+	ret = ansi_gen_equation(&curve, NULL, OFFSET_B);
 	cr_assert_eq(ret, 1, );
 	GEN expected_r = bits_to_i(bits_from_hex(param->r));
 	cr_assert(gequal(curve.seed->ansi.r, expected_r), );
@@ -188,7 +188,7 @@ void binary_params_cleanup(struct criterion_test_params *ctp) {
 	cr_free(params->b);
 }
 
-ParameterizedTestParameters(ansi, test_seed_binary_examples) {
+ParameterizedTestParameters(ansi, test_ansi_seed_binary_examples) {
 	static struct binary_params params[10] = {{0}};
 	// Taken from ANSI X9.62 J.4.1, J.4.3, J.4.5 and J.4.8; p. 107 - 113
 	// clang-format off
@@ -253,7 +253,7 @@ ParameterizedTestParameters(ansi, test_seed_binary_examples) {
 	                           binary_params_cleanup);
 }
 ParameterizedTest(struct binary_params *param, ansi,
-                  test_seed_binary_examples) {
+                  test_ansi_seed_binary_examples) {
 	cfg->bits = param->bits;
 	cfg->field = FIELD_BINARY;
 	cfg->seed = param->seed;
@@ -266,7 +266,7 @@ ParameterizedTest(struct binary_params *param, ansi,
 	int ret = ansi_gen_seed_argument(&curve, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
 
-	ret = ansi_gen_equation(&curve, NULL, OFFSET_SEED);
+	ret = ansi_gen_equation(&curve, NULL, OFFSET_B);
 	cr_assert_eq(ret, 1, );
 	GEN curve_b = field_elementi(curve.b);
 	cr_assert(gequal(curve_b, expected_b), );

@@ -40,6 +40,19 @@ Test(bits, test_bits_new_rand) {
 	bits_free(&bits);
 }
 
+Test(bits, test_bits_cpy) {
+	bits_t *bits = bits_new(10);
+	bits->bits[0] = 0b10101010;
+	bits->bits[1] = 0b11000000;
+
+	bits_t *other = bits_new(5);
+	bits_cpy(other, bits);
+	cr_assert_eq(other->bitlen, bits->bitlen, );
+	cr_assert_eq(other->allocated, bits->allocated, );
+	cr_assert_eq(other->bits[0], bits->bits[0], );
+	cr_assert_eq(other->bits[1], bits->bits[1], );
+}
+
 Test(bits, test_bits_copy) {
 	bits_t *bits = bits_new(10);
 	bits->bits[0] = 0b10101010;

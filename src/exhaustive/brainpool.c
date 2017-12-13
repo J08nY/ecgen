@@ -4,11 +4,11 @@
  */
 
 #include "brainpool.h"
-#include <misc/types.h>
 #include "gen/seed.h"
 #include "io/output.h"
 #include "util/bits.h"
 #include "util/str.h"
+#include "util/memory.h"
 
 static seed_t *brainpool_new() {
 	seed_t *result = seed_new();
@@ -20,9 +20,9 @@ static seed_t *brainpool_new() {
 static void seed_wv(seed_t *seed) {
 	pari_sp ltop = avma;
 	GEN L = utoi(cfg->bits);
-	seed->brainpool.v = itou(floorr(divis(subis(L, 1), 160)));
+	seed->brainpool.v = itou(gfloor(gdivgs(subis(L, 1), 160)));
 	seed->brainpool.w =
-	    itou(floorr(subis(subis(L, 160 * seed->brainpool.v), 1)));
+	    itou(subis(subis(L, 160 * seed->brainpool.v), 1));
 	avma = ltop;
 }
 
@@ -91,7 +91,7 @@ GENERATOR(brainpool_gen_seed_input) {
 	seed->seed = bits_from_hex(str_is_hex(cstr));
 	seed_wv(seed);
 	curve->seed = seed;
-	return INT_MIN;
+	return 1;
 }
 
 GENERATOR(brainpool_gen_equation) {
@@ -112,6 +112,7 @@ GENERATOR(brainpool_gen_equation) {
 		z = Fp_sqrtn(a, stoi(4), curve->field, NULL);
 		if (z == NULL) {
 			brainpool_update_seed(seed->seed);
+			avma = btop;
 			continue;
 		}
 		seed->brainpool.seed_a = bits_copy(seed->seed);
@@ -125,6 +126,7 @@ GENERATOR(brainpool_gen_equation) {
 		if (!Fp_issquare(b, curve->field)) {
 			brainpool_update_seed(seed->seed);
 			bits_free(&seed->brainpool.seed_a);
+			avma = btop;
 			continue;
 		}
 		seed->brainpool.seed_b = bits_copy(seed->seed);
@@ -137,6 +139,7 @@ GENERATOR(brainpool_gen_equation) {
 			brainpool_update_seed(seed->seed);
 			bits_free(&seed->brainpool.seed_a);
 			bits_free(&seed->brainpool.seed_b);
+			avma = btop;
 			continue;
 		}
 

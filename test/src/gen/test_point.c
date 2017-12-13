@@ -5,7 +5,6 @@
 
 #include <criterion/criterion.h>
 #include "gen/point.h"
-#include "test/default.h"
 #include "test/io.h"
 
 TestSuite(point, .init = io_setup, .fini = io_teardown);
@@ -115,9 +114,7 @@ Test(point, test_points_all) {
 	    .order = stoi(27), .curve = e, .ngens = 1, .generators = gens};
 	GEN orders = mkvec3s(3, 9, 27);
 	size_t npoints = 3;
-	printf("allgroups\n");
 	int ret = points_gen_allgroups(&curve, NULL, OFFSET_POINTS);
-	printf("after\n");
 
 	cr_assert_eq(ret, 1, "Points weren't generated.");
 	cr_assert_eq(curve.npoints, npoints, "Incorrect number of points.");
@@ -129,7 +126,6 @@ Test(point, test_points_all) {
 		          "Point has wrong order set.");
 		cr_assert(gequal(point->order, gel(orders, i + 1)),
 		          "Point has wrong order.");
-		printf("%lu\n", i);
 	}
 
 	points_free_deep(&curve.points, 1);
