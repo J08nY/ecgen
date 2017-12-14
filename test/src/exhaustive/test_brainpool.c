@@ -6,8 +6,8 @@
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
 #include "exhaustive/brainpool.h"
-#include "test/io.h"
 #include "gen/seed.h"
+#include "test/io.h"
 #include "util/bits.h"
 #include "util/memory.h"
 
@@ -88,7 +88,8 @@ Test(brainpool, test_brainpool_equation) {
 
 	brainpool_gen_seed_argument(&curve, NULL, OFFSET_SEED);
 
-	char *prime = "caa002c44829499e8239f049bddcaca373258a175fa337a82e0521744392cff1";
+	char *prime =
+	    "caa002c44829499e8239f049bddcaca373258a175fa337a82e0521744392cff1";
 	bits_t *prime_bits = bits_from_hex(prime);
 	curve.field = bits_to_i(prime_bits);
 	bits_free(&prime_bits);

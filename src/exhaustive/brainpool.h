@@ -9,6 +9,21 @@
 #include "misc/types.h"
 
 /**
+ *
+ * @param s
+ */
+void brainpool_update_seed(bits_t *s);
+
+/**
+ *
+ * @param s
+ * @param w
+ * @param v
+ * @return
+ */
+bits_t *brainpool_hash(const bits_t *s, long w, long v);
+
+/**
  * @brief
  * @param hex_str
  * @return

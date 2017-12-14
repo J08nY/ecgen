@@ -153,7 +153,8 @@ ParameterizedTestParameters(ansi, test_ansi_seed_prime_examples) {
 	size_t nb_params = sizeof(params) / sizeof(struct prime_params);
 	return cr_make_param_array(struct prime_params, params, nb_params, NULL);
 }
-ParameterizedTest(struct prime_params *param, ansi, test_ansi_seed_prime_examples) {
+ParameterizedTest(struct prime_params *param, ansi,
+                  test_ansi_seed_prime_examples) {
 	cfg->bits = param->bits;
 	cfg->field = FIELD_PRIME;
 	cfg->seed = param->seed;

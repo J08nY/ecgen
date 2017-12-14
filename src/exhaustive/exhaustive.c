@@ -6,6 +6,7 @@
 #include "anomalous.h"
 #include "ansi.h"
 #include "brainpool.h"
+#include "brainpool_rfc.h"
 #include "check.h"
 #include "gen/curve.h"
 #include "gen/equation.h"
@@ -70,11 +71,24 @@ static void exhaustive_ginit(gen_f *generators) {
 					}
 				}
 				generators[OFFSET_FIELD] = &brainpool_gen_field;
- 				generators[OFFSET_A] = &gen_skip;
+				generators[OFFSET_A] = &gen_skip;
 				generators[OFFSET_B] = &brainpool_gen_equation;
 			} break;
-			case SEED_BRAINPOOL_RFC:
-				break;
+			case SEED_BRAINPOOL_RFC: {
+				if (cfg->seed) {
+					generators[OFFSET_SEED] = &brainpool_rfc_gen_seed_argument;
+				} else {
+					if (cfg->random) {
+						generators[OFFSET_SEED] =
+						    &brainpool_rfc_gen_seed_random;
+					} else {
+						generators[OFFSET_SEED] = &brainpool_rfc_gen_seed_input;
+					}
+				}
+				generators[OFFSET_FIELD] = &brainpool_gen_field;
+				generators[OFFSET_A] = &gen_skip;
+				generators[OFFSET_B] = &brainpool_rfc_gen_equation;
+			} break;
 			case SEED_FIPS:
 				break;
 			default:
@@ -143,7 +157,6 @@ static void exhaustive_ginit(gen_f *generators) {
 	} else {
 		generators[OFFSET_GENERATORS] = &gens_gen_any;
 	}
-
 
 	switch (cfg->points.type) {
 		case POINTS_RANDOM:

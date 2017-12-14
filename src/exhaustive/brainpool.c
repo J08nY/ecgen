@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 
-#include <misc/types.h>
 #include "brainpool.h"
 #include "gen/seed.h"
 #include "io/output.h"
@@ -20,12 +19,11 @@ static void seed_wv(seed_t *seed) {
 	pari_sp ltop = avma;
 	GEN L = utoi(cfg->bits);
 	seed->brainpool.v = itou(gfloor(gdivgs(subis(L, 1), 160)));
-	seed->brainpool.w =
-			itou(subis(subis(L, 160 * seed->brainpool.v), 1));
+	seed->brainpool.w = itou(subis(subis(L, 160 * seed->brainpool.v), 1));
 	avma = ltop;
 }
 
-static void brainpool_update_seed(bits_t *s) {
+void brainpool_update_seed(bits_t *s) {
 	pari_sp ltop = avma;
 	GEN z = bits_to_i(s);
 	GEN t = Fp_add(z, gen_1, int2n(160));
@@ -35,7 +33,7 @@ static void brainpool_update_seed(bits_t *s) {
 	bits_free(&result);
 }
 
-static bits_t *brainpool_hash(const bits_t *s, long w, long v) {
+bits_t *brainpool_hash(const bits_t *s, long w, long v) {
 	pari_sp ltop = avma;
 	unsigned char h[20];
 	bits_sha1(s, h);
@@ -48,9 +46,9 @@ static bits_t *brainpool_hash(const bits_t *s, long w, long v) {
 		bits_sha1(si, hashout + (20 * (i - 1)));
 		bits_free(&si);
 	}
-	bits_t *result = bits_from_raw(h, 20*8);
-	bits_shortenz(result, 20*8 - w);
-	bits_t *rest = bits_from_raw(hashout, (size_t) (20 * v * 8));
+	bits_t *result = bits_from_raw(h, 20 * 8);
+	bits_shortenz(result, 20 * 8 - w);
+	bits_t *rest = bits_from_raw(hashout, (size_t)(20 * v * 8));
 	bits_concatz(result, rest, NULL);
 	bits_free(&rest);
 	avma = ltop;
@@ -104,7 +102,8 @@ GENERATOR(brainpool_gen_field) {
 			brainpool_update_seed(seed->seed);
 			seed->brainpool.update_seed = false;
 		}
-		bits_t *p_bits = brainpool_hash(seed->seed, seed->brainpool.w + 1, seed->brainpool.v);
+		bits_t *p_bits = brainpool_hash(seed->seed, seed->brainpool.w + 1,
+		                                seed->brainpool.v);
 		GEN c = bits_to_i(p_bits);
 		bits_free(&p_bits);
 		GEN p = c;
@@ -147,7 +146,7 @@ GENERATOR(brainpool_gen_equation) {
 
 		GEN z;
 		bits_t *a_bits =
-				brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
+		    brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
 		GEN a = bits_to_i(a_bits);
 		bits_free(&a_bits);
 		z = Fp_sqrtn(a, stoi(4), curve->field, NULL);
@@ -161,7 +160,7 @@ GENERATOR(brainpool_gen_equation) {
 		brainpool_update_seed(seed->seed);
 
 		bits_t *b_bits =
-				brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
+		    brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
 		GEN b = bits_to_i(b_bits);
 		bits_free(&b_bits);
 		if (!Fp_issquare(b, curve->field)) {
@@ -176,7 +175,7 @@ GENERATOR(brainpool_gen_equation) {
 		GEN mod_b = gmodulo(b, curve->field);
 
 		if (gequal0(gmulsg(-16, gadd(gmulsg(4, gpowgs(mod_a, 3)),
-									 gmulsg(27, gsqr(mod_b)))))) {
+		                             gmulsg(27, gsqr(mod_b)))))) {
 			brainpool_update_seed(seed->seed);
 			bits_free(&seed->brainpool.seed_a);
 			bits_free(&seed->brainpool.seed_b);
@@ -188,7 +187,7 @@ GENERATOR(brainpool_gen_equation) {
 		seed->brainpool.seed_bp = bits_copy(seed->seed);
 
 		bits_t *mult_bits =
-				brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
+		    brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
 		seed->brainpool.mult = bits_to_i(mult_bits);
 
 		curve->a = mod_a;
