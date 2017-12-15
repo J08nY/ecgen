@@ -46,11 +46,10 @@ void seed_free(seed_t **seed) {
 			case SEED_ANSI:
 				break;
 			case SEED_BRAINPOOL:
+			case SEED_BRAINPOOL_RFC:
 				bits_free(&(*seed)->brainpool.seed_a);
 				bits_free(&(*seed)->brainpool.seed_b);
 				bits_free(&(*seed)->brainpool.seed_bp);
-				break;
-			case SEED_BRAINPOOL_RFC:
 				break;
 			case SEED_FIPS:
 				break;

@@ -151,7 +151,7 @@ ParameterizedTestParameters(ansi, test_ansi_seed_prime_examples) {
 	// clang-format on
 
 	size_t nb_params = sizeof(params) / sizeof(struct prime_params);
-	return cr_make_param_array(struct prime_params, params, nb_params, NULL);
+	return cr_make_param_array(struct prime_params, params, nb_params, prime_params_cleanup);
 }
 ParameterizedTest(struct prime_params *param, ansi,
                   test_ansi_seed_prime_examples) {
@@ -261,8 +261,9 @@ ParameterizedTest(struct binary_params *param, ansi,
 	curve_t curve = {0};
 	curve.field = poly_gen(&param->field);
 
-	GEN expected_b = bits_to_i(bits_from_hex(param->b));
-	bits_t *b = bits_from_i(expected_b);
+	bits_t *b_bits = bits_from_hex(param->b);
+	GEN expected_b = bits_to_i(b_bits);
+	bits_free(&b_bits);
 
 	int ret = ansi_gen_seed_argument(&curve, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
@@ -272,6 +273,5 @@ ParameterizedTest(struct binary_params *param, ansi,
 	GEN curve_b = field_elementi(curve.b);
 	cr_assert(gequal(curve_b, expected_b), );
 
-	bits_free(&b);
 	seed_free(&curve.seed);
 }

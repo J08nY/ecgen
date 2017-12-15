@@ -42,7 +42,7 @@ bits_t *brainpool_hash(const bits_t *s, long w, long v) {
 	GEN z = bits_to_i(s);
 	GEN m = int2n(160);
 	for (long i = 1; i <= v; ++i) {
-		bits_t *si = bits_from_i(Fp_add(z, stoi(i), m));
+		bits_t *si = bits_from_i_len(Fp_add(z, stoi(i), m), 160);
 		bits_sha1(si, hashout + (20 * (i - 1)));
 		bits_free(&si);
 	}
@@ -149,7 +149,13 @@ GENERATOR(brainpool_gen_equation) {
 		    brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
 		GEN a = bits_to_i(a_bits);
 		bits_free(&a_bits);
-		z = Fp_sqrtn(a, stoi(4), curve->field, NULL);
+		GEN am = Fp_invsafe(a, curve->field);
+		if (am == NULL) {
+			brainpool_update_seed(seed->seed);
+			avma = btop;
+			continue;
+		}
+		z = Fp_sqrtn(Fp_muls(am, -1, curve->field), stoi(4), curve->field, NULL);
 		if (z == NULL) {
 			brainpool_update_seed(seed->seed);
 			avma = btop;

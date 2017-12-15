@@ -4,7 +4,6 @@
  */
 
 #include <criterion/criterion.h>
-#include <criterion/parameterized.h>
 #include "exhaustive/brainpool.h"
 #include "gen/seed.h"
 #include "test/io.h"

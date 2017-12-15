@@ -27,6 +27,8 @@ GENERATOR(brainpool_rfc_gen_seed_input) {
 	brainpool_delegate(brainpool_gen_seed_input);
 }
 
+#undef brainpool_delegate
+
 GENERATOR(brainpool_rfc_gen_equation) {
 	// field is definitely prime
 	pari_sp btop = avma;
@@ -42,7 +44,13 @@ GENERATOR(brainpool_rfc_gen_equation) {
 		    brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
 		GEN a = bits_to_i(a_bits);
 		bits_free(&a_bits);
-		z = Fp_sqrtn(a, stoi(4), curve->field, NULL);
+		GEN am = Fp_invsafe(a, curve->field);
+		if (am == NULL) {
+			brainpool_update_seed(seed->seed);
+			avma = btop;
+			continue;
+		}
+		z = Fp_sqrtn(Fp_muls(am, -1, curve->field), stoi(4), curve->field, NULL);
 		if (z == NULL) {
 			brainpool_update_seed(seed->seed);
 			avma = btop;
