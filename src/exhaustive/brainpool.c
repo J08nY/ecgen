@@ -111,7 +111,7 @@ GENERATOR(brainpool_gen_field) {
 		GEN p = c;
 		pari_sp bbtop = avma;
 		do {
-			if (p != c) {//yes, check ptr identity here
+			if (p != c) {  // yes, check ptr identity here
 				avma = bbtop;
 			}
 			p = nextprime(addii(p, gen_1));

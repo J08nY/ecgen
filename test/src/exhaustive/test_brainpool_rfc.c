@@ -162,7 +162,6 @@ ParameterizedTestParameters(brainpool_rfc, test_brainpool_rfc_params) {
 }
 ParameterizedTest(struct rfc_params *param, brainpool_rfc,
                   test_brainpool_rfc_params) {
-	cr_skip();
 	cfg->bits = param->bits;
 	cfg->field = FIELD_PRIME;
 

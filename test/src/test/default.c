@@ -9,7 +9,7 @@
 
 void default_setup(void) {
 	memset(cfg, 0, sizeof(config_t));
-	pari_init(200000000, 4000000);  // 200MB memory, 4M primes
+	pari_init(200000000, 1000000);  // 200MB memory, 1M primes
 	// set_mem_funcs(cr_malloc, cr_simple_calloc, cr_realloc, cr_free);
 }
 
