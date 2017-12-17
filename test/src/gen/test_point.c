@@ -5,9 +5,9 @@
 
 #include <criterion/criterion.h>
 #include "gen/point.h"
-#include "test/default.h"
+#include "test/io.h"
 
-TestSuite(point, .init = default_setup, .fini = default_teardown);
+TestSuite(point, .init = io_setup, .fini = io_teardown);
 
 Test(point, test_point_random) {
 	// curve = ellinit([1, 3], 23), order = 27

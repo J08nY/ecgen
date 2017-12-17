@@ -5,10 +5,12 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
+#include <misc/types.h>
 #include "test/default.h"
 #include "test/memory.h"
 #include "util/bits.h"
 #include "util/memory.h"
+#include "util/random.h"
 
 TestSuite(bits, .init = default_setup, .fini = default_teardown);
 
@@ -20,6 +22,35 @@ Test(bits, test_bits_new) {
 	cr_assert_eq(bits->bits[0], 0, );
 	cr_assert_eq(bits->bits[1], 0, );
 	bits_free(&bits);
+}
+
+Test(bits, test_bits_new_rand) {
+	random_init();
+	GEN seed = getrand();
+	bits_t *bits = bits_new_rand(10);
+	cr_assert_not_null(bits, );
+	cr_assert_eq(bits->bitlen, 10, );
+	cr_assert_eq(bits->allocated, 2, );
+
+	setrand(seed);
+	unsigned char one = (unsigned char)random_bits(8);
+	unsigned char other = (unsigned char)random_bits(2) << 6;
+	cr_assert_eq(bits->bits[0], one, );
+	cr_assert_eq(bits->bits[1], other, );
+	bits_free(&bits);
+}
+
+Test(bits, test_bits_cpy) {
+	bits_t *bits = bits_new(10);
+	bits->bits[0] = 0b10101010;
+	bits->bits[1] = 0b11000000;
+
+	bits_t *other = bits_new(5);
+	bits_cpy(other, bits);
+	cr_assert_eq(other->bitlen, bits->bitlen, );
+	cr_assert_eq(other->allocated, bits->allocated, );
+	cr_assert_eq(other->bits[0], bits->bits[0], );
+	cr_assert_eq(other->bits[1], bits->bits[1], );
 }
 
 Test(bits, test_bits_copy) {
@@ -45,6 +76,17 @@ Test(bits, test_bits_from_i) {
 	cr_assert_eq(bits->bitlen, 6, );
 	cr_assert_eq(bits->allocated, 1, );
 	cr_assert_eq(bits->bits[0], 0b10000000, );
+	bits_free(&bits);
+}
+
+Test(bits, test_bits_from_i_len) {
+	GEN i = int2n(5);
+
+	bits_t *bits = bits_from_i_len(i, 7);
+	cr_assert_not_null(bits, );
+	cr_assert_eq(bits->bitlen, 7, );
+	cr_assert_eq(bits->allocated, 1, );
+	cr_assert_eq(bits->bits[0], 0b01000000, );
 	bits_free(&bits);
 }
 

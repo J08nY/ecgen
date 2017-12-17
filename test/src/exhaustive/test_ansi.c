@@ -16,8 +16,8 @@
 
 TestSuite(ansi, .init = io_setup, .fini = io_teardown);
 
-Test(ansi, test_seed_random) {
-	curve_t curve = {};
+Test(ansi, test_ansi_seed_random) {
+	curve_t curve = {0};
 	cfg->bits = 256;
 	int ret = ansi_gen_seed_random(&curve, NULL, OFFSET_SEED);
 
@@ -27,8 +27,8 @@ Test(ansi, test_seed_random) {
 	seed_free(&curve.seed);
 }
 
-Test(ansi, test_seed_argument) {
-	curve_t curve = {};
+Test(ansi, test_ansi_seed_argument) {
+	curve_t curve = {0};
 	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	cfg->seed = seed;
 	cfg->bits = 256;
@@ -43,8 +43,8 @@ Test(ansi, test_seed_argument) {
 	seed_free(&curve.seed);
 }
 
-Test(ansi, test_seed_argument_hex) {
-	curve_t curve = {};
+Test(ansi, test_ansi_seed_argument_hex) {
+	curve_t curve = {0};
 	char *seed = "0xabcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	cfg->seed = seed;
 	cfg->bits = 256;
@@ -59,8 +59,8 @@ Test(ansi, test_seed_argument_hex) {
 	seed_free(&curve.seed);
 }
 
-Test(ansi, test_seed_input) {
-	curve_t curve = {};
+Test(ansi, test_ansi_seed_input) {
+	curve_t curve = {0};
 	char *seed = "abcdefabcdefabcdefabcdefabcdefabcdefabcd";
 	cfg->bits = 256;
 	fprintf(write_in, "%s\n", seed);
@@ -75,8 +75,8 @@ Test(ansi, test_seed_input) {
 	seed_free(&curve.seed);
 }
 
-Test(ansi, test_seed_input_short) {
-	curve_t curve = {};
+Test(ansi, test_ansi_seed_input_short) {
+	curve_t curve = {0};
 	char *seed = "abcdef";
 	fprintf(write_in, "%s\n", seed);
 	int ret = ansi_gen_seed_input(&curve, NULL, OFFSET_SEED);
@@ -102,8 +102,8 @@ void prime_params_cleanup(struct criterion_test_params *ctp) {
 	cr_free(params->b);
 }
 
-ParameterizedTestParameters(ansi, test_seed_prime_examples) {
-	static struct prime_params params[7] = {};
+ParameterizedTestParameters(ansi, test_ansi_seed_prime_examples) {
+	static struct prime_params params[7] = {{0}};
 	// Taken from ANSI X9.62 J.5.1 - J.5.3; p. 115 - 117
 	// clang-format off
 	params[0].bits = 192;
@@ -151,20 +151,22 @@ ParameterizedTestParameters(ansi, test_seed_prime_examples) {
 	// clang-format on
 
 	size_t nb_params = sizeof(params) / sizeof(struct prime_params);
-	return cr_make_param_array(struct prime_params, params, nb_params, NULL);
+	return cr_make_param_array(struct prime_params, params, nb_params,
+	                           prime_params_cleanup);
 }
-ParameterizedTest(struct prime_params *param, ansi, test_seed_prime_examples) {
+ParameterizedTest(struct prime_params *param, ansi,
+                  test_ansi_seed_prime_examples) {
 	cfg->bits = param->bits;
 	cfg->field = FIELD_PRIME;
 	cfg->seed = param->seed;
-	curve_t curve = {};
+	curve_t curve = {0};
 	bits_t *p = bits_from_hex(param->p);
 	curve.field = bits_to_i(p);
 
 	int ret = ansi_gen_seed_argument(&curve, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
 
-	ret = ansi_gen_equation(&curve, NULL, OFFSET_SEED);
+	ret = ansi_gen_equation(&curve, NULL, OFFSET_B);
 	cr_assert_eq(ret, 1, );
 	GEN expected_r = bits_to_i(bits_from_hex(param->r));
 	cr_assert(gequal(curve.seed->ansi.r, expected_r), );
@@ -188,8 +190,8 @@ void binary_params_cleanup(struct criterion_test_params *ctp) {
 	cr_free(params->b);
 }
 
-ParameterizedTestParameters(ansi, test_seed_binary_examples) {
-	static struct binary_params params[10] = {};
+ParameterizedTestParameters(ansi, test_ansi_seed_binary_examples) {
+	static struct binary_params params[10] = {{0}};
 	// Taken from ANSI X9.62 J.4.1, J.4.3, J.4.5 and J.4.8; p. 107 - 113
 	// clang-format off
 	polynomial_t p163 = {163, 9, 3, 2};
@@ -253,24 +255,24 @@ ParameterizedTestParameters(ansi, test_seed_binary_examples) {
 	                           binary_params_cleanup);
 }
 ParameterizedTest(struct binary_params *param, ansi,
-                  test_seed_binary_examples) {
+                  test_ansi_seed_binary_examples) {
 	cfg->bits = param->bits;
 	cfg->field = FIELD_BINARY;
 	cfg->seed = param->seed;
-	curve_t curve = {};
+	curve_t curve = {0};
 	curve.field = poly_gen(&param->field);
 
-	GEN expected_b = bits_to_i(bits_from_hex(param->b));
-	bits_t *b = bits_from_i(expected_b);
+	bits_t *b_bits = bits_from_hex(param->b);
+	GEN expected_b = bits_to_i(b_bits);
+	bits_free(&b_bits);
 
 	int ret = ansi_gen_seed_argument(&curve, NULL, OFFSET_SEED);
 	cr_assert_eq(ret, 1, );
 
-	ret = ansi_gen_equation(&curve, NULL, OFFSET_SEED);
+	ret = ansi_gen_equation(&curve, NULL, OFFSET_B);
 	cr_assert_eq(ret, 1, );
 	GEN curve_b = field_elementi(curve.b);
 	cr_assert(gequal(curve_b, expected_b), );
 
-	bits_free(&b);
 	seed_free(&curve.seed);
 }

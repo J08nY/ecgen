@@ -6,6 +6,7 @@
 #include <misc/config.h>
 #include <string.h>
 #include "exhaustive/ansi.h"
+#include "exhaustive/brainpool.h"
 
 char cli_doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017 "
@@ -19,6 +20,7 @@ enum opt_keys {
 	OPT_COFACTOR = 'k',
 	OPT_RANDOM = 'r',
 	OPT_ANSI = 's',
+	OPT_BRAINPOOL = 'b',
 	OPT_INVALID = 'i',
 	OPT_ORDER = 'n',
 	OPT_KOBLITZ = 'K',
@@ -38,47 +40,50 @@ enum opt_keys {
 	OPT_ANOMALOUS,
 	OPT_GPGEN,
 	OPT_GPCHECK,
-	OPT_HEXCHECK
+	OPT_HEXCHECK,
+	OPT_BRAINPOOL_RFC
 };
 
 // clang-format off
 struct argp_option cli_options[] = {
-	{0,              0,             0,        0,                 "Field specification:",                                                                  1},
-	{"fp",           OPT_FP,        0,        0,                 "Prime field.",                                                                          1},
-	{"f2m",          OPT_F2M,       0,        0,                 "Binary field.",                                                                         1},
+		{0,               0,                 0,        0,                 "Field specification:",                                                                  1},
+		{"fp",            OPT_FP,            0,        0,                 "Prime field.",                                                                          1},
+		{"f2m",           OPT_F2M,           0,        0,                 "Binary field.",                                                                         1},
 
-	{0,              0,             0,        0,                 "Generation methods:",                                                                   2},
-	{"order",        OPT_ORDER,     "ORDER",  0,                 "Generate a curve with given order (using Complex Multiplication). **NOT IMPLEMENTED**", 2},
-	{"anomalous",    OPT_ANOMALOUS, 0,        0,                 "Generate an anomalous curve (of trace one, with field order equal to curve order).",    2},
-	{"ansi",         OPT_ANSI,      "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure).",     					  2},
-	{"invalid",      OPT_INVALID,   0,        0,                 "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).",  2},
+		{0,               0,                 0,        0,                 "Generation methods:",                                                                   2},
+		{"order",         OPT_ORDER,         "ORDER",  0,                 "Generate a curve with given order (using Complex Multiplication). **NOT IMPLEMENTED**", 2},
+		{"anomalous",     OPT_ANOMALOUS,     0,        0,                 "Generate an anomalous curve (of trace one, with field order equal to curve order).",    2},
+		{"ansi",          OPT_ANSI,          "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure).",                         2},
+		{"brainpool",     OPT_BRAINPOOL,     "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (Brainpool procedure).",                                     2},
+		{"brainpool-rfc", OPT_BRAINPOOL_RFC, "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (Brainpool procedure, as per RFC 5639).",                    2},
+		{"invalid",       OPT_INVALID,       0,        0,                 "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).",  2},
 
-	{0,				 0, 			0, 		  0,				 "Generation options:",																	  3},
-	{"random",       OPT_RANDOM,    0,        0,                 "Generate a random curve (using Random approach).",                                      3},
-	{"prime",        OPT_PRIME,     0,        0,                 "Generate a curve with prime order.",                                                    3},
-	{"cofactor",     OPT_COFACTOR,  "BOUND",  0,                 "Generate a curve with cofactor up to BOUND.",                                           3},
-	{"koblitz",      OPT_KOBLITZ,   "A",     OPTION_ARG_OPTIONAL,"Generate a Koblitz curve (a in {0, 1}, b = 1).",                                        3},
-	{"unique",       OPT_UNIQUE,    0,        0,                 "Generate a curve with only one generator.",                                             3},
-	{"gp-gen",		 OPT_GPGEN,     "FUNC",   0,				 "Generate a curve param using a GP function. **NOT IMPLEMENTED**", 					  3},
-	{"gp-check",	 OPT_GPCHECK,   "FUNC",   0, 				 "Check a generated curve param using a GP function. **NOT IMPLEMENTED**",				  3},
-	{"hex-check",	 OPT_HEXCHECK,  "HEX",	  0,				 "Check a generated curve param hex expansion for the HEX string.",						  3},
-	{"points",       OPT_POINTS,    "TYPE",   0,                 "Generate points of given type (random/prime/all/nonprime/none).",                       3},
-	{"count",        OPT_COUNT,     "COUNT",  0,                 "Generate multiple curves.",                                                             3},
+		{0,               0,                 0,        0,                 "Generation options:",                                                                   3},
+		{"random",        OPT_RANDOM,        0,        0,                 "Generate a random curve (using Random approach).",                                      3},
+		{"prime",         OPT_PRIME,         0,        0,                 "Generate a curve with prime order.",                                                    3},
+		{"cofactor",      OPT_COFACTOR,      "BOUND",  0,                 "Generate a curve with cofactor up to BOUND.",                                           3},
+		{"koblitz",       OPT_KOBLITZ,       "A",    OPTION_ARG_OPTIONAL, "Generate a Koblitz curve (a in {0, 1}, b = 1).",                                        3},
+		{"unique",        OPT_UNIQUE,        0,        0,                 "Generate a curve with only one generator.",                                             3},
+		{"gp-gen",        OPT_GPGEN,         "FUNC",   0,                 "Generate a curve param using a GP function. **NOT IMPLEMENTED**",                       3},
+		{"gp-check",      OPT_GPCHECK,       "FUNC",   0,                 "Check a generated curve param using a GP function. **NOT IMPLEMENTED**",                3},
+		{"hex-check",     OPT_HEXCHECK,      "HEX",    0,                 "Check a generated curve param hex expansion for the HEX string.",                       3},
+		{"points",        OPT_POINTS,        "TYPE",   0,                 "Generate points of given type (random/prime/all/nonprime/none).",                       3},
+		{"count",         OPT_COUNT,         "COUNT",  0,                 "Generate multiple curves.",                                                             3},
 
-	{0,              0,             0,        0,                 "Input/Output options:",                                                                 4},
-	{"format",       OPT_FORMAT,    "FORMAT", 0,                 "Format to output in. One of {csv, json}, default is json.",                             4},
-	{"input",        OPT_INPUT,     "FILE",   0,                 "Input from file.",                                                                      4},
-	{"output",       OPT_OUTPUT,    "FILE",   0,                 "Output into file. Overwrites any existing file!",                                       4},
-	{"append",       OPT_APPEND,    0,        0,                 "Append to output file (don't overwrite).",                                              4},
-	{"verbose",      OPT_VERBOSE,   "FILE", OPTION_ARG_OPTIONAL, "Verbose logging (to stdout or file).",                                                  4},
+		{0,               0,                 0,        0,                 "Input/Output options:",                                                                 4},
+		{"format",        OPT_FORMAT,        "FORMAT", 0,                 "Format to output in. One of {csv, json}, default is json.",                             4},
+		{"input",         OPT_INPUT,         "FILE",   0,                 "Input from file.",                                                                      4},
+		{"output",        OPT_OUTPUT,        "FILE",   0,                 "Output into file. Overwrites any existing file!",                                       4},
+		{"append",        OPT_APPEND,        0,        0,                 "Append to output file (don't overwrite).",                                              4},
+		{"verbose",       OPT_VERBOSE,       "FILE", OPTION_ARG_OPTIONAL, "Verbose logging (to stdout or file).",                                                  4},
 
-	{0,              0,             0,        0,                 "Other:",                                                                                5},
-	{"data-dir",     OPT_DATADIR,   "DIR",    0,                 "Set PARI/GP data directory (containing seadata package).",                              5},
-	{"memory",       OPT_MEMORY,    "SIZE",   0,                 "Use PARI stack of SIZE (can have suffix k/m/g).",                                       5},
-	{"threads",      OPT_THREADS,   "NUM",    0,                 "Use NUM threads.",                                                                      5},
-	{"thread-stack", OPT_TSTACK,    "SIZE",   0,                 "Use PARI stack of SIZE (per thread, can have suffix k/m/g).",                           5},
-	{"timeout",      OPT_TIMEOUT,   "TIME",   0,                 "Timeout computation of a curve parameter after TIME (can have suffix s/m/h/d).",        5},
-	{0}
+		{0,               0,                 0,        0,                 "Other:",                                                                                5},
+		{"data-dir",      OPT_DATADIR,       "DIR",    0,                 "Set PARI/GP data directory (containing seadata package).",                              5},
+		{"memory",        OPT_MEMORY,        "SIZE",   0,                 "Use PARI stack of SIZE (can have suffix k/m/g).",                                       5},
+		{"threads",       OPT_THREADS,       "NUM",    0,                 "Use NUM threads.",                                                                      5},
+		{"thread-stack",  OPT_TSTACK,        "SIZE",   0,                 "Use PARI stack of SIZE (per thread, can have suffix k/m/g).",                           5},
+		{"timeout",       OPT_TIMEOUT,       "TIME",   0,                 "Timeout computation of a curve parameter after TIME (can have suffix s/m/h/d).",        5},
+		{0}
 };
 // clang-format on
 
@@ -130,13 +135,9 @@ static void cli_end(struct argp_state *state) {
 	// Only one gen method
 	switch (cfg->method) {
 		case METHOD_DEFAULT:
-			break;
 		case METHOD_CM:
-			break;
 		case METHOD_ANOMALOUS:
-			break;
 		case METHOD_SEED:
-			break;
 		case METHOD_INVALID:
 			break;
 		default:
@@ -146,6 +147,11 @@ static void cli_end(struct argp_state *state) {
 			break;
 	}
 
+	if (cfg->method == METHOD_SEED && cfg->seed_algo == SEED_BRAINPOOL &&
+	    cfg->field == FIELD_BINARY) {
+		argp_failure(state, 1, 0,
+		             "Brainpool algorithm only creates prime field curves.");
+	}
 	/*
 	// Invalid is not prime or seed by definition.
 	if (cfg->invalid &&
@@ -227,6 +233,30 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				cfg->seed = arg;
 			}
 			break;
+		case OPT_BRAINPOOL:
+			cfg->method |= METHOD_SEED;
+			cfg->seed_algo = SEED_BRAINPOOL;
+			if (arg) {
+				if (!brainpool_seed_valid(arg)) {
+					argp_failure(
+					    state, 1, 0,
+					    "SEED must be exactly 160 bits (40 hex characters).");
+				}
+				cfg->seed = arg;
+			}
+			break;
+		case OPT_BRAINPOOL_RFC:
+			cfg->method |= METHOD_SEED;
+			cfg->seed_algo = SEED_BRAINPOOL_RFC;
+			if (arg) {
+				if (!brainpool_seed_valid(arg)) {
+					argp_failure(
+					    state, 1, 0,
+					    "SEED must be exactly 160 bits (40 hex characters).");
+				}
+				cfg->seed = arg;
+			}
+			break;
 
 		/* Generation options */
 		case OPT_COUNT:
@@ -299,7 +329,6 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			}
 			break;
 		}
-
 		/* IO options */
 		case OPT_FORMAT:
 			if (!strcmp(arg, "csv")) {

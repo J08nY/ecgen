@@ -4,6 +4,7 @@
  */
 
 #include "bits.h"
+#include <misc/types.h>
 #include <sha1/sha1.h>
 #include "util/memory.h"
 
@@ -14,6 +15,36 @@ bits_t *bits_new(size_t bit_len) {
 	result->allocated = byte_len;
 	result->bitlen = bit_len;
 	return result;
+}
+
+bits_t *bits_new_rand(size_t bit_len) {
+	bits_t *result = bits_new(bit_len);
+	for (size_t i = 0; i < result->allocated; ++i) {
+		if (i == result->allocated - 1) {
+			size_t last_bits = bit_len % 8;
+			result->bits[i] = (unsigned char)random_bits(last_bits)
+			                  << (8 - last_bits);
+		} else {
+			result->bits[i] = (unsigned char)random_bits(8);
+		}
+	}
+	return result;
+}
+
+void bits_cpy(bits_t *dest, const bits_t *src) {
+	if (src->bitlen == 0) {
+		return;
+	}
+
+	if (src->allocated < dest->allocated) {
+		memset(dest->bits + src->allocated, 0,
+		       dest->allocated - src->allocated);
+	} else if (src->allocated > dest->allocated) {
+		dest->bits = try_realloc(dest->bits, src->allocated);
+	}
+	memcpy(dest->bits, src->bits, src->allocated);
+	dest->allocated = src->allocated;
+	dest->bitlen = src->bitlen;
 }
 
 bits_t *bits_copy(const bits_t *bits) {
@@ -43,6 +74,24 @@ bits_t *bits_from_i(GEN i) {
 	for (size_t j = 0; j < bit_len; ++j) {
 		if (gel(bitvec, j + 1) == (GEN)1) {
 			result->bits[j / 8] |= 1 << (7 - (j % 8));
+		}
+	}
+	avma = ltop;
+	return result;
+}
+
+bits_t *bits_from_i_len(GEN i, size_t bit_len) {
+	pari_sp ltop = avma;
+	GEN bitvec = binary_zv(i);
+	size_t i_len = (size_t)glength(bitvec);
+	bits_t *result = bits_new(bit_len);
+	size_t offset = 0;
+	if (i_len < bit_len) {
+		offset = bit_len - i_len;
+	}
+	for (size_t j = 0; j < bit_len; ++j) {
+		if (j < i_len && gel(bitvec, j + 1) == (GEN)1) {
+			result->bits[(j + offset) / 8] |= 1 << (7 - ((j + offset) % 8));
 		}
 	}
 	avma = ltop;
@@ -102,7 +151,7 @@ GEN bits_to_i(const bits_t *bits) {
 		if (GET_BIT(bits->bits, i) != 0)
 			result = addii(result, int2n(bits->bitlen - i - 1));
 	}
-	return gerepileupto(ltop, result);
+	return gerepilecopy(ltop, result);
 }
 
 char *bits_to_hex(const bits_t *bits) {

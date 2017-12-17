@@ -29,11 +29,17 @@
 
 bits_t *bits_new(size_t bit_len);
 
+bits_t *bits_new_rand(size_t bit_len);
+
+void bits_cpy(bits_t *dest, const bits_t *src);
+
 bits_t *bits_copy(const bits_t *bits);
 
 void bits_free(bits_t **bits);
 
 bits_t *bits_from_i(GEN i);
+
+bits_t *bits_from_i_len(GEN i, size_t bitlen);
 
 bits_t *bits_from_hex(const char *hex_str);
 

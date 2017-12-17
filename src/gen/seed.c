@@ -4,6 +4,7 @@
  */
 
 #include "seed.h"
+#include <misc/types.h>
 #include "util/bits.h"
 #include "util/memory.h"
 
@@ -35,9 +36,7 @@ seed_t *seed_new_clone(const seed_t *src) {
 
 void seed_free(seed_t **seed) {
 	if (*seed) {
-		if ((*seed)->seed) {
-			bits_free(&(*seed)->seed);
-		}
+		bits_free(&(*seed)->seed);
 		if ((*seed)->hash20) {
 			try_free((*seed)->hash20);
 		}
@@ -45,8 +44,9 @@ void seed_free(seed_t **seed) {
 			case SEED_ANSI:
 				break;
 			case SEED_BRAINPOOL:
-				break;
 			case SEED_BRAINPOOL_RFC:
+				bits_free(&(*seed)->brainpool.seed_a);
+				bits_free(&(*seed)->brainpool.seed_b);
 				break;
 			case SEED_FIPS:
 				break;
