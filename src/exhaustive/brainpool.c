@@ -3,6 +3,7 @@
  * Copyright (C) 2017 J08nY
  */
 
+#include <misc/types.h>
 #include "brainpool.h"
 #include "gen/gens.h"
 #include "gen/point.h"
@@ -219,7 +220,7 @@ GENERATOR(brainpool_gen_gens) {
 	GEN x = gen_0;
 	GEN Qy = ellordinate(curve->curve, x, 0);
 	while (glength(Qy) == 0) {
-		mpaddz(x, gen_1, x);
+		x = addii(x, gen_1);
 		Qy = ellordinate(curve->curve, x, 0);
 	}
 
@@ -238,6 +239,7 @@ GENERATOR(brainpool_gen_gens) {
 	}
 
 	curve->generators = points_new(1);
+	curve->ngens = 1;
 	point_t *G = point_new();
 	curve->generators[0] = G;
 	G->point = gerepilecopy(ltop, ellmul(curve->curve, P, k));

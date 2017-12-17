@@ -80,6 +80,13 @@ function ansix962() {
 	assert_raises "${ecgen} --f2m -r --ansi 10"
 }
 
+function brainpool() {
+    start_test
+    assert_raises "${ecgen} --fp -r --brainpool 10"
+    assert_raises "${ecgen} --f2m -r --brainpool 10" 1
+    assert_raises "${ecgen} --fp -r --brainpool-rfc 10"
+    assert_raises "${ecgen} --f2m -r --brainpool-rfc 10" 1
+}
 function anomalous() {
 	start_test
 	assert_raises "${ecgen} --fp --anomalous -r 20"
@@ -122,6 +129,7 @@ csv
 json
 exhaustive
 ansix962
+brainpool
 anomalous
 invalid
 cli
