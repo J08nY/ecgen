@@ -4,6 +4,9 @@
  */
 
 #include "brainpool.h"
+#include <misc/types.h>
+#include "gen/gens.h"
+#include "gen/point.h"
 #include "gen/seed.h"
 #include "io/output.h"
 #include "util/bits.h"
@@ -155,7 +158,8 @@ GENERATOR(brainpool_gen_equation) {
 			avma = btop;
 			continue;
 		}
-		z = Fp_sqrtn(Fp_muls(am, -1, curve->field), stoi(4), curve->field, NULL);
+		z = Fp_sqrtn(Fp_muls(am, -1, curve->field), stoi(4), curve->field,
+		             NULL);
 		if (z == NULL) {
 			brainpool_update_seed(seed->seed);
 			avma = btop;
@@ -189,13 +193,6 @@ GENERATOR(brainpool_gen_equation) {
 			continue;
 		}
 
-		brainpool_update_seed(seed->seed);
-		seed->brainpool.seed_bp = bits_copy(seed->seed);
-
-		bits_t *mult_bits =
-		    brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
-		seed->brainpool.mult = bits_to_i(mult_bits);
-
 		curve->a = mod_a;
 		curve->b = mod_b;
 		gerepileall(btop, 2, &curve->a, &curve->b);
@@ -204,4 +201,64 @@ GENERATOR(brainpool_gen_equation) {
 
 	seed->brainpool.update_seed = true;
 	return 1;
+}
+
+GENERATOR(brainpool_gen_gens) {
+	pari_sp ltop = avma;
+	seed_t *seed = curve->seed;
+	brainpool_update_seed(seed->seed);
+
+	bits_t *k_bits =
+	    brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
+	GEN k = bits_to_i(k_bits);
+	bits_free(&k_bits);
+	GEN x = gen_0;
+	GEN Qy = ellordinate(curve->curve, x, 0);
+	while (glength(Qy) == 0) {
+		mpaddz(x, gen_1, x);
+		Qy = ellordinate(curve->curve, x, 0);
+	}
+
+	GEN P = NULL;
+	if (glength(Qy) == 1) {
+		P = mkvec2(x, gel(Qy, 1));
+	} else if (glength(Qy) == 2) {
+		if (random_bits(1)) {
+			P = mkvec2(x, gel(Qy, 1));
+		} else {
+			P = mkvec2(x, gel(Qy, 2));
+		}
+	} else {
+		avma = ltop;
+		return INT_MIN;
+	}
+
+	curve->generators = points_new(1);
+	point_t *G = point_new();
+	curve->generators[0] = G;
+	G->point = gerepilecopy(ltop, ellmul(curve->curve, P, k));
+	G->order = ellorder(curve->curve, G->point, NULL);
+	G->cofactor = divii(curve->order, G->order);
+
+	return 1;
+}
+
+CHECK(brainpool_check_gens) {
+	pari_sp ltop = avma;
+	point_t *G = curve->generators[0];
+	GEN min_degree = divis(subii(G->order, gen_1), 100);
+	if (mpcmp(min_degree, gens_get_embedding(curve->field, G->order)) >= 0) {
+		avma = ltop;
+		return -5;
+	}
+	avma = ltop;
+	return 1;
+}
+
+CHECK(brainpool_check_order) {
+	if (mpcmp(curve->order, curve->field) < 0) {
+		return 1;
+	} else {
+		return -4;
+	}
 }

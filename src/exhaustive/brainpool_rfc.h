@@ -9,7 +9,7 @@
 #include "misc/types.h"
 
 /**
- *
+ * @brief
  * @param curve
  * @param args
  * @param state
@@ -18,7 +18,7 @@
 GENERATOR(brainpool_rfc_gen_seed_argument);
 
 /**
- *
+ * @brief
  * @param curve
  * @param args
  * @param state
@@ -27,7 +27,7 @@ GENERATOR(brainpool_rfc_gen_seed_argument);
 GENERATOR(brainpool_rfc_gen_seed_random);
 
 /**
- *
+ * @brief
  * @param curve
  * @param args
  * @param state

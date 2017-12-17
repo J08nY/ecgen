@@ -58,7 +58,7 @@ GENERATOR(brainpool_gen_seed_argument);
 GENERATOR(brainpool_gen_seed_input);
 
 /**
- *
+ * @brief
  * @param curve
  * @param args
  * @param state
@@ -74,5 +74,32 @@ GENERATOR(brainpool_gen_field);
  * @return
  */
 GENERATOR(brainpool_gen_equation);
+
+/**
+ * @brief
+ * @param curve
+ * @param args
+ * @param state
+ * @return
+ */
+GENERATOR(brainpool_gen_gens);
+
+/**
+ * @brief
+ * @param curve
+ * @param args
+ * @param state
+ * @return
+ */
+CHECK(brainpool_check_gens);
+
+/**
+ * @brief
+ * @param curve
+ * @param args
+ * @param state
+ * @return
+ */
+CHECK(brainpool_check_order);
 
 #endif  // ECGEN_BRAINPOOL_H

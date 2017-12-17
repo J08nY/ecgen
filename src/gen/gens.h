@@ -30,6 +30,7 @@ GENERATOR(gens_gen_any);
 GENERATOR(gens_gen_one);
 
 /**
+ * CHECK(check_f)
  *
  * @param curve
  * @param args
@@ -39,6 +40,18 @@ GENERATOR(gens_gen_one);
 CHECK(gens_check_anomalous);
 
 /**
+ * @brief Get the embedding degree of a subgroup of <code>order</code> in a
+ * power of F_prime.
+ *
+ * @param prime The order of the base field.
+ * @param order The order of the subgroup generator (in the curve group).
+ * @return The embedding degree 't' such that <code>order</code> divides
+ * 'prime^t - 1'.
+ */
+GEN gens_get_embedding(GEN prime, GEN order);
+
+/**
+ * CHECK(check_f)
  *
  * @param curve
  * @param args

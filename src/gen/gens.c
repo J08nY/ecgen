@@ -40,14 +40,23 @@ GENERATOR(gens_gen_one) {
 
 CHECK(gens_check_anomalous) {
 	if (cfg->field == FIELD_BINARY) return 1;
-	pari_sp ltop = avma;
 	for (size_t i = 0; i < curve->ngens; ++i) {
 		if (mpcmp(curve->field, curve->generators[i]->order) == 0) {
-			avma = ltop;
 			return -5;
 		}
 	}
 	return 1;
+}
+
+GEN gens_get_embedding(GEN prime, GEN order) {
+	pari_sp ltop = avma;
+	GEN power = gen_1;
+	GEN pm;
+	do {
+		power = mulii(power, prime);
+		pm = subii(power, gen_1);
+	} while (!dvdii(pm, order));
+	return gerepilecopy(ltop, power);
 }
 
 CHECK(gens_check_embedding) {
@@ -59,13 +68,8 @@ CHECK(gens_check_embedding) {
 	GEN mind = strtoi(min_degree);
 
 	for (size_t i = 0; i < curve->ngens; ++i) {
-		GEN power = gen_0;
-		GEN pm;
-		do {
-			power = addii(power, gen_1);
-			GEN ppow = powii(curve->field, power);
-			pm = subii(ppow, gen_1);
-		} while (!dvdii(pm, curve->generators[i]->order));
+		GEN power =
+		    gens_get_embedding(curve->field, curve->generators[i]->order);
 
 		if (mpcmp(power, mind) <= 0) {
 			avma = ltop;

@@ -40,6 +40,14 @@ void exhaustive_clear(exhaustive_t *setup) {
 
 static void exhaustive_ginit(gen_f *generators) {
 	if (cfg->seed_algo) {
+		if (cfg->prime) {
+			generators[OFFSET_ORDER] = &order_gen_prime;
+		} else if (cfg->cofactor) {
+			generators[OFFSET_ORDER] = &order_gen_smallfact;
+		} else {
+			generators[OFFSET_ORDER] = &order_gen_any;
+		}
+
 		switch (cfg->seed_algo) {
 			case SEED_ANSI: {
 				// setup ANSI X9.62 generators
@@ -52,13 +60,13 @@ static void exhaustive_ginit(gen_f *generators) {
 						generators[OFFSET_SEED] = &ansi_gen_seed_input;
 					}
 				}
-				generators[OFFSET_A] = &gen_skip;
-				generators[OFFSET_B] = &ansi_gen_equation;
 				if (cfg->random) {
 					generators[OFFSET_FIELD] = &field_gen_random;
 				} else {
 					generators[OFFSET_FIELD] = &field_gen_input;
 				}
+				generators[OFFSET_A] = &gen_skip;
+				generators[OFFSET_B] = &ansi_gen_equation;
 			} break;
 			case SEED_BRAINPOOL: {
 				if (cfg->seed) {
@@ -73,6 +81,8 @@ static void exhaustive_ginit(gen_f *generators) {
 				generators[OFFSET_FIELD] = &brainpool_gen_field;
 				generators[OFFSET_A] = &gen_skip;
 				generators[OFFSET_B] = &brainpool_gen_equation;
+				generators[OFFSET_ORDER] = &order_gen_prime;
+				generators[OFFSET_GENERATORS] = &brainpool_gen_gens;
 			} break;
 			case SEED_BRAINPOOL_RFC: {
 				if (cfg->seed) {
@@ -88,19 +98,13 @@ static void exhaustive_ginit(gen_f *generators) {
 				generators[OFFSET_FIELD] = &brainpool_gen_field;
 				generators[OFFSET_A] = &gen_skip;
 				generators[OFFSET_B] = &brainpool_rfc_gen_equation;
+				generators[OFFSET_ORDER] = &order_gen_prime;
+				generators[OFFSET_GENERATORS] = &brainpool_gen_gens;
 			} break;
 			case SEED_FIPS:
 				break;
 			default:
 				break;
-		}
-
-		if (cfg->prime) {
-			generators[OFFSET_ORDER] = &order_gen_prime;
-		} else if (cfg->cofactor) {
-			generators[OFFSET_ORDER] = &order_gen_smallfact;
-		} else {
-			generators[OFFSET_ORDER] = &order_gen_any;
 		}
 	} else {
 		// setup normal generators
@@ -148,15 +152,15 @@ static void exhaustive_ginit(gen_f *generators) {
 		} else {
 			generators[OFFSET_FIELD] = &field_gen_input;
 		}
+
+		if (cfg->unique) {
+			generators[OFFSET_GENERATORS] = &gens_gen_one;
+		} else {
+			generators[OFFSET_GENERATORS] = &gens_gen_any;
+		}
 	}
 	// setup common generators
 	generators[OFFSET_CURVE] = &curve_gen_any;
-
-	if (cfg->unique) {
-		generators[OFFSET_GENERATORS] = &gens_gen_one;
-	} else {
-		generators[OFFSET_GENERATORS] = &gens_gen_any;
-	}
 
 	switch (cfg->points.type) {
 		case POINTS_RANDOM:
@@ -189,6 +193,25 @@ static void exhaustive_cinit(check_t **validators) {
 		check_t *hex_check = check_new(hex_check_param, NULL);
 		validators[OFFSET_POINTS] = hex_check;
 	}
+
+	if (cfg->method == METHOD_SEED) {
+		switch (cfg->seed_algo) {
+			case SEED_ANSI:
+				break;
+			case SEED_BRAINPOOL:
+			case SEED_BRAINPOOL_RFC: {
+				check_t *order_check = check_new(brainpool_check_order, NULL);
+				validators[OFFSET_ORDER] = order_check;
+				check_t *gens_check =
+				    check_new(gens_check_anomalous, brainpool_check_gens, NULL);
+				validators[OFFSET_GENERATORS] = gens_check;
+			} break;
+			case SEED_FIPS:
+				break;
+			default:
+				break;
+		}
+	}
 }
 
 static void exhaustive_ainit(arg_t **gen_argss, arg_t **check_argss) {
@@ -205,12 +228,14 @@ static void exhaustive_ainit(arg_t **gen_argss, arg_t **check_argss) {
 		gen_argss[OFFSET_FIELD] = field_arg;
 		gen_argss[OFFSET_B] = eq_arg;
 	}
+
 	if (cfg->points.type == POINTS_RANDOM) {
 		arg_t *points_arg = arg_new();
 		points_arg->args = &cfg->points.amount;
 		points_arg->nargs = 1;
 		gen_argss[OFFSET_POINTS] = points_arg;
 	}
+
 	if (cfg->cofactor) {
 		arg_t *order_arg = arg_new();
 		arg_t *gens_arg = arg_new();
@@ -278,6 +303,7 @@ int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
 		}
 		timeout_stop();
 		if (diff > 0 && setup->validators && setup->validators[state]) {
+			pari_sp ctop = avma;
 			check_t *validator = setup->validators[state];
 			for (size_t i = 0; i < validator->nchecks; ++i) {
 				int new_diff =
@@ -287,6 +313,7 @@ int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
 					break;
 				}
 			}
+			avma = ctop;
 		}
 
 		int new_state = state + diff;

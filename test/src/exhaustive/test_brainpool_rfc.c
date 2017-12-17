@@ -5,14 +5,20 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
-#include "test/io.h"
-#include "test/memory.h"
-#include "misc/types.h"
-#include "gen/seed.h"
-#include "util/bits.h"
-#include "util/memory.h"
+#include <exhaustive/exhaustive.h>
 #include "exhaustive/brainpool.h"
 #include "exhaustive/brainpool_rfc.h"
+#include "exhaustive/check.h"
+#include "exhaustive/exhaustive.h"
+#include "gen/curve.h"
+#include "gen/gens.h"
+#include "gen/order.h"
+#include "gen/seed.h"
+#include "misc/types.h"
+#include "test/io.h"
+#include "test/memory.h"
+#include "util/bits.h"
+#include "util/memory.h"
 
 TestSuite(brainpool_rfc, .init = io_setup, .fini = io_teardown);
 
@@ -77,6 +83,10 @@ void params_cleanup(struct criterion_test_params *ctp) {
 	cr_free(params->b);
 }
 
+/**
+ * These fail because brainpool_rfc_gen_equation only implements the one curve
+ * generation step and
+ * does not do other Brainpool checks(which are a part of the procedure).*/
 ParameterizedTestParameters(brainpool_rfc, test_brainpool_rfc_params) {
 	static struct rfc_params params[7] = {{0}};
 
@@ -94,40 +104,65 @@ ParameterizedTestParameters(brainpool_rfc, test_brainpool_rfc_params) {
 	params[1].b = cr_strdup("469A28EF7C28CCA3DC721D044F4496BCCA7EF4146FBF25C9");
 	params[2].bits = 224;
 	params[2].p_seed = cr_strdup("7BE5466CF34E90C6CC0AC29B7C97C50DD3F84D5B");
-	params[2].p = cr_strdup("D7C134AA264366862A18302575D1D787B09F075797DA89F57EC8C0FF");
+	params[2].p =
+	    cr_strdup("D7C134AA264366862A18302575D1D787B09F075797DA89F57EC8C0FF");
 	params[2].ab_seed = cr_strdup("5F4BF8D8D8C31D763DA06C80ABB1185EB4F7C7B5");
-	params[2].a = cr_strdup("68A5E62CA9CE6C1C299803A6C1530B514E182AD8B0042A59CAD29F43");
-	params[2].b = cr_strdup("2580F63CCFE44138870713B1A92369E33E2135D266DBB372386C400B");
+	params[2].a =
+	    cr_strdup("68A5E62CA9CE6C1C299803A6C1530B514E182AD8B0042A59CAD29F43");
+	params[2].b =
+	    cr_strdup("2580F63CCFE44138870713B1A92369E33E2135D266DBB372386C400B");
 	params[3].bits = 256;
 	params[3].p_seed = cr_strdup("5B54709179216D5D98979FB1BD1310BA698DFB5A");
-	params[3].p = cr_strdup("A9FB57DBA1EEA9BC3E660A909D838D726E3BF623D52620282013481D1F6E5377");
+	params[3].p = cr_strdup(
+	    "A9FB57DBA1EEA9BC3E660A909D838D726E3BF623D52620282013481D1F6E5377");
 	params[3].ab_seed = cr_strdup("757F5958490CFD47D7C19BB42158D9554F7B46BC");
-	params[3].a = cr_strdup("7D5A0975FC2C3057EEF67530417AFFE7FB8055C126DC5C6CE94A4B44F330B5D9");
-	params[3].b = cr_strdup("26DC5C6CE94A4B44F330B5D9BBD77CBF958416295CF7E1CE6BCCDC18FF8C07B6");
+	params[3].a = cr_strdup(
+	    "7D5A0975FC2C3057EEF67530417AFFE7FB8055C126DC5C6CE94A4B44F330B5D9");
+	params[3].b = cr_strdup(
+	    "26DC5C6CE94A4B44F330B5D9BBD77CBF958416295CF7E1CE6BCCDC18FF8C07B6");
 	params[4].bits = 320;
 	params[4].p_seed = cr_strdup("C2FFD72DBD01ADFB7B8E1AFED6A267E96BA7C904");
-	params[4].p = cr_strdup("D35E472036BC4FB7E13C785ED201E065F98FCFA6F6F40DEF4F92B9EC7893EC28FCD412B1F1B32E27");
+	params[4].p = cr_strdup(
+	    "D35E472036BC4FB7E13C785ED201E065F98FCFA6F6F40DEF4F92B9EC7893EC28FCD412"
+	    "B1F1B32E27");
 	params[4].ab_seed = cr_strdup("ED55C4D79FD5F24D6613C31C3839A2DDF8A9A276");
-	params[4].a = cr_strdup("3EE30B568FBAB0F883CCEBD46D3F3BB8A2A73513F5EB79DA66190EB085FFA9F492F375A97D860EB4");
-	params[4].b = cr_strdup("520883949DFDBC42D3AD198640688A6FE13F41349554B49ACC31DCCD884539816F5EB4AC8FB1F1A6");
+	params[4].a = cr_strdup(
+	    "3EE30B568FBAB0F883CCEBD46D3F3BB8A2A73513F5EB79DA66190EB085FFA9F492F375"
+	    "A97D860EB4");
+	params[4].b = cr_strdup(
+	    "520883949DFDBC42D3AD198640688A6FE13F41349554B49ACC31DCCD884539816F5EB4"
+	    "AC8FB1F1A6");
 	params[5].bits = 384;
 	params[5].p_seed = cr_strdup("5F12C7F9924A19947B3916CF70801F2E2858EFC1");
-	params[5].p = cr_strdup("8CB91E82A3386D280F5D6F7E50E641DF152F7109ED5456B412B1DA197FB71123ACD3A729901D1A71874700133107EC53");
+	params[5].p = cr_strdup(
+	    "8CB91E82A3386D280F5D6F7E50E641DF152F7109ED5456B412B1DA197FB71123ACD3A7"
+	    "29901D1A71874700133107EC53");
 	params[5].ab_seed = cr_strdup("BCFBFA1C877C56284DAB79CD4C2B3293D20E9E5E");
-	params[5].a = cr_strdup("7BC382C63D8C150C3C72080ACE05AFA0C2BEA28E4FB22787139165EFBA91F90F8AA5814A503AD4EB04A8C7DD22CE2826");
-	params[5].b = cr_strdup("04A8C7DD22CE28268B39B55416F0447C2FB77DE107DCD2A62E880EA53EEB62D57CB4390295DBC9943AB78696FA504C11");
+	params[5].a = cr_strdup(
+	    "7BC382C63D8C150C3C72080ACE05AFA0C2BEA28E4FB22787139165EFBA91F90F8AA581"
+	    "4A503AD4EB04A8C7DD22CE2826");
+	params[5].b = cr_strdup(
+	    "04A8C7DD22CE28268B39B55416F0447C2FB77DE107DCD2A62E880EA53EEB62D57CB439"
+	    "0295DBC9943AB78696FA504C11");
 	params[6].bits = 512;
 	params[6].p_seed = cr_strdup("6636920D871574E69A458FEA3F4933D7E0D95748");
-	params[6].p = cr_strdup("AADD9DB8DBE9C48B3FD4E6AE33C9FC07CB308DB3B3C9D20ED6639CCA703308717D4D9B009BC66842AECDA12AE6A380E62881FF2F2D82C68528AA6056583A48F3");
+	params[6].p = cr_strdup(
+	    "AADD9DB8DBE9C48B3FD4E6AE33C9FC07CB308DB3B3C9D20ED6639CCA703308717D4D9B"
+	    "009BC66842AECDA12AE6A380E62881FF2F2D82C68528AA6056583A48F3");
 	params[6].ab_seed = cr_strdup("AF02AC60ACC93ED874422A52ECB238FEEE5AB6AD");
-	params[6].a = cr_strdup("7830A3318B603B89E2327145AC234CC594CBDD8D3DF91610A83441CAEA9863BC2DED5D5AA8253AA10A2EF1C98B9AC8B57F1117A72BF2C7B9E7C1AC4D77FC94CA");
-	params[6].b = cr_strdup("3DF91610A83441CAEA9863BC2DED5D5AA8253AA10A2EF1C98B9AC8B57F1117A72BF2C7B9E7C1AC4D77FC94CADC083E67984050B75EBAE5DD2809BD638016F723");
+	params[6].a = cr_strdup(
+	    "7830A3318B603B89E2327145AC234CC594CBDD8D3DF91610A83441CAEA9863BC2DED5D"
+	    "5AA8253AA10A2EF1C98B9AC8B57F1117A72BF2C7B9E7C1AC4D77FC94CA");
+	params[6].b = cr_strdup(
+	    "3DF91610A83441CAEA9863BC2DED5D5AA8253AA10A2EF1C98B9AC8B57F1117A72BF2C7"
+	    "B9E7C1AC4D77FC94CADC083E67984050B75EBAE5DD2809BD638016F723");
 
 	size_t nb_params = sizeof(params) / sizeof(struct rfc_params);
 	return cr_make_param_array(struct rfc_params, params, nb_params,
-							   params_cleanup);
+	                           params_cleanup);
 }
-ParameterizedTest(struct rfc_params *param, brainpool_rfc, test_brainpool_rfc_params) {
+ParameterizedTest(struct rfc_params *param, brainpool_rfc,
+                  test_brainpool_rfc_params) {
 	cfg->bits = param->bits;
 	cfg->field = FIELD_PRIME;
 
@@ -158,7 +193,27 @@ ParameterizedTest(struct rfc_params *param, brainpool_rfc, test_brainpool_rfc_pa
 	cr_assert_not_null(curve.seed, );
 	cr_assert_eq(ret, 1, );
 
-	ret = brainpool_rfc_gen_equation(&curve, NULL, OFFSET_B);
+	exhaustive_t setup = {0};
+	gen_f gens[OFFSET_END] = {0};
+	gens[OFFSET_A] = &gen_skip;
+	gens[OFFSET_B] = &brainpool_rfc_gen_equation;
+	gens[OFFSET_CURVE] = &curve_gen_any;
+	gens[OFFSET_ORDER] = &order_gen_prime;
+	gens[OFFSET_GENERATORS] = &brainpool_gen_gens;
+	gens[OFFSET_POINTS] = &gen_skip;
+	check_t *checks[OFFSET_END] = {0};
+	checks[OFFSET_ORDER] = check_new(brainpool_check_order, NULL);
+	checks[OFFSET_GENERATORS] =
+	    check_new(gens_check_anomalous, brainpool_check_gens, NULL);
+	unroll_f unrolls[OFFSET_END] = {0};
+	unrolls[OFFSET_CURVE] = &curve_unroll;
+	unrolls[OFFSET_GENERATORS] = &gens_unroll;
+	setup.generators = gens;
+	setup.validators = checks;
+	setup.unrolls = unrolls;
+
+	ret = exhaustive_gen(&curve, &setup, OFFSET_A, OFFSET_GENERATORS);
+
 	pari_printf("expected a = %P#x\n", lift(a));
 	pari_printf("real     a = %P#x\n", lift(curve.a));
 	cr_assert_not_null(curve.a, );

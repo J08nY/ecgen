@@ -49,8 +49,6 @@ typedef struct {
 			long v;
 			bits_t *seed_a;
 			bits_t *seed_b;
-			bits_t *seed_bp;
-			GEN mult;
 		} brainpool;
 	};
 } seed_t;

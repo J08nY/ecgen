@@ -151,7 +151,8 @@ ParameterizedTestParameters(ansi, test_ansi_seed_prime_examples) {
 	// clang-format on
 
 	size_t nb_params = sizeof(params) / sizeof(struct prime_params);
-	return cr_make_param_array(struct prime_params, params, nb_params, prime_params_cleanup);
+	return cr_make_param_array(struct prime_params, params, nb_params,
+	                           prime_params_cleanup);
 }
 ParameterizedTest(struct prime_params *param, ansi,
                   test_ansi_seed_prime_examples) {
