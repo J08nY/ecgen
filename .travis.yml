@@ -32,9 +32,11 @@ before_install:
   - sudo tar --strip-components=1 -C ${DATADIR} -xzvf seadata.tgz data/
 
 script: # Test, clean, build for release
+  - ( while true; do echo "beep"; sleep 60; done ) &
   - TEST=1 make unittest
   - TEST=1 make clean
   - make -j2
+  - kill $!
 
 after_success:
   - bash <(curl -s https://codecov.io/bash)
