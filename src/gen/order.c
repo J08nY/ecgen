@@ -20,10 +20,12 @@ GENERATOR(order_gen_input) {
 }
 
 GENERATOR(order_gen_any) {
+	pari_sp ltop = avma;
 	GEN ord = ellff_get_card(curve->curve);
 	if (isclone(ord)) {
-		curve->order = gcopy(ord);
+		curve->order = gerepilecopy(ltop, ord);
 	} else {
+		avma = ltop;
 		curve->order = ord;
 	}
 	return 1;
@@ -36,7 +38,7 @@ GENERATOR(order_gen_sea) {
 		avma = ltop;
 		return -4;
 	} else {
-		curve->order = order;
+		curve->order = gerepilecopy(ltop, order);
 		obj_insert_shallow(curve->curve, 1, order);
 		return 1;
 	}
@@ -86,7 +88,7 @@ GENERATOR(order_gen_prime) {
 		avma = ltop;
 		return -4;
 	} else {
-		curve->order = order;
+		curve->order = gerepilecopy(ltop, order);
 		obj_insert_shallow(curve->curve, 1, curve->order);
 		return 1;
 	}

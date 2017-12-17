@@ -212,10 +212,13 @@ ParameterizedTest(struct rfc_params *param, brainpool_rfc,
 	setup.validators = checks;
 	setup.unrolls = unrolls;
 
+	// pari_sp top = avma;
+	// pari_ulong debug_before = DEBUGLEVEL;
+	// DEBUGLEVEL = 3;
 	ret = exhaustive_gen(&curve, &setup, OFFSET_A, OFFSET_GENERATORS);
+	// DEBUGLEVEL = debug_before;
+	// dbg_gerepile(top);
 
-	pari_printf("expected a = %P#x\n", lift(a));
-	pari_printf("real     a = %P#x\n", lift(curve.a));
 	cr_assert_not_null(curve.a, );
 	cr_assert_not_null(curve.b, );
 	cr_assert_eq(ret, 1, );

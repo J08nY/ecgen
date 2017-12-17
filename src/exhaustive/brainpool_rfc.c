@@ -33,24 +33,19 @@ GENERATOR(brainpool_rfc_gen_equation) {
 	// field is definitely prime
 	pari_sp btop = avma;
 	seed_t *seed = curve->seed;
-	pari_printf("seed before %P#x\n", bits_to_i(seed->seed));
 	do {
 		if (seed->brainpool.update_seed) {
-			printf("updating seed\n");
 			brainpool_update_seed(seed->seed);
-			pari_printf("seed after %P#x\n", bits_to_i(seed->seed));
 			seed->brainpool.update_seed = false;
 		}
 
 		bits_t *a_bits =
 		    brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
 		GEN a = bits_to_i(a_bits);
-		pari_printf("trying a = '%P#x'\n", a);
 		bits_free(&a_bits);
 		GEN am = Fp_invsafe(a, curve->field);
 		if (am == NULL) {
 			brainpool_update_seed(seed->seed);
-			pari_printf("a, update seed(noinv) %P#x\n", bits_to_i(seed->seed));
 			avma = btop;
 			continue;
 		}
@@ -59,7 +54,6 @@ GENERATOR(brainpool_rfc_gen_equation) {
 		             NULL);
 		if (z == NULL) {
 			brainpool_update_seed(seed->seed);
-			pari_printf("a, update seed(sqrtn) %P#x\n", bits_to_i(seed->seed));
 			avma = btop;
 			continue;
 		}
@@ -72,7 +66,6 @@ GENERATOR(brainpool_rfc_gen_equation) {
 				avma = bbtop;
 			}
 			brainpool_update_seed(seed->seed);
-			pari_printf("b, update seed %P#x\n", bits_to_i(seed->seed));
 			bits_t *b_bits = brainpool_hash(seed->seed, seed->brainpool.w,
 			                                seed->brainpool.v);
 			b = bits_to_i(b_bits);
@@ -87,7 +80,6 @@ GENERATOR(brainpool_rfc_gen_equation) {
 		if (gequal0(gmulsg(-16, gadd(gmulsg(4, gpowgs(mod_a, 3)),
 		                             gmulsg(27, gsqr(mod_b)))))) {
 			brainpool_update_seed(seed->seed);
-			pari_printf("curve, update seed %P#x\n", bits_to_i(seed->seed));
 			bits_free(&seed->brainpool.seed_a);
 			bits_free(&seed->brainpool.seed_b);
 			avma = btop;

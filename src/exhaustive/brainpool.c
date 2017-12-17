@@ -4,7 +4,6 @@
  */
 
 #include "brainpool.h"
-#include <misc/types.h>
 #include "gen/gens.h"
 #include "gen/point.h"
 #include "gen/seed.h"
@@ -147,7 +146,6 @@ GENERATOR(brainpool_gen_equation) {
 			seed->brainpool.update_seed = false;
 		}
 
-		GEN z;
 		bits_t *a_bits =
 		    brainpool_hash(seed->seed, seed->brainpool.w, seed->brainpool.v);
 		GEN a = bits_to_i(a_bits);
@@ -158,7 +156,8 @@ GENERATOR(brainpool_gen_equation) {
 			avma = btop;
 			continue;
 		}
-		z = Fp_sqrtn(Fp_muls(am, -1, curve->field), stoi(4), curve->field,
+		GEN z;
+		z = Fp_sqrtn(Fp_muls(am, -3, curve->field), stoi(4), curve->field,
 		             NULL);
 		if (z == NULL) {
 			brainpool_update_seed(seed->seed);
