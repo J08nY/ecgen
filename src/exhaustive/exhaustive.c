@@ -48,6 +48,12 @@ static void exhaustive_ginit(gen_f *generators) {
 			generators[OFFSET_ORDER] = &order_gen_any;
 		}
 
+		if (cfg->unique) {
+			generators[OFFSET_GENERATORS] = &gens_gen_one;
+		} else {
+			generators[OFFSET_GENERATORS] = &gens_gen_any;
+		}
+
 		switch (cfg->seed_algo) {
 			case SEED_ANSI: {
 				// setup ANSI X9.62 generators
