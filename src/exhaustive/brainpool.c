@@ -109,7 +109,11 @@ GENERATOR(brainpool_gen_field) {
 		GEN c = bits_to_i(p_bits);
 		bits_free(&p_bits);
 		GEN p = c;
+		pari_sp bbtop = avma;
 		do {
+			if (p != c) {//yes, check ptr identity here
+				avma = bbtop;
+			}
 			p = nextprime(addii(p, gen_1));
 		} while (mod4(p) != 3);
 
@@ -127,7 +131,7 @@ GENERATOR(brainpool_gen_field) {
 			continue;
 		}
 
-		curve->field = p;
+		curve->field = gcopy(p);
 		gerepileall(btop, 1, &curve->field);
 		break;
 	} while (true);
@@ -156,6 +160,7 @@ GENERATOR(brainpool_gen_equation) {
 			avma = btop;
 			continue;
 		}
+
 		GEN z;
 		z = Fp_sqrtn(Fp_muls(am, -3, curve->field), stoi(4), curve->field,
 		             NULL);

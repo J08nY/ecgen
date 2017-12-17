@@ -75,7 +75,7 @@ Test(brainpool, test_brainpool_field) {
 	int ret = brainpool_gen_field(&curve, NULL, OFFSET_FIELD);
 	cr_assert_eq(ret, 1, );
 	cr_assert_not_null(curve.field, );
-	cr_assert(isprime(curve.field), );
+	cr_assert(isprime(gcopy(curve.field)), );
 	cr_assert_eq(mod4(curve.field), 3, );
 }
 

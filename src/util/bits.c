@@ -151,7 +151,7 @@ GEN bits_to_i(const bits_t *bits) {
 		if (GET_BIT(bits->bits, i) != 0)
 			result = addii(result, int2n(bits->bitlen - i - 1));
 	}
-	return gerepileupto(ltop, result);
+	return gerepilecopy(ltop, result);
 }
 
 char *bits_to_hex(const bits_t *bits) {

@@ -36,9 +36,7 @@ seed_t *seed_new_clone(const seed_t *src) {
 
 void seed_free(seed_t **seed) {
 	if (*seed) {
-		if ((*seed)->seed) {
-			bits_free(&(*seed)->seed);
-		}
+		bits_free(&(*seed)->seed);
 		if ((*seed)->hash20) {
 			try_free((*seed)->hash20);
 		}
