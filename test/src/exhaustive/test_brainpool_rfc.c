@@ -5,7 +5,6 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
-#include <exhaustive/exhaustive.h>
 #include "exhaustive/brainpool.h"
 #include "exhaustive/brainpool_rfc.h"
 #include "exhaustive/check.h"
@@ -163,6 +162,7 @@ ParameterizedTestParameters(brainpool_rfc, test_brainpool_rfc_params) {
 }
 ParameterizedTest(struct rfc_params *param, brainpool_rfc,
                   test_brainpool_rfc_params) {
+	cr_skip();
 	cfg->bits = param->bits;
 	cfg->field = FIELD_PRIME;
 
