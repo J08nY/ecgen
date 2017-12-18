@@ -24,7 +24,12 @@ TESTS = $(patsubst %.c,%, $(TEST_SRC))
 ECGEN_SRC = $(wildcard ../../src/*/*.c)
 ECGEN_OBJ = $(patsubst %.c,%.o, $(ECGEN_SRC))
 
-all: test_ecgen
+all: unittest
+
+unittest: test_ecgen
+	LD_LIBRARY_PATH=../lib/criterion/build ./test_ecgen --verbose=1 --filter \!\(brainpool_rfc/test_brainpool_rfc_params\)
+
+fulltest: test_ecgen
 	LD_LIBRARY_PATH=../lib/criterion/build ./test_ecgen --verbose=1
 
 test_ecgen: $(TEST_OBJ) $(ECGEN_OBJ)
