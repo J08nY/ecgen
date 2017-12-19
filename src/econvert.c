@@ -22,7 +22,7 @@
 /**
  * @file econvert.c
  * @author J08nY <johny@neuromancer.sk>
- * @version 0.6.2
+ * @version 0.6.3
  * @copyright GPL v2.0
  */
 
