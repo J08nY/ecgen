@@ -49,16 +49,7 @@ CHECK(gens_check_anomalous) {
 }
 
 GEN gens_get_embedding(GEN prime, GEN order) {
-	pari_sp ltop = avma;
-	GEN degree = gen_0;
-	GEN power = gen_1;
-	GEN pm;
-	do {
-		degree = addii(degree, gen_1);
-		power = mulii(power, prime);
-		pm = subii(power, gen_1);
-	} while (!dvdii(pm, order));
-	return gerepilecopy(ltop, degree);
+	return Fp_order(prime, subis(order, 1), order);
 }
 
 CHECK(gens_check_embedding) {

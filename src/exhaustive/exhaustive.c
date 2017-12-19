@@ -286,7 +286,7 @@ int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
 		return 0;
 	}
 
-	pari_sp stack_tops[OFFSET_END] = {0};
+	pari_sp stack_tops[OFFSET_END] = {avma};
 	int gen_tries[OFFSET_END] = {0};
 
 	int state = start_offset;

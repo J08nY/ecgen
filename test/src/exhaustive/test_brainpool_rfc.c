@@ -5,6 +5,7 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
+#include <misc/types.h>
 #include "exhaustive/brainpool.h"
 #include "exhaustive/brainpool_rfc.h"
 #include "exhaustive/check.h"
@@ -71,6 +72,7 @@ struct rfc_params {
 	char *ab_seed;
 	char *a;
 	char *b;
+	char *mult;
 };
 
 void params_cleanup(struct criterion_test_params *ctp) {
@@ -80,6 +82,7 @@ void params_cleanup(struct criterion_test_params *ctp) {
 	cr_free(params->ab_seed);
 	cr_free(params->a);
 	cr_free(params->b);
+	cr_free(params->mult);
 }
 
 /**
@@ -95,12 +98,15 @@ ParameterizedTestParameters(brainpool_rfc, test_brainpool_rfc_params) {
 	params[0].ab_seed = cr_strdup("2B7E151628AED2A6ABF7158809CF4F3C762E7160");
 	params[0].a = cr_strdup("340E7BE2A280EB74E2BE61BADA745D97E8F7C300");
 	params[0].b = cr_strdup("1E589A8595423412134FAA2DBDEC95C8D8675E58");
+	params[0].mult = cr_strdup("2187040EA6E6EC5D867AB235A349A55BAA5E9C32");
 	params[1].bits = 192;
 	params[1].p_seed = cr_strdup("2299F31D0082EFA98EC4E6C89452821E638D0137");
 	params[1].p = cr_strdup("C302F41D932A36CDA7A3463093D18DB78FCE476DE1A86297");
 	params[1].ab_seed = cr_strdup("F38B4DA56A784D9045190CFEF324E7738926CFBE");
 	params[1].a = cr_strdup("6A91174076B1E0E19C39C031FE8685C1CAE040E5C69A28EF");
 	params[1].b = cr_strdup("469A28EF7C28CCA3DC721D044F4496BCCA7EF4146FBF25C9");
+	params[1].mult =
+	    cr_strdup("6FBF25C9A6392E5353EB6D02255D716E4043DA7816C55490");
 	params[2].bits = 224;
 	params[2].p_seed = cr_strdup("7BE5466CF34E90C6CC0AC29B7C97C50DD3F84D5B");
 	params[2].p =
@@ -110,6 +116,8 @@ ParameterizedTestParameters(brainpool_rfc, test_brainpool_rfc_params) {
 	    cr_strdup("68A5E62CA9CE6C1C299803A6C1530B514E182AD8B0042A59CAD29F43");
 	params[2].b =
 	    cr_strdup("2580F63CCFE44138870713B1A92369E33E2135D266DBB372386C400B");
+	params[2].mult =
+	    cr_strdup("66DBB372386C400BE646C1B80C4A40580359B836DFD41B5485953527");
 	params[3].bits = 256;
 	params[3].p_seed = cr_strdup("5B54709179216D5D98979FB1BD1310BA698DFB5A");
 	params[3].p = cr_strdup(
@@ -119,6 +127,8 @@ ParameterizedTestParameters(brainpool_rfc, test_brainpool_rfc_params) {
 	    "7D5A0975FC2C3057EEF67530417AFFE7FB8055C126DC5C6CE94A4B44F330B5D9");
 	params[3].b = cr_strdup(
 	    "26DC5C6CE94A4B44F330B5D9BBD77CBF958416295CF7E1CE6BCCDC18FF8C07B6");
+	params[3].mult = cr_strdup(
+	    "5CF7E1CE6BCCDC18FF8C07B6E9B89F067C39996241690B7C6FF4A4CF27CE38F7");
 	params[4].bits = 320;
 	params[4].p_seed = cr_strdup("C2FFD72DBD01ADFB7B8E1AFED6A267E96BA7C904");
 	params[4].p = cr_strdup(
@@ -131,6 +141,9 @@ ParameterizedTestParameters(brainpool_rfc, test_brainpool_rfc_params) {
 	params[4].b = cr_strdup(
 	    "520883949DFDBC42D3AD198640688A6FE13F41349554B49ACC31DCCD884539816F5EB4"
 	    "AC8FB1F1A6");
+	params[4].mult = cr_strdup(
+	    "1554B49ACC31DCCD884539816F5EB4AC8FB1F1A6D41318159E53765CD93C0457DF9FAF"
+	    "9A000C6538");
 	params[5].bits = 384;
 	params[5].p_seed = cr_strdup("5F12C7F9924A19947B3916CF70801F2E2858EFC1");
 	params[5].p = cr_strdup(
@@ -143,6 +156,9 @@ ParameterizedTestParameters(brainpool_rfc, test_brainpool_rfc_params) {
 	params[5].b = cr_strdup(
 	    "04A8C7DD22CE28268B39B55416F0447C2FB77DE107DCD2A62E880EA53EEB62D57CB439"
 	    "0295DBC9943AB78696FA504C11");
+	params[5].mult = cr_strdup(
+	    "7DCD2A62E880EA53EEB62D57CB4390295DBC9943AB78696FA504C115037CD644E494DC"
+	    "C245B3B8813113DD705F4C2C3");
 	params[6].bits = 512;
 	params[6].p_seed = cr_strdup("6636920D871574E69A458FEA3F4933D7E0D95748");
 	params[6].p = cr_strdup(
@@ -155,6 +171,9 @@ ParameterizedTestParameters(brainpool_rfc, test_brainpool_rfc_params) {
 	params[6].b = cr_strdup(
 	    "3DF91610A83441CAEA9863BC2DED5D5AA8253AA10A2EF1C98B9AC8B57F1117A72BF2C7"
 	    "B9E7C1AC4D77FC94CADC083E67984050B75EBAE5DD2809BD638016F723");
+	params[6].mult = cr_strdup(
+	    "A2EF1C98B9AC8B57F1117A72BF2C7B9E7C1AC4D77FC94CADC083E67984050B75EBAE5D"
+	    "D2809BD638016F723707F59380B759E9BCE57ACFDA9CB96AC38A433A6");
 
 	size_t nb_params = sizeof(params) / sizeof(struct rfc_params);
 	return cr_make_param_array(struct rfc_params, params, nb_params,
@@ -168,12 +187,15 @@ ParameterizedTest(struct rfc_params *param, brainpool_rfc,
 	bits_t *p_bits = bits_from_hex(param->p);
 	bits_t *a_bits = bits_from_hex(param->a);
 	bits_t *b_bits = bits_from_hex(param->b);
+	bits_t *mult_bits = bits_from_hex(param->mult);
 	GEN p = bits_to_i(p_bits);
 	GEN a = gmodulo(bits_to_i(a_bits), p);
 	GEN b = gmodulo(bits_to_i(b_bits), p);
+	GEN mult = bits_to_i(mult_bits);
 	bits_free(&p_bits);
 	bits_free(&a_bits);
 	bits_free(&b_bits);
+	bits_free(&mult_bits);
 
 	curve_t curve = {0};
 	cfg->seed = param->p_seed;
@@ -211,18 +233,14 @@ ParameterizedTest(struct rfc_params *param, brainpool_rfc,
 	setup.validators = checks;
 	setup.unrolls = unrolls;
 
-	// pari_sp top = avma;
-	// pari_ulong debug_before = DEBUGLEVEL;
-	// DEBUGLEVEL = 3;
-	ret = exhaustive_gen(&curve, &setup, OFFSET_A, OFFSET_GENERATORS);
-	// DEBUGLEVEL = debug_before;
-	// dbg_gerepile(top);
+	ret = exhaustive_gen(&curve, &setup, OFFSET_A, OFFSET_POINTS);
 
 	cr_assert_not_null(curve.a, );
 	cr_assert_not_null(curve.b, );
 	cr_assert_eq(ret, 1, );
 	cr_assert(gequal(curve.a, a), );
 	cr_assert(gequal(curve.b, b), );
+	cr_assert(gequal(curve.seed->brainpool.mult, mult), );
 
 	seed_free(&curve.seed);
 }

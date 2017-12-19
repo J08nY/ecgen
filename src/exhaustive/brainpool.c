@@ -3,8 +3,8 @@
  * Copyright (C) 2017 J08nY
  */
 
-#include <misc/types.h>
 #include "brainpool.h"
+#include <misc/types.h>
 #include "gen/gens.h"
 #include "gen/point.h"
 #include "gen/seed.h"
@@ -242,10 +242,12 @@ GENERATOR(brainpool_gen_gens) {
 	curve->ngens = 1;
 	point_t *G = point_new();
 	curve->generators[0] = G;
-	G->point = gerepilecopy(ltop, ellmul(curve->curve, P, k));
+	G->point = ellmul(curve->curve, P, k);
 	G->order = ellorder(curve->curve, G->point, NULL);
 	G->cofactor = divii(curve->order, G->order);
-
+	seed->brainpool.mult = k;
+	gerepileall(ltop, 4, &G->point, &G->order, &G->cofactor,
+	            &seed->brainpool.mult);
 	return 1;
 }
 
