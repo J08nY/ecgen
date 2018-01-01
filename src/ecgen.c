@@ -1,6 +1,6 @@
 /*
  * ecgen, tool for generating Elliptic curve domain parameters
- * Copyright (C) 2017 J08nY
+ * Copyright (C) 2017-2018 J08nY
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -34,7 +34,7 @@
 
 const char *argp_program_version =
     "ecgen 0.6.3\n"
-    "Copyright (C) 2017 J08nY\n"
+    "Copyright (C) 2017-2018 J08nY\n"
     "License GPLv2: GNU GPL version 2 (or later) "
     "<http://gnu.org/licenses/gpl.html>\n"
     "This is free software: you are free to change and redistribute it.\n"

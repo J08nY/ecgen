@@ -1,6 +1,6 @@
 /*
  * ecgen, tool for generating Elliptic curve domain parameters
- * Copyright (C) 2017 J08nY
+ * Copyright (C) 2017-2018 J08nY
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
