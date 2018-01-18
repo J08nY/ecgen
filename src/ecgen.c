@@ -29,7 +29,6 @@
 #include "invalid/invalid.h"
 #include "io/input.h"
 #include "io/output.h"
-#include "misc/config.h"
 #include "util/timeout.h"
 
 const char *argp_program_version =

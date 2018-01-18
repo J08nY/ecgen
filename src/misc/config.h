@@ -33,7 +33,8 @@ typedef enum {
 	METHOD_CM = 1 << 0,
 	METHOD_ANOMALOUS = 1 << 1,
 	METHOD_SEED = 1 << 2,
-	METHOD_INVALID = 1 << 3
+	METHOD_INVALID = 1 << 3,
+	METHOD_TWIST
 } method_e;
 
 /**

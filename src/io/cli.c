@@ -41,7 +41,8 @@ enum opt_keys {
 	OPT_GPGEN,
 	OPT_GPCHECK,
 	OPT_HEXCHECK,
-	OPT_BRAINPOOL_RFC
+	OPT_BRAINPOOL_RFC,
+	OPT_TWIST,
 };
 
 // clang-format off
@@ -57,6 +58,7 @@ struct argp_option cli_options[] = {
 		{"brainpool",     OPT_BRAINPOOL,     "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (Brainpool procedure).",                                     2},
 		{"brainpool-rfc", OPT_BRAINPOOL_RFC, "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (Brainpool procedure, as per RFC 5639).",                    2},
 		{"invalid",       OPT_INVALID,       0,        0,                 "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).",  2},
+		{"twist",         OPT_TWIST,         0,        0,                 "Generate a twist of a given curve.",                                                    2},
 
 		{0,               0,                 0,        0,                 "Generation options:",                                                                   3},
 		{"random",        OPT_RANDOM,        0,        0,                 "Generate a random curve (using Random approach).",                                      3},
@@ -139,6 +141,7 @@ static void cli_end(struct argp_state *state) {
 		case METHOD_ANOMALOUS:
 		case METHOD_SEED:
 		case METHOD_INVALID:
+		case METHOD_TWIST:
 			break;
 		default:
 			printf("%u\n", cfg->method);
@@ -256,6 +259,9 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				}
 				cfg->seed = arg;
 			}
+			break;
+		case OPT_TWIST:
+			cfg->method |= METHOD_TWIST;
 			break;
 
 		/* Generation options */

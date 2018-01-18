@@ -12,6 +12,12 @@
  * @param to The result of the twist.
  * @param of The curve to be twisted.
  */
-void curve_twist_rand(curve_t *to, const curve_t *of);
+void twist_rand_to(curve_t *to, const curve_t *of);
+
+/**
+ * @brief
+ * @param what
+ */
+void twist_rand(curve_t *what);
 
 #endif  // ECGEN_TWIST_H

@@ -11,19 +11,23 @@ Tool for generating Elliptic curve domain parameters.
  - `--f2m`					Binary field.
  - `--fp`					Prime field.
 
+#### Generation methods
+ - `--anomalous`            Generate an anomalous curve (of trace one, with field order equal to curve order).
+ - `-b / --brainpool[=SEED]`Generate a curve using the Brainpool verifiably pseudorandom algorithm from the original paper.
+ - `--brainpool-rfc[=SEED]` Generate a curve using the Brainpool verifiably pseudorandom algorithm as per RFC 5639.
+ - `-i / --invalid`			Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).
+ - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication). **TODO - NOT IMPLEMENTED**
+ - `-s / --ansi[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
+ - `--twist`                Generate a twist of a given curve.
 
 #### Generation options
 
  - `-c / --count=COUNT`		Generate multiple curves.
- - `-i / --invalid`			Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).
  - `-k / --cofactor=BOUND`	Generate a curve with cofactor up to `BOUND`.
- - `--anomalous`            Generate an anomalous curve (of trace one, with field order equal to curve order).
  - `-K / --koblitz[=A]`		Generate a Koblitz curve (a in {0, 1}, b = 1).
- - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication). **TODO - NOT IMPLEMENTED**
  - `-p / --prime`			Generate a curve with prime order.
  - `--points=TYPE`			Generate points of given `TYPE` (random/prime/all/nonprime/none).
  - `-r / --random`			Generate a random curve (using Random approach).
- - `-s / --ansi[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
  - `-u / --unique`			Generate a curve with only one generator.
 
 #### IO options

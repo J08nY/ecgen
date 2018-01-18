@@ -18,9 +18,20 @@
  *
  * @param curve A curve_t being generated
  * @param args unused
+ * @param state
  * @return state diff
  */
 GENERATOR(curve_gen_any);
+
+/**
+ * GENERATOR(gen_f)
+ *
+ * @param curve
+ * @param args
+ * @param state
+ * @return state diff
+ */
+GENERATOR(curve_gen_any_twist);
 
 /**
  * CHECK(check_f)

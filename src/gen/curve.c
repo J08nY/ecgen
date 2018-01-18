@@ -3,6 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "curve.h"
+#include "math/twists.h"
 #include "point.h"
 #include "seed.h"
 #include "util/memory.h"
@@ -112,6 +113,16 @@ GENERATOR(curve_gen_any) {
 		return -3;
 	} else {
 		curve->curve = gerepilecopy(ltop, crv);
+		return 1;
+	}
+}
+
+GENERATOR(curve_gen_any_twist) {
+	int result = curve_gen_any(curve, args, state);
+	if (result != 1) {
+		return result;
+	} else {
+		twist_rand(curve);
 		return 1;
 	}
 }

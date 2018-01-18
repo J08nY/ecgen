@@ -3,6 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "exhaustive.h"
+#include <misc/config.h>
 #include "anomalous.h"
 #include "ansi.h"
 #include "brainpool.h"
@@ -166,7 +167,11 @@ static void exhaustive_ginit(gen_f *generators) {
 		}
 	}
 	// setup common generators
-	generators[OFFSET_CURVE] = &curve_gen_any;
+	if (cfg->method == METHOD_TWIST) {
+		generators[OFFSET_CURVE] = &curve_gen_any_twist;
+	} else {
+		generators[OFFSET_CURVE] = &curve_gen_any;
+	}
 
 	switch (cfg->points.type) {
 		case POINTS_RANDOM:

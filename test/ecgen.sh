@@ -87,6 +87,7 @@ function brainpool() {
     assert_raises "${ecgen} --fp -r --brainpool-rfc 10"
     assert_raises "${ecgen} --f2m -r --brainpool-rfc 10" 1
 }
+
 function anomalous() {
 	start_test
 	assert_raises "${ecgen} --fp --anomalous -r 20"
@@ -104,6 +105,12 @@ function invalid() {
 	assert_raises "${ecgen} --f2m --threads=2 -r -i -u 10"
 	assert_raises "${ecgen} --fp --threads=auto -r -i -u 10"
 	assert_raises "${ecgen} --f2m --threads=auto -r -i -u 10"
+}
+
+function twist() {
+    start_test
+    assert_raises "${ecgen} --fp --twist -r 10"
+    assert_raises "${ecgen} --f2m --twist -r 10"
 }
 
 function cli() {
@@ -132,6 +139,7 @@ ansix962
 brainpool
 anomalous
 invalid
+twist
 cli
 hex
 end_suite ecgen
