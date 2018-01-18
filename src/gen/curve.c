@@ -100,7 +100,7 @@ GENERATOR(curve_gen_any) {
 			v = gtovec0(gen_0, 5);
 			gel(v, 1) = gen_1;
 			gel(v, 2) = curve->a;
-			gel(v, 4) = curve->b;
+			gel(v, 5) = curve->b;
 			break;
 		default:
 			pari_err_TYPE("curve_gen_any", curve->field);
