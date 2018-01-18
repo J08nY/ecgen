@@ -3,7 +3,6 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "cli.h"
-#include <misc/config.h>
 #include <string.h>
 #include "exhaustive/ansi.h"
 #include "exhaustive/brainpool.h"

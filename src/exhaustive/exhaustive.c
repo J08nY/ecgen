@@ -3,7 +3,6 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "exhaustive.h"
-#include <misc/config.h>
 #include "anomalous.h"
 #include "ansi.h"
 #include "brainpool.h"

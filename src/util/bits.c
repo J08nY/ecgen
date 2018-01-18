@@ -4,7 +4,6 @@
  */
 
 #include "bits.h"
-#include <misc/types.h>
 #include <sha1/sha1.h>
 #include "util/memory.h"
 

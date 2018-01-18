@@ -4,7 +4,6 @@
  */
 
 #include "brainpool.h"
-#include <misc/types.h>
 #include "gen/gens.h"
 #include "gen/point.h"
 #include "gen/seed.h"

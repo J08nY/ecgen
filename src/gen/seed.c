@@ -4,7 +4,6 @@
  */
 
 #include "seed.h"
-#include <misc/types.h>
 #include "util/bits.h"
 #include "util/memory.h"
 
