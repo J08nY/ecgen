@@ -61,3 +61,15 @@ GEN random_int(unsigned long bits) {
 	GEN range = mkvec2(int2n(bits - 1), int2n(bits));
 	return gerepilecopy(ltop, genrand(range));
 }
+
+GEN random_field_element(GEN field) {
+	switch (typ(field)) {
+		case t_INT:
+			return mkintmod(genrand(field), field);
+		case t_FFELT:
+			return genrand(field);
+		default:
+			pari_err_TYPE("", field);
+			return NULL;
+	}
+}

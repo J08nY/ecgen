@@ -36,4 +36,11 @@ GEN random_prime(unsigned long bits);
  */
 GEN random_int(unsigned long bits);
 
+/**
+ * @brief
+ * @param field
+ * @return
+ */
+GEN random_field_element(GEN field);
+
 #endif  // ECGEN_RANDOM_H
