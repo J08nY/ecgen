@@ -20,6 +20,16 @@ Test(cli, test_memory) {
 	int ret = argp_parse(&test_argp, argc, argv, 0, 0, cfg);
 	cr_assert_eq(ret, 0, );
 	cr_assert_eq(cfg->memory, 2000, );
+
+	char *argx[] = {"ecgen", "--memory=2m", "--fp", "1"};
+	ret = argp_parse(&test_argp, argc, argx, 0, 0, cfg);
+	cr_assert_eq(ret, 0, );
+	cr_assert_eq(cfg->memory, 2000000, );
+
+	char *argy[] = {"ecgen", "--memory=2g", "--fp", "1"};
+	ret = argp_parse(&test_argp, argc, argy, 0, 0, cfg);
+	cr_assert_eq(ret, 0, );
+	cr_assert_eq(cfg->memory, 2000000000, );
 }
 
 Test(cli, test_thread_memory) {
@@ -52,4 +62,14 @@ Test(cli, test_timeout) {
 	int ret = argp_parse(&test_argp, argc, argv, 0, 0, cfg);
 	cr_assert_eq(ret, 0, );
 	cr_assert_eq(cfg->timeout, 600, );
+
+	char *argx[] = {"ecgen", "--timeout=1h", "--fp", "1"};
+	ret = argp_parse(&test_argp, argc, argx, 0, 0, cfg);
+	cr_assert_eq(ret, 0, );
+	cr_assert_eq(cfg->timeout, 3600, );
+
+	char *argy[] = {"ecgen", "--timeout=1d", "--fp", "1"};
+	ret = argp_parse(&test_argp, argc, argy, 0, 0, cfg);
+	cr_assert_eq(ret, 0, );
+	cr_assert_eq(cfg->timeout, 86400, );
 }

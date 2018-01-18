@@ -4,6 +4,7 @@
  */
 
 #include <criterion/criterion.h>
+#include "math/poly.h"
 #include "test/default.h"
 #include "util/random.h"
 
@@ -28,5 +29,22 @@ Test(random, test_random_int) {
 		GEN j = random_int(10);
 		cr_assert_leq(cmpii(j, int2n(10)), 0, );
 		cr_assert_geq(cmpii(j, int2n(9)), 0, );
+	}
+}
+
+Test(random, test_random_field_element_fp) {
+	GEN fp = random_int(25);
+	for (size_t i = 0; i < 100; ++i) {
+		GEN j = random_field_element(fp);
+		cr_assert_geq(cmpii(j, gen_0), 0, );
+		cr_assert_lt(cmpii(j, fp), 0, );
+	}
+}
+
+Test(random, test_random_field_element_f2m) {
+	GEN f2m = poly_find_gen(23);
+	for (size_t i = 0; i < 100; ++i) {
+		GEN j = random_field_element(f2m);
+		cr_assert_not_null(j, );
 	}
 }

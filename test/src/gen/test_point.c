@@ -9,6 +9,28 @@
 
 TestSuite(point, .init = io_setup, .fini = io_teardown);
 
+Test(point, test_point_clone) {
+	point_t *one = point_new();
+	point_t *other = point_new_clone(one);
+	cr_assert_not_null(other, );
+	point_clone(one, other);
+	cr_assert_not_null(other, );
+	point_free(&one);
+	point_free(&other);
+}
+
+Test(point, test_points_clone) {
+	point_t *one = point_new();
+	point_t **points = points_new(1);
+	points[0] = one;
+	point_t **others = points_new_clone(points, 1);
+	cr_assert_not_null(others, );
+	points_clone(points, others, 1);
+	cr_assert_not_null(others, );
+	points_free_deep(&points, 1);
+	points_free_deep(&others, 1);
+}
+
 Test(point, test_point_random) {
 	// curve = ellinit([1, 3], 23), order = 27
 	GEN e = ellinit(mkvec2s(1, 3), stoi(23), -1);

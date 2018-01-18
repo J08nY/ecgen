@@ -122,6 +122,11 @@ function cli() {
 	assert_raises "${ecgen} --seed=some" 64
 	assert_raises "${ecgen} 1 2 3" 64
 	assert_raises "${ecgen} --fp --f2m 1" 1
+	assert_raises "${ecgen} --brainpool --anomalous --fp 10" 1
+	assert_raises "${ecgen} --brainpool=01234 --fp 10" 1
+	assert_raises "${ecgen} --brainpool-rfc=01234 --fp 10" 1
+	assert_raises "${ecgen} --ansi=01234 --fp 10" 1
+	assert_raises "${ecgen} --hex-check=not_hex --fp 10" 1
 }
 
 function hex() {
