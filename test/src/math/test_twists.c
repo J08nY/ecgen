@@ -4,7 +4,6 @@
  */
 #include <criterion/criterion.h>
 #include "gen/field.h"
-#include "gen/point.h"
 #include "math/poly.h"
 #include "math/twists.h"
 #include "test/default.h"
@@ -19,7 +18,8 @@ Test(twists, test_twist_rand_to_fp) {
 	curve_t curve = {.a = a,
 	                 .b = b,
 	                 .field = stoi(23),
-	                 .curve = ellinit(mkvec2(a, b), stoi(23), -1)};
+	                 .curve = ellinit(mkvec2(a, b), stoi(23), -1),
+	                 .order = stoi(24)};
 
 	curve_t to = {0};
 	twist_rand_to(&to, &curve);
@@ -27,6 +27,7 @@ Test(twists, test_twist_rand_to_fp) {
 	cr_assert_not_null(to.b, );
 	cr_assert_not_null(to.field, );
 	cr_assert_not_null(to.curve, );
+	cr_assert(equalii(to.order, stoi(24)), );
 }
 
 Test(twists, test_twist_rand_to_f2m) {
@@ -38,7 +39,8 @@ Test(twists, test_twist_rand_to_f2m) {
 	    .a = a,
 	    .b = b,
 	    .field = field,
-	    .curve = ellinit(mkvecn(5, gen_1, a, gen_0, gen_0, b), NULL, -1)};
+	    .curve = ellinit(mkvecn(5, gen_1, a, gen_0, gen_0, b), NULL, -1),
+	    .order = stoi(8140)};
 
 	curve_t to = {0};
 	twist_rand_to(&to, &curve);
@@ -46,4 +48,5 @@ Test(twists, test_twist_rand_to_f2m) {
 	cr_assert_not_null(to.b, );
 	cr_assert_not_null(to.field, );
 	cr_assert_not_null(to.curve, );
+	cr_assert(equalii(to.order, stoi(8246)), );
 }

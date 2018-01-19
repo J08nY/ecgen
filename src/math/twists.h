@@ -15,8 +15,8 @@
 void twist_rand_to(curve_t *to, const curve_t *of);
 
 /**
- * @brief
- * @param what
+ * @brief Twists the <code>what</code> curve randomly, inplae.
+ * @param what The curve to be twisted, also the result.
  */
 void twist_rand(curve_t *what);
 
