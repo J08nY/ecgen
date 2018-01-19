@@ -2714,7 +2714,7 @@ static int compare_poly(const void *a, const void *b) {
 
 bool poly_exists(unsigned long m) { return m >= 2 && m <= 10000; }
 
-polynomial_t *poly_find(unsigned long m) {
+const polynomial_t *poly_find(unsigned long m) {
 	if (!poly_exists(m)) {
 		return NULL;
 	}

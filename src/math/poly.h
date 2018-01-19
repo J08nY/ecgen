@@ -36,7 +36,7 @@ bool poly_exists(unsigned long m);
  * @param m the degree of the polynomial searched
  * @return the polynomial_t * inside the polynomial dataset
  */
-polynomial_t *poly_find(unsigned long m);
+const polynomial_t *poly_find(unsigned long m);
 
 /**
  * @brief Turn a polynomial_t into a GEN.
