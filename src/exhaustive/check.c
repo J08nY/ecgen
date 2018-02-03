@@ -15,7 +15,8 @@ check_t *check_new(check_f one, ...) {
 	va_start(args, one);
 	check_f check;
 	while ((check = va_arg(args, check_f)) != NULL) {
-		result->checks = try_realloc(result->checks, ++result->nchecks);
+		result->checks =
+		    try_realloc(result->checks, sizeof(check_f) * (++result->nchecks));
 		result->checks[result->nchecks - 1] = check;
 	}
 	va_end(args);
