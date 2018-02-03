@@ -80,6 +80,8 @@ bool init(void) {
 int quit(int status) {
 	pari_close();
 
+	timeout_quit();
+
 	output_quit();
 	input_quit();
 

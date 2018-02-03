@@ -6,11 +6,13 @@
 #include "invalid_thread.h"
 #include "gen/curve.h"
 #include "util/random.h"
+#include "util/timeout.h"
 
 void *invalid_thread(void *arg) {
 	thread_t *thread = (thread_t *)arg;
 	pari_thread_start(thread->pari_thread);
 	random_init();
+	timeout_thread_init();
 	arg_t *invalid_argss[OFFSET_END] = {NULL};
 	exhaustive_t invalid_setup = {.generators = thread->setup->generators,
 	                              .validators = thread->setup->validators,
@@ -83,5 +85,6 @@ void *invalid_thread(void *arg) {
 	curve_free(&invalid);
 
 	pari_thread_close();
+	timeout_thread_quit();
 	return NULL;
 }

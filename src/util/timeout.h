@@ -17,7 +17,8 @@
 
 extern __thread sigjmp_buf timeout_ptr;
 extern __thread bool timeout_in;
-extern __thread timer_t timeout_timer;
+extern __thread timer_t *timeout_timer;
+extern __thread struct sigevent *sevp;
 
 /**
  * @brief Start a timer that times out after <code>seconds-</code>.
@@ -31,16 +32,16 @@ extern __thread timer_t timeout_timer;
  */
 #define timeout_start(seconds)                                \
 	if ((seconds) != 0) {                                     \
-		struct sigevent sevp;                                 \
-		sevp.sigev_notify = SIGEV_THREAD_ID;                  \
-		sevp.sigev_signo = SIGALRM;                           \
-		sevp._sigev_un._tid = (__pid_t)syscall(SYS_gettid);   \
+		sevp->sigev_notify = SIGEV_THREAD_ID;                 \
+		sevp->sigev_signo = SIGALRM;                          \
+		sevp->sigev_value.sival_int = 0;                      \
+		sevp->_sigev_un._tid = (__pid_t)syscall(SYS_gettid);  \
                                                               \
-		timer_create(CLOCK_MONOTONIC, &sevp, &timeout_timer); \
+		timer_create(CLOCK_MONOTONIC, sevp, timeout_timer);   \
 		struct itimerspec timer_time = {                      \
 		    .it_interval = {.tv_sec = 0, .tv_nsec = 0},       \
 		    .it_value = {.tv_sec = (seconds), .tv_nsec = 0}}; \
-		timer_settime(timeout_timer, 0, &timer_time, NULL);   \
+		timer_settime(*timeout_timer, 0, &timer_time, NULL);  \
 		timeout_in = true;                                    \
 	};                                                        \
 	if ((seconds) != 0 && sigsetjmp(timeout_ptr, 1) == 1)
@@ -48,18 +49,27 @@ extern __thread timer_t timeout_timer;
 /**
  * @brief Stop a timer.
  */
-#define timeout_stop()                   \
-	{                                    \
-		if (timeout_in) {                \
-			timeout_in = false;          \
-			timer_delete(timeout_timer); \
-		}                                \
+#define timeout_stop()                    \
+	{                                     \
+		if (timeout_in) {                 \
+			timeout_in = false;           \
+			timer_delete(*timeout_timer); \
+		}                                 \
 	}
+
+void timeout_thread_init();
+
+void timeout_thread_quit();
 
 /**
  * @brief Initialize the timeout system.
  * @return whether the initalization was successful
  */
 bool timeout_init();
+
+/**
+ * @brief Deinitialize the timeout system.
+ */
+void timeout_quit();
 
 #endif  // ECGEN_TIMEOUT_H

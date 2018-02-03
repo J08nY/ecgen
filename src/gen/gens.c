@@ -12,7 +12,7 @@ static int gens_put(curve_t *curve, GEN generators, long len) {
 
 	for (long i = 1; i <= len; ++i) {
 		point_t *p = point_new();
-		p->point = gel(generators, i);
+		p->point = gcopy(gel(generators, i));
 		p->order = ellorder(curve->curve, p->point, NULL);
 		p->cofactor = divii(curve->order, p->order);
 		curve->generators[i - 1] = p;

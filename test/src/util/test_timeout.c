@@ -12,7 +12,12 @@ void timeout_setup(void) {
 	timeout_init();
 }
 
-TestSuite(timeout, .init = timeout_setup, .fini = default_teardown);
+void timeout_teardown(void) {
+	default_teardown();
+	timeout_quit();
+}
+
+TestSuite(timeout, .init = timeout_setup, .fini = timeout_teardown);
 
 Test(timeout, test_timeout_stop) {
 	bool done = false;
