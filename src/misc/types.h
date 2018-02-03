@@ -107,6 +107,8 @@ typedef enum {
 	OFFSET_END
 } offset_e;
 
+extern const char *offset_s[OFFSET_END];
+
 /**
  * @brief
  */

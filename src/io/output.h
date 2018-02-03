@@ -15,34 +15,53 @@
 #ifdef DEBUG
 
 #include <inttypes.h>
+#include <sys/syscall.h>
+#include <sys/types.h>
 #include <time.h>
 
-#define _debug_print(prefix)             \
-	fprintf(verbose, prefix);            \
-	struct timespec ts;                  \
-	clock_gettime(CLOCK_MONOTONIC, &ts); \
-	fprintf(verbose, "%" PRIdMAX ".%.9ld ", ts.tv_sec, ts.tv_nsec);
+#define _debug_print(prefix)                                               \
+	fprintf(verbose, prefix);                                              \
+	struct timespec ts;                                                    \
+	clock_gettime(CLOCK_MONOTONIC, &ts);                                   \
+	fprintf(verbose, "%d %" PRIdMAX ".%.9ld - ", (int)syscall(SYS_gettid), \
+	        ts.tv_sec, ts.tv_nsec);
 
 #define debug(...) pari_fprintf(verbose, __VA_ARGS__)
 #define debug_log(...)          \
 	do {                        \
+		flockfile(verbose);     \
 		_debug_print(" -  ");   \
 		debug(__VA_ARGS__);     \
 		fprintf(verbose, "\n"); \
+		funlockfile(verbose);   \
 	} while (0)
 
 #define debug_log_start(...)    \
 	do {                        \
+		flockfile(verbose);     \
 		_debug_print("[ ] ");   \
 		debug(__VA_ARGS__);     \
 		fprintf(verbose, "\n"); \
+		funlockfile(verbose);   \
 	} while (0)
 
 #define debug_log_end(...)      \
 	do {                        \
+		flockfile(verbose);     \
 		_debug_print("[*] ");   \
 		debug(__VA_ARGS__);     \
 		fprintf(verbose, "\n"); \
+		funlockfile(verbose);   \
+	} while (0)
+
+#define debug_log_state(state, ...)                   \
+	do {                                              \
+		flockfile(verbose);                           \
+		_debug_print(" -  ");                         \
+		fprintf(verbose, "%s - ", offset_s[(state)]); \
+		debug(__VA_ARGS__);                           \
+		fprintf(verbose, "\n");                       \
+		funlockfile(verbose);                         \
 	} while (0)
 
 #else
@@ -50,6 +69,7 @@
 #define debug_log(...)
 #define debug_log_start(...)
 #define debug_log_end(...)
+#define debug_log_state(...)
 #endif  // DEBUG
 
 #define verbose_log(...) \

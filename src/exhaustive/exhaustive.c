@@ -309,6 +309,7 @@ int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
 			timeout = true;
 		}
 		else {
+			debug_log_state(state, "");
 			diff = setup->generators[state](curve, gen_arg, (offset_e)state);
 		}
 		timeout_stop();
