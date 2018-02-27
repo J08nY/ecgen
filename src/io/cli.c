@@ -72,7 +72,6 @@ struct argp_option cli_options[] = {
 		{"count",         OPT_COUNT,         "COUNT",  0,                 "Generate multiple curves.",                                                             3},
 
 		{0,               0,                 0,        0,                 "Input/Output options:",                                                                 4},
-		{"format",        OPT_FORMAT,        "FORMAT", 0,                 "Format to output in. One of {csv, json}, default is json.",                             4},
 		{"input",         OPT_INPUT,         "FILE",   0,                 "Input from file.",                                                                      4},
 		{"output",        OPT_OUTPUT,        "FILE",   0,                 "Output into file. Overwrites any existing file!",                                       4},
 		{"append",        OPT_APPEND,        0,        0,                 "Append to output file (don't overwrite).",                                              4},
@@ -198,6 +197,7 @@ static void cli_end(struct argp_state *state) {
 	if (!cfg->points.type) {
 		cfg->points.type = POINTS_PRIME;
 	}
+	cfg->format = FORMAT_JSON;
 }
 
 error_t cli_parse(int key, char *arg, struct argp_state *state) {
@@ -335,17 +335,6 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			break;
 		}
 		/* IO options */
-		case OPT_FORMAT:
-			if (!strcmp(arg, "csv")) {
-				cfg->format = FORMAT_CSV;
-			} else if (!strcmp(arg, "json")) {
-				cfg->format = FORMAT_JSON;
-			} else {
-				argp_failure(state, 1, 0,
-				             "Invalid format specified. One of [csv, json] "
-				             "is valid.");
-			}
-			break;
 		case OPT_INPUT:
 			cfg->input = arg;
 			break;

@@ -169,7 +169,7 @@ GENERATOR(brainpool_gen_equation) {
 			avma = btop;
 			continue;
 		}
-		//seed->brainpool.seed_a = bits_copy(seed->seed);
+		// seed->brainpool.seed_a = bits_copy(seed->seed);
 
 		brainpool_update_seed(seed->seed);
 
@@ -179,11 +179,11 @@ GENERATOR(brainpool_gen_equation) {
 		bits_free(&b_bits);
 		if (!Fp_issquare(b, curve->field)) {
 			brainpool_update_seed(seed->seed);
-			//bits_free(&seed->brainpool.seed_a);
+			// bits_free(&seed->brainpool.seed_a);
 			avma = btop;
 			continue;
 		}
-		//seed->brainpool.seed_b = bits_copy(seed->seed);
+		// seed->brainpool.seed_b = bits_copy(seed->seed);
 
 		GEN mod_a = gmodulo(a, curve->field);
 		GEN mod_b = gmodulo(b, curve->field);
@@ -191,8 +191,8 @@ GENERATOR(brainpool_gen_equation) {
 		if (gequal0(gmulsg(-16, gadd(gmulsg(4, gpowgs(mod_a, 3)),
 		                             gmulsg(27, gsqr(mod_b)))))) {
 			brainpool_update_seed(seed->seed);
-			//bits_free(&seed->brainpool.seed_a);
-			//bits_free(&seed->brainpool.seed_b);
+			// bits_free(&seed->brainpool.seed_a);
+			// bits_free(&seed->brainpool.seed_b);
 			avma = btop;
 			continue;
 		}

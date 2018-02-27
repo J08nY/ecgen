@@ -78,31 +78,6 @@
 #define output_log(...) pari_fprintf(out, __VA_ARGS__)
 
 /**
- * @brief Output curve to a malloc'ed string in CSV format.
- * @param curve
- * @return
- */
-char *output_scsv(curve_t *curve);
-
-/**
- * @brief Output CSV separator(newline) to a malloc'ed string in CSV format.
- * @return
- */
-char *output_scsv_separator();
-
-/**
- * @brief Output CSV output header to a malloc'ed string in CSV format.
- * @return
- */
-char *output_scsv_begin();
-
-/**
- * @brief Output CSV output footer to a malloc'ed string in CSV format.
- * @return
- */
-char *output_scsv_end();
-
-/**
  * @brief Output curve to a malloc'ed string in JSON format.
  * @param curve
  * @return
