@@ -46,17 +46,17 @@ Test(order, test_order_gen_sea) {
 	cr_assert(gequal(curve.order, stoi(26)), );
 }
 
-Test(order, test_order_gen_smallfact) {
+Test(order, test_order_gen_cofactor) {
 	curve_t curve = {.field = stoi(19),
 	                 .a = mkintmodu(3, 19),
 	                 .b = mkintmodu(5, 19),
 	                 .curve = ellinit(mkvec2(stoi(3), stoi(5)), stoi(19), 0)};
 	cfg->bits = 16;
 
-	pari_ulong smallfact = 5;
+	pari_ulong smallfact = 2;
 	arg_t arg = {.args = &smallfact, .nargs = 1};
 
-	int ret = order_gen_smallfact(&curve, &arg, OFFSET_ORDER);
+	int ret = order_gen_cofactor(&curve, &arg, OFFSET_ORDER);
 	cr_assert_eq(ret, 1, );
 	cr_assert(gequal(curve.order, stoi(26)), );
 }

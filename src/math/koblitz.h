@@ -14,10 +14,27 @@ typedef struct {
 	const char *hex_order;
 } koblitz_t;
 
+/**
+ * @brief
+ * @param curve
+ * @return
+ */
 bool koblitz_is_curve(const curve_t *curve);
 
+/**
+ * @brief
+ * @param m
+ * @param a
+ * @return
+ */
 const koblitz_t *koblitz_find(unsigned int m, unsigned int a);
 
-GEN koblitz_get_order(unsigned long m, unsigned int a);
+/**
+ * @brief
+ * @param m
+ * @param a
+ * @return
+ */
+GEN koblitz_get_order(unsigned int m, unsigned int a);
 
 #endif  // ECGEN_KOBLITZ_H

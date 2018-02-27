@@ -63,7 +63,7 @@ const koblitz_t *koblitz_find(unsigned int m, unsigned int a) {
 	                            sizeof(koblitz_t), &compare_koblitz);
 }
 
-GEN koblitz_get_order(unsigned long m, unsigned int a) {
+GEN koblitz_get_order(unsigned int m, unsigned int a) {
 	const koblitz_t *found = koblitz_find(m, a);
 	if (found) {
 		return strtoi(found->hex_order);
