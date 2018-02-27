@@ -1,6 +1,6 @@
 # Output
 
-There are two output formats currently supported in ecgen, JSON and CSV. These are enabled by using the `-tjson / --format=json`, `-tcsv / --format=csv` options, respectively.
+There are only output format currently supported in ecgen is JSON.
 
 ## JSON
 
@@ -102,45 +102,3 @@ Self-explanatory format. The curve dictionaries are enclosed in an array as you 
 	        }
 	    ]
 	}]
-
-
-## CSV
-
-This format is useful mostly for input and is not uniquely parseable for most curves, thus is deprecated. It is uniquely parseable for the set of common cryptographic domain parameters.
-
-#### Notation
-
- - `p` - prime F_p
- - `m` - binary field exponent F_2^m
- - `e1` - largest exponent of the field polynomial
- - `e2` - middle exponenet of the field polynomial, or `0000` if field poly is a trinomial
- - `e3` - smallest exponent (except zero) of the field polynomial, or `0000` if field poly is a trinomial
- - `a` - a parameter in short Weierstrass curve equation
- - `b` - b parameter in short Weierstrass curve equation
- - `gx` - x coordinate of the curve base-point g
- - `gy` - y coordinate of the curve base-point g
- - `n` - the base-point order
- - `h` - the base-point cofactor
- - `px` - the x coordinate of the point
- - `py` - the y coordinate of the point
- - `op` - the order of the point
-
-#### Prime field
-
-    p, a, b, gx, gy, n, h
-
-More generaly:
-
-    p, a, b, gx, gy(, gx2, gy2)?, n, (px, py, op)*, h
-    
-#### Binary field
-
-    m, e1, e2, e3, a, b, gx, gy, n, h
-    
-More generaly:
-
-    m, e1, e2, e3, a, b, gx, gy(, gx2, gy2)?, n, (px, py, op)*, h
-
-#### Example:
-
-    0x9bbd697be66af329,0x49ec7aa186e501f7,0x88e93b218fff3b55,0x9bbd697c54a8e780,0x206c5696b67702bb,0x328f7cb39358ae23,0x26ef5a5f152a39e0,0x4,0x1af56d479450c41b,0x01902f3d0c1ae199,0x9bbd697c54a8e78,0x10,0x21fdf0cd456005f6,0x0000000000000000,0x2,0x682f77abb827b2fa,0x8b7adcd4b4bbdb7f,0x685,0x94bc802fc965c386,0x212c07693dbabc19,0x2fc6c2a43943

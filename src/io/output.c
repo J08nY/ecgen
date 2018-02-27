@@ -19,105 +19,6 @@ char *output_malloc(const char *what) {
 	return s;
 }
 
-char *output_scsv(curve_t *curve) {
-	pari_sp ltop = avma;
-	char *params[OFFSET_END] = {NULL};
-
-	switch (cfg->field) {
-		case FIELD_PRIME:
-			params[OFFSET_FIELD] =
-			    pari_sprintf("%P0#*x", cfg->hex_digits, curve->field);
-			break;
-		case FIELD_BINARY: {
-			GEN field = field_params(curve->field);
-			params[OFFSET_FIELD] =
-			    pari_sprintf("%P#x,%P#x,%P#x,%P#x", gel(field, 1),
-			                 gel(field, 2), gel(field, 3), gel(field, 4));
-			break;
-		}
-	}
-
-	if (curve->a)
-		params[OFFSET_A] =
-		    pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->a));
-	if (curve->b)
-		params[OFFSET_B] =
-		    pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->b));
-
-	if (curve->generators) {
-		char *gens[curve->ngens];
-		size_t len = 0;
-		for (size_t i = 0; i < curve->ngens; ++i) {
-			point_t *generator = curve->generators[i];
-			GEN x = field_elementi(gel(generator->point, 1));
-			GEN y = field_elementi(gel(generator->point, 2));
-			gens[i] = pari_sprintf("%P0#*x,%P0#*x,%P#x,%P#x", cfg->hex_digits,
-			                       x, cfg->hex_digits, y, generator->order,
-			                       generator->cofactor);
-			len += strlen(gens[i]);
-		}
-		size_t lenn = sizeof(char) * (len + curve->ngens);
-		params[OFFSET_GENERATORS] = pari_calloc(lenn);
-		for (size_t i = 0; i < curve->ngens; ++i) {
-			if (i > 0) strncat(params[OFFSET_GENERATORS], ",", lenn - 1);
-			strncat(params[OFFSET_GENERATORS], gens[i], lenn - 1);
-			pari_free(gens[i]);
-		}
-	}
-
-	if (curve->order)
-		params[OFFSET_ORDER] =
-		    pari_sprintf("%P0#*x", cfg->hex_digits, curve->order);
-
-	if (curve->points) {
-		char *points[curve->npoints];
-		size_t len = 0;
-		for (size_t i = 0; i < curve->npoints; ++i) {
-			point_t *point = curve->points[i];
-			GEN x = field_elementi(gel(point->point, 1));
-			GEN y = field_elementi(gel(point->point, 2));
-			points[i] = pari_sprintf("%P0#*x,%P0#*x,%P#x", cfg->hex_digits, x,
-			                         cfg->hex_digits, y, point->order);
-			len += strlen(points[i]);
-		}
-		size_t lenn = sizeof(char) * (len + curve->npoints);
-		params[OFFSET_POINTS] = pari_calloc(lenn);
-		for (size_t i = 0; i < curve->npoints; ++i) {
-			if (i > 0) strncat(params[OFFSET_POINTS], ",", lenn - 1);
-			strncat(params[OFFSET_POINTS], points[i], lenn - 1);
-			pari_free(points[i]);
-		}
-	}
-
-	size_t len = 0;
-	size_t count = 0;
-	for (int i = OFFSET_FIELD; i < OFFSET_END; ++i) {
-		if (params[i]) {
-			len += strlen(params[i]);
-			++count;
-		}
-	}
-	size_t lenn = sizeof(char) * (len + count);
-	char *result = try_calloc(lenn);
-
-	for (int i = OFFSET_FIELD; i < OFFSET_END; ++i) {
-		if (params[i]) {
-			if (i > OFFSET_FIELD) strncat(result, ",", lenn - 1);
-			strncat(result, params[i], lenn - 1);
-			pari_free(params[i]);
-		}
-	}
-
-	avma = ltop;
-	return result;
-}
-
-char *output_scsv_separator() { return output_malloc("\n"); }
-
-char *output_scsv_begin() { return NULL; }
-
-char *output_scsv_end() { return output_malloc("\n"); }
-
 static JSON_Value *output_jjson(curve_t *curve) {
 	pari_sp ltop = avma;
 	// root object/value is curve
@@ -333,22 +234,22 @@ bool output_init() {
 			output_s_end = &output_sjson_end;
 			break;
 		}
-		case FORMAT_CSV: {
-			output_s = &output_scsv;
-			output_s_separator = &output_scsv_separator;
-			output_s_begin = &output_scsv_begin;
-			output_s_end = &output_scsv_end;
-			break;
-		}
 	}
 	return true;
 }
 
+static bool output_is_std(FILE *stream) {
+	return (stream == stdout || stream == stderr || stream == stdin);
+}
+
 void output_quit(void) {
-	if (out != NULL && out != stdout) {
+	if (!output_is_std(out)) {
 		fclose(out);
 	}
-	if (err != NULL && err != stdout) {
+	if (!output_is_std(err)) {
 		fclose(err);
+	}
+	if (!output_is_std(verbose)) {
+		fclose(verbose);  // My name is fClose Verbose!
 	}
 }

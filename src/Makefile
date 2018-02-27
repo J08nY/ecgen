@@ -27,23 +27,16 @@ LIBS = -lrt -lpari -lpthread -lparson -lsha1
 ECGEN_SRC = ecgen.c $(wildcard */*.c)
 ECGEN_OBJ = $(patsubst %.c,%.o, $(ECGEN_SRC))
 
-ECONVERT_SRC = econvert.c
-ECONVERT_OBJ = $(patsubst %.c,%.o, $(ECONVERT_SRC))
-
 SRC = $(wildcard *.c) $(wildcard */*.c)
 HDR = $(wildcard */*.h)
 
 ####
 
-all: ecgen econvert
+all: ecgen
 
 ecgen: ecgen.o $(ECGEN_OBJ)
 	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) $(LIBS)
 	mv ecgen ..
-
-econvert: econvert.o $(ECONVERT_OBJ)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) $(LIBS)
-	mv econvert ..
 
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
@@ -52,7 +45,6 @@ econvert: econvert.o $(ECONVERT_OBJ)
 
 clean-all: clean clean-cov
 	rm -f ../ecgen
-	rm -f ../econvert
 
 clean:
 	find . -type f -name '*.o' -exec rm {} +

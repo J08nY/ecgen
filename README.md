@@ -32,7 +32,6 @@ Tool for generating Elliptic curve domain parameters.
 
 #### IO options
 
-- `-t / --format=FORMAT`	Format to output in. One of [csv,json], default is json.
  - `-f / --input=FILE`		Input from `FILE`.
  - `-o / --output=FILE`		Output into `FILE`. Overwrites any existing file!
  - `-a / --append`			Append to output file (don't overwrite).
@@ -52,9 +51,9 @@ Generate a prime field, uniquely generated, prime order, 192-bit curve, don't as
 
     > ecgen --fp -u -p -r 192
     
-Generate 5 random, binary field, 163-bit koblitz curves:
+Generate 5 random, binary field, 163-bit curves:
 
-    > ecgen --f2m -r -K -c5 163
+    > ecgen --f2m -r -c5 163
     
 Generate invalid curves to a file, for a given prime field 192-bit curve:
 
@@ -115,7 +114,7 @@ Three different EC curve parameters generation methods are implemented.
     - given input
  - Can generate curves repeatedly until one satisfies requested properties:
     - `-p / --prime` generates curves until a prime order curve is found.
-    - `-K / --koblitz` generates a curve with fixed *A = 0* parameter.
+    - `-K / --koblitz` generates a Koblitz curve.
     - `-u / --unique` generates a uniquely generated curve (with one generator/cyclic group).
     - etc..
 

@@ -5,9 +5,9 @@
 #
 ####
 
-test: ecgen econvert
+test: ecgen
 
-unittest: unit ecgen econvert
+unittest: unit ecgen
 
 unit:
 	cd lib/criterion && mkdir -p build && cd build && cmake ..  >/dev/null && cmake --build . >/dev/null
@@ -15,9 +15,6 @@ unit:
 
 ecgen:
 	./ecgen.sh
-
-econvert:
-	./econvert.sh
 
 clean:
 	+$(MAKE) -C src clean

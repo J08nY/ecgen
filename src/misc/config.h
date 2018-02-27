@@ -12,7 +12,7 @@
 #include <stddef.h>
 
 enum field_e { FIELD_PRIME = 1 << 0, FIELD_BINARY = 1 << 1 };
-enum format_e { FORMAT_JSON, FORMAT_CSV };
+enum format_e { FORMAT_JSON };
 enum points_e {
 	POINTS_NONE = 0,
 	POINTS_PRIME,

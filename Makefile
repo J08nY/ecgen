@@ -38,7 +38,6 @@ help:
 	@echo "Available targets:"
 	@echo " - all : builds all"
 	@echo " - ecgen : builds the main binary"
-	@echo " - econvert : build the format conversion binary"
 	@echo " - docs : generate doxygen docs"
 	@echo " - test : test the main binary"
 	@echo " - unittest : "
