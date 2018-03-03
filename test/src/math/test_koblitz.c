@@ -11,15 +11,12 @@ TestSuite(koblitz, .init = default_setup, .fini = default_teardown);
 
 Test(koblitz, test_koblitz_is_curve) {
 	curve_t curve = {
-			.field = stoi(23),
-			.a = mkintmodu(3, 23),
-			.b = mkintmodu(2, 23)
-	};
+	    .field = stoi(23), .a = mkintmodu(3, 23), .b = mkintmodu(2, 23)};
 
-	cr_assert_not(koblitz_is_curve(&curve),);
+	cr_assert_not(koblitz_is_curve(&curve), );
 	curve.a = mkintmodu(1, 23);
 	curve.b = mkintmodu(1, 23);
-	cr_assert(koblitz_is_curve(&curve),);
+	cr_assert(koblitz_is_curve(&curve), );
 }
 
 Test(koblitz, test_koblitz_find) {

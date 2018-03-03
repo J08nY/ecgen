@@ -110,7 +110,7 @@ GENERATOR(point_gen_random) {
 GENERATOR(points_gen_random) {
 	HAS_ARG(args);
 
-	size_t npoints = *(size_t *) args->args;
+	size_t npoints = *(size_t *)args->args;
 	size_t npoints_per_gen[curve->ngens];
 
 	for (size_t i = 0; i < curve->ngens; ++i) {
@@ -140,7 +140,7 @@ GENERATOR(points_gen_random) {
 }
 
 static point_t **points_from_orders(GEN curve, point_t *generator, GEN orders) {
-	size_t norders = (size_t) glength(orders);
+	size_t norders = (size_t)glength(orders);
 	point_t **result = points_new(norders);
 
 	for (long i = 0; i < norders; ++i) {
@@ -156,8 +156,7 @@ static point_t **points_from_orders(GEN curve, point_t *generator, GEN orders) {
 		}
 
 		if (point) {
-			debug_log("VERIFY %Ps %Ps", num,
-					  ellorder(curve, point, NULL));
+			debug_log("VERIFY %Ps %Ps", num, ellorder(curve, point, NULL));
 			result[i] = point_new();
 			gerepileall(ftop, 1, &point);
 			result[i]->point = point;
@@ -171,7 +170,7 @@ static point_t **points_from_orders(GEN curve, point_t *generator, GEN orders) {
 GENERATOR(points_gen_trial) {
 	HAS_ARG(args);
 
-	pari_ulong *primes = (pari_ulong *) args->args;
+	pari_ulong *primes = (pari_ulong *)args->args;
 	size_t nprimes = args->nargs;
 
 	GEN orders = gtovec0(gen_0, nprimes);
@@ -205,8 +204,9 @@ GENERATOR(points_gen_trial) {
 	for (size_t i = 0; i < curve->ngens; ++i) {
 		subgroup_t *subgroup = curve->generators[i];
 		if (orders_per_gen[i] != gen_0) {
-			subgroup->npoints = (size_t) glength(orders_per_gen[i]);
-			subgroup->points = points_from_orders(curve->curve, subgroup->generator, orders_per_gen[i]);
+			subgroup->npoints = (size_t)glength(orders_per_gen[i]);
+			subgroup->points = points_from_orders(
+			    curve->curve, subgroup->generator, orders_per_gen[i]);
 		}
 	}
 
@@ -216,8 +216,9 @@ GENERATOR(points_gen_trial) {
 GENERATOR(points_gen_prime) {
 	for (size_t i = 0; i < curve->ngens; ++i) {
 		GEN primes = subgroups_prime(curve->generators[i]->generator->order);
-		curve->generators[i]->npoints = (size_t) glength(primes);
-		curve->generators[i]->points = points_from_orders(curve->curve, curve->generators[i]->generator, primes);
+		curve->generators[i]->npoints = (size_t)glength(primes);
+		curve->generators[i]->points = points_from_orders(
+		    curve->curve, curve->generators[i]->generator, primes);
 	}
 
 	return 1;
@@ -226,8 +227,9 @@ GENERATOR(points_gen_prime) {
 GENERATOR(points_gen_allgroups) {
 	for (size_t i = 0; i < curve->ngens; ++i) {
 		GEN primes = subgroups_all(curve->generators[i]->generator->order);
-		curve->generators[i]->npoints = (size_t) glength(primes);
-		curve->generators[i]->points = points_from_orders(curve->curve, curve->generators[i]->generator, primes);
+		curve->generators[i]->npoints = (size_t)glength(primes);
+		curve->generators[i]->points = points_from_orders(
+		    curve->curve, curve->generators[i]->generator, primes);
 	}
 
 	return 1;
@@ -237,8 +239,9 @@ GENERATOR(points_gen_nonprime) {
 	for (size_t i = 0; i < curve->ngens; ++i) {
 		GEN primes = subgroups_nonprime(curve->generators[i]->generator->order);
 		if (primes) {
-			curve->generators[i]->npoints = (size_t) glength(primes);
-			curve->generators[i]->points = points_from_orders(curve->curve, curve->generators[i]->generator, primes);
+			curve->generators[i]->npoints = (size_t)glength(primes);
+			curve->generators[i]->points = points_from_orders(
+			    curve->curve, curve->generators[i]->generator, primes);
 		}
 	}
 
@@ -248,9 +251,9 @@ GENERATOR(points_gen_nonprime) {
 UNROLL(points_unroll) {
 	if (curve->generators) {
 		for (size_t i = 0; i < curve->ngens; ++i) {
-			points_free_deep(&curve->generators[i]->points, curve->generators[i]->npoints);
+			points_free_deep(&curve->generators[i]->points,
+			                 curve->generators[i]->npoints);
 		}
-
 	}
 	return -1;
 }

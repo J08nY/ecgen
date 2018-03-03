@@ -4,8 +4,8 @@
  */
 #include "str.h"
 #include <ctype.h>
-#include <string.h>
 #include <stdarg.h>
+#include <string.h>
 #include "util/memory.h"
 
 const char *str_is_hex(const char *hex_str) {
@@ -28,8 +28,7 @@ char *str_join(char *separator, char **strings, size_t len) {
 	for (size_t i = 0; i < len; ++i) {
 		if (strings[i]) total += strlen(strings[i]);
 	}
-	if (separator)
-		total += (len - 1) * strlen(separator);
+	if (separator) total += (len - 1) * strlen(separator);
 	char *result = try_calloc(total);
 	for (size_t i = 0; i < len; ++i) {
 		if (strings[i]) {
@@ -66,4 +65,3 @@ char *str_joinv(char *separator, ...) {
 char *str_concat(char **strings, size_t len) {
 	return str_join(NULL, strings, len);
 }
-

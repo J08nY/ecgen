@@ -2,17 +2,14 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017-2018 J08nY
  */
-#include "gen/point.h"
 #include "subgroup.h"
+#include "gen/point.h"
 #include "util/memory.h"
 
-subgroup_t *subgroup_new(void) {
-	return try_calloc(sizeof(subgroup_t));
-}
+subgroup_t *subgroup_new(void) { return try_calloc(sizeof(subgroup_t)); }
 
 subgroup_t *subgroup_copy(const subgroup_t *src, subgroup_t *dst) {
-	if (src->generator)
-		dst->generator = point_new_copy(src->generator);
+	if (src->generator) dst->generator = point_new_copy(src->generator);
 	if (src->points) {
 		dst->points = points_new_copy(src->points, src->npoints);
 		dst->npoints = src->npoints;
@@ -26,8 +23,7 @@ subgroup_t *subgroup_new_copy(const subgroup_t *src) {
 }
 
 subgroup_t *subgroup_clone(const subgroup_t *src, subgroup_t *dst) {
-	if (src->generator)
-		dst->generator = point_new_clone(src->generator);
+	if (src->generator) dst->generator = point_new_clone(src->generator);
 	if (src->points) {
 		dst->points = points_new_clone(src->points, src->npoints);
 		dst->npoints = src->npoints;
@@ -61,7 +57,8 @@ subgroup_t **subgroups_new(size_t num) {
 	return try_calloc(num * sizeof(subgroup_t *));
 }
 
-subgroup_t **subgroups_copy(subgroup_t **const src, subgroup_t **dest, size_t num) {
+subgroup_t **subgroups_copy(subgroup_t **const src, subgroup_t **dest,
+                            size_t num) {
 	for (size_t i = 0; i < num; ++i) {
 		dest[i] = subgroup_new_copy(src[i]);
 	}
@@ -73,7 +70,8 @@ subgroup_t **subgroups_new_copy(subgroup_t **const src, size_t num) {
 	return subgroups_copy(src, result, num);
 }
 
-subgroup_t **subgroups_clone(subgroup_t **const src, subgroup_t **dest, size_t num) {
+subgroup_t **subgroups_clone(subgroup_t **const src, subgroup_t **dest,
+                             size_t num) {
 	for (size_t i = 0; i < num; ++i) {
 		dest[i] = subgroup_new_clone(src[i]);
 	}
@@ -146,12 +144,12 @@ static GEN subgroups_2n_factors(GEN factors, size_t min_bits) {
 	GEN groups = gtovec0(gen_0, itos(amount) - (min_bits * nprimes) - 1);
 
 	size_t i = 0;
-	for (size_t count = 1; count < (size_t) (1) << nprimes; ++count) {
+	for (size_t count = 1; count < (size_t)(1) << nprimes; ++count) {
 		pari_sp btop = avma;
 		GEN result = gen_1;
 		size_t bits = 0;
 		for (long bit = 0; bit < nprimes; ++bit) {
-			size_t mask = (size_t) (1) << bit;
+			size_t mask = (size_t)(1) << bit;
 			if (count & mask) {
 				result = mulii(result, gel(factors, bit + 1));
 				bits++;
@@ -196,25 +194,25 @@ GEN subgroups_all(GEN order) {
  */
 /*
 static GEN subgroups_2n_gens(const curve_t *curve, size_t min_bits) {
-	GEN one_factors = subgroups_divisors(curve->generators[0]->order);
-	GEN one = subgroups_2n_factors(one_factors, min_bits);
-	GEN other_factors = subgroups_divisors(curve->generators[1]->order);
-	GEN other = subgroups_2n_factors(other_factors, min_bits);
-	if (!one) {
-		return other;
-	}
-	if (!other) {
-		return one;
-	}
-	GEN result = gtovec0(gen_0, glength(one) + glength(other));
-	for (long i = 1; i <= glength(result); ++i) {
-		if (i <= glength(one)) {
-			gel(result, i) = gel(one, i);
-		} else {
-			gel(result, i) = gel(other, i - glength(one));
-		}
-	}
-	return result;
+    GEN one_factors = subgroups_divisors(curve->generators[0]->order);
+    GEN one = subgroups_2n_factors(one_factors, min_bits);
+    GEN other_factors = subgroups_divisors(curve->generators[1]->order);
+    GEN other = subgroups_2n_factors(other_factors, min_bits);
+    if (!one) {
+        return other;
+    }
+    if (!other) {
+        return one;
+    }
+    GEN result = gtovec0(gen_0, glength(one) + glength(other));
+    for (long i = 1; i <= glength(result); ++i) {
+        if (i <= glength(one)) {
+            gel(result, i) = gel(one, i);
+        } else {
+            gel(result, i) = gel(other, i - glength(one));
+        }
+    }
+    return result;
 }
  */
 
@@ -227,8 +225,8 @@ static GEN subgroups_2n_gens(const curve_t *curve, size_t min_bits) {
 /*
 static GEN subgroups_2n(const curve_t *curve, size_t min_bits) {
    if (curve->ngens == 1) {
-	   GEN factors = subgroups_divisors(curve->order);
-	   return subgroups_2n_factors(factors, min_bits);
+       GEN factors = subgroups_divisors(curve->order);
+       return subgroups_2n_factors(factors, min_bits);
    }
 
    return subgroups_2n_gens(curve, min_bits);

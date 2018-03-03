@@ -3,10 +3,9 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "gens.h"
-#include "math/subgroup.h"
 #include "exhaustive/arg.h"
+#include "math/subgroup.h"
 #include "point.h"
-
 
 static subgroup_t *gens_point(GEN point, const curve_t *curve) {
 	subgroup_t *sub = subgroup_new();
@@ -19,8 +18,8 @@ static subgroup_t *gens_point(GEN point, const curve_t *curve) {
 }
 
 static int gens_put(curve_t *curve, GEN generators, long len) {
-	curve->generators = subgroups_new((size_t) len);
-	curve->ngens = (size_t) len;
+	curve->generators = subgroups_new((size_t)len);
+	curve->ngens = (size_t)len;
 
 	for (long i = 1; i <= len; ++i) {
 		curve->generators[i - 1] = gens_point(gel(generators, i), curve);
@@ -47,7 +46,7 @@ GENERATOR(gens_gen_one) {
 
 GENERATOR(gens_gen_cofactor) {
 	HAS_ARG(args);
-	pari_ulong cofactor = *(pari_ulong *) args->args;
+	pari_ulong cofactor = *(pari_ulong *)args->args;
 	pari_sp ltop = avma;
 	GEN order = diviuexact(curve->order, cofactor);
 
@@ -76,7 +75,7 @@ GENERATOR(gens_gen_cofactor) {
 	}
 
 	if (p) {
-		curve->ngens = (size_t) (len + 1);
+		curve->ngens = (size_t)(len + 1);
 		curve->generators = subgroups_new(curve->ngens);
 		for (long i = 1; i <= len; ++i) {
 			curve->generators[i] = gens_point(gel(generators, i), curve);
@@ -114,8 +113,8 @@ CHECK(gens_check_embedding) {
 	GEN mind = strtoi(min_degree);
 
 	for (size_t i = 0; i < curve->ngens; ++i) {
-		GEN power =
-				gens_get_embedding(curve->field, curve->generators[i]->generator->order);
+		GEN power = gens_get_embedding(curve->field,
+		                               curve->generators[i]->generator->order);
 
 		if (mpcmp(power, mind) <= 0) {
 			avma = ltop;

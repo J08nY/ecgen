@@ -3,8 +3,8 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "twists.h"
-#include "math/subgroup.h"
 #include "gen/seed.h"
+#include "math/subgroup.h"
 
 void twist_rand_to(curve_t *to, const curve_t *of) {
 	to->field = gcopy(of->field);

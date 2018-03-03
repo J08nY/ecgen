@@ -2,8 +2,8 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017-2018 J08nY
  */
-#include <misc/types.h>
 #include "hex.h"
+#include <misc/types.h>
 #include "exhaustive/arg.h"
 #include "field.h"
 #include "util/bits.h"
@@ -46,7 +46,7 @@ CHECK(hex_check_param) {
 
 	char *search_hex = try_strdup(args->args);
 	char *p = search_hex;
-	for (; *p; ++p) *p = (char) tolower(*p);
+	for (; *p; ++p) *p = (char)tolower(*p);
 
 	char *params[OFFSET_END] = {NULL};
 	bool pari[OFFSET_END] = {false};
@@ -60,7 +60,7 @@ CHECK(hex_check_param) {
 	if (state >= OFFSET_FIELD) {
 		if (cfg->field == FIELD_PRIME) {
 			params[OFFSET_FIELD] =
-					pari_sprintf("%P0#*x", cfg->hex_digits, curve->field);
+			    pari_sprintf("%P0#*x", cfg->hex_digits, curve->field);
 			pari[OFFSET_FIELD] = true;
 		} else if (cfg->field == FIELD_BINARY) {
 		}
@@ -68,19 +68,19 @@ CHECK(hex_check_param) {
 
 	if (state >= OFFSET_A) {
 		params[OFFSET_A] =
-				pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->a));
+		    pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->a));
 		pari[OFFSET_A] = true;
 	}
 
 	if (state >= OFFSET_B) {
 		params[OFFSET_B] =
-				pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->b));
+		    pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->b));
 		pari[OFFSET_B] = true;
 	}
 
 	if (state >= OFFSET_ORDER) {
 		params[OFFSET_ORDER] =
-				pari_sprintf("%P0#*x", cfg->hex_digits, curve->order);
+		    pari_sprintf("%P0#*x", cfg->hex_digits, curve->order);
 		pari[OFFSET_ORDER] = true;
 	}
 
@@ -98,7 +98,8 @@ CHECK(hex_check_param) {
 	if (state >= OFFSET_POINTS) {
 		char *subgroups[curve->ngens];
 		for (size_t i = 0; i < curve->ngens; ++i) {
-			subgroups[i] = hex_points(curve->generators[i]->points, curve->generators[i]->npoints);
+			subgroups[i] = hex_points(curve->generators[i]->points,
+			                          curve->generators[i]->npoints);
 		}
 		params[OFFSET_POINTS] = str_join(",", subgroups, curve->ngens);
 		for (size_t i = 0; i < curve->ngens; ++i) {

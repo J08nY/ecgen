@@ -3,8 +3,8 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "curve.h"
-#include "math/twists.h"
 #include "math/subgroup.h"
+#include "math/twists.h"
 #include "seed.h"
 #include "util/memory.h"
 

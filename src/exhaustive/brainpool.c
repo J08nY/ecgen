@@ -3,8 +3,8 @@
  * Copyright (C) 2017-2018 J08nY
  */
 
-#include <misc/types.h>
 #include "brainpool.h"
+#include <misc/types.h>
 #include "gen/gens.h"
 #include "gen/point.h"
 #include "gen/seed.h"

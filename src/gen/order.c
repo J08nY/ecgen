@@ -52,11 +52,11 @@ GENERATOR(order_gen_cofactor) {
 	GEN res = cgeti(DEFAULTPREC);
 	if (!dvdiiz(order, utoi(cofactor), res)) {
 		avma = ltop;
-		return  -4;
+		return -4;
 	}
 	if (!isprime(res)) {
 		avma = ltop;
-		return  -4;
+		return -4;
 	}
 	verbose_log("cofactor");
 
