@@ -49,16 +49,15 @@ GENERATOR(order_gen_cofactor) {
 	pari_ulong cofactor = *(pari_ulong *)args->args;
 	pari_sp ltop = avma;
 	GEN order = ellff_get_card(curve->curve);
-	GEN res = cgeti(DEFAULTPREC);
-	if (!dvdiiz(order, utoi(cofactor), res)) {
+	if (!dvdii(order, utoi(cofactor))) {
 		avma = ltop;
 		return -4;
 	}
+	GEN res = diviuexact(order, cofactor);
 	if (!isprime(res)) {
 		avma = ltop;
 		return -4;
 	}
-	verbose_log("cofactor");
 
 	curve->order = gerepilecopy(ltop, order);
 	obj_insert_shallow(curve->curve, 1, curve->order);

@@ -64,8 +64,9 @@ GENERATOR(gens_gen_cofactor) {
 			p->cofactor = utoi(cofactor);
 			break;
 		}
-		GEN res = cgeti(DEFAULTPREC);
-		if (dvdiuz(gen_order, cofactor, res)) {
+
+		if (dvdiu(gen_order, cofactor)) {
+			GEN res = diviuexact(gen_order, cofactor);
 			p = point_new();
 			p->point = gcopy(ellmul(curve->curve, gen, utoi(cofactor)));
 			p->order = res;
