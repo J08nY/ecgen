@@ -33,7 +33,7 @@ before_install:
 
 script: # Test, clean, build for release
   - TEST=1 make unittest
-  - TEST=1 make clean
+  - TEST=1 make clean-all
   - make -j2
 
 after_success:
