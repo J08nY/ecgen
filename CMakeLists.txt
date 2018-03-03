@@ -3,7 +3,7 @@ project(ecgen C)
 
 add_subdirectory(lib)
 
-file(GLOB SRC "src/math/*.c" "src/gen/*.c" "src/cm/*.c" "src/invalid/*.c" "src/io/*.c" "src/exhaustive/*.c" "src/misc/*.c" "src/util/*.c")
+file(GLOB SRC "src/math/*.c" "src/obj/*.c" "src/gen/*.c" "src/cm/*.c" "src/invalid/*.c" "src/io/*.c" "src/exhaustive/*.c" "src/misc/*.c" "src/util/*.c")
 set(ECGEN_SRC "src/ecgen.c" ${SRC})
 
 set(CMAKE_C_FLAGS_DEBUG "${CMAKE_C_FLAGS_DEBUG} -DDEBUG -g -Wall -Werror")

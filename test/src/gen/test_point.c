@@ -7,6 +7,7 @@
 #include "gen/curve.h"
 #include "gen/point.h"
 #include "math/subgroup.h"
+#include "obj/point.h"
 #include "test/io.h"
 
 TestSuite(point, .init = io_setup, .fini = io_teardown);

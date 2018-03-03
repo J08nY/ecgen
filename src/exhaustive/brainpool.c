@@ -4,12 +4,11 @@
  */
 
 #include "brainpool.h"
-#include <misc/types.h>
 #include "gen/gens.h"
-#include "gen/point.h"
 #include "gen/seed.h"
 #include "io/output.h"
 #include "math/subgroup.h"
+#include "obj/point.h"
 #include "util/bits.h"
 #include "util/str.h"
 

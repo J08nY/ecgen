@@ -3,7 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "subgroup.h"
-#include "gen/point.h"
+#include "obj/point.h"
 #include "util/memory.h"
 
 subgroup_t *subgroup_new(void) { return try_calloc(sizeof(subgroup_t)); }
