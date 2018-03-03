@@ -1,5 +1,5 @@
 CC ?= gcc
-CCFLAGS = -Wall
+CFLAGS ?= -Wall
 LDFLAGS =
 
 SOURCES = $(wildcard *.c)
@@ -11,16 +11,13 @@ A = libsha1.a
 all: $(TARGET)
 
 $(TARGET): $(OBJECTS)
-	$(CC) -o $@ $^ $(LDFLAGS)
+	$(CC) $(CFLAGS) -o $@ $^ $(LDFLAGS)
 
 $(A): $(OBJECTS)
 	ar rcs $(A) $(OBJECTS)
 
-%.o: %.c %.h
-	$(CC) $(CCFLAGS) -c $<
-
 %.o: %.c
-	$(CC) $(CCFLAGS) -c $<
+	$(CC) $(CFLAGS) -c $<
 
 clean:
 	rm -f *.o *.a $(TARGET)
