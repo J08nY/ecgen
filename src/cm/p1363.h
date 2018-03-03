@@ -5,8 +5,8 @@
 /**
  * @file p1363.h
  */
-#ifndef ECGEN_P1363_H
-#define ECGEN_P1363_H
+#ifndef ECGEN_CM_P1363_H
+#define ECGEN_CM_P1363_H
 
 #include <pari/pari.h>
 
@@ -36,4 +36,4 @@ GEN p1363_invariant(GEN D, form_t *form);
 
 GEN p1363_poly(GEN D, form_t **forms, size_t nforms);
 
-#endif  // ECGEN_P1363_H
+#endif  // ECGEN_CM_P1363_H

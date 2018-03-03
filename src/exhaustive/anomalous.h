@@ -5,8 +5,8 @@
 /**
  * @file anomalous.h
  */
-#ifndef ECGEN_ANOMALOUS_H
-#define ECGEN_ANOMALOUS_H
+#ifndef ECGEN_EXHAUSTIVE_ANOMALOUS_H
+#define ECGEN_EXHAUSTIVE_ANOMALOUS_H
 
 #include <pari/pari.h>
 #include "arg.h"
@@ -57,4 +57,4 @@ void anomalous_init();
  */
 void anomalous_quit();
 
-#endif  // ECGEN_ANOMALOUS_H
+#endif  // ECGEN_EXHAUSTIVE_ANOMALOUS_H

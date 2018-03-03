@@ -5,8 +5,8 @@
 /**
  * @file input.h
  */
-#ifndef ECGEN_INPUT_H
-#define ECGEN_INPUT_H
+#ifndef ECGEN_IO_INPUT_H
+#define ECGEN_IO_INPUT_H
 
 #include "misc/types.h"
 #include "util/random.h"
@@ -57,4 +57,4 @@ bool input_init();
  */
 void input_quit(void);
 
-#endif  // ECGEN_INPUT_H
+#endif  // ECGEN_IO_INPUT_H

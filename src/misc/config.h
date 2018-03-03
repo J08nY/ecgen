@@ -5,8 +5,8 @@
 /**
  * @file config.h
  */
-#ifndef ECGEN_CONFIG_H
-#define ECGEN_CONFIG_H
+#ifndef ECGEN_MISC_CONFIG_H
+#define ECGEN_MISC_CONFIG_H
 
 #include <stdbool.h>
 #include <stddef.h>
@@ -125,4 +125,4 @@ typedef struct {
 extern config_t cfg_s;
 extern config_t *cfg;
 
-#endif  // ECGEN_CONFIG_H
+#endif  // ECGEN_MISC_CONFIG_H

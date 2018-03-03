@@ -5,8 +5,8 @@
 /**
  * @file timeout.h
  */
-#ifndef ECGEN_TIMEOUT_H
-#define ECGEN_TIMEOUT_H
+#ifndef ECGEN_UTIL_TIMEOUT_H
+#define ECGEN_UTIL_TIMEOUT_H
 
 #include <setjmp.h>
 #include <sys/syscall.h>
@@ -72,4 +72,4 @@ bool timeout_init();
  */
 void timeout_quit();
 
-#endif  // ECGEN_TIMEOUT_H
+#endif  // ECGEN_UTIL_TIMEOUT_H

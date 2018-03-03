@@ -5,8 +5,8 @@
 /**
  * @file invalid.h
  */
-#ifndef ECGEN_INVALID_H
-#define ECGEN_INVALID_H
+#ifndef ECGEN_INVALID_INVALID_H
+#define ECGEN_INVALID_INVALID_H
 
 #include "misc/config.h"
 
@@ -16,4 +16,4 @@
  */
 int invalid_do();
 
-#endif  // ECGEN_INVALID_H
+#endif  // ECGEN_INVALID_INVALID_H

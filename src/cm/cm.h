@@ -5,8 +5,8 @@
 /**
  * @file cm.h
  */
-#ifndef ECGEN_CM_H
-#define ECGEN_CM_H
+#ifndef ECGEN_CM_CM_H
+#define ECGEN_CM_CM_H
 
 #include "io/cli.h"
 #include "misc/config.h"
@@ -17,4 +17,4 @@
  */
 int cm_do();
 
-#endif  // ECGEN_CM_H
+#endif  // ECGEN_CM_CM_H

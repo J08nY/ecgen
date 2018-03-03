@@ -5,8 +5,8 @@
 /**
  * @file order.h
  */
-#ifndef ECGEN_ORDER_H
-#define ECGEN_ORDER_H
+#ifndef ECGEN_GEN_ORDER_H
+#define ECGEN_GEN_ORDER_H
 
 #include "misc/types.h"
 
@@ -85,4 +85,4 @@ CHECK(order_check_pohlig_hellman);
  */
 CHECK(order_check_discriminant);
 
-#endif  // ECGEN_ORDER_H
+#endif  // ECGEN_GEN_ORDER_H

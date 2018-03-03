@@ -5,8 +5,8 @@
 /**
  * @file equation.h
  */
-#ifndef ECGEN_EQUATION_H
-#define ECGEN_EQUATION_H
+#ifndef ECGEN_GEN_EQUATION_H
+#define ECGEN_GEN_EQUATION_H
 
 #include "misc/types.h"
 
@@ -136,4 +136,4 @@ GENERATOR(b_gen_seed);
  */
 void equation_quit(void);
 
-#endif  // ECGEN_EQUATION_H
+#endif  // ECGEN_GEN_EQUATION_H

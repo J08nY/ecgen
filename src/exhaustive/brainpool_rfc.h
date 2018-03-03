@@ -3,8 +3,8 @@
  * Copyright (C) 2017-2018 J08nY
  */
 
-#ifndef ECGEN_BRAINPOOL_RFC_H
-#define ECGEN_BRAINPOOL_RFC_H
+#ifndef ECGEN_EXHAUSTIVE_BRAINPOOL_RFC_H
+#define ECGEN_EXHAUSTIVE_BRAINPOOL_RFC_H
 
 #include "misc/types.h"
 
@@ -44,4 +44,4 @@ GENERATOR(brainpool_rfc_gen_seed_input);
  */
 GENERATOR(brainpool_rfc_gen_equation);
 
-#endif  // ECGEN_BRAINPOOL_RFC_H
+#endif  // ECGEN_EXHAUSTIVE_BRAINPOOL_RFC_H

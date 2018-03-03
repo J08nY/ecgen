@@ -3,8 +3,8 @@
  * Copyright (C) 2017-2018 J08nY
  */
 
-#ifndef ECGEN_BRAINPOOL_H
-#define ECGEN_BRAINPOOL_H
+#ifndef ECGEN_EXHAUSTIVE_BRAINPOOL_H
+#define ECGEN_EXHAUSTIVE_BRAINPOOL_H
 
 #include "misc/types.h"
 
@@ -102,4 +102,4 @@ CHECK(brainpool_check_gens);
  */
 CHECK(brainpool_check_order);
 
-#endif  // ECGEN_BRAINPOOL_H
+#endif  // ECGEN_EXHAUSTIVE_BRAINPOOL_H

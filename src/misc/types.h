@@ -5,8 +5,8 @@
 /**
  * @file types.h
  */
-#ifndef ECGEN_TYPES_H
-#define ECGEN_TYPES_H
+#ifndef ECGEN_MISC_TYPES_H
+#define ECGEN_MISC_TYPES_H
 
 #include <limits.h>
 #include <pari/pari.h>
@@ -196,4 +196,4 @@ CHECK(check_skip);
  */
 UNROLL(unroll_skip);
 
-#endif  // ECGEN_TYPES_H
+#endif  // ECGEN_MISC_TYPES_H

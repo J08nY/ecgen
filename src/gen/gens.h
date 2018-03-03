@@ -6,8 +6,8 @@
  * @brief
  * @file gens.h
  */
-#ifndef ECGEN_GENS_H
-#define ECGEN_GENS_H
+#ifndef ECGEN_GEN_GENS_H
+#define ECGEN_GEN_GENS_H
 
 #include "misc/types.h"
 
@@ -82,4 +82,4 @@ CHECK(gens_check_embedding);
  */
 UNROLL(gens_unroll);
 
-#endif  // ECGEN_GENS_H
+#endif  // ECGEN_GEN_GENS_H

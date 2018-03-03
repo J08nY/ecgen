@@ -5,8 +5,8 @@
 /**
  * @file seed.h
  */
-#ifndef ECGEN_SEED_H
-#define ECGEN_SEED_H
+#ifndef ECGEN_GEN_SEED_H
+#define ECGEN_GEN_SEED_H
 
 #include "io/input.h"
 #include "misc/types.h"
@@ -58,4 +58,4 @@ void seed_free(seed_t **seed);
  */
 UNROLL(seed_unroll);
 
-#endif  // ECGEN_SEED_H
+#endif  // ECGEN_GEN_SEED_H

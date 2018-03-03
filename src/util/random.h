@@ -5,8 +5,8 @@
 /**
  * @file random.h
  */
-#ifndef ECGEN_RANDOM_H
-#define ECGEN_RANDOM_H
+#ifndef ECGEN_UTIL_RANDOM_H
+#define ECGEN_UTIL_RANDOM_H
 
 #include <pari/pari.h>
 #include <stdbool.h>
@@ -51,4 +51,4 @@ GEN random_int(unsigned long bits);
  */
 GEN random_field_element(GEN field);
 
-#endif  // ECGEN_RANDOM_H
+#endif  // ECGEN_UTIL_RANDOM_H

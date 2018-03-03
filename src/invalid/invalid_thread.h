@@ -5,8 +5,8 @@
 /**
  * @file invalid_thread.h
  */
-#ifndef ECGEN_INVALID_THREAD_H
-#define ECGEN_INVALID_THREAD_H
+#ifndef ECGEN_INVALID_INVALID_THREAD_H
+#define ECGEN_INVALID_INVALID_THREAD_H
 
 #include <pthread.h>
 #include "exhaustive/exhaustive.h"
@@ -35,4 +35,4 @@ typedef struct {
  */
 void *invalid_thread(void *arg);
 
-#endif  // ECGEN_INVALID_THREAD_H
+#endif  // ECGEN_INVALID_INVALID_THREAD_H

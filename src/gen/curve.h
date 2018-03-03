@@ -5,8 +5,8 @@
 /**
  * @file curve.h
  */
-#ifndef ECGEN_CURVE_H
-#define ECGEN_CURVE_H
+#ifndef ECGEN_GEN_CURVE_H
+#define ECGEN_GEN_CURVE_H
 
 #include <pari/pari.h>
 #include "misc/types.h"
@@ -96,4 +96,4 @@ curve_t *curve_new_clone(const curve_t *src);
  */
 void curve_free(curve_t **curve);
 
-#endif  // ECGEN_CURVE_H
+#endif  // ECGEN_GEN_CURVE_H

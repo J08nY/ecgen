@@ -5,8 +5,8 @@
 /**
  * @file point.h
  */
-#ifndef ECGEN_POINT_H
-#define ECGEN_POINT_H
+#ifndef ECGEN_GEN_POINT_H
+#define ECGEN_GEN_POINT_H
 
 #include "misc/types.h"
 
@@ -182,4 +182,4 @@ GENERATOR(points_gen_nonprime);
  */
 UNROLL(points_unroll);
 
-#endif  // ECGEN_POINT_H
+#endif  // ECGEN_GEN_POINT_H

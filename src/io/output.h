@@ -5,8 +5,8 @@
 /**
  * @file output.h
  */
-#ifndef ECGEN_OUTPUT_H
-#define ECGEN_OUTPUT_H
+#ifndef ECGEN_IO_OUTPUT_H
+#define ECGEN_IO_OUTPUT_H
 
 #include <pari/pari.h>
 #include <stdbool.h>
@@ -202,4 +202,4 @@ bool output_init();
  */
 void output_quit(void);
 
-#endif  // ECGEN_OUTPUT_H
+#endif  // ECGEN_IO_OUTPUT_H

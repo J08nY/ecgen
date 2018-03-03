@@ -5,8 +5,8 @@
 /*
  * @file ansi.h
  */
-#ifndef ECGEN_ANSI_H
-#define ECGEN_ANSI_H
+#ifndef ECGEN_EXHAUSTIVE_ANSI_H
+#define ECGEN_EXHAUSTIVE_ANSI_H
 
 #include "misc/types.h"
 
@@ -44,4 +44,4 @@ GENERATOR(ansi_gen_seed_input);
  */
 GENERATOR(ansi_gen_equation);
 
-#endif  // ECGEN_ANSI_H
+#endif  // ECGEN_EXHAUSTIVE_ANSI_H

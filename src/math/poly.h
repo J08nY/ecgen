@@ -5,8 +5,8 @@
 /**
  * @file poly.h
  */
-#ifndef ECGEN_POLY_H
-#define ECGEN_POLY_H
+#ifndef ECGEN_MATH_POLY_H
+#define ECGEN_MATH_POLY_H
 
 #include <pari/pari.h>
 #include <stdbool.h>
@@ -55,4 +55,4 @@ GEN poly_gen(const polynomial_t *polynomial);
  */
 GEN poly_find_gen(unsigned long m);
 
-#endif  // ECGEN_POLY_H
+#endif  // ECGEN_MATH_POLY_H

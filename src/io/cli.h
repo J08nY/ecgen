@@ -5,8 +5,8 @@
 /**
  * @file cli.h
  */
-#ifndef ECGEN_CLI_H
-#define ECGEN_CLI_H
+#ifndef ECGEN_IO_CLI_H
+#define ECGEN_IO_CLI_H
 
 #include <argp.h>
 #include <stdbool.h>
@@ -34,4 +34,4 @@ error_t cli_parse(int key, char *arg, struct argp_state *state);
  */
 char *cli_filter(int key, const char *text, void *input);
 
-#endif  // ECGEN_CLI_H
+#endif  // ECGEN_IO_CLI_H

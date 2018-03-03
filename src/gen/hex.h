@@ -5,8 +5,8 @@
 /**
  * @file hex.h
  */
-#ifndef ECGEN_HEX_H
-#define ECGEN_HEX_H
+#ifndef ECGEN_GEN_HEX_H
+#define ECGEN_GEN_HEX_H
 
 #include "misc/types.h"
 
@@ -19,4 +19,4 @@
  */
 CHECK(hex_check_param);
 
-#endif  // ECGEN_HEX_H
+#endif  // ECGEN_GEN_HEX_H

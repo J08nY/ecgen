@@ -5,8 +5,8 @@
 /**
  * @file field.h
  */
-#ifndef ECGEN_FIELD_H
-#define ECGEN_FIELD_H
+#ifndef ECGEN_GEN_FIELD_H
+#define ECGEN_GEN_FIELD_H
 
 #include "misc/types.h"
 
@@ -79,4 +79,4 @@ GEN field_ielement(GEN field, GEN in);
  */
 void field_quit(void);
 
-#endif  // ECGEN_FIELD_H
+#endif  // ECGEN_GEN_FIELD_H

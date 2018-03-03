@@ -5,8 +5,8 @@
 /**
  * @file exhaustive.h
  */
-#ifndef ECGEN_EXHAUSTIVE_H
-#define ECGEN_EXHAUSTIVE_H
+#ifndef ECGEN_EXHAUSTIVE_EXHAUSTIVE_H
+#define ECGEN_EXHAUSTIVE_EXHAUSTIVE_H
 
 #include "misc/types.h"
 
@@ -61,4 +61,4 @@ int exhaustive_gen(curve_t *curve, const exhaustive_t *setup,
  */
 int exhaustive_do();
 
-#endif  // ECGEN_EXHAUSTIVE_H
+#endif  // ECGEN_EXHAUSTIVE_EXHAUSTIVE_H

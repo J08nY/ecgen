@@ -5,8 +5,8 @@
 /**
  * @file memory.h
  */
-#ifndef ECGEN_MEMORY_H
-#define ECGEN_MEMORY_H
+#ifndef ECGEN_UTIL_MEMORY_H
+#define ECGEN_UTIL_MEMORY_H
 
 #include <stddef.h>
 
@@ -64,4 +64,4 @@ void set_mem_funcs(void *(*malloc_fun)(size_t), void *(*calloc_fun)(size_t),
                    void *(*realloc_fun)(void *, size_t),
                    void (*free_fun)(void *));
 
-#endif  // ECGEN_MEMORY_H
+#endif  // ECGEN_UTIL_MEMORY_H

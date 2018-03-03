@@ -5,8 +5,8 @@
 /**
  * @file subgroup.h
  */
-#ifndef ECGEN_SUBGROUPS_H
-#define ECGEN_SUBGROUPS_H
+#ifndef ECGEN_MATH_SUBGROUPS_H
+#define ECGEN_MATH_SUBGROUPS_H
 
 #include <pari/pari.h>
 #include "misc/types.h"
@@ -136,4 +136,4 @@ GEN subgroups_nonprime(GEN order);
  */
 GEN subgroups_all(GEN order);
 
-#endif  // ECGEN_SUBGROUPS_H
+#endif  // ECGEN_MATH_SUBGROUPS_H

@@ -2,8 +2,8 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017-2018 J08nY
  */
-#ifndef ECGEN_TWIST_H
-#define ECGEN_TWIST_H
+#ifndef ECGEN_MATH_TWIST_H
+#define ECGEN_MATH_TWIST_H
 
 #include "misc/types.h"
 
@@ -20,4 +20,4 @@ void twist_rand_to(curve_t *to, const curve_t *of);
  */
 void twist_rand(curve_t *what);
 
-#endif  // ECGEN_TWIST_H
+#endif  // ECGEN_MATH_TWIST_H

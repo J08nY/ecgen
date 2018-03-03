@@ -5,8 +5,8 @@
 /**
  * @file arg.h
  */
-#ifndef ECGEN_ARG_H
-#define ECGEN_ARG_H
+#ifndef ECGEN_EXHAUSTIVE_ARG_H
+#define ECGEN_EXHAUSTIVE_ARG_H
 
 #include "io/output.h"
 #include "misc/types.h"
@@ -29,4 +29,4 @@ arg_t *arg_new(void);
  */
 void arg_free(arg_t **arg);
 
-#endif  // ECGEN_ARG_H
+#endif  // ECGEN_EXHAUSTIVE_ARG_H

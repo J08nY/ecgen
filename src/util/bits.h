@@ -5,8 +5,8 @@
 /**
  * @file bits.h
  */
-#ifndef ECGEN_BITS_H
-#define ECGEN_BITS_H
+#ifndef ECGEN_UTIL_BITS_H
+#define ECGEN_UTIL_BITS_H
 
 #include "misc/types.h"
 
@@ -101,4 +101,4 @@ void bits_sha1(const bits_t *bits, unsigned char hashout[20]);
 
 bool bits_eq(const bits_t *one, const bits_t *other);
 
-#endif  // ECGEN_BITS_H
+#endif  // ECGEN_UTIL_BITS_H

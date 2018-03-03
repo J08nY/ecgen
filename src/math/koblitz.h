@@ -2,8 +2,8 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017-2018 J08nY
  */
-#ifndef ECGEN_KOBLITZ_H
-#define ECGEN_KOBLITZ_H
+#ifndef ECGEN_MATH_KOBLITZ_H
+#define ECGEN_MATH_KOBLITZ_H
 
 #include <stdbool.h>
 #include "misc/types.h"
@@ -37,4 +37,4 @@ const koblitz_t *koblitz_find(unsigned int m, unsigned int a);
  */
 GEN koblitz_get_order(unsigned int m, unsigned int a);
 
-#endif  // ECGEN_KOBLITZ_H
+#endif  // ECGEN_MATH_KOBLITZ_H
