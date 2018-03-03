@@ -30,6 +30,14 @@ bool random_init(void);
 GEN random_prime(unsigned long bits);
 
 /**
+ * @brief
+ * @param lower
+ * @param upper
+ * @return
+ */
+GEN random_range(GEN lower, GEN upper);
+
+/**
  * @brief Generate random <code>bits</code> sized integer.
  * @param bits the size of the integer to generate
  * @return a random integer in range [2^(bits - 1), 2^bits]

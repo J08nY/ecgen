@@ -19,6 +19,34 @@ char *output_malloc(const char *what) {
 	return s;
 }
 
+
+static JSON_Value *output_json_point(point_t *point) {
+	JSON_Value *point_value = json_value_init_object();
+	JSON_Object *point_object = json_value_get_object(point_value);
+
+	char *x = pari_sprintf(
+			"%P0#*x", cfg->hex_digits,
+			field_elementi(gel(point->point, 1)));
+	json_object_set_string(point_object, "x", x);
+	pari_free(x);
+	char *y = pari_sprintf(
+			"%P0#*x", cfg->hex_digits,
+			field_elementi(gel(point->point, 2)));
+	json_object_set_string(point_object, "y", y);
+	pari_free(y);
+	char *p_order = pari_sprintf("%P#x", point->order);
+	json_object_set_string(point_object, "order", p_order);
+	pari_free(p_order);
+	if (point->cofactor) {
+		char *cofactor =
+				pari_sprintf("%P#x", point->cofactor);
+		json_object_set_string(point_object, "cofactor", cofactor);
+		pari_free(cofactor);
+	}
+
+	return point_value;
+}
+
 static JSON_Value *output_jjson(curve_t *curve) {
 	pari_sp ltop = avma;
 	// root object/value is curve
@@ -77,68 +105,22 @@ static JSON_Value *output_jjson(curve_t *curve) {
 		JSON_Array *gens_array = json_value_get_array(gens_value);
 
 		for (size_t i = 0; i < curve->ngens; ++i) {
-			JSON_Value *point_value = json_value_init_object();
-			JSON_Object *point_object = json_value_get_object(point_value);
+			JSON_Value *gen_value = output_json_point(curve->generators[i]->generator);
+			JSON_Object *gen_object = json_value_get_object(gen_value);
 
-			char *x = pari_sprintf(
-			    "%P0#*x", cfg->hex_digits,
-			    field_elementi(gel(curve->generators[i]->point, 1)));
-			json_object_set_string(point_object, "x", x);
-			pari_free(x);
-			char *y = pari_sprintf(
-			    "%P0#*x", cfg->hex_digits,
-			    field_elementi(gel(curve->generators[i]->point, 2)));
-			json_object_set_string(point_object, "y", y);
-			pari_free(y);
-			char *p_order = pari_sprintf("%P#x", curve->generators[i]->order);
-			json_object_set_string(point_object, "order", p_order);
-			pari_free(p_order);
-			if (curve->generators[i]->cofactor) {
-				char *cofactor =
-				    pari_sprintf("%P#x", curve->generators[i]->cofactor);
-				json_object_set_string(point_object, "cofactor", cofactor);
-				pari_free(cofactor);
+			if (curve->generators[i]->npoints) {
+				JSON_Value *gens_points_value = json_value_init_array();
+				JSON_Array *gens_points_array = json_value_get_array(gens_points_value);
+				for (size_t j = 0; j < curve->generators[i]->npoints; ++j) {
+					json_array_append_value(gens_points_array, output_json_point(curve->generators[i]->points[j]));
+				}
+				json_object_set_value(gen_object, "points", gens_points_value);
 			}
-
-			json_array_append_value(gens_array, point_value);
+			json_array_append_value(gens_array, gen_value);
 		}
-
-		json_object_set_value(root_object, "generators", gens_value);
+		json_object_set_value(root_object, "subgroups", gens_value);
 	}
 
-	if (curve->npoints) {
-		JSON_Value *points_value = json_value_init_array();
-		JSON_Array *points_array = json_value_get_array(points_value);
-
-		for (size_t i = 0; i < curve->npoints; ++i) {
-			JSON_Value *point_value = json_value_init_object();
-			JSON_Object *point_object = json_value_get_object(point_value);
-
-			char *x =
-			    pari_sprintf("%P0#*x", cfg->hex_digits,
-			                 field_elementi(gel(curve->points[i]->point, 1)));
-			json_object_set_string(point_object, "x", x);
-			pari_free(x);
-			char *y =
-			    pari_sprintf("%P0#*x", cfg->hex_digits,
-			                 field_elementi(gel(curve->points[i]->point, 2)));
-			json_object_set_string(point_object, "y", y);
-			pari_free(y);
-			char *p_order = pari_sprintf("%P#x", curve->points[i]->order);
-			json_object_set_string(point_object, "order", p_order);
-			pari_free(p_order);
-			if (curve->points[i]->cofactor) {
-				char *cofactor =
-				    pari_sprintf("%P#x", curve->points[i]->cofactor);
-				json_object_set_string(point_object, "cofactor", cofactor);
-				pari_free(cofactor);
-			}
-
-			json_array_append_value(points_array, point_value);
-		}
-
-		json_object_set_value(root_object, "points", points_value);
-	}
 	avma = ltop;
 	return root_value;
 }

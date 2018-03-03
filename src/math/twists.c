@@ -3,7 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "twists.h"
-#include "gen/point.h"
+#include "math/subgroup.h"
 #include "gen/seed.h"
 
 void twist_rand_to(curve_t *to, const curve_t *of) {
@@ -32,6 +32,5 @@ void twist_rand_to(curve_t *to, const curve_t *of) {
 void twist_rand(curve_t *what) {
 	twist_rand_to(what, what);
 	seed_free(&what->seed);
-	points_free_deep(&what->points, what->npoints);
-	points_free_deep(&what->generators, what->ngens);
+	subgroups_free_deep(&what->generators, what->ngens);
 }

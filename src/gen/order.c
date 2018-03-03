@@ -44,39 +44,23 @@ GENERATOR(order_gen_sea) {
 	}
 }
 
-GENERATOR(order_gen_smallfact) {
+GENERATOR(order_gen_cofactor) {
 	HAS_ARG(args);
-	pari_ulong smallfact = *(pari_ulong *)args->args;
+	pari_ulong cofactor = *(pari_ulong *)args->args;
 	pari_sp ltop = avma;
-	GEN fact = mpfact(smallfact);
-	pari_ulong lfact = 0;
-	if (lgefint(fact) > 3) {
-		lfact = 0;
-	} else {
-		lfact = itou(fact);
-	}
-
-	GEN order = ellsea(curve->curve, lfact);
-	if (gequal0(order)) {
+	GEN order = ellff_get_card(curve->curve);
+	GEN res = cgeti(DEFAULTPREC);
+	if (!dvdiiz(order, utoi(cofactor), res)) {
 		avma = ltop;
-		return -4;
+		return  -4;
 	}
-
-	GEN factors = factor(order);
-	GEN primes = gel(factors, 1);
-	GEN powers = gel(factors, 2);
-	long len = glength(primes);
-	GEN total = gen_1;
-	for (long i = 1; i < len; ++i) {
-		GEN pow = powii(gel(primes, i), gel(powers, i));
-		total = mulii(total, pow);
-		if (abscmpiu(total, smallfact) > 0) {
-			avma = ltop;
-			return -4;
-		}
+	if (!isprime(res)) {
+		avma = ltop;
+		return  -4;
 	}
+	verbose_log("cofactor");
 
-	curve->order = gerepileupto(ltop, order);
+	curve->order = gerepilecopy(ltop, order);
 	obj_insert_shallow(curve->curve, 1, curve->order);
 	return 1;
 }

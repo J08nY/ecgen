@@ -23,7 +23,7 @@ Tool for generating Elliptic curve domain parameters.
 #### Generation options
 
  - `-c / --count=COUNT`		Generate multiple curves.
- - `-k / --cofactor=BOUND`	Generate a curve with cofactor up to `BOUND`.
+ - `-k / --cofactor=VALUE`	Generate a curve with cofactor of `VALUE`.
  - `-K / --koblitz[=A]`		Generate a Koblitz curve (a in {0, 1}, b = 1).
  - `-p / --prime`			Generate a curve with prime order.
  - `--points=TYPE`			Generate points of given `TYPE` (random/prime/all/nonprime/none).
@@ -73,19 +73,19 @@ Generate a prime field, uniquely generated, prime order curve, don't ask for inp
         "a": "0x9c083973bdca36ea71078bbaabab4947",
         "b": "0x3d986a0206bfbe1ba62c858df54385e9",
         "order": "0xa5393890f26881d9394aece3bc2d9b47",
-        "generators": [
+        "subgroups": [
             {
                 "x": "0x5acc17d6a44e8f8d30e877f4fef8712f",
                 "y": "0x6864dd64e80609abd1797c8de1febb9f",
                 "order": "0xa5393890f26881d9394aece3bc2d9b47",
-                "cofactor": "0x1"
-            }
-        ],
-        "points": [
-            {
-                "x": "0x9c7878930ddf5bfb705102f652754e7",
-                "y": "0x4b15a7bb808cb3579fd4c2ce42f628de",
-                "order": "0xa5393890f26881d9394aece3bc2d9b47"
+                "cofactor": "0x1",
+                "points": [
+                    {
+                        "x": "0x9c7878930ddf5bfb705102f652754e7",
+                        "y": "0x4b15a7bb808cb3579fd4c2ce42f628de",
+                        "order": "0xa5393890f26881d9394aece3bc2d9b47"
+                    }
+                ]
             }
         ]
     }

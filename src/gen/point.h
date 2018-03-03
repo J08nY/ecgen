@@ -66,7 +66,7 @@ point_t **points_new(size_t num);
  * @param num
  * @return
  */
-point_t **points_copy(point_t **const src, point_t **dest, size_t num);
+point_t **points_copy(point_t **src, point_t **dest, size_t num);
 
 /**
  *
@@ -74,7 +74,7 @@ point_t **points_copy(point_t **const src, point_t **dest, size_t num);
  * @param num
  * @return
  */
-point_t **points_new_copy(point_t **const src, size_t num);
+point_t **points_new_copy(point_t **src, size_t num);
 
 /**
  *
@@ -83,7 +83,7 @@ point_t **points_new_copy(point_t **const src, size_t num);
  * @param num
  * @return
  */
-point_t **points_clone(point_t **const src, point_t **dest, size_t num);
+point_t **points_clone(point_t **src, point_t **dest, size_t num);
 
 /**
  *
@@ -91,7 +91,7 @@ point_t **points_clone(point_t **const src, point_t **dest, size_t num);
  * @param num
  * @return
  */
-point_t **points_new_clone(point_t **const src, size_t num);
+point_t **points_new_clone(point_t **src, size_t num);
 
 /**
  *

@@ -91,7 +91,8 @@ Test(hex, test_hex_generators) {
 	char *what = "ABCDE";
 	point_t gen = {.point = mkvec2(mkintmod(strtoi(where), strtoi(field)),
 	                               mkintmod(stoi(52), strtoi(field)))};
-	point_t *generators[1] = {&gen};
+	subgroup_t gen_subgroup = {.generator = &gen};
+	subgroup_t *subgroups[1] = {&gen_subgroup};
 
 	seed_t seed = {.seed = bits_from_hex("12345")};
 	curve_t curve = {.seed = &seed,
@@ -99,7 +100,7 @@ Test(hex, test_hex_generators) {
 	                 .a = mkintmod(stoi(15), strtoi(field)),
 	                 .b = mkintmod(stoi(20), strtoi(field)),
 	                 .order = stoi(22),
-	                 .generators = generators,
+	                 .generators = subgroups,
 	                 .ngens = 1};
 
 	arg_t arg = {.args = what, .nargs = 1};
@@ -115,10 +116,13 @@ Test(hex, test_hex_points) {
 	char *what = "ABCDE";
 	point_t gen = {.point = mkvec2(mkintmod(stoi(23), strtoi(field)),
 	                               mkintmod(stoi(52), strtoi(field)))};
-	point_t *generators[1] = {&gen};
+	subgroup_t gen_subgroup = {.generator = &gen};
+	subgroup_t *subgroups[1] = {&gen_subgroup};
 	point_t point = {.point = mkvec2(mkintmod(strtoi(where), strtoi(field)),
 	                                 mkintmod(stoi(31), strtoi(field)))};
 	point_t *points[1] = {&point};
+	gen_subgroup.npoints = 1;
+	gen_subgroup.points = points;
 
 	seed_t seed = {.seed = bits_from_hex("12345")};
 	curve_t curve = {.seed = &seed,
@@ -126,10 +130,8 @@ Test(hex, test_hex_points) {
 	                 .a = mkintmod(stoi(15), strtoi(field)),
 	                 .b = mkintmod(stoi(20), strtoi(field)),
 	                 .order = stoi(22),
-	                 .generators = generators,
-	                 .ngens = 1,
-	                 .points = points,
-	                 .npoints = 1};
+	                 .generators = subgroups,
+	                 .ngens = 1};
 
 	arg_t arg = {.args = what, .nargs = 1};
 

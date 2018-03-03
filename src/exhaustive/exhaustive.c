@@ -43,13 +43,15 @@ static void exhaustive_ginit(gen_f *generators) {
 		if (cfg->prime) {
 			generators[OFFSET_ORDER] = &order_gen_prime;
 		} else if (cfg->cofactor) {
-			generators[OFFSET_ORDER] = &order_gen_smallfact;
+			generators[OFFSET_ORDER] = &order_gen_cofactor;
 		} else {
 			generators[OFFSET_ORDER] = &order_gen_any;
 		}
 
 		if (cfg->unique) {
 			generators[OFFSET_GENERATORS] = &gens_gen_one;
+		} else if (cfg->cofactor) {
+			generators[OFFSET_GENERATORS] = &gens_gen_cofactor;
 		} else {
 			generators[OFFSET_GENERATORS] = &gens_gen_any;
 		}
@@ -144,7 +146,7 @@ static void exhaustive_ginit(gen_f *generators) {
 		if (cfg->prime) {
 			generators[OFFSET_ORDER] = &order_gen_prime;
 		} else if (cfg->cofactor) {
-			generators[OFFSET_ORDER] = &order_gen_smallfact;
+			generators[OFFSET_ORDER] = &order_gen_cofactor;
 		} else if (cfg->method == METHOD_ANOMALOUS) {
 			generators[OFFSET_ORDER] = &anomalous_gen_order;
 		} else {
@@ -161,6 +163,8 @@ static void exhaustive_ginit(gen_f *generators) {
 
 		if (cfg->unique) {
 			generators[OFFSET_GENERATORS] = &gens_gen_one;
+		} else if (cfg->cofactor) {
+			generators[OFFSET_GENERATORS] = &gens_gen_cofactor;
 		} else {
 			generators[OFFSET_GENERATORS] = &gens_gen_any;
 		}
@@ -249,9 +253,9 @@ static void exhaustive_ainit(arg_t **gen_argss, arg_t **check_argss) {
 	if (cfg->cofactor) {
 		arg_t *order_arg = arg_new();
 		arg_t *gens_arg = arg_new();
-		order_arg->args = &cfg->cofactor_bound;
+		order_arg->args = &cfg->cofactor_value;
 		order_arg->nargs = 1;
-		gens_arg->args = &cfg->cofactor_bound;
+		gens_arg->args = &cfg->cofactor_value;
 		gens_arg->nargs = 1;
 		gen_argss[OFFSET_ORDER] = order_arg;
 		gen_argss[OFFSET_GENERATORS] = gens_arg;

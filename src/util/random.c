@@ -62,6 +62,16 @@ GEN random_int(unsigned long bits) {
 	return gerepilecopy(ltop, genrand(range));
 }
 
+GEN random_range(GEN lower, GEN upper) {
+	pari_sp ltop = avma;
+	if (gequal(lower, upper)) {
+		return gcopy(lower);
+	}
+
+	GEN range = mkvec2(lower, subis(upper, 1));
+	return gerepilecopy(ltop, genrand(range));
+}
+
 GEN random_field_element(GEN field) {
 	switch (typ(field)) {
 		case t_INT:

@@ -3,11 +3,13 @@
  * Copyright (C) 2017-2018 J08nY
  */
 
+#include <misc/types.h>
 #include "brainpool.h"
 #include "gen/gens.h"
 #include "gen/point.h"
 #include "gen/seed.h"
 #include "io/output.h"
+#include "math/subgroup.h"
 #include "util/bits.h"
 #include "util/str.h"
 
@@ -237,10 +239,12 @@ GENERATOR(brainpool_gen_gens) {
 		return INT_MIN;
 	}
 
-	curve->generators = points_new(1);
+	curve->generators = subgroups_new(1);
 	curve->ngens = 1;
+	subgroup_t *sub = subgroup_new();
+	curve->generators[0] = sub;
 	point_t *G = point_new();
-	curve->generators[0] = G;
+	sub->generator = G;
 	G->point = ellmul(curve->curve, P, k);
 	G->order = ellorder(curve->curve, G->point, NULL);
 	G->cofactor = divii(curve->order, G->order);
@@ -252,7 +256,7 @@ GENERATOR(brainpool_gen_gens) {
 
 CHECK(brainpool_check_gens) {
 	pari_sp ltop = avma;
-	point_t *G = curve->generators[0];
+	point_t *G = curve->generators[0]->generator;
 	GEN min_degree = divis(subii(G->order, gen_1), 100);
 	if (mpcmp(min_degree, gens_get_embedding(curve->field, G->order)) >= 0) {
 		avma = ltop;

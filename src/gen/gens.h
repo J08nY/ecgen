@@ -16,6 +16,7 @@
  *
  * @param curve A curve_t being generated
  * @param args unused
+ * @param state
  * @return state diff
  */
 GENERATOR(gens_gen_any);
@@ -25,9 +26,21 @@ GENERATOR(gens_gen_any);
  *
  * @param curve A curve_t being generated
  * @param args unused
+ * @param state
  * @return state diff
  */
 GENERATOR(gens_gen_one);
+
+
+/**
+ * GENERATOR(gen_f)
+ *
+ * @param curve
+ * @param args
+ * @param state
+ * @return
+ */
+GENERATOR(gens_gen_cofactor);
 
 /**
  * CHECK(check_f)

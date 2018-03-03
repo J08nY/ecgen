@@ -24,7 +24,6 @@ enum opt_keys {
 	OPT_ORDER = 'n',
 	OPT_KOBLITZ = 'K',
 	OPT_UNIQUE = 'u',
-	OPT_FORMAT = 't',
 	OPT_OUTPUT = 'o',
 	OPT_INPUT = 'f',
 	OPT_APPEND = 'a',
@@ -37,8 +36,6 @@ enum opt_keys {
 	OPT_TSTACK,
 	OPT_TIMEOUT,
 	OPT_ANOMALOUS,
-	OPT_GPGEN,
-	OPT_GPCHECK,
 	OPT_HEXCHECK,
 	OPT_BRAINPOOL_RFC,
 	OPT_TWIST,
@@ -62,11 +59,9 @@ struct argp_option cli_options[] = {
 		{0,               0,                 0,        0,                 "Generation options:",                                                                   3},
 		{"random",        OPT_RANDOM,        0,        0,                 "Generate a random curve (using Random approach).",                                      3},
 		{"prime",         OPT_PRIME,         0,        0,                 "Generate a curve with prime order.",                                                    3},
-		{"cofactor",      OPT_COFACTOR,      "BOUND",  0,                 "Generate a curve with cofactor up to BOUND.",                                           3},
+		{"cofactor",      OPT_COFACTOR,      "VALUE",  0,                 "Generate a curve with cofactor of VALUE.",                                              3},
 		{"koblitz",       OPT_KOBLITZ,       "A",    OPTION_ARG_OPTIONAL, "Generate a Koblitz curve (a in {0, 1}, b = 1).",                                        3},
 		{"unique",        OPT_UNIQUE,        0,        0,                 "Generate a curve with only one generator.",                                             3},
-		{"gp-gen",        OPT_GPGEN,         "FUNC",   0,                 "Generate a curve param using a GP function. **NOT IMPLEMENTED**",                       3},
-		{"gp-check",      OPT_GPCHECK,       "FUNC",   0,                 "Check a generated curve param using a GP function. **NOT IMPLEMENTED**",                3},
 		{"hex-check",     OPT_HEXCHECK,      "HEX",    0,                 "Check a generated curve param hex expansion for the HEX string.",                       3},
 		{"points",        OPT_POINTS,        "TYPE",   0,                 "Generate points of given type (random/prime/all/nonprime/none).",                       3},
 		{"count",         OPT_COUNT,         "COUNT",  0,                 "Generate multiple curves.",                                                             3},
@@ -275,7 +270,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			break;
 		case OPT_COFACTOR:
 			cfg->cofactor = true;
-			cfg->cofactor_bound = strtol(arg, NULL, 10);
+			cfg->cofactor_value = strtol(arg, NULL, 10);
 			break;
 		case OPT_KOBLITZ:
 			cfg->koblitz = true;
@@ -289,12 +284,6 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			break;
 		case OPT_UNIQUE:
 			cfg->unique = true;
-			break;
-		case OPT_GPGEN:
-			cfg->gp_gens[cfg->gp_gens_size++] = arg;
-			break;
-		case OPT_GPCHECK:
-			cfg->gp_checks[cfg->gp_checks_size++] = arg;
 			break;
 		case OPT_HEXCHECK: {
 			char *str_start = arg;

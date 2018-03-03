@@ -2,20 +2,30 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017-2018 J08nY
  */
+#include <misc/types.h>
 #include "hex.h"
 #include "exhaustive/arg.h"
 #include "field.h"
 #include "util/bits.h"
 #include "util/memory.h"
+#include "util/str.h"
+
+static char *hex_point(point_t *point) {
+	GEN fx = field_elementi(gel(point->point, 1));
+	GEN fy = field_elementi(gel(point->point, 2));
+	char *fxs = pari_sprintf("%P0#*x", cfg->hex_digits, fx);
+	char *fxy = pari_sprintf("%P0#*x", cfg->hex_digits, fy);
+	char *result = str_joinv(",", fxs, fxy, NULL);
+	pari_free(fxs);
+	pari_free(fxy);
+	return result;
+}
 
 static char *hex_points(point_t *points[], size_t len) {
 	char *p[len];
 	for (size_t i = 0; i < len; ++i) {
 		point_t *pt = points[i];
-		GEN fx = field_elementi(gel(pt->point, 1));
-		GEN fy = field_elementi(gel(pt->point, 2));
-		p[i] = pari_sprintf("%P0#*x,%P0#*x,", cfg->hex_digits, fx,
-		                    cfg->hex_digits, fy);
+		p[i] = hex_point(pt);
 	}
 
 	size_t total = 1;
@@ -26,7 +36,7 @@ static char *hex_points(point_t *points[], size_t len) {
 	char *result = try_calloc(total);
 	for (size_t i = 0; i < len; ++i) {
 		strcat(result, p[i]);
-		pari_free(p[i]);
+		try_free(p[i]);
 	}
 	return result;
 }
@@ -36,7 +46,7 @@ CHECK(hex_check_param) {
 
 	char *search_hex = try_strdup(args->args);
 	char *p = search_hex;
-	for (; *p; ++p) *p = (char)tolower(*p);
+	for (; *p; ++p) *p = (char) tolower(*p);
 
 	char *params[OFFSET_END] = {NULL};
 	bool pari[OFFSET_END] = {false};
@@ -50,7 +60,7 @@ CHECK(hex_check_param) {
 	if (state >= OFFSET_FIELD) {
 		if (cfg->field == FIELD_PRIME) {
 			params[OFFSET_FIELD] =
-			    pari_sprintf("%P0#*x", cfg->hex_digits, curve->field);
+					pari_sprintf("%P0#*x", cfg->hex_digits, curve->field);
 			pari[OFFSET_FIELD] = true;
 		} else if (cfg->field == FIELD_BINARY) {
 		}
@@ -58,28 +68,42 @@ CHECK(hex_check_param) {
 
 	if (state >= OFFSET_A) {
 		params[OFFSET_A] =
-		    pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->a));
+				pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->a));
 		pari[OFFSET_A] = true;
 	}
 
 	if (state >= OFFSET_B) {
 		params[OFFSET_B] =
-		    pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->b));
+				pari_sprintf("%P0#*x", cfg->hex_digits, field_elementi(curve->b));
 		pari[OFFSET_B] = true;
 	}
 
 	if (state >= OFFSET_ORDER) {
 		params[OFFSET_ORDER] =
-		    pari_sprintf("%P0#*x", cfg->hex_digits, curve->order);
+				pari_sprintf("%P0#*x", cfg->hex_digits, curve->order);
 		pari[OFFSET_ORDER] = true;
 	}
 
 	if (state >= OFFSET_GENERATORS) {
-		params[OFFSET_GENERATORS] = hex_points(curve->generators, curve->ngens);
+		char *subgroups[curve->ngens];
+		for (size_t i = 0; i < curve->ngens; ++i) {
+			subgroups[i] = hex_point(curve->generators[i]->generator);
+		}
+		params[OFFSET_GENERATORS] = str_join(",", subgroups, curve->ngens);
+		for (size_t i = 0; i < curve->ngens; ++i) {
+			try_free(subgroups[i]);
+		}
 	}
 
 	if (state >= OFFSET_POINTS) {
-		params[OFFSET_POINTS] = hex_points(curve->points, curve->npoints);
+		char *subgroups[curve->ngens];
+		for (size_t i = 0; i < curve->ngens; ++i) {
+			subgroups[i] = hex_points(curve->generators[i]->points, curve->generators[i]->npoints);
+		}
+		params[OFFSET_POINTS] = str_join(",", subgroups, curve->ngens);
+		for (size_t i = 0; i < curve->ngens; ++i) {
+			try_free(subgroups[i]);
+		}
 	}
 
 	int result = OFFSET_FIELD - state;

@@ -19,10 +19,27 @@ const char *str_is_hex(const char *hex_str);
 
 /**
  * @brief
+ * @param separator
  * @param strings
  * @param len
  * @return
  */
-char *str_join(char *strings[], size_t len);
+char *str_join(char *separator, char **strings, size_t len);
+
+/**
+ * @brief
+ * @param separator
+ * @param ...
+ * @return
+ */
+char *str_joinv(char *separator, ...);
+
+/**
+ * @brief
+ * @param strings
+ * @param len
+ * @return
+ */
+char *str_concat(char **strings, size_t len);
 
 #endif  // ECGEN_STR_H

@@ -4,7 +4,7 @@
  */
 #include "curve.h"
 #include "math/twists.h"
-#include "point.h"
+#include "math/subgroup.h"
 #include "seed.h"
 #include "util/memory.h"
 
@@ -18,12 +18,8 @@ curve_t *curve_copy(const curve_t *src, curve_t *dest) {
 	if (src->curve) dest->curve = gcopy(src->curve);
 	if (src->order) dest->order = gcopy(src->order);
 	if (src->generators) {
-		dest->generators = points_new_copy(src->generators, src->ngens);
+		dest->generators = subgroups_new_copy(src->generators, src->ngens);
 		dest->ngens = src->ngens;
-	}
-	if (src->points) {
-		dest->points = points_new_copy(src->points, src->npoints);
-		dest->npoints = src->npoints;
 	}
 	return dest;
 }
@@ -41,12 +37,8 @@ curve_t *curve_clone(const curve_t *src, curve_t *dest) {
 	if (src->curve) dest->curve = gclone(src->curve);
 	if (src->order) dest->order = gclone(src->order);
 	if (src->generators) {
-		dest->generators = points_new_clone(src->generators, src->ngens);
+		dest->generators = subgroups_new_clone(src->generators, src->ngens);
 		dest->ngens = src->ngens;
-	}
-	if (src->points) {
-		dest->points = points_new_clone(src->points, src->npoints);
-		dest->npoints = src->npoints;
 	}
 	return dest;
 }
@@ -59,8 +51,7 @@ curve_t *curve_new_clone(const curve_t *src) {
 void curve_free(curve_t **curve) {
 	if (*curve) {
 		seed_free(&(*curve)->seed);
-		points_free_deep(&(*curve)->generators, (*curve)->ngens);
-		points_free_deep(&(*curve)->points, (*curve)->npoints);
+		subgroups_free_deep(&(*curve)->generators, (*curve)->ngens);
 
 		if ((*curve)->curve) {
 			// TODO, this is possibly dangerous...

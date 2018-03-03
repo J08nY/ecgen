@@ -32,6 +32,14 @@ Test(random, test_random_int) {
 	}
 }
 
+Test(random, test_random_range) {
+	for (size_t i = 0; i < 100; ++i) {
+		GEN j = random_range(stoi(100), stoi(5000));
+		cr_assert_lt(cmpii(j, stoi(5000)), 0, );
+		cr_assert_geq(cmpii(j, stoi(100)), 0, );
+	}
+}
+
 Test(random, test_random_field_element_fp) {
 	GEN fp = random_int(25);
 	for (size_t i = 0; i < 100; ++i) {

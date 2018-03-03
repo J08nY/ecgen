@@ -48,11 +48,11 @@ GENERATOR(order_gen_sea);
  * GENERATOR(gen_f)
  *
  * @param curve A curve_t being generated
- * @param args pari_ulong passed to ellsea(curve, smallfact)
+ * @param args pari_ulong the desired cofactor
  * @param state
  * @return state diff
  */
-GENERATOR(order_gen_smallfact);
+GENERATOR(order_gen_cofactor);
 
 /**
  * GENERATOR(gen_f)

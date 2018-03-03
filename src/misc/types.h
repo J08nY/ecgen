@@ -67,6 +67,18 @@ typedef struct {
 } point_t;
 
 /**
+ * @brief A subgroup type.
+ * @param generator a point generating the subgroup
+ * @param npoints number of points stored in the subgroup
+ * @param points the stored points
+ */
+typedef struct {
+	point_t *generator;
+	size_t npoints;
+	point_t **points;
+} subgroup_t;
+
+/**
  * @brief A curve type.
  * @param seed a seed_t
  * @param field a t_INT or t_FFELT
@@ -75,9 +87,7 @@ typedef struct {
  * @param curve a t_ELL, curve object
  * @param order a t_INT, curve order
  * @param generators generators saved
- * @param ngens   numver of generators saved in the curve type
- * @param points  points saved
- * @param npoints number of points saved in the curve type
+ * @param ngens number of generators saved in the curve type
  */
 typedef struct {
 	seed_t *seed;
@@ -86,10 +96,8 @@ typedef struct {
 	GEN b;
 	GEN curve;
 	GEN order;
-	point_t **generators;
+	subgroup_t **generators;
 	size_t ngens;
-	point_t **points;
-	size_t npoints;
 } curve_t;
 
 /**
@@ -126,7 +134,7 @@ typedef struct {
  * @return state diff
  */
 #define GENERATOR(gen_name) \
-	int gen_name(curve_t *curve, arg_t *args, offset_e state)
+    int gen_name(curve_t *curve, arg_t *args, offset_e state)
 
 typedef GENERATOR((*gen_f));
 
@@ -138,7 +146,7 @@ typedef GENERATOR((*gen_f));
  * @return
  */
 #define UNROLL(unroll_name) \
-	int unroll_name(curve_t *curve, pari_sp from, pari_sp to)
+    int unroll_name(curve_t *curve, pari_sp from, pari_sp to)
 
 typedef UNROLL((*unroll_f));
 

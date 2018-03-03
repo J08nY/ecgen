@@ -79,7 +79,8 @@ Test(gens, test_gens_check_anomalous) {
 	};
 	point_t gen = {.point = mkvec2(mkintmodu(4, 19), mkintmodu(14, 19)),
 	               .order = stoi(16)};
-	point_t *generators[1] = {&gen};
+	subgroup_t gen_subgroup = {.generator = &gen};
+	subgroup_t *generators[1] = {&gen_subgroup};
 	curve.generators = generators;
 	curve.ngens = 1;
 
@@ -116,7 +117,9 @@ Test(gens, test_gens_check_embedding) {
 	                .order = stoi(6)};
 	point_t gen2 = {.point = mkvec2(mkintmodu(10, 19), mkintmodu(4, 19)),
 	                .order = stoi(3)};
-	point_t *generators[2] = {&gen1, &gen2};
+	subgroup_t gen1_subgroup = {.generator = &gen1};
+	subgroup_t gen2_subgroup = {.generator = &gen2};
+	subgroup_t *generators[2] = {&gen1_subgroup, &gen2_subgroup};
 	curve.generators = generators;
 	curve.ngens = 2;
 

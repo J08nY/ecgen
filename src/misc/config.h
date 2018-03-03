@@ -71,7 +71,7 @@ typedef struct {
 	long koblitz_value;
 	/** @brief Whether the curves should have a bound on the cofactor value. */
 	bool cofactor;
-	long cofactor_bound;
+	long cofactor_value;
 	/** @brief What seed algorithm, if any, to use to generate the curves. */
 	seed_e seed_algo;
 	/** @brief What seed to use, if any, to generate the curves. */
