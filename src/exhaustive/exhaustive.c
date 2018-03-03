@@ -124,12 +124,7 @@ static void exhaustive_ginit(gen_f *generators) {
 		} else if (cfg->random) {
 			generators[OFFSET_A] = &a_gen_random;
 			generators[OFFSET_B] = &b_gen_random;
-		} else {
-			generators[OFFSET_A] = &a_gen_input;
-			generators[OFFSET_B] = &b_gen_input;
-		}
-
-		if (cfg->koblitz) {
+		} else if (cfg->koblitz) {
 			switch (cfg->koblitz_value) {
 				case 0:
 					generators[OFFSET_A] = &a_gen_zero;
@@ -141,6 +136,9 @@ static void exhaustive_ginit(gen_f *generators) {
 					break;
 			}
 			generators[OFFSET_B] = &b_gen_one;
+		} else {
+			generators[OFFSET_A] = &a_gen_input;
+			generators[OFFSET_B] = &b_gen_input;
 		}
 
 		if (cfg->prime) {
@@ -149,6 +147,8 @@ static void exhaustive_ginit(gen_f *generators) {
 			generators[OFFSET_ORDER] = &order_gen_cofactor;
 		} else if (cfg->method == METHOD_ANOMALOUS) {
 			generators[OFFSET_ORDER] = &anomalous_gen_order;
+		} else if (cfg->koblitz){
+			generators[OFFSET_ORDER] = &order_gen_koblitz;
 		} else {
 			generators[OFFSET_ORDER] = &order_gen_any;
 		}

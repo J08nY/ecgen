@@ -56,14 +56,14 @@ static int compare_koblitz(const void *a, const void *b) {
 	}
 }
 
-const koblitz_t *koblitz_find(unsigned int m, unsigned int a) {
-	koblitz_t searched = {m, a, NULL};
+const koblitz_t *koblitz_find(unsigned long m, unsigned long a) {
+	koblitz_t searched = {(unsigned int) m, (unsigned int) a, NULL};
 	return (koblitz_t *)bsearch(&searched, koblitz_curves,
 	                            sizeof(koblitz_curves) / sizeof(koblitz_t),
 	                            sizeof(koblitz_t), &compare_koblitz);
 }
 
-GEN koblitz_get_order(unsigned int m, unsigned int a) {
+GEN koblitz_get_order(unsigned long m, unsigned long a) {
 	const koblitz_t *found = koblitz_find(m, a);
 	if (found) {
 		return strtoi(found->hex_order);

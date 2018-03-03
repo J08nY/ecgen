@@ -27,7 +27,7 @@ bool koblitz_is_curve(const curve_t *curve);
  * @param a
  * @return
  */
-const koblitz_t *koblitz_find(unsigned int m, unsigned int a);
+const koblitz_t *koblitz_find(unsigned long m, unsigned long a);
 
 /**
  * @brief
@@ -35,6 +35,6 @@ const koblitz_t *koblitz_find(unsigned int m, unsigned int a);
  * @param a
  * @return
  */
-GEN koblitz_get_order(unsigned int m, unsigned int a);
+GEN koblitz_get_order(unsigned long m, unsigned long a);
 
 #endif  // ECGEN_MATH_KOBLITZ_H

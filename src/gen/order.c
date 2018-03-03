@@ -4,6 +4,7 @@
  */
 #include "order.h"
 #include "exhaustive/arg.h"
+#include "math/koblitz.h"
 #include "io/input.h"
 
 GENERATOR(order_gen_input) {
@@ -75,6 +76,23 @@ GENERATOR(order_gen_prime) {
 		obj_insert_shallow(curve->curve, 1, curve->order);
 		return 1;
 	}
+}
+
+GENERATOR(order_gen_koblitz) {
+	pari_sp ltop = avma;
+	GEN order = koblitz_get_order(cfg->bits, itou(curve->a));
+	if (order) {
+		curve->order = gerepilecopy(ltop, order);
+	} else {
+		GEN ord = ellff_get_card(curve->curve);
+		if (isclone(ord)) {
+			curve->order = gerepilecopy(ltop, ord);
+		} else {
+			avma = ltop;
+			curve->order = ord;
+		}
+	}
+	return 1;
 }
 
 CHECK(order_check_pohlig_hellman) {

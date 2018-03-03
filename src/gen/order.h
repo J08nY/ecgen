@@ -68,6 +68,16 @@ GENERATOR(order_gen_cofactor);
 GENERATOR(order_gen_prime);
 
 /**
+ * GENERATOR(gen_f)
+ *
+ * @param curve A curve_t being generated
+ * @param args unused
+ * @param state
+ * @return state diff
+ */
+GENERATOR(order_gen_koblitz);
+
+/**
  *
  * @param curve
  * @param args
