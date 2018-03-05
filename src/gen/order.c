@@ -83,6 +83,7 @@ GENERATOR(order_gen_koblitz) {
 	GEN order = koblitz_get_order(cfg->bits, itou(curve->a));
 	if (order) {
 		curve->order = gerepilecopy(ltop, order);
+		obj_insert_shallow(curve->curve, 1, curve->order);
 	} else {
 		GEN ord = ellff_get_card(curve->curve);
 		if (isclone(ord)) {
