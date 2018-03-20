@@ -5,17 +5,17 @@ DEBUG ?= 0
 TEST ?= 0
 FAST ?= 0
 ifeq ($(DEBUG), 1)
-        CFLAGS += -DDEBUG -g -Og -Werror -pedantic
+    CFLAGS += -DDEBUG -g -Og -Werror -pedantic
 else ifeq ($(TEST), 1)
-        CFLAGS += -DNDEBUG --coverage -g -O0
+	CFLAGS += -DNDEBUG --coverage -g -O0
 else ifeq ($(FAST), 1)
-        ifeq ($(CC), gcc)
-                CFLAGS += -DNDEBUG -O3 -march=native -pipe
-        else
-                CFLAGS += -DNDEBUG -O3
-        endif
+    ifeq ($(CC), gcc)
+        CFLAGS += -DNDEBUG -O3 -march=native -pipe
+    else
+        CFLAGS += -DNDEBUG -O3
+    endif
 else
-        CFLAGS += -DNDEBUG -O2
+    CFLAGS += -DNDEBUG -O2
 endif
 export
 

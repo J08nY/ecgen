@@ -57,7 +57,7 @@ static int compare_koblitz(const void *a, const void *b) {
 }
 
 const koblitz_t *koblitz_find(unsigned long m, unsigned long a) {
-	koblitz_t searched = {(unsigned int) m, (unsigned int) a, NULL};
+	koblitz_t searched = {(unsigned int)m, (unsigned int)a, NULL};
 	return (koblitz_t *)bsearch(&searched, koblitz_curves,
 	                            sizeof(koblitz_curves) / sizeof(koblitz_t),
 	                            sizeof(koblitz_t), &compare_koblitz);

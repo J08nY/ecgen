@@ -4,8 +4,8 @@
  */
 #include "order.h"
 #include "exhaustive/arg.h"
-#include "math/koblitz.h"
 #include "io/input.h"
+#include "math/koblitz.h"
 
 GENERATOR(order_gen_input) {
 	pari_sp ltop = avma;

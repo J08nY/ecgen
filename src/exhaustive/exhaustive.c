@@ -147,7 +147,7 @@ static void exhaustive_ginit(gen_f *generators) {
 			generators[OFFSET_ORDER] = &order_gen_cofactor;
 		} else if (cfg->method == METHOD_ANOMALOUS) {
 			generators[OFFSET_ORDER] = &anomalous_gen_order;
-		} else if (cfg->koblitz){
+		} else if (cfg->koblitz) {
 			generators[OFFSET_ORDER] = &order_gen_koblitz;
 		} else {
 			generators[OFFSET_ORDER] = &order_gen_any;
