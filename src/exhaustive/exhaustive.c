@@ -428,12 +428,14 @@ int exhaustive_do() {
 	exhaustive_init(&setup);
 
 	output_o_begin();
+	int result = EXIT_SUCCESS;
 	for (unsigned long i = 0; i < cfg->count; ++i) {
 		debug_log_start("Generating new curve");
 		curve_t *curve = curve_new();
 		if (!exhaustive_gen(curve, &setup, OFFSET_SEED, OFFSET_END)) {
 			curve_free(&curve);
-			return EXIT_FAILURE;
+			result = EXIT_FAILURE;
+			break;
 		}
 		debug_log_end("Generated new curve");
 
@@ -447,5 +449,5 @@ int exhaustive_do() {
 
 	exhaustive_quit(&setup);
 	debug_log_end("Finished Exhaustive method");
-	return EXIT_SUCCESS;
+	return result;
 }

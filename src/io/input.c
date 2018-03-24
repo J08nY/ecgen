@@ -19,7 +19,13 @@ static GEN input_i(const char *prompt, unsigned long bits) {
 
 	ssize_t len = getdelim(&line, &n, delim, in);
 	if (len <= 0) {
-		fprintf(err, "Couldn't read an integer.\n");
+		if (feof(in)) {
+			fprintf(err, "Couldn't read an integer. Reached EOF!\n");
+		} else if (ferror(in)) {
+			perror("Couldn't read an integer.");
+		} else {
+			fprintf(err, "Couldn't read an integer.\n");
+		}
 		return gen_m2;
 	}
 	if (len == 1 && !feof(in)) {
