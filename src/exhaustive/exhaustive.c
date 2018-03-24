@@ -345,13 +345,16 @@ int exhaustive_gen_retry(curve_t *curve, const exhaustive_t *setup,
 				return 0;
 			}
 			// record try
-			int tried = ++gen_tries[state];
-			if (retry && tried >= retry) {
-				if (cfg->verbose) {
-					fprintf(verbose, "Reached retry limit: %i, state = %i\n",
-					        retry, state);
+			if (retry) {
+				int tried = ++gen_tries[state];
+				if (tried >= retry) {
+					if (cfg->verbose) {
+						fprintf(verbose,
+						        "Reached retry limit: %i, state = %i\n", retry,
+						        state);
+					}
+					return 0;
 				}
-				return 0;
 			}
 
 			// unroll

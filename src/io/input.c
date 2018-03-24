@@ -12,14 +12,15 @@ int delim;
 
 static GEN input_i(const char *prompt, unsigned long bits) {
 	if (prompt && in == stdin) {
-		fprintf(out, "%s ", prompt);
+		fprintf(err, "%s ", prompt);
 	}
 	char *line = NULL;
 	size_t n = 0;
 
 	ssize_t len = getdelim(&line, &n, delim, in);
 	if (len <= 0) {
-		return gen_m1;
+		fprintf(err, "Couldn't read an integer.\n");
+		return gen_m2;
 	}
 	if (len == 1 && !feof(in)) {
 		free(line);
@@ -44,7 +45,7 @@ static GEN input_i(const char *prompt, unsigned long bits) {
 
 GEN input_prime(const char *prompt, unsigned long bits) {
 	GEN read = input_i(prompt, bits);
-	if (equalii(read, gen_m1)) {
+	if (equalii(read, gen_m1) || equalii(read, gen_m2)) {
 		return read;
 	} else {
 		if (isprime(read)) {
@@ -64,7 +65,7 @@ GEN input_short(const char *prompt) { return input_i(prompt, 16); }
 
 GEN input_string(const char *prompt) {
 	if (prompt && in == stdin) {
-		fprintf(out, "%s ", prompt);
+		fprintf(err, "%s ", prompt);
 	}
 	char *line = NULL;
 	size_t n = 0;

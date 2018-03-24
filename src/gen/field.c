@@ -37,9 +37,12 @@ GENERATOR(field_gen_input) {
 	switch (cfg->field) {
 		case FIELD_PRIME: {
 			GEN p = input_prime("p:", cfg->bits);
-			if (equalii(p, gen_m1)) {
+			if (gequalm1(p)) {
 				avma = ltop;
 				return 0;
+			} else if (equalii(p, gen_m2)) {
+				avma = ltop;
+				return INT_MIN;
 			}
 			curve->field = p;
 			return 1;

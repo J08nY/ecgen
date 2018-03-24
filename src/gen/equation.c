@@ -17,7 +17,11 @@ GENERATOR(a_gen_input) {
 	if (gequalm1(inp)) {
 		avma = ltop;
 		return 0;
+	} else if (equalii(inp, gen_m2)) {
+		avma = ltop;
+		return INT_MIN;
 	}
+
 	GEN elem = field_ielement(curve->field, inp);
 	if (!elem) {
 		avma = ltop;
@@ -67,7 +71,11 @@ GENERATOR(b_gen_input) {
 	if (gequalm1(inp)) {
 		avma = ltop;
 		return 0;
+	} else if (equalii(inp, gen_m2)) {
+		avma = ltop;
+		return INT_MIN;
 	}
+
 	GEN elem = field_ielement(curve->field, inp);
 	if (!elem) {
 		avma = ltop;
