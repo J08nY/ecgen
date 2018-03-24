@@ -57,7 +57,7 @@ struct argp_option cli_options[] = {
 		{"twist",         OPT_TWIST,         0,        0,                 "Generate a twist of a given curve.",                                                    2},
 
 		{0,               0,                 0,        0,                 "Generation options:",                                                                   3},
-		{"random",        OPT_RANDOM,        0,        0,                 "Generate a random curve (using Random approach).",                                      3},
+		{"random",        OPT_RANDOM,        "WHAT", OPTION_ARG_OPTIONAL, "Generate a random curve (using Random approach). Optionally, only generate random parameters WHAT (seed,field,a,b,equation).",                                      3},
 		{"prime",         OPT_PRIME,         0,        0,                 "Generate a curve with prime order.",                                                    3},
 		{"cofactor",      OPT_COFACTOR,      "VALUE",  0,                 "Generate a curve with cofactor of VALUE.",                                              3},
 		{"koblitz",       OPT_KOBLITZ,       "A",    OPTION_ARG_OPTIONAL, "Generate a Koblitz curve (a in {0, 1}, b = 1).",                                        3},
@@ -263,7 +263,28 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			cfg->count = strtoul(arg, NULL, 10);
 			break;
 		case OPT_RANDOM:
-			cfg->random = true;
+			if (arg) {
+				char *token = strtok(arg, ",");
+				while (token) {
+					if (strcmp(token, "seed") == 0) {
+						cfg->random |= RANDOM_SEED;
+					} else if (strcmp(token, "field") == 0) {
+						cfg->random |= RANDOM_FIELD;
+					} else if (strcmp(token, "a") == 0) {
+						cfg->random |= RANDOM_A;
+					} else if (strcmp(token, "b") == 0) {
+						cfg->random |= RANDOM_B;
+					} else if (strcmp(token, "equation") == 0) {
+						cfg->random |= RANDOM_EQUATION;
+					} else {
+						argp_failure(state, 1, 0, "Wrong value for random = %s",
+						             token);
+					}
+					token = strtok(NULL, ",");
+				}
+			} else {
+				cfg->random = RANDOM_ALL;
+			}
 			break;
 		case OPT_PRIME:
 			cfg->prime = true;

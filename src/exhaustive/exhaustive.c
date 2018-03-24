@@ -3,6 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "exhaustive.h"
+#include <misc/config.h>
 #include "anomalous.h"
 #include "ansi.h"
 #include "brainpool.h"
@@ -62,13 +63,13 @@ static void exhaustive_ginit(gen_f *generators) {
 				if (cfg->seed) {
 					generators[OFFSET_SEED] = &ansi_gen_seed_argument;
 				} else {
-					if (cfg->random) {
+					if (cfg->random & RANDOM_SEED) {
 						generators[OFFSET_SEED] = &ansi_gen_seed_random;
 					} else {
 						generators[OFFSET_SEED] = &ansi_gen_seed_input;
 					}
 				}
-				if (cfg->random) {
+				if (cfg->random & RANDOM_FIELD) {
 					generators[OFFSET_FIELD] = &field_gen_random;
 				} else {
 					generators[OFFSET_FIELD] = &field_gen_input;
@@ -80,7 +81,7 @@ static void exhaustive_ginit(gen_f *generators) {
 				if (cfg->seed) {
 					generators[OFFSET_SEED] = &brainpool_gen_seed_argument;
 				} else {
-					if (cfg->random) {
+					if (cfg->random & RANDOM_SEED) {
 						generators[OFFSET_SEED] = &brainpool_gen_seed_random;
 					} else {
 						generators[OFFSET_SEED] = &brainpool_gen_seed_input;
@@ -96,7 +97,7 @@ static void exhaustive_ginit(gen_f *generators) {
 				if (cfg->seed) {
 					generators[OFFSET_SEED] = &brainpool_rfc_gen_seed_argument;
 				} else {
-					if (cfg->random) {
+					if (cfg->random & RANDOM_SEED) {
 						generators[OFFSET_SEED] =
 						    &brainpool_rfc_gen_seed_random;
 					} else {
@@ -121,9 +122,6 @@ static void exhaustive_ginit(gen_f *generators) {
 		if (cfg->method == METHOD_ANOMALOUS) {
 			generators[OFFSET_A] = &gen_skip;
 			generators[OFFSET_B] = &anomalous_gen_equation;
-		} else if (cfg->random) {
-			generators[OFFSET_A] = &a_gen_random;
-			generators[OFFSET_B] = &b_gen_random;
 		} else if (cfg->koblitz) {
 			switch (cfg->koblitz_value) {
 				case 0:
@@ -139,6 +137,13 @@ static void exhaustive_ginit(gen_f *generators) {
 		} else {
 			generators[OFFSET_A] = &a_gen_input;
 			generators[OFFSET_B] = &b_gen_input;
+
+			if (cfg->random & RANDOM_A) {
+				generators[OFFSET_A] = &a_gen_random;
+			}
+			if (cfg->random & RANDOM_B) {
+				generators[OFFSET_B] = &b_gen_random;
+			}
 		}
 
 		if (cfg->prime) {
@@ -155,7 +160,7 @@ static void exhaustive_ginit(gen_f *generators) {
 
 		if (cfg->method == METHOD_ANOMALOUS) {
 			generators[OFFSET_FIELD] = &anomalous_gen_field;
-		} else if (cfg->random) {
+		} else if (cfg->random & RANDOM_FIELD) {
 			generators[OFFSET_FIELD] = &field_gen_random;
 		} else {
 			generators[OFFSET_FIELD] = &field_gen_input;

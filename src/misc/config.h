@@ -29,12 +29,25 @@ struct points_s {
  * @brief
  */
 typedef enum {
+	RANDOM_NONE = 0,
+	RANDOM_SEED = 1 << 0,
+	RANDOM_FIELD = 1 << 1,
+	RANDOM_A = 1 << 2,
+	RANDOM_B = 1 << 3,
+	RANDOM_EQUATION = RANDOM_A | RANDOM_B,
+	RANDOM_ALL = RANDOM_SEED | RANDOM_FIELD | RANDOM_EQUATION
+} random_e;
+
+/**
+ * @brief
+ */
+typedef enum {
 	METHOD_DEFAULT = 0,
 	METHOD_CM = 1 << 0,
 	METHOD_ANOMALOUS = 1 << 1,
 	METHOD_SEED = 1 << 2,
 	METHOD_INVALID = 1 << 3,
-	METHOD_TWIST
+	METHOD_TWIST = 1 << 4
 } method_e;
 
 /**
@@ -60,8 +73,8 @@ typedef struct {
 
 	/** @brief How many curves should be generated. */
 	long count;
-	/** @brief Whether the curves should be generated at random (no input). */
-	bool random;
+	/** @brief What parameters should be generated at random (no input). */
+	random_e random;
 	/** @brief Whether the curves should have prime order. */
 	bool prime;
 	/** @brief Whether the Complex Multiplication method should be used. */

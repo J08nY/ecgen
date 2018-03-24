@@ -3,7 +3,6 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "invalid.h"
-#include <exhaustive/exhaustive.h>
 #include "exhaustive/arg.h"
 #include "exhaustive/check.h"
 #include "exhaustive/exhaustive.h"
@@ -14,18 +13,23 @@
 #include "gen/order.h"
 #include "gen/point.h"
 #include "invalid_thread.h"
-#include "io/output.h"
 #include "util/memory.h"
 
 static void invalid_original_ginit(gen_f *generators) {
 	generators[OFFSET_SEED] = &gen_skip;
-	if (cfg->random) {
+	if (cfg->random & RANDOM_FIELD) {
 		generators[OFFSET_FIELD] = &field_gen_random;
-		generators[OFFSET_A] = &a_gen_random;
-		generators[OFFSET_B] = &b_gen_random;
 	} else {
 		generators[OFFSET_FIELD] = &field_gen_input;
+	}
+	if (cfg->random & RANDOM_A) {
+		generators[OFFSET_A] = &a_gen_random;
+	} else {
 		generators[OFFSET_A] = &a_gen_input;
+	}
+	if (cfg->random & RANDOM_B) {
+		generators[OFFSET_B] = &b_gen_random;
+	} else {
 		generators[OFFSET_B] = &b_gen_input;
 	}
 	generators[OFFSET_GENERATORS] = &gens_gen_any;
