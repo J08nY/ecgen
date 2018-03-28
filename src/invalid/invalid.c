@@ -75,17 +75,19 @@ static size_t invalid_primes(GEN order, pari_ulong **primes) {
 
 	if (cfg->invalid_primes) {
 		char *end = NULL;
-		last = (pari_ulong)strtol(cfg->invalid_primes, &end, 10);
+		last = (pari_ulong)strtol(cfg->invalid_primes, &end, 10) - 1;
 		if (end && *end) {
 			end++;
 			upper = (pari_ulong)strtol(end, NULL, 10);
+		} else {
+			upper = unextprime(last + 1);
 		}
 	}
 
 	size_t size = 10;
 	*primes = try_calloc(size * sizeof(pari_ulong));
 
-	while (cmpii(bound, product) >= 0 && ((upper == 0) || last < upper)) {
+	while (((upper == 0) && cmpii(bound, product) >= 0) || (last <= upper)) {
 		product = mulis(product, last);
 		pari_ulong next = unextprime(last + 1);
 		if ((upper != 0) && next > upper) {
