@@ -1,12 +1,9 @@
 
 #include "curve.h"
 #include "gen/seed.h"
-#include "math/subgroup.h"
-#include "misc/types.h"
 #include "obj/subgroup.h"
-#include "util/memory.h"
 
-curve_t *curve_new(void) { return try_calloc(sizeof(curve_t)); }
+OBJ(curve, curve_t, curve_copy, curve_clone)
 
 curve_t *curve_copy(const curve_t *src, curve_t *dest) {
 	if (src->seed) dest->seed = seed_new_copy(src->seed);
@@ -22,11 +19,6 @@ curve_t *curve_copy(const curve_t *src, curve_t *dest) {
 	return dest;
 }
 
-curve_t *curve_new_copy(const curve_t *src) {
-	curve_t *result = curve_new();
-	return curve_copy(src, result);
-}
-
 curve_t *curve_clone(const curve_t *src, curve_t *dest) {
 	if (src->seed) dest->seed = seed_new_clone(src->seed);
 	if (src->field) dest->field = gclone(src->field);
@@ -39,11 +31,6 @@ curve_t *curve_clone(const curve_t *src, curve_t *dest) {
 		dest->ngens = src->ngens;
 	}
 	return dest;
-}
-
-curve_t *curve_new_clone(const curve_t *src) {
-	curve_t *result = curve_new();
-	return curve_clone(src, result);
 }
 
 void curve_free(curve_t **curve) {

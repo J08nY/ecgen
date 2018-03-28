@@ -3,12 +3,9 @@
 #define ECGEN_OBJ_CURVE_H
 
 #include "misc/types.h"
+#include "obj.h"
 
-/**
- * Allocates and zeros out a new curve_t object.
- * @return new curve
- */
-curve_t *curve_new(void);
+OBJ_H(curve, curve_t)
 
 /**
  * Copies parameters from src curve to dest curve, allocates space for points.
@@ -23,24 +20,10 @@ curve_t *curve_copy(const curve_t *src, curve_t *dest);
 /**
  *
  * @param src
- * @return
- */
-curve_t *curve_new_copy(const curve_t *src);
-
-/**
- *
- * @param src
  * @param dest
  * @return
  */
 curve_t *curve_clone(const curve_t *src, curve_t *dest);
-
-/**
- *
- * @param src
- * @return
- */
-curve_t *curve_new_clone(const curve_t *src);
 
 /**
  * Free a curve_t along with it's seed_t and point_ts.

@@ -1,9 +1,9 @@
 
 #include "subgroup.h"
 #include "point.h"
-#include "util/memory.h"
 
-subgroup_t *subgroup_new(void) { return try_calloc(sizeof(subgroup_t)); }
+OBJ(subgroup, subgroup_t, subgroup_copy, subgroup_clone)
+OBJS(subgroup, subgroup_t, subgroup_copy, subgroup_clone)
 
 subgroup_t *subgroup_copy(const subgroup_t *src, subgroup_t *dst) {
 	if (src->generator) dst->generator = point_new_copy(src->generator);
@@ -14,11 +14,6 @@ subgroup_t *subgroup_copy(const subgroup_t *src, subgroup_t *dst) {
 	return dst;
 }
 
-subgroup_t *subgroup_new_copy(const subgroup_t *src) {
-	subgroup_t *result = subgroup_new();
-	return subgroup_copy(src, result);
-}
-
 subgroup_t *subgroup_clone(const subgroup_t *src, subgroup_t *dst) {
 	if (src->generator) dst->generator = point_new_clone(src->generator);
 	if (src->points) {
@@ -26,11 +21,6 @@ subgroup_t *subgroup_clone(const subgroup_t *src, subgroup_t *dst) {
 		dst->npoints = src->npoints;
 	}
 	return dst;
-}
-
-subgroup_t *subgroup_new_clone(const subgroup_t *src) {
-	subgroup_t *result = subgroup_new();
-	return subgroup_clone(src, result);
 }
 
 void subgroup_free(subgroup_t **subgroup) {
@@ -50,36 +40,6 @@ void subgroup_free_deep(subgroup_t **subgroup) {
 	}
 }
 
-subgroup_t **subgroups_new(size_t num) {
-	return try_calloc(num * sizeof(subgroup_t *));
-}
-
-subgroup_t **subgroups_copy(subgroup_t **const src, subgroup_t **dest,
-                            size_t num) {
-	for (size_t i = 0; i < num; ++i) {
-		dest[i] = subgroup_new_copy(src[i]);
-	}
-	return dest;
-}
-
-subgroup_t **subgroups_new_copy(subgroup_t **const src, size_t num) {
-	subgroup_t **result = subgroups_new(num);
-	return subgroups_copy(src, result, num);
-}
-
-subgroup_t **subgroups_clone(subgroup_t **const src, subgroup_t **dest,
-                             size_t num) {
-	for (size_t i = 0; i < num; ++i) {
-		dest[i] = subgroup_new_clone(src[i]);
-	}
-	return dest;
-}
-
-subgroup_t **subgroups_new_clone(subgroup_t **const src, size_t num) {
-	subgroup_t **result = subgroups_new(num);
-	return subgroups_clone(src, result, num);
-}
-
 void subgroups_free(subgroup_t ***subgroups) {
 	if (*subgroups) {
 		try_free(*subgroups);
@@ -90,7 +50,7 @@ void subgroups_free(subgroup_t ***subgroups) {
 void subgroups_free_deep(subgroup_t ***subgroups, size_t num) {
 	if (*subgroups) {
 		for (size_t i = 0; i < num; ++i) {
-			subgroup_free(&(*subgroups)[i]);
+			subgroup_free_deep(&(*subgroups)[i]);
 		}
 		subgroups_free(subgroups);
 	}
