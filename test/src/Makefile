@@ -38,7 +38,7 @@ test_ecgen: $(TEST_OBJ) $(ECGEN_OBJ)
 %.o: %.c
 	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
 
-clean-all: clean clean-cov
+clean-all: clean
 	rm -f ./test_ecgen
 
 clean:

@@ -50,7 +50,7 @@ ecgen: ecgen.o $(ECGEN_OBJ)
 
 ####
 
-clean-all: clean clean-cov
+clean-all: clean
 	rm -f ../ecgen
 
 clean:
