@@ -7,6 +7,7 @@
 #include "gen/curve.h"
 #include "gen/gens.h"
 #include "gen/point.h"
+#include "obj/curve.h"
 #include "util/random.h"
 #include "util/timeout.h"
 

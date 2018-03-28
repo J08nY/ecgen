@@ -4,6 +4,7 @@
  */
 #include <criterion/criterion.h>
 #include "gen/curve.h"
+#include "obj/curve.h"
 #include "test/default.h"
 
 TestSuite(curve, .init = default_setup, .fini = default_teardown);

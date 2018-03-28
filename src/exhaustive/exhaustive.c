@@ -3,7 +3,6 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "exhaustive.h"
-#include <misc/config.h>
 #include "anomalous.h"
 #include "ansi.h"
 #include "brainpool.h"
@@ -18,6 +17,8 @@
 #include "gen/point.h"
 #include "gen/seed.h"
 #include "io/output.h"
+#include "misc/config.h"
+#include "obj/curve.h"
 #include "util/memory.h"
 #include "util/timeout.h"
 

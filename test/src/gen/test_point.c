@@ -7,6 +7,7 @@
 #include "gen/curve.h"
 #include "gen/point.h"
 #include "math/subgroup.h"
+#include "obj/curve.h"
 #include "obj/point.h"
 #include "test/io.h"
 
