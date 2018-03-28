@@ -5,7 +5,8 @@
 #include "gens.h"
 #include "exhaustive/arg.h"
 #include "math/subgroup.h"
-#include "point.h"
+#include "obj/point.h"
+#include "obj/subgroup.h"
 
 static subgroup_t *gens_point(GEN point, const curve_t *curve) {
 	subgroup_t *sub = subgroup_new();

@@ -13,6 +13,7 @@
 #include "gen/order.h"
 #include "gen/point.h"
 #include "invalid_thread.h"
+#include "obj/curve.h"
 #include "util/memory.h"
 
 static void invalid_original_ginit(gen_f *generators) {

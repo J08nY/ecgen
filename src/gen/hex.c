@@ -3,7 +3,6 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "hex.h"
-#include <misc/types.h>
 #include "exhaustive/arg.h"
 #include "field.h"
 #include "util/bits.h"

@@ -11,7 +11,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/criterion/include)
 
 find_library(criterion NAMES criterion PATHS ${CMAKE_CURRENT_SOURCE_DIR}/lib/criterion/build)
 
-file(GLOB TEST_SRC "src/math/*.c" "src/gen/*.c" "src/cm/*.c" "src/invalid/*.c" "src/io/*.c" "src/exhaustive/*.c" "src/util/*.c")
+file(GLOB TEST_SRC "src/math/*.c" "src/obj/*.c" "src/gen/*.c" "src/cm/*.c" "src/invalid/*.c" "src/io/*.c" "src/exhaustive/*.c" "src/util/*.c")
 file(GLOB TESTING_SRC "src/test/*.c")
 add_executable(test_ecgen ${TEST_SRC} ${TESTING_SRC} ${SRC})
 
