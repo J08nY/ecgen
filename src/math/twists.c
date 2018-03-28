@@ -4,7 +4,7 @@
  */
 #include "twists.h"
 #include "gen/seed.h"
-#include "math/subgroup.h"
+#include "obj/subgroup.h"
 
 void twist_rand_to(curve_t *to, const curve_t *of) {
 	to->field = gcopy(of->field);

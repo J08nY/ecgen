@@ -9,6 +9,7 @@
 #include "math/subgroup.h"
 #include "obj/curve.h"
 #include "obj/point.h"
+#include "obj/subgroup.h"
 #include "test/io.h"
 
 TestSuite(point, .init = io_setup, .fini = io_teardown);

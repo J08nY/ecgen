@@ -9,6 +9,7 @@
 #include "io/output.h"
 #include "math/subgroup.h"
 #include "obj/point.h"
+#include "obj/subgroup.h"
 #include "util/bits.h"
 #include "util/str.h"
 

@@ -3,6 +3,7 @@
 #include "gen/seed.h"
 #include "math/subgroup.h"
 #include "misc/types.h"
+#include "obj/subgroup.h"
 #include "util/memory.h"
 
 curve_t *curve_new(void) { return try_calloc(sizeof(curve_t)); }
