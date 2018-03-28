@@ -96,6 +96,8 @@ function invalid() {
 	start_test
 	assert_raises "${ecgen} --fp -r -i 10"
 	assert_raises "${ecgen} --f2m -r -i 10"
+	assert_raises "${ecgen} --fp -r -i5-15 10"
+	assert_raises "${ecgen} --f2m -r -i5-15 10"
 	assert_raises "${ecgen} --fp --threads=2 -r -i -u 10"
 	assert_raises "${ecgen} --f2m --threads=2 -r -i -u 10"
 	assert_raises "${ecgen} --fp --threads=auto -r -i -u 10"

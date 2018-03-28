@@ -3,6 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "cli.h"
+#include <misc/config.h>
 #include <string.h>
 #include "exhaustive/ansi.h"
 #include "exhaustive/brainpool.h"
@@ -53,7 +54,7 @@ struct argp_option cli_options[] = {
 		{"ansi",          OPT_ANSI,          "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure).",                         2},
 		{"brainpool",     OPT_BRAINPOOL,     "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (Brainpool procedure).",                                     2},
 		{"brainpool-rfc", OPT_BRAINPOOL_RFC, "SEED", OPTION_ARG_OPTIONAL, "Generate a curve from SEED (Brainpool procedure, as per RFC 5639).",                    2},
-		{"invalid",       OPT_INVALID,       0,        0,                 "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).",  2},
+		{"invalid",       OPT_INVALID,       "RANGE",OPTION_ARG_OPTIONAL, "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).",  2},
 		{"twist",         OPT_TWIST,         0,        0,                 "Generate a twist of a given curve.",                                                    2},
 
 		{0,               0,                 0,        0,                 "Generation options:",                                                                   3},
@@ -148,34 +149,6 @@ static void cli_end(struct argp_state *state) {
 		argp_failure(state, 1, 0,
 		             "Brainpool algorithm only creates prime field curves.");
 	}
-	/*
-	// Invalid is not prime or seed by definition.
-	if (cfg->invalid &&
-	    (cfg->prime || cfg->seed_algo || cfg->cofactor)) {
-	    // not seed, not prime
-	    argp_failure(state, 1, 0,
-	                 "Invalid curve generation can not generate curves "
-	                     "from seed, exhaustive or prime order.");
-	}
-	if (cfg->cm && (cfg->prime || cfg->seed_algo || cfg->invalid ||
-	                cfg->cofactor || cfg->anomalous)) {
-	    argp_failure(state, 1, 0,
-	                 "Fixed order curve generation can not generate "
-	                     "curves from seed, or invalid curves. Prime order "
-	                     "also doesn't make sense if the given one isn't "
-	                     "prime.");
-	}
-	if (cfg->anomalous &&
-	    (cfg->binary_field || cfg->cofactor || cfg->seed_algo ||
-	     cfg->cm || cfg->invalid || cfg->koblitz)) {
-	    argp_failure(
-	        state, 1, 0,
-	        "Anomalous curve generation can not generate "
-	            "binary field curves, curves with a cofactor, from seed "
-	            "with fixed order, invalid or Koblitz curves.");
-	}
-
-	 */
 	// default values
 	if (!cfg->count) {
 		cfg->count = 1;
@@ -208,6 +181,13 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 		/* Generation method  */
 		case OPT_INVALID:
 			cfg->method |= METHOD_INVALID;
+			if (arg) {
+				size_t span = strspn(arg, "0123456789-");
+				if (span != strlen(arg)) {
+					argp_failure(state, 1, 0, "Invalid range %s", arg);
+				}
+				cfg->invalid_primes = arg;
+			}
 			break;
 		case OPT_ORDER:
 			cfg->method |= METHOD_CM;

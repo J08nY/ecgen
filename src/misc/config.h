@@ -85,6 +85,9 @@ typedef struct {
 	/** @brief Whether the curves should have a bound on the cofactor value. */
 	bool cofactor;
 	long cofactor_value;
+	/** @brief A range of prime orders that should be generated in invalid
+	 * generation. */
+	char *invalid_primes;
 	/** @brief What seed algorithm, if any, to use to generate the curves. */
 	seed_e seed_algo;
 	/** @brief What seed to use, if any, to generate the curves. */
@@ -92,12 +95,6 @@ typedef struct {
 	/** @brief Whether the curves should be uniquely generated (one generator).
 	 */
 	bool unique;
-	/** @brief The GP gen functions. */
-	char *gp_gens[10];
-	size_t gp_gens_size;
-	/** @brief The GP check functions. */
-	char *gp_checks[10];
-	size_t gp_checks_size;
 	/** @brief */
 	char *hex_check;
 	/** @brief What points to generate on the curves. */

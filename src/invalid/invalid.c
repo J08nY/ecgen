@@ -3,6 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "invalid.h"
+#include <misc/config.h>
 #include "exhaustive/arg.h"
 #include "exhaustive/check.h"
 #include "exhaustive/exhaustive.h"
@@ -69,14 +70,28 @@ static size_t invalid_primes(GEN order, pari_ulong **primes) {
 	GEN bound = sqri(order);
 	GEN product = gen_1;
 	pari_ulong last = 1;
+	pari_ulong upper = 0;
 	size_t nprimes = 0;
+
+	if (cfg->invalid_primes) {
+		char *end = NULL;
+		last = (pari_ulong)strtol(cfg->invalid_primes, &end, 10);
+		if (end && *end) {
+			end++;
+			upper = (pari_ulong)strtol(end, NULL, 10);
+		}
+	}
 
 	size_t size = 10;
 	*primes = try_calloc(size * sizeof(pari_ulong));
 
-	while (cmpii(bound, product) >= 0) {
+	while (cmpii(bound, product) >= 0 && ((upper == 0) || last < upper)) {
 		product = mulis(product, last);
-		(*primes)[nprimes] = unextprime(last + 1);
+		pari_ulong next = unextprime(last + 1);
+		if ((upper != 0) && next > upper) {
+			break;
+		}
+		(*primes)[nprimes] = next;
 		last = (*primes)[nprimes];
 		nprimes++;
 		if (nprimes == size) {
@@ -339,6 +354,11 @@ int invalid_do() {
 	pari_ulong *primes;
 	size_t nprimes = invalid_primes(curve->order, &primes);
 	debug_log_end("Generated primes");
+
+	if (!nprimes) {
+		fprintf(err, "No orders to generate curves for, quitting.");
+		return EXIT_FAILURE;
+	}
 
 	curve_t **curves = try_calloc(nprimes * sizeof(curve_t *));
 	debug_log_start("Starting to generate invalid curves");
