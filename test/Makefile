@@ -23,5 +23,8 @@ clean-all:
 	cd lib/criterion && rm -rf build
 	+$(MAKE) -C src clean-all
 
+clean-cov:
+	+$(MAKE) -C src clean-cov
+
 format:
 	+$(MAKE) -C src format
