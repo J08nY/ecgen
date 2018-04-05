@@ -46,7 +46,7 @@ GENERATOR(a_gen_once) {
 		curve_a = curve;
 		return 1;
 	} else {
-		return 0;
+		return inp;
 	}
 }
 
@@ -100,7 +100,7 @@ GENERATOR(b_gen_once) {
 		curve_b = curve;
 		return 1;
 	} else {
-		return 0;
+		return inp;
 	}
 }
 

@@ -51,6 +51,25 @@ Test(bits, test_bits_cpy) {
 	cr_assert_eq(other->allocated, bits->allocated, );
 	cr_assert_eq(other->bits[0], bits->bits[0], );
 	cr_assert_eq(other->bits[1], bits->bits[1], );
+
+	bits_t *one = bits_new(0);
+	bits_cpy(other, one);
+	cr_assert_eq(other->bitlen, bits->bitlen, );
+	cr_assert_eq(other->allocated, bits->allocated, );
+	cr_assert_eq(other->bits[0], bits->bits[0], );
+	cr_assert_eq(other->bits[1], bits->bits[1], );
+
+	bits_t *two = bits_new(4);
+	two->bits[0] = 0b11110000;
+	bits_cpy(other, two);
+	cr_assert_eq(other->bitlen, two->bitlen, );
+	cr_assert_eq(other->allocated, two->allocated, );
+	cr_assert_eq(other->bits[0], two->bits[0], );
+
+	bits_free(&bits);
+	bits_free(&other);
+	bits_free(&one);
+	bits_free(&two);
 }
 
 Test(bits, test_bits_copy) {
@@ -180,8 +199,14 @@ Test(bits, test_bits_to_raw) {
 	cr_assert_not_null(raw, );
 	cr_assert_eq(rawlen, 1, );
 	cr_assert_eq(raw[0], 0b10000000, );
+
+	bits_t *one = bits_new(0);
+	unsigned char *rawnull = bits_to_raw(one);
+	cr_assert_null(rawnull, );
+
 	try_free(raw);
 	bits_free(&bits);
+	bits_free(&one);
 }
 
 Test(bits, test_bits_to_bitvec) {
@@ -212,12 +237,12 @@ Test(bits, test_bits_concat) {
 }
 
 Test(bits, test_bits_or) {
-	bits_t *bits = bits_new(6);
-	bits->bits[0] = 0b10000000;
+	bits_t *bits = bits_new(10);
+	bits->bits[0] = 0b00000000;
+	bits->bits[1] = 0b11000000;
 
-	bits_t *other_bits = bits_new(10);
-	other_bits->bits[0] = 0b00000000;
-	other_bits->bits[1] = 0b11000000;
+	bits_t *other_bits = bits_new(6);
+	other_bits->bits[0] = 0b10000000;
 
 	bits_t * or = bits_or(bits, other_bits);
 	cr_assert_not_null(or, );
@@ -396,6 +421,11 @@ Test(bits, test_bits_lengthenz) {
 	cr_assert_eq(bits->bits[0], 0b00001100, );
 	cr_assert_eq(bits->bits[1], 0b11000000, );
 
+	bits_lengthenz(bits, 0);
+	cr_assert_eq(bits->bitlen, 16, );
+	cr_assert_eq(bits->bits[0], 0b00001100, );
+	cr_assert_eq(bits->bits[1], 0b11000000, );
+
 	bits_free(&bits);
 }
 
@@ -422,6 +452,11 @@ Test(bits, test_bits_shortenz) {
 	bits_shortenz(bits, -2);
 	cr_assert_eq(bits->bitlen, 2, );
 	cr_assert_eq(bits->bits[0], 0b11000000, );
+
+	bits_shortenz(bits, 0);
+	cr_assert_eq(bits->bitlen, 2, );
+	cr_assert_eq(bits->bits[0], 0b11000000, );
+
 	bits_free(&bits);
 }
 

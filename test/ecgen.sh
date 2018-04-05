@@ -52,6 +52,8 @@ function exhaustive() {
 	assert_raises "${ecgen} --fp -r -K1 10"
 	assert_raises "${ecgen} --f2m -r -K1 10"
 
+	assert_raises "${ecgen} --f2m -r -K1 101"
+
 	assert_raises "${ecgen} --fp -r --points=random 10"
 	assert_raises "${ecgen} --fp -r --points=10random 10"
 	assert_raises "${ecgen} --fp -r --points=prime 10"
