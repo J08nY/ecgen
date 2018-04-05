@@ -8,13 +8,9 @@
 static bool custom_is_disc(GEN test) {
 	bool result = true;
 	long md4;
-	pari_CATCH(e_DOMAIN)
-			{
-				result = false;
-			}
-		pari_TRY{ check_quaddisc_imag(test, &md4, ""); };
-	pari_ENDCATCH
-	return result;
+	pari_CATCH(e_DOMAIN) { result = false; }
+	pari_TRY { check_quaddisc_imag(test, &md4, ""); };
+	pari_ENDCATCH return result;
 }
 
 static GEN custom_disc(GEN order, GEN prime) {
@@ -93,7 +89,7 @@ static custom_quadr_t custom_prime_random(GEN order) {
 	GEN v = gen_0;
 	GEN D;
 	long i = 2;
-	//TODO: this is wrong, order = p + 1 +- t  is not kept.
+	// TODO: this is wrong, order = p + 1 +- t  is not kept.
 	while (gequal0(t)) {
 		D = stoi(-4 * (i / 2) + (i % 2));
 		for (long j = 0; j < 100; ++j) {

@@ -5,8 +5,8 @@
 #ifndef ECGEN_CUSTOM_H
 #define ECGEN_CUSTOM_H
 
-#include "misc/types.h"
 #include "misc/config.h"
+#include "misc/types.h"
 
 typedef struct {
 	GEN p;
@@ -19,6 +19,6 @@ typedef struct {
  * @brief
  * @return
  */
-curve_t * custom_curve();
+curve_t* custom_curve();
 
-#endif //ECGEN_CUSTOM_H
+#endif  // ECGEN_CUSTOM_H

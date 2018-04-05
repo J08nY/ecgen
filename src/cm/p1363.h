@@ -32,7 +32,9 @@ size_t p1363_forms(GEN D, p1363_form_t ***forms);
 
 void p1363_free(p1363_form_t ***forms, size_t nforms);
 
-GEN p1363_invariant(GEN D, p1363_form_t *form);
+GEN p1363_invariant(GEN D, p1363_form_t *form, long precision);
+
+long p1363_bit_precision(GEN D, p1363_form_t **forms, size_t nforms);
 
 GEN p1363_poly(GEN D, p1363_form_t **forms, size_t nforms);
 

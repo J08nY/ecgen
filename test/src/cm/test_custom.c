@@ -4,11 +4,11 @@
  */
 
 #include <criterion/criterion.h>
+#include "cm/custom.h"
 #include "misc/config.h"
-#include "util/random.h"
 #include "test/default.h"
 #include "test/input.h"
-#include "cm/custom.h"
+#include "util/random.h"
 
 void custom_setup() {
 	default_setup();
@@ -16,9 +16,7 @@ void custom_setup() {
 	random_init();
 }
 
-void custom_teardown() {
-	input_teardown();
-}
+void custom_teardown() { input_teardown(); }
 
 TestSuite(custom, .init = custom_setup, .fini = custom_teardown);
 

@@ -79,15 +79,15 @@ void p1363_free(p1363_form_t ***forms, size_t nforms) {
 	}
 }
 
-static GEN p1363_func_F(GEN z) {
+static GEN p1363_func_F(GEN z, long precision) {
 	pari_sp ltop = avma;
 
 	if (gequal0(z)) {
 		return gcopy(gen_1);
 	}
-	GEN sum = cgetc(BIGDEFAULTPREC * 5);
-	gel(sum, 1) = real_1(BIGDEFAULTPREC * 5);
-	gel(sum, 2) = real_0(BIGDEFAULTPREC * 5);
+	GEN sum = cgetc(precision * 2);
+	gel(sum, 1) = real_1(precision);
+	gel(sum, 2) = real_0(precision);
 	pari_printf("initial sum = %Ps\n", sum);
 	GEN last;
 
@@ -99,8 +99,7 @@ static GEN p1363_func_F(GEN z) {
 		GEN quota = divis(subii(j3, j), 2);
 		GEN quotb = divis(addii(j3, j), 2);
 
-		GEN term = gadd(gpow(z, quota, BIGDEFAULTPREC),
-		                gpow(z, quotb, BIGDEFAULTPREC));
+		GEN term = gadd(gpow(z, quota, precision), gpow(z, quotb, precision));
 		pari_printf("%Ps %Ps \n", sum, term);
 		if (mod2(j) == 0) {
 			sum = gadd(sum, term);
@@ -117,37 +116,37 @@ static GEN p1363_func_F(GEN z) {
 	return gerepilecopy(ltop, sum);
 }
 
-static GEN p1363_func_fzero(GEN D, p1363_form_t *form) {
+static GEN p1363_func_fzero(GEN D, p1363_form_t *form, long precision) {
 	pari_sp ltop = avma;
 
-	GEN upper = p1363_func_F(gneg(form->theta));
-	GEN lower = p1363_func_F(gsqr(form->theta));
-	GEN front = gpow(form->theta, gdivgs(gen_m1, 24), BIGDEFAULTPREC * 5);
+	GEN upper = p1363_func_F(gneg(form->theta), precision);
+	GEN lower = p1363_func_F(gsqr(form->theta), precision);
+	GEN front = gpow(form->theta, gdivgs(gen_m1, 24), precision);
 
 	GEN result = gmul(gdiv(upper, lower), front);
 
 	return gerepilecopy(ltop, result);
 }
 
-static GEN p1363_func_fone(GEN D, p1363_form_t *form) {
+static GEN p1363_func_fone(GEN D, p1363_form_t *form, long precision) {
 	pari_sp ltop = avma;
 
-	GEN upper = p1363_func_F(form->theta);
-	GEN lower = p1363_func_F(gsqr(form->theta));
-	GEN front = gpow(form->theta, gdivgs(gen_m1, 24), BIGDEFAULTPREC * 5);
+	GEN upper = p1363_func_F(form->theta, precision);
+	GEN lower = p1363_func_F(gsqr(form->theta), precision);
+	GEN front = gpow(form->theta, gdivgs(gen_m1, 24), precision);
 
 	GEN result = gmul(gdiv(upper, lower), front);
 
 	return gerepilecopy(ltop, result);
 }
 
-static GEN p1363_func_ftwo(GEN D, p1363_form_t *form) {
+static GEN p1363_func_ftwo(GEN D, p1363_form_t *form, long precision) {
 	pari_sp ltop = avma;
 
-	GEN upper = p1363_func_F(gpowgs(form->theta, 4));
-	GEN lower = p1363_func_F(gsqr(form->theta));
-	GEN front = gmul(sqrti(gen_2),
-	                 gpow(form->theta, gdivgs(gen_1, 12), BIGDEFAULTPREC * 5));
+	GEN upper = p1363_func_F(gpowgs(form->theta, 4), precision);
+	GEN lower = p1363_func_F(gsqr(form->theta), precision);
+	GEN front =
+	    gmul(sqrti(gen_2), gpow(form->theta, gdivgs(gen_1, 12), precision));
 
 	GEN result = gmul(gdiv(upper, lower), front);
 
@@ -287,20 +286,20 @@ static void p1363_N(GEN D, p1363_form_t *form) {
 	form->N = gerepileupto(ltop, form->N);
 }
 
-static void p1363_lambda(GEN D, p1363_form_t *form) {
+static void p1363_lambda(GEN D, p1363_form_t *form, long precision) {
 	pari_sp ltop = avma;
-	GEN pik = mulri(mppi(BIGDEFAULTPREC), stoi(form->K));
+	GEN pik = mulri(mppi(precision), stoi(form->K));
 	GEN quot = divrs(pik, 24);
 	form->lambda = gerepileupto(ltop, expIr(quot));
 }
 
-static void p1363_theta(GEN D, p1363_form_t *form) {
+static void p1363_theta(GEN D, p1363_form_t *form, long precision) {
 	pari_sp ltop = avma;
 
-	GEN upper = gadd(gneg(gsqrt(D, BIGDEFAULTPREC)), gmul(form->B, gen_I()));
-	GEN quot = gmul(gdiv(upper, form->A), mppi(BIGDEFAULTPREC));
+	GEN upper = gadd(gneg(gsqrt(D, precision)), gmul(form->B, gen_I()));
+	GEN quot = gmul(gdiv(upper, form->A), mppi(precision));
 
-	form->theta = gerepileupto(ltop, gexp(quot, BIGDEFAULTPREC));
+	form->theta = gerepileupto(ltop, gexp(quot, precision));
 }
 
 /**
@@ -310,22 +309,23 @@ static void p1363_theta(GEN D, p1363_form_t *form) {
  * @param D
  * @param forms
  * @param nforms
- * @return
+ * @return The pari precision required for W_D.
  */
-static long p1363_bit_precision(GEN D, p1363_form_t **forms, size_t nforms) {
+long p1363_bit_precision(GEN D, p1363_form_t **forms, size_t nforms) {
 	pari_sp ltop = avma;
 	long v0 = 32;
-	GEN mul = divrr(mulrr(mppi(BIGDEFAULTPREC), sqrti(D)), mplog2(BIGDEFAULTPREC));
+	GEN mul =
+	    divrr(mulrr(mppi(BIGDEFAULTPREC), sqrti(D)), mplog2(BIGDEFAULTPREC));
 	GEN sum = gen_0;
 	for (size_t i = 0; i < nforms; ++i) {
 		sum = gadd(sum, ginv(forms[i]->A));
 	}
-	long result = v0 + itos(mpceil(mulrr(mul, sum)));
+	long result = v0 + itos(gceil(gmul(mul, sum)));
 	avma = ltop;
-	return result;
+	return nbits2prec(result);
 }
 
-GEN p1363_invariant(GEN D, p1363_form_t *form) {
+GEN p1363_invariant(GEN D, p1363_form_t *form, long precision) {
 	pari_printf("[A,B,C] = %Pi %Pi %Pi\n", form->A, form->B, form->C);
 	pari_sp ltop = avma;
 
@@ -342,9 +342,9 @@ GEN p1363_invariant(GEN D, p1363_form_t *form) {
 	pari_printf("M = %Pi\n", form->M);
 	p1363_N(D, form);
 	pari_printf("N = %Pi\n", form->N);
-	p1363_lambda(D, form);
+	p1363_lambda(D, form, precision);
 	pari_printf("lambda = %Ps\n", form->lambda);
-	p1363_theta(D, form);
+	p1363_theta(D, form, precision);
 	pari_printf("theta = %Ps\n", form->theta);
 
 	GEN G = gcdii(D, stoi(3));
@@ -352,23 +352,23 @@ GEN p1363_invariant(GEN D, p1363_form_t *form) {
 
 	GEN bl = mulii(form->B, form->L);
 
-	GEN lmbl = gpow(form->lambda, negi(bl), BIGDEFAULTPREC);
+	GEN lmbl = gpow(form->lambda, negi(bl), precision);
 	pari_printf("lmbl = %Ps\n", lmbl);
 
 	GEN mi6 = gneg(gdiv(stoi(form->I), stoi(6)));
-	GEN powmi6 = gpow(gen_2, mi6, BIGDEFAULTPREC);
+	GEN powmi6 = gpow(gen_2, mi6, precision);
 	pari_printf("powmi6 = %Ps\n", powmi6);
 
 	GEN f = gen_0;
 	switch (form->J) {
 		case 0:
-			f = p1363_func_fzero(D, form);
+			f = p1363_func_fzero(D, form, precision);
 			break;
 		case 1:
-			f = p1363_func_fone(D, form);
+			f = p1363_func_fone(D, form, precision);
 			break;
 		case 2:
-			f = p1363_func_ftwo(D, form);
+			f = p1363_func_ftwo(D, form, precision);
 			break;
 		default:
 			pari_err_DOMAIN("p1363_invariant", "J", ">", stoi(2),
@@ -377,14 +377,14 @@ GEN p1363_invariant(GEN D, p1363_form_t *form) {
 
 	pari_printf("f = %Ps\n", f);
 
-	GEN fK = gpow(f, stoi(form->K), BIGDEFAULTPREC);
+	GEN fK = gpow(f, stoi(form->K), precision);
 	pari_printf("fK = %Ps\n", fK);
 
 	GEN in = gmul(lmbl, powmi6);
 	pari_printf("in = %Ps\n", in);
 	GEN inner = gmul(gmul(form->N, in), fK);
 	pari_printf("inner = %Ps\n", inner);
-	GEN result = gpow(inner, G, BIGDEFAULTPREC);
+	GEN result = gpow(inner, G, precision);
 	pari_printf("result = %Ps\n", result);
 
 	return gerepilecopy(ltop, result);
@@ -395,14 +395,17 @@ GEN p1363_poly(GEN D, p1363_form_t **forms, size_t nforms) {
 	long v = fetch_var();
 	name_var(v, "t");
 
+	long precision = p1363_bit_precision(D, forms, nforms);
+
 	GEN terms = gtovec0(gen_0, nforms);
 	for (size_t i = 0; i < nforms; ++i) {
-		gel(terms, i + 1) = gsub(pol_x(v), p1363_invariant(D, forms[i]));
+		gel(terms, i + 1) =
+		    gsub(pol_x(v), p1363_invariant(D, forms[i], precision));
 	}
 
 	GEN result = gen_1;
 	for (size_t i = 0; i < nforms; ++i) {
-		gmulz(result, gel(terms, i + 1), result);
+		result = gmul(result, gel(terms, i + 1));
 	}
 	return gerepilecopy(ltop, result);
 }
