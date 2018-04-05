@@ -5,7 +5,7 @@
 #include "p1363.h"
 #include "util/memory.h"
 
-GEN p1363_group(GEN D) {
+static GEN p1363_group(GEN D) {
 	pari_sp ltop = avma;
 	GEN s = mpfloor(sqrtr(rdivis(D, 3, BIGDEFAULTPREC)));
 	long llen = itos(s) * 2;
@@ -49,11 +49,11 @@ GEN p1363_group(GEN D) {
 	return gerepilecopy(ltop, vec_shorten(l, j - 1));
 }
 
-long p1363_num(GEN group) { return glength(group); }
+static size_t p1363_num(GEN group) { return (size_t)glength(group); }
 
 size_t p1363_forms(GEN D, p1363_form_t ***forms) {
 	GEN group = p1363_group(D);
-	size_t nforms = (size_t)p1363_num(group);
+	size_t nforms = p1363_num(group);
 	*forms = try_calloc(nforms * sizeof(p1363_form_t *));
 
 	for (size_t i = 0; i < nforms; ++i) {
@@ -79,7 +79,7 @@ void p1363_free(p1363_form_t ***forms, size_t nforms) {
 	}
 }
 
-GEN p1363_func_F(GEN z) {
+static GEN p1363_func_F(GEN z) {
 	pari_sp ltop = avma;
 
 	if (gequal0(z)) {
@@ -117,7 +117,7 @@ GEN p1363_func_F(GEN z) {
 	return gerepilecopy(ltop, sum);
 }
 
-GEN p1363_func_fzero(GEN D, p1363_form_t *form) {
+static GEN p1363_func_fzero(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 
 	GEN upper = p1363_func_F(gneg(form->theta));
@@ -129,7 +129,7 @@ GEN p1363_func_fzero(GEN D, p1363_form_t *form) {
 	return gerepilecopy(ltop, result);
 }
 
-GEN p1363_func_fone(GEN D, p1363_form_t *form) {
+static GEN p1363_func_fone(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 
 	GEN upper = p1363_func_F(form->theta);
@@ -141,7 +141,7 @@ GEN p1363_func_fone(GEN D, p1363_form_t *form) {
 	return gerepilecopy(ltop, result);
 }
 
-GEN p1363_func_ftwo(GEN D, p1363_form_t *form) {
+static GEN p1363_func_ftwo(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 
 	GEN upper = p1363_func_F(gpowgs(form->theta, 4));
@@ -154,9 +154,9 @@ GEN p1363_func_ftwo(GEN D, p1363_form_t *form) {
 	return gerepilecopy(ltop, result);
 }
 
-void p1363_m8(GEN D, p1363_form_t *form) { form->m8 = mod8(D); }
+static void p1363_m8(GEN D, p1363_form_t *form) { form->m8 = mod8(D); }
 
-void p1363_I(GEN D, p1363_form_t *form) {
+static void p1363_I(GEN D, p1363_form_t *form) {
 	switch (form->m8) {
 		case 1:
 		case 2:
@@ -179,7 +179,7 @@ void p1363_I(GEN D, p1363_form_t *form) {
 	}
 }
 
-void p1363_J(GEN D, p1363_form_t *form) {
+static void p1363_J(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 	GEN ac = mulii(form->A, form->C);
 
@@ -197,7 +197,7 @@ void p1363_J(GEN D, p1363_form_t *form) {
 	avma = ltop;
 }
 
-void p1363_K(GEN D, p1363_form_t *form) {
+static void p1363_K(GEN D, p1363_form_t *form) {
 	switch (form->m8) {
 		case 1:
 		case 2:
@@ -243,7 +243,7 @@ void p1363_L(GEN D, p1363_form_t *form) {
 	form->L = gerepileupto(ltop, form->L);
 }
 
-void p1363_M(GEN D, p1363_form_t *form) {
+static void p1363_M(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 	GEN quot;
 	if (mod2(form->A) == 0) {
@@ -254,7 +254,7 @@ void p1363_M(GEN D, p1363_form_t *form) {
 	form->M = gerepileupto(ltop, powii(gen_m1, quot));
 }
 
-void p1363_N(GEN D, p1363_form_t *form) {
+static void p1363_N(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 	long ac2 = mod2(mulii(form->A, form->C));
 
@@ -287,20 +287,42 @@ void p1363_N(GEN D, p1363_form_t *form) {
 	form->N = gerepileupto(ltop, form->N);
 }
 
-void p1363_lambda(GEN D, p1363_form_t *form) {
+static void p1363_lambda(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 	GEN pik = mulri(mppi(BIGDEFAULTPREC), stoi(form->K));
 	GEN quot = divrs(pik, 24);
 	form->lambda = gerepileupto(ltop, expIr(quot));
 }
 
-void p1363_theta(GEN D, p1363_form_t *form) {
+static void p1363_theta(GEN D, p1363_form_t *form) {
 	pari_sp ltop = avma;
 
 	GEN upper = gadd(gneg(gsqrt(D, BIGDEFAULTPREC)), gmul(form->B, gen_I()));
 	GEN quot = gmul(gdiv(upper, form->A), mppi(BIGDEFAULTPREC));
 
 	form->theta = gerepileupto(ltop, gexp(quot, BIGDEFAULTPREC));
+}
+
+/**
+ * Bit-precision computation for a Weber class polynomial from:
+ * 		On the Efficient Generation of Elliptic Curves,
+ * 		Elisavet Konstantinou, Yiannis C. Stamatiou, Christos Zaroliagis
+ * @param D
+ * @param forms
+ * @param nforms
+ * @return
+ */
+static long p1363_bit_precision(GEN D, p1363_form_t **forms, size_t nforms) {
+	pari_sp ltop = avma;
+	long v0 = 32;
+	GEN mul = divrr(mulrr(mppi(BIGDEFAULTPREC), sqrti(D)), mplog2(BIGDEFAULTPREC));
+	GEN sum = gen_0;
+	for (size_t i = 0; i < nforms; ++i) {
+		sum = gadd(sum, ginv(forms[i]->A));
+	}
+	long result = v0 + itos(mpceil(mulrr(mul, sum)));
+	avma = ltop;
+	return result;
 }
 
 GEN p1363_invariant(GEN D, p1363_form_t *form) {
