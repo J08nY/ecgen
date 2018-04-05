@@ -66,6 +66,8 @@ function exhaustive() {
 	assert_raises "${ecgen} --f2m -r --points=all 10"
 	assert_raises "${ecgen} --f2m -r --points=none 10"
 
+	assert_raises "${ecgen} --fp --random=seed,field,a,b,equation 10"
+
 	assert_raises "${ecgen} --fp -r -c 5 10"
 }
 
