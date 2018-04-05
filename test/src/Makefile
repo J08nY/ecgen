@@ -1,7 +1,7 @@
 ####
 #
 # ecgen, tool for generating Elliptic curve domain parameters
-# Copyright (C) 2017 J08nY
+# Copyright (C) 2017-2018 J08nY
 #
 ####
 
@@ -10,7 +10,7 @@ CC ?= gcc
 CFLAGS = -Wall
 TEST ?= 0
 ifeq ($(TEST), 1)
-	CFLAGS += --coverage -g -O0
+    CFLAGS += --coverage -g -O0
 endif
 LDFLAGS = -L../../lib/parson -L../../lib/sha1 -L../../lib/pari -L../lib/criterion/build
 INCLUDES = -I. -I../../src -I../../lib -I../lib/criterion/include
@@ -52,3 +52,5 @@ clean-cov:
 format:
 	clang-format -i $(TEST_SRC)
 	clang-format -i $(TEST_HDR)
+
+.PHONY: all clean-all clean clean-cov format

@@ -65,4 +65,4 @@ format:
 	clang-format -i $(SRC)
 	clang-format -i $(HDR)
 
-.PHONY: all clean-all clean format
+.PHONY: all clean-all clean clean-cov format

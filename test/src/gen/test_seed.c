@@ -1,6 +1,6 @@
 /*
  * ecgen, tool for generating Elliptic seed domain parameters
- * Copyright (C) 2017 J08nY
+ * Copyright (C) 2017-2018 J08nY
  */
 #include <criterion/criterion.h>
 #include "gen/seed.h"
