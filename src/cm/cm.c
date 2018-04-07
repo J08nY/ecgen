@@ -15,8 +15,7 @@ int cm_do() {
 	GEN D = stoi(71);
 	p1363_form_t **forms;
 	size_t nforms = p1363_forms(D, &forms);
-	GEN WD = p1363_poly(D, forms, nforms);
-	pari_printf("%Ps\n", WD);
+	p1363_poly(D, forms, nforms);
 	p1363_free(&forms, nforms);
 
 	debug_log_start("Finished Complex Multiplication method");
