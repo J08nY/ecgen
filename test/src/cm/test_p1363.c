@@ -6,8 +6,19 @@
 #include <criterion/criterion.h>
 #include "cm/p1363.h"
 #include "test/default.h"
+#include "test/output.h"
 
-TestSuite(p1363, .init = default_setup, .fini = default_teardown);
+void p1363_setup() {
+	default_setup();
+	output_setup();
+}
+
+void p1363_teardown() {
+	default_teardown();
+	output_teardown();
+}
+
+TestSuite(p1363, .init = p1363_setup, .fini = p1363_teardown);
 
 Test(p1363, test_p1363_forms) {
 	GEN D = stoi(71);
@@ -25,6 +36,7 @@ Test(p1363, test_p1363_forms) {
 		cr_assert(equalii(forms[i]->B, expected[i].B), );
 		cr_assert(equalii(forms[i]->C, expected[i].C), );
 	}
+	p1363_free(&forms, nforms);
 }
 
 Test(p1363, test_p1363_poly) {
@@ -32,5 +44,10 @@ Test(p1363, test_p1363_poly) {
 	p1363_form_t **forms;
 	size_t nforms = p1363_forms(D, &forms);
 	GEN WD = p1363_poly(D, forms, nforms);
-	pari_printf("%Ps\n", WD);
+	GEN coeffs = gtovec(WD);
+
+	GEN expected =
+	    mkvecn(8, gen_1, gen_m2, gen_m1, gen_1, gen_1, gen_1, gen_m1, gen_m1);
+	cr_assert(gequal(coeffs, expected), );
+	p1363_free(&forms, nforms);
 }
