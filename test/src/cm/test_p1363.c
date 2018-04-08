@@ -51,3 +51,13 @@ Test(p1363, test_p1363_poly) {
 	cr_assert(gequal(coeffs, expected), );
 	p1363_free(&forms, nforms);
 }
+
+Test(p1363, test_p1363_polclass) {
+	GEN WD = p1363_polclass(stoi(71));
+
+	GEN coeffs = gtovec(WD);
+
+	GEN expected =
+	    mkvecn(8, gen_1, gen_m2, gen_m1, gen_1, gen_1, gen_1, gen_m1, gen_m1);
+	cr_assert(gequal(coeffs, expected), );
+}

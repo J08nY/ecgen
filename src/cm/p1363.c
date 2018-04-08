@@ -134,6 +134,7 @@ static GEN p1363_func_fzero(GEN D, p1363_form_t *form, long precision) {
 
 	GEN result = gmul(divd, front);
 
+	// TODO: WHY????
 	gel(result, 2) = gneg(gel(result, 2));
 
 	return gerepilecopy(ltop, result);
@@ -331,15 +332,6 @@ static void p1363_theta(GEN D, p1363_form_t *form, long precision) {
 	form->theta = gerepilecopy(ltop, gexp(quot, precision));
 }
 
-/**
- * Bit-precision computation for a Weber class polynomial from:
- * 		On the Efficient Generation of Elliptic Curves,
- * 		Elisavet Konstantinou, Yiannis C. Stamatiou, Christos Zaroliagis
- * @param D
- * @param forms
- * @param nforms
- * @return The pari precision required for W_D.
- */
 long p1363_bit_precision(GEN D, p1363_form_t **forms, size_t nforms) {
 	pari_sp ltop = avma;
 	long v0 = 64;
@@ -448,4 +440,13 @@ GEN p1363_poly(GEN D, p1363_form_t **forms, size_t nforms) {
 		result = gadd(result, gmul(gel(vec, i), pol_xn(veclen - i, v)));
 	}
 	return gerepilecopy(ltop, result);
+}
+
+GEN p1363_polclass(GEN D) {
+	pari_sp ltop = avma;
+	p1363_form_t **forms;
+	size_t nforms = p1363_forms(D, &forms);
+	GEN WD = p1363_poly(D, forms, nforms);
+	p1363_free(&forms, nforms);
+	return gerepileupto(ltop, WD);
 }
