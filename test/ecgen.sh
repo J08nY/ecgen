@@ -136,6 +136,12 @@ function hex() {
 	assert_raises "${ecgen} --fp -r --hex-check=\"abc\" 32 | grep \"abc\""
 }
 
+function cm() {
+    start_test
+    assert_raises "${ecgen} --fp --order=2147483723 32" 1
+    assert_raises "${ecgen} --fp --order=2147483783 32"
+}
+
 . ${ASSERT} -v
 start_suite
 runs
@@ -148,4 +154,5 @@ invalid
 twist
 cli
 hex
+cm
 end_suite ecgen

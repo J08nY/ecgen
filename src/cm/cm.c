@@ -11,13 +11,18 @@
 int cm_do() {
 	debug_log_start("Starting Complex Multiplication method");
 
+	int result = 0;
 	curve_t *curve = custom_curve();
-	output_o_begin();
-	output_o(curve);
-	output_o_end();
+	if (curve) {
+		output_o_begin();
+		output_o(curve);
+		output_o_end();
 
-	curve_free(&curve);
+		curve_free(&curve);
+	} else {
+		result = 1;
+	}
 
 	debug_log_start("Finished Complex Multiplication method");
-	return 0;
+	return result;
 }

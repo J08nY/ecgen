@@ -149,6 +149,10 @@ static void cli_end(struct argp_state *state) {
 		argp_failure(state, 1, 0,
 		             "Brainpool algorithm only creates prime field curves.");
 	}
+	if (cfg->method == METHOD_CM && cfg->field == FIELD_BINARY) {
+		argp_failure(state, 1, 0,
+		             "Complex multiplication only creates prime field curves.");
+	}
 	// default values
 	if (!cfg->count) {
 		cfg->count = 1;

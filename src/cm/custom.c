@@ -3,7 +3,6 @@
  * Copyright (C) 2017 J08nY
  */
 #include "custom.h"
-#include "io/input.h"
 #include "io/output.h"
 #include "obj/curve.h"
 #include "obj/point.h"
@@ -16,7 +15,6 @@ static size_t custom_add_primes(GEN r, GEN order, GEN **primes,
 	if (nprimes == 0) {
 		nalloc = 10;
 		*primes = try_calloc(sizeof(GEN) * nalloc);
-		debug_log("calloc %lu", sizeof(GEN) * nalloc);
 	}
 
 	GEN logN = ground(glog(order, BIGDEFAULTPREC));
@@ -48,7 +46,7 @@ static size_t custom_add_primes(GEN r, GEN order, GEN **primes,
 	return nprimes;
 }
 
-static custom_quadr_t custom_prime_random(GEN order) {
+static custom_quadr_t custom_quadr(GEN order) {
 	pari_sp ltop = avma;
 	custom_quadr_t result = {0};
 
@@ -115,8 +113,12 @@ static custom_quadr_t custom_prime_random(GEN order) {
 
 curve_t *custom_curve() {
 	GEN order = strtoi(cfg->cm_order);
+	if (!isprime(order)) {
+		fprintf(err, "Currently, order must be prime for CM to work.\n");
+		return NULL;
+	}
 
-	custom_quadr_t quadr = custom_prime_random(order);
+	custom_quadr_t quadr = custom_quadr(order);
 	debug_log("order = %Pi", order);
 	debug_log("p = %Pi, t = %Pi, v = %Pi, D = %Pi, ", quadr.p, quadr.t, quadr.v,
 	          quadr.D);
