@@ -3,59 +3,12 @@
  * Copyright (C) 2017 J08nY
  */
 #include "custom.h"
-#include <obj/obj.h>
 #include "io/input.h"
 #include "io/output.h"
 #include "obj/curve.h"
 #include "obj/point.h"
 #include "obj/subgroup.h"
 #include "util/bits.h"
-
-static bool custom_is_disc(GEN test) {
-	bool result = true;
-	long md4;
-	pari_CATCH(e_DOMAIN) { result = false; }
-	pari_TRY { check_quaddisc_imag(test, &md4, ""); };
-	pari_ENDCATCH return result;
-}
-
-static GEN custom_disc(GEN order, GEN prime) {
-	pari_sp ltop = avma;
-
-	GEN t = subii(order, addii(prime, gen_1));
-	GEN v2D = subii(mulis(prime, 4), sqri(t));
-
-	GEN min_D = core(v2D);
-
-	if (signe(min_D) == 1) {
-		setsigne(min_D, -1);
-	}
-	if (custom_is_disc(min_D)) {
-		return gerepileupto(ltop, min_D);
-	} else {
-		avma = ltop;
-		return NULL;
-	}
-}
-
-static custom_quadr_t custom_prime_input(GEN order) {
-	pari_sp ltop = avma;
-	custom_quadr_t result = {0};
-	GEN p;
-	GEN D;
-	do {
-		p = input_prime("p:", cfg->bits);
-		if (gequalm1(p)) {
-			continue;
-		}
-		D = custom_disc(order, p);
-	} while (D == NULL);
-
-	gerepileall(ltop, 2, &p, &D);
-	result.p = p;
-	result.D = D;
-	return result;
-}
 
 static size_t custom_add_primes(GEN r, GEN order, GEN **primes,
                                 size_t nprimes) {
@@ -163,12 +116,7 @@ static custom_quadr_t custom_prime_random(GEN order) {
 curve_t *custom_curve() {
 	GEN order = strtoi(cfg->cm_order);
 
-	custom_quadr_t quadr;
-	if (cfg->random) {
-		quadr = custom_prime_random(order);
-	} else {
-		quadr = custom_prime_input(order);
-	}
+	custom_quadr_t quadr = custom_prime_random(order);
 	debug_log("order = %Pi", order);
 	debug_log("p = %Pi, t = %Pi, v = %Pi, D = %Pi, ", quadr.p, quadr.t, quadr.v,
 	          quadr.D);
