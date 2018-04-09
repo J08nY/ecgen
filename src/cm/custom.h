@@ -9,10 +9,17 @@
 #include "misc/types.h"
 
 typedef struct {
+	/* Stuff filled with custom_quadr_next. */
 	GEN p;
 	GEN t;
-	GEN v;
 	GEN D;
+
+	/* Stuff for saving state. */
+	GEN order;
+	GEN r;
+	GEN i;
+	GEN* Sp;
+	size_t nprimes;
 } custom_quadr_t;
 
 /**

@@ -11,6 +11,7 @@
 
 static size_t custom_add_primes(GEN r, GEN order, GEN **primes,
                                 size_t nprimes) {
+	debug_log("add_primes r = %Pi, nprimes = %lu", r, nprimes);
 	size_t nalloc = nprimes;
 	if (nprimes == 0) {
 		nalloc = 10;
@@ -46,70 +47,154 @@ static size_t custom_add_primes(GEN r, GEN order, GEN **primes,
 	return nprimes;
 }
 
-static custom_quadr_t custom_quadr(GEN order) {
-	pari_sp ltop = avma;
-	custom_quadr_t result = {0};
+static void custom_quadr_init(custom_quadr_t *quadr, GEN order) {
+	quadr->D = gen_0;
+	quadr->p = gen_0;
+	quadr->t = gen_0;
 
-	GEN r = gen_0;
-	GEN *Sp;
-	size_t nprimes = custom_add_primes(r, order, &Sp, 0);
+	quadr->order = order;
+	quadr->r = gen_0;
+	quadr->i = gen_0;
+	quadr->Sp = NULL;
+	quadr->nprimes = 0;
+}
 
-	GEN logN = ground(glog(order, BIGDEFAULTPREC));
-	GEN rlog2 = sqri(mulii(r, logN));
+static void custom_quadr_next(custom_quadr_t *quadr) {
+	// Ok I get some state in r, i, Sp and nprimes.
+	// Here I want to check if I want to generate more primes into Sp
+	// Then continue with i
 
-	GEN i = gen_0;
+	GEN logN = ground(glog(quadr->order, BIGDEFAULTPREC));
+	GEN rlog2 = sqri(mulii(quadr->r, logN));
+
+	// When Do I want more primes? If i == imax, or nprimes == 0
+	GEN imax = int2n(quadr->nprimes);
+	if (equalii(quadr->i, imax) || quadr->nprimes == 0) {
+		quadr->nprimes = custom_add_primes(quadr->r, quadr->order, &(quadr->Sp),
+		                                   quadr->nprimes);
+	}
 
 	while (true) {
-		GEN imax = int2n(nprimes);
+		imax = int2n(quadr->nprimes);
 
-		while (cmpii(i, imax) < 0) {
-			// debug_log("i %Pi", i);
+		while (cmpii(quadr->i, imax) < 0) {
+			debug_log("i %Pi", quadr->i);
 			pari_sp btop = avma;
 			GEN pprod = gen_1;
-			bits_t *ibits = bits_from_i_len(i, nprimes);
-			for (size_t j = 0; j < nprimes; ++j) {
+			bits_t *ibits = bits_from_i_len(quadr->i, quadr->nprimes);
+			for (size_t j = 0; j < quadr->nprimes; ++j) {
 				if (GET_BIT(ibits->bits, j) == 1) {
-					// debug_log("multiplying %Pi", Sp[j]);
-					pprod = mulii(pprod, Sp[j]);
+					// debug_log("multiplying %Pi", quadr->Sp[j]);
+					pprod = mulii(pprod, quadr->Sp[j]);
 				}
 			}
 			bits_free(&ibits);
 			if (cmpii(pprod, rlog2) < 0 && equalii(modis(pprod, 8), stoi(5))) {
-				// debug_log("candidate D = %Pi", pprod);
+				debug_log("candidate D = %Pi, rlog2 = %Pi", pprod, rlog2);
 				GEN x;
 				GEN y;
-				cornacchia2(negi(pprod), order, &x, &y);
-				GEN pp1 = addii(addis(order, 1), x);
-				GEN pp2 = subii(addis(order, 1), x);
+				if (!cornacchia2(negi(pprod), quadr->order, &x, &y)) {
+					avma = btop;
+					quadr->i = addis(quadr->i, 1);
+					// debug_log("Cornacchia fail");
+					continue;
+				}
+				GEN pp1 = addii(addis(quadr->order, 1), x);
+				GEN pp2 = subii(addis(quadr->order, 1), x);
 				if (isprime(pp1)) {
-					result.p = pp1;
-					result.D = pprod;
-					result.t = x;
-					result.v = gen_0;
-					gerepileall(ltop, 4, &result.p, &result.t, &result.v,
-					            &result.D);
-					try_free(Sp);
-					return result;
+					quadr->p = pp1;
+					quadr->D = pprod;
+					quadr->t = x;
+					quadr->i = addis(quadr->i, 1);
+					debug_log("good D %Pi", pprod);
+					return;
 				}
 				if (isprime(pp2)) {
-					result.p = pp2;
-					result.D = pprod;
-					result.t = x;
-					result.v = gen_0;
-					gerepileall(ltop, 4, &result.p, &result.t, &result.v,
-					            &result.D);
-					try_free(Sp);
-					return result;
+					quadr->p = pp2;
+					quadr->D = pprod;
+					quadr->t = x;
+					quadr->i = addis(quadr->i, 1);
+					debug_log("good D %Pi", pprod);
+					return;
 				}
 			}
 			avma = btop;
-			i = addis(i, 1);
+			quadr->i = addis(quadr->i, 1);
 		}
 
-		r = addis(r, 1);
-		nprimes = custom_add_primes(r, order, &Sp, nprimes);
+		quadr->r = addis(quadr->r, 1);
+		quadr->nprimes = custom_add_primes(quadr->r, quadr->order, &(quadr->Sp),
+		                                   quadr->nprimes);
+		rlog2 = sqri(mulii(quadr->r, logN));
 	}
 }
+
+static void custom_quadr_free(custom_quadr_t *quadr) { try_free(quadr->Sp); }
+
+/*
+static custom_quadr_t custom_quadr(GEN order) {
+    pari_sp ltop = avma;
+    custom_quadr_t result = {0};
+
+    GEN r = gen_0;
+    GEN *Sp;
+    size_t nprimes = custom_add_primes(r, order, &Sp, 0);
+
+    GEN logN = ground(glog(order, BIGDEFAULTPREC));
+    GEN rlog2 = sqri(mulii(r, logN));
+
+    GEN i = gen_0;
+
+    while (true) {
+        GEN imax = int2n(nprimes);
+
+        while (cmpii(i, imax) < 0) {
+            // debug_log("i %Pi", i);
+            pari_sp btop = avma;
+            GEN pprod = gen_1;
+            bits_t *ibits = bits_from_i_len(i, nprimes);
+            for (size_t j = 0; j < nprimes; ++j) {
+                if (GET_BIT(ibits->bits, j) == 1) {
+                    // debug_log("multiplying %Pi", Sp[j]);
+                    pprod = mulii(pprod, Sp[j]);
+                }
+            }
+            bits_free(&ibits);
+            if (cmpii(pprod, rlog2) < 0 && equalii(modis(pprod, 8), stoi(5))) {
+                // debug_log("candidate D = %Pi", pprod);
+                GEN x;
+                GEN y;
+                cornacchia2(negi(pprod), order, &x, &y);
+                GEN pp1 = addii(addis(order, 1), x);
+                GEN pp2 = subii(addis(order, 1), x);
+                if (isprime(pp1)) {
+                    result.p = pp1;
+                    result.D = pprod;
+                    result.t = x;
+                    gerepileall(ltop, 3, &result.p, &result.t,
+                                &result.D);
+                    try_free(Sp);
+                    return result;
+                }
+                if (isprime(pp2)) {
+                    result.p = pp2;
+                    result.D = pprod;
+                    result.t = x;
+                    gerepileall(ltop, 3, &result.p, &result.t,
+                                &result.D);
+                    try_free(Sp);
+                    return result;
+                }
+            }
+            avma = btop;
+            i = addis(i, 1);
+        }
+
+        r = addis(r, 1);
+        nprimes = custom_add_primes(r, order, &Sp, nprimes);
+    }
+}
+*/
 
 curve_t *custom_curve() {
 	GEN order = strtoi(cfg->cm_order);
@@ -118,35 +203,54 @@ curve_t *custom_curve() {
 		return NULL;
 	}
 
-	custom_quadr_t quadr = custom_quadr(order);
-	debug_log("order = %Pi", order);
-	debug_log("p = %Pi, t = %Pi, v = %Pi, D = %Pi, ", quadr.p, quadr.t, quadr.v,
-	          quadr.D);
-	GEN H = polclass(quadr.D, 0, 0);
-
-	debug_log("H = %Ps", H);
-
-	GEN r = FpX_roots(H, quadr.p);
-	debug_log("roots = %Ps", r);
-
 	GEN a = NULL;
 	GEN e = NULL;
 	GEN g = NULL;
 
-	long rlen = glength(r);
-	for (long i = 1; i <= rlen; ++i) {
-		GEN root = gel(r, i);
-		a = Fp_div(Fp_mul(stoi(27), root, quadr.p),
-		           Fp_mul(stoi(4), Fp_sub(stoi(1728), root, quadr.p), quadr.p),
-		           quadr.p);
-		e = ellinit(mkvec2(a, negi(a)), quadr.p, 0);
-		g = genrand(e);
-		GEN gmul = ellmul(e, g, order);
-		if (gequal(gmul, gtovec(gen_0))) {
-			debug_log("YES %Ps", e);
-			break;
+	custom_quadr_t quadr;
+	custom_quadr_init(&quadr, order);
+	while (true) {
+		custom_quadr_next(&quadr);
+
+		debug_log("order = %Pi", order);
+		debug_log("p = %Pi, t = %Pi, D = %Pi, ", quadr.p, quadr.t, quadr.D);
+		GEN H = polclass(quadr.D, 0, 0);
+
+		debug_log("H = %Ps", H);
+
+		GEN r = FpX_roots(H, quadr.p);
+		debug_log("roots = %Ps", r);
+		if (gequal(r, gtovec(gen_0))) {
+			continue;
 		}
+
+		bool has_curve = false;
+
+		long rlen = glength(r);
+		for (long i = 1; i <= rlen; ++i) {
+			GEN root = gel(r, i);
+			a = Fp_div(
+			    Fp_mul(stoi(27), root, quadr.p),
+			    Fp_mul(stoi(4), Fp_sub(stoi(1728), root, quadr.p), quadr.p),
+			    quadr.p);
+			e = ellinit(mkvec2(a, negi(a)), quadr.p, 0);
+			pari_CATCH(e_TYPE) { continue; }
+			pari_TRY { checkell(e); };
+			pari_ENDCATCH{};
+
+			g = genrand(e);
+			GEN gmul = ellmul(e, g, order);
+			if (ell_is_inf(gmul)) {
+				debug_log("YES %Ps", e);
+				has_curve = true;
+				break;
+			}
+		}
+
+		if (has_curve) break;
 	}
+
+	custom_quadr_free(&quadr);
 
 	curve_t *result = curve_new();
 	result->field = quadr.p;
