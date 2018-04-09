@@ -29,6 +29,15 @@ GENERATOR(point_gen_random);
 GENERATOR(points_gen_random);
 
 /**
+ *
+ * @param curve
+ * @param generator
+ * @param orders
+ * @return
+ */
+point_t **points_from_orders(GEN curve, point_t *generator, GEN orders);
+
+/**
  * GENERATOR(gen_f)
  * Generates prime order points using trial division.
  *

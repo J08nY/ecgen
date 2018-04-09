@@ -5,6 +5,9 @@
 #include "memory.h"
 #include <pari/pari.h>
 
+#define ECGEN_PARI_MEM
+#ifdef ECGEN_PARI_MEM
+
 static void *(*malloc_func)(size_t) = pari_malloc;
 
 static void *(*calloc_func)(size_t) = pari_calloc;
@@ -12,6 +15,20 @@ static void *(*calloc_func)(size_t) = pari_calloc;
 static void *(*realloc_func)(void *, size_t) = pari_realloc;
 
 static void (*free_func)(void *) = pari_free;
+
+#else
+
+static void *(*malloc_func)(size_t) = malloc;
+
+void *calloc_wrapper(size_t n) { return calloc(1, n); }
+
+static void *(*calloc_func)(size_t) = calloc_wrapper;
+
+static void *(*realloc_func)(void *, size_t) = realloc;
+
+static void (*free_func)(void *) = free;
+
+#endif
 
 void *alloc(void *(*fun)(size_t), size_t size) {
 	void *result = fun(size);
