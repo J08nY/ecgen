@@ -11,6 +11,7 @@
 
 static size_t custom_add_primes(GEN r, GEN order, GEN **primes,
                                 size_t nprimes) {
+	debug_log("add_primes r %Pi, nprimes = %lu", r, nprimes);
 	size_t nalloc = nprimes;
 	if (nprimes == 0) {
 		nalloc = 10;
@@ -35,13 +36,17 @@ static size_t custom_add_primes(GEN r, GEN order, GEN **primes,
 			} else {
 				pstar = gcopy(pstar);
 			}
-			(*primes)[nprimes++] = pstar;
 			if (nprimes == nalloc) {
 				nalloc *= 2;
 				*primes = try_realloc(*primes, sizeof(GEN) * nalloc);
 			}
+			(*primes)[nprimes++] = pstar;
+			debug_log("adding pstar %Pi", pstar);
 		}
 	}
+	debug_log("ret nprimes %lu, nalloc = %lu", nprimes, nalloc);
+
+	*primes = try_realloc(*primes, sizeof(GEN) * nprimes);
 
 	return nprimes;
 }
@@ -55,7 +60,7 @@ static custom_quadr_t custom_quadr(GEN order) {
 	size_t nprimes = custom_add_primes(r, order, &Sp, 0);
 
 	GEN logN = ground(glog(order, BIGDEFAULTPREC));
-	GEN rlog2 = sqri(mulii(r, logN));
+	GEN rlog2 = sqri(mulii(addis(r, 1), logN));
 
 	GEN i = gen_0;
 
@@ -74,11 +79,19 @@ static custom_quadr_t custom_quadr(GEN order) {
 				}
 			}
 			bits_free(&ibits);
-			if (cmpii(pprod, rlog2) < 0 && equalii(modis(pprod, 8), stoi(5))) {
-				// debug_log("candidate D = %Pi", pprod);
+
+			GEN absp = absi(pprod);
+			long m4 = mod4(absp);
+			if (cmpii(absp, rlog2) < 0 && equalii(modis(pprod, 8), stoi(5)) &&
+			    m4 != 1 && m4 != 2) {
+				debug_log("candidate D = %Pi", pprod);
 				GEN x;
 				GEN y;
-				cornacchia2(negi(pprod), order, &x, &y);
+				if (!cornacchia2(absp, order, &x, &y)) {
+					avma = btop;
+					i = addis(i, 1);
+					continue;
+				}
 				GEN pp1 = addii(addis(order, 1), x);
 				GEN pp2 = subii(addis(order, 1), x);
 				if (isprime(pp1)) {
@@ -108,6 +121,7 @@ static custom_quadr_t custom_quadr(GEN order) {
 
 		r = addis(r, 1);
 		nprimes = custom_add_primes(r, order, &Sp, nprimes);
+		rlog2 = sqri(mulii(addis(r, 1), logN));
 	}
 }
 
