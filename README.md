@@ -12,12 +12,13 @@ Tool for generating Elliptic curve domain parameters.
  - `--fp`					Prime field.
 
 #### Generation methods
+
  - `--anomalous`            Generate an anomalous curve (of trace one, with field order equal to curve order).
+ - `-i / --invalid`			Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).
+ - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication).
+ - `-s / --ansi[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
  - `-b / --brainpool[=SEED]`Generate a curve using the Brainpool verifiably pseudorandom algorithm from the original paper.
  - `--brainpool-rfc[=SEED]` Generate a curve using the Brainpool verifiably pseudorandom algorithm as per RFC 5639.
- - `-i / --invalid`			Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).
- - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication). **TODO - NOT IMPLEMENTED**
- - `-s / --ansi[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
  - `--twist`                Generate a twist of a given curve.
 
 #### Generation options
@@ -100,13 +101,13 @@ for Doxygen.
 
 ### Generation methods
 
-Three different EC curve parameters generation methods are implemented.
+Four different EC curve parameters generation methods are implemented.
 
 [Efficient Algorithms for Generating Elliptic Curves over Finite Fields Suitable for Use in Cryptography - [Baier]](https://www.cdc.informatik.tu-darmstadt.de/reports/reports/harald_baier.diss.pdf)
 
 [Generation Methods of Elliptic Curves - [Baier, Buchmann]](https://www.ipa.go.jp/security/enc/CRYPTREC/fy15/doc/1030_Buchmann.evaluation.pdf)
 
-##### Random approach
+#### Random approach
 
  - Generates field and equation parameters:
     - randomly
@@ -116,27 +117,36 @@ Three different EC curve parameters generation methods are implemented.
     - `-p / --prime` generates curves until a prime order curve is found.
     - `-K / --koblitz` generates a Koblitz curve.
     - `-u / --unique` generates a uniquely generated curve (with one generator/cyclic group).
+    - `--twist` generates a curve and then produces it quadratic twist.
     - etc..
 
-##### Invalid curve generation
+#### Invalid curve generation
 
  - Generates *invalid* curves for a given curve.
  - These curves have the same field, and *A* parameter in the short Weierstrass equation.
  - Multiplication using some(most?) scalar multiplication algorithm proceeds the same way multiplication on the input curve would.
- - Used with the `-i / --invalid` option
+ - Used with the `-i / --invalid` option.
+ - These curves are **NOT SECURE** and are useful for implementation testing.
  - [Validation of Elliptic Curve Public Keys - [Antipa, Brown, Menezes, Struik, Vanstone]](https://www.iacr.org/archive/pkc2003/25670211/25670211.pdf)
  - [Differential Fault Attacks on Elliptic Curve Cryptosystems - [Biehl, Mayer, Muller]](http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.107.3920&rep=rep1&type=pdf)
  - [Practical Invalid Curve Attacks on TLS-ECDH - [Jager, Schwenk, Somorovksy]](http://euklid.org/pdf/ECC_Invalid_Curve.pdf)
 
-##### Complex multiplication
+#### Complex multiplication
 
  - Capable of generating a curve of a given (prime) order.
- - Generates a subset of all Elliptic Curves over a given field.
- - Used with the `-n / --order` option
- - [Constructing elliptic curves of prime order - [Broker, Stevenhagen]](https://arxiv.org/abs/0712.2022)
+ - Only works over a prime field.
+ - Used with the `-n / --order` option.
+ - Uses generation method from: [Constructing elliptic curves of prime order - [Broker, Stevenhagen]](https://arxiv.org/abs/0712.2022) (see Algorithm 2.2)
+ - Creates the class polynomials using the built in PARI/GP `polclass()` function or the implemented class polynomial algorithm from IEEE P1363
+ - [Constructing elliptic curves of prescribed order - [Broker (thesis)]](https://openaccess.leidenuniv.nl/bitstream/handle/1887/4425/Thesis.pdf)
  - [Generating Elliptic Curves of Prime Order - [Savas, Schmidt, Koc]](http://people.oregonstate.edu/~schmidtt/ourPapers/SavasKoc/ches01curve.pdf)
- - **Currently not implemented.**
 
+#### Anomalous curve generation
+
+ - Generates curves of order equal to field order.
+ - Used with the `--anomalous` option.
+ - These curves are **NOT SECURE** and are useful for implementation testing.
+ - [Elliptic curves over F_p suitable for cryptosystems - [Miyaji]](https://dspace.jaist.ac.jp/dspace/bitstream/10119/4464/1/73-61.pdf)
 
 ### Build
 
