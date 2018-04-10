@@ -36,13 +36,15 @@ static size_t custom_add_primes(GEN r, GEN order, GEN **primes,
 			} else {
 				pstar = gcopy(pstar);
 			}
-			(*primes)[nprimes++] = pstar;
 			if (nprimes == nalloc) {
 				nalloc *= 2;
 				*primes = try_realloc(*primes, sizeof(GEN) * nalloc);
 			}
+			(*primes)[nprimes++] = pstar;
 		}
 	}
+
+	*primes = try_realloc(*primes, sizeof(GEN) * nprimes);
 
 	return nprimes;
 }
@@ -65,9 +67,9 @@ static void custom_quadr_next(custom_quadr_t *quadr) {
 	// Then continue with i
 
 	GEN logN = ground(glog(quadr->order, BIGDEFAULTPREC));
-	GEN rlog2 = sqri(mulii(quadr->r, logN));
+	GEN rlog2 = sqri(mulii(addis(quadr->r, 1), logN));
 
-	// When Do I want more primes? If i == imax, or nprimes == 0
+	// When do I want more primes? If i == imax, or nprimes == 0
 	GEN imax = int2n(quadr->nprimes);
 	if (equalii(quadr->i, imax) || quadr->nprimes == 0) {
 		quadr->nprimes = custom_add_primes(quadr->r, quadr->order, &(quadr->Sp),
@@ -78,7 +80,7 @@ static void custom_quadr_next(custom_quadr_t *quadr) {
 		imax = int2n(quadr->nprimes);
 
 		while (cmpii(quadr->i, imax) < 0) {
-			debug_log("i %Pi", quadr->i);
+			// debug_log("i %Pi", quadr->i);
 			pari_sp btop = avma;
 			GEN pprod = gen_1;
 			bits_t *ibits = bits_from_i_len(quadr->i, quadr->nprimes);
@@ -89,11 +91,15 @@ static void custom_quadr_next(custom_quadr_t *quadr) {
 				}
 			}
 			bits_free(&ibits);
-			if (cmpii(pprod, rlog2) < 0 && equalii(modis(pprod, 8), stoi(5))) {
-				debug_log("candidate D = %Pi, rlog2 = %Pi", pprod, rlog2);
+
+			GEN absp = absi(pprod);
+			long m4 = mod4(absp);
+			if (cmpii(absp, rlog2) < 0 && equalii(modis(pprod, 8), stoi(5)) &&
+			    m4 != 1 && m4 != 2) {
+				debug_log("candidate D = %Pi", pprod);
 				GEN x;
 				GEN y;
-				if (!cornacchia2(negi(pprod), quadr->order, &x, &y)) {
+				if (!cornacchia2(absp, quadr->order, &x, &y)) {
 					avma = btop;
 					quadr->i = addis(quadr->i, 1);
 					// debug_log("Cornacchia fail");
@@ -125,76 +131,11 @@ static void custom_quadr_next(custom_quadr_t *quadr) {
 		quadr->r = addis(quadr->r, 1);
 		quadr->nprimes = custom_add_primes(quadr->r, quadr->order, &(quadr->Sp),
 		                                   quadr->nprimes);
-		rlog2 = sqri(mulii(quadr->r, logN));
+		rlog2 = sqri(mulii(addis(quadr->r, 1), logN));
 	}
 }
 
 static void custom_quadr_free(custom_quadr_t *quadr) { try_free(quadr->Sp); }
-
-/*
-static custom_quadr_t custom_quadr(GEN order) {
-    pari_sp ltop = avma;
-    custom_quadr_t result = {0};
-
-    GEN r = gen_0;
-    GEN *Sp;
-    size_t nprimes = custom_add_primes(r, order, &Sp, 0);
-
-    GEN logN = ground(glog(order, BIGDEFAULTPREC));
-    GEN rlog2 = sqri(mulii(r, logN));
-
-    GEN i = gen_0;
-
-    while (true) {
-        GEN imax = int2n(nprimes);
-
-        while (cmpii(i, imax) < 0) {
-            // debug_log("i %Pi", i);
-            pari_sp btop = avma;
-            GEN pprod = gen_1;
-            bits_t *ibits = bits_from_i_len(i, nprimes);
-            for (size_t j = 0; j < nprimes; ++j) {
-                if (GET_BIT(ibits->bits, j) == 1) {
-                    // debug_log("multiplying %Pi", Sp[j]);
-                    pprod = mulii(pprod, Sp[j]);
-                }
-            }
-            bits_free(&ibits);
-            if (cmpii(pprod, rlog2) < 0 && equalii(modis(pprod, 8), stoi(5))) {
-                // debug_log("candidate D = %Pi", pprod);
-                GEN x;
-                GEN y;
-                cornacchia2(negi(pprod), order, &x, &y);
-                GEN pp1 = addii(addis(order, 1), x);
-                GEN pp2 = subii(addis(order, 1), x);
-                if (isprime(pp1)) {
-                    result.p = pp1;
-                    result.D = pprod;
-                    result.t = x;
-                    gerepileall(ltop, 3, &result.p, &result.t,
-                                &result.D);
-                    try_free(Sp);
-                    return result;
-                }
-                if (isprime(pp2)) {
-                    result.p = pp2;
-                    result.D = pprod;
-                    result.t = x;
-                    gerepileall(ltop, 3, &result.p, &result.t,
-                                &result.D);
-                    try_free(Sp);
-                    return result;
-                }
-            }
-            avma = btop;
-            i = addis(i, 1);
-        }
-
-        r = addis(r, 1);
-        nprimes = custom_add_primes(r, order, &Sp, nprimes);
-    }
-}
-*/
 
 curve_t *custom_curve() {
 	GEN order = strtoi(cfg->cm_order);

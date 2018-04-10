@@ -139,7 +139,7 @@ function hex() {
 function cm() {
     start_test
     assert_raises "${ecgen} --fp --order=2147483723 32" 1
-    assert_raises "${ecgen} --fp --order=2147483783 32"
+    assert_raises "${ecgen} --fp --order=123456789012345678901234567890123456789012345678901234568197 137"
 }
 
 . ${ASSERT} -v

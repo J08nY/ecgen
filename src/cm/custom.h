@@ -23,7 +23,9 @@ typedef struct {
 } custom_quadr_t;
 
 /**
- * @brief
+ * Algorithm mostly from:
+ *     Constructing elliptic curves of prime order
+ *     by Reinier Broker and Peter Stevenhagen
  * @return
  */
 curve_t* custom_curve();
