@@ -55,7 +55,7 @@ GENERATOR(points_gen_random) {
 	return 1;
 }
 
-static point_t **points_from_orders(GEN curve, point_t *generator, GEN orders) {
+point_t **points_from_orders(GEN curve, point_t *generator, GEN orders) {
 	size_t norders = (size_t)glength(orders);
 	point_t **result = points_new(norders);
 

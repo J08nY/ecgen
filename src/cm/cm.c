@@ -3,22 +3,26 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "cm.h"
+#include "custom.h"
 #include "io/output.h"
+#include "obj/curve.h"
 #include "p1363.h"
 
 int cm_do() {
 	debug_log_start("Starting Complex Multiplication method");
 
-	fprintf(err, "This is *NOT IMPLEMENTED* currently.\n");
+	int result = 0;
+	curve_t *curve = custom_curve();
+	if (curve) {
+		output_o_begin();
+		output_o(curve);
+		output_o_end();
 
-	GEN D = stoi(71);
-	form_t **forms;
-	size_t nforms = p1363_forms(D, &forms);
-	for (size_t i = 0; i < nforms; ++i) {
-		p1363_invariant(D, forms[i]);
+		curve_free(&curve);
+	} else {
+		result = 1;
 	}
 
-	p1363_free(&forms, nforms);
 	debug_log_start("Finished Complex Multiplication method");
-	return 0;
+	return result;
 }
