@@ -142,6 +142,23 @@ function cm() {
     assert_raises "${ecgen} --fp --order=123456789012345678901234567890123456789012345678901234568197 137"
 }
 
+function secg() {
+    function test_order() {
+        name="${1}"
+        field="${2}"
+        bits="${3}"
+        result=$(${ecgen} --${field} --input=data/${name}.csv.in ${bits} 2>/dev/null)
+        result_order=$(cat data/${name}.order.txt)
+        assert_matches "${JSON} -x ^0,\\\"order\\\"" "${result_order}" "${result}"
+    }
+    start_test
+    test_order secp112r1 fp 112
+    test_order secp128r1 fp 128
+    test_order sect163k1 f2m 163
+    test_order sect163r1 f2m 163
+    test_order secp160k1 fp 160
+}
+
 . ${ASSERT} -v
 start_suite
 runs
@@ -155,4 +172,5 @@ twist
 cli
 hex
 cm
+secg
 end_suite ecgen
