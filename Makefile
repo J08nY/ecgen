@@ -21,7 +21,7 @@ clean-all:
 	+$(MAKE) -C lib clean
 	+$(MAKE) -C src clean-all
 	+$(MAKE) -C test clean-all
-	rm -rf doc/*
+	rm -rf docs/html docs/latex
 
 format:
 	+$(MAKE) -C src format
