@@ -74,14 +74,13 @@ static void custom_quadr_next(custom_quadr_t *quadr) {
 	if (equalii(quadr->i, imax) || quadr->nprimes == 0) {
 		quadr->nprimes = custom_add_primes(quadr->r, quadr->order, &(quadr->Sp),
 		                                   quadr->nprimes);
+		imax = int2n(quadr->nprimes);
 	}
 
+	pari_sp btop = avma;
 	while (true) {
-		imax = int2n(quadr->nprimes);
-
 		while (cmpii(quadr->i, imax) < 0) {
 			// debug_log("i %Pi", quadr->i);
-			pari_sp btop = avma;
 			GEN pprod = gen_1;
 			bits_t *ibits = bits_from_i_len(quadr->i, quadr->nprimes);
 			for (size_t j = 0; j < quadr->nprimes; ++j) {
@@ -100,8 +99,7 @@ static void custom_quadr_next(custom_quadr_t *quadr) {
 				GEN x;
 				GEN y;
 				if (!cornacchia2(absp, quadr->order, &x, &y)) {
-					avma = btop;
-					quadr->i = addis(quadr->i, 1);
+					quadr->i = gerepileupto(btop, addis(quadr->i, 1));
 					// debug_log("Cornacchia fail");
 					continue;
 				}
@@ -124,14 +122,16 @@ static void custom_quadr_next(custom_quadr_t *quadr) {
 					return;
 				}
 			}
-			avma = btop;
-			quadr->i = addis(quadr->i, 1);
+			quadr->i = gerepileupto(btop, addis(quadr->i, 1));
 		}
 
 		quadr->r = addis(quadr->r, 1);
 		quadr->nprimes = custom_add_primes(quadr->r, quadr->order, &(quadr->Sp),
 		                                   quadr->nprimes);
 		rlog2 = sqri(mulii(addis(quadr->r, 1), logN));
+		imax = int2n(quadr->nprimes);
+
+		btop = avma;
 	}
 }
 

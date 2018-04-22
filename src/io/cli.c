@@ -9,7 +9,8 @@
 #include "exhaustive/brainpool.h"
 
 char cli_doc[] =
-    "ecgen, tool for generating Elliptic curve domain parameters.\v(C) 2017-2018 "
+    "ecgen, tool for generating Elliptic curve domain parameters.\v(C) "
+    "2017-2018 "
     "Eastern Seaboard Phishing Authority";
 char cli_args_doc[] = "bits";
 
