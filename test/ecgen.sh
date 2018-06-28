@@ -129,6 +129,7 @@ function cli() {
 	assert_raises "${ecgen} --brainpool-rfc=01234 --fp 10" 1
 	assert_raises "${ecgen} --ansi=01234 --fp 10" 1
 	assert_raises "${ecgen} --hex-check=not_hex --fp 10" 1
+	assert_raises "${ecgen} abc" 1
 }
 
 function hex() {

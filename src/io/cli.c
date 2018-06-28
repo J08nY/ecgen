@@ -380,7 +380,11 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				argp_usage(state);
 			}
 
-			cfg->bits = strtoul(arg, NULL, 10);
+			char *bits_end = NULL;
+			cfg->bits = strtoul(arg, &bits_end, 10);
+			if (*bits_end != '\0') {
+				argp_failure(state, 1, 0, "Invalid bit size specified.");
+			}
 			cfg->hex_digits =
 			    2 * (cfg->bits / 8 + (cfg->bits % 8 != 0 ? 1 : 0));
 			break;
