@@ -5,8 +5,6 @@
 
 #include "output.h"
 #include <parson/parson.h>
-#include <misc/config.h>
-#include <misc/types.h>
 #include "gen/field.h"
 #include "util/bits.h"
 #include "util/memory.h"
@@ -137,8 +135,10 @@ static JSON_Value *output_jjson(curve_t *curve) {
 		}
 		debug_log("here");
 		if (curve->meta.embedding_degree != NULL) {
-			char *embedding_degree = pari_sprintf("%Pi", curve->meta.embedding_degree);
-			json_object_dotset_string(root_object, "meta.embedding_degree", embedding_degree);
+			char *embedding_degree =
+			    pari_sprintf("%Pi", curve->meta.embedding_degree);
+			json_object_dotset_string(root_object, "meta.embedding_degree",
+			                          embedding_degree);
 			pari_free(embedding_degree);
 		}
 		debug_log("here");
@@ -149,8 +149,10 @@ static JSON_Value *output_jjson(curve_t *curve) {
 		}
 		debug_log("here");
 		if (curve->meta.cm_discriminant != NULL) {
-			char *cm_discriminant = pari_sprintf("%Pi", curve->meta.cm_discriminant);
-			json_object_dotset_string(root_object, "meta.cm_discriminant", cm_discriminant);
+			char *cm_discriminant =
+			    pari_sprintf("%Pi", curve->meta.cm_discriminant);
+			json_object_dotset_string(root_object, "meta.cm_discriminant",
+			                          cm_discriminant);
 			pari_free(cm_discriminant);
 		}
 		debug_log("here");

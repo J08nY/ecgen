@@ -2,9 +2,9 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017-2018 J08nY
  */
-#include "field.h"
 #include "order.h"
 #include "exhaustive/arg.h"
+#include "field.h"
 #include "io/input.h"
 #include "math/koblitz.h"
 

@@ -2,9 +2,9 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017-2018 J08nY
  */
-#include "gens.h"
-#include "field.h"
 #include "metadata.h"
+#include "field.h"
+#include "gens.h"
 
 GENERATOR(metadata_gen) {
 	GEN j = field_elementi(ell_get_j(curve->curve));
@@ -14,7 +14,7 @@ GENERATOR(metadata_gen) {
 	if (typ(curve->field) == t_INT) {
 		embedding_degree = gens_get_embedding(curve->field, curve->order);
 		q = curve->field;
-	} else if (typ(curve->field) == t_FFELT){
+	} else if (typ(curve->field) == t_FFELT) {
 		embedding_degree = NULL;
 		q = int2n(degree(FF_mod(curve->field)));
 	} else {
@@ -24,7 +24,7 @@ GENERATOR(metadata_gen) {
 	GEN cm_disc;
 	if (typ(curve->field) == t_INT) {
 		cm_disc = core(subii(mulis(q, 4), sqri(frobenius)));
-	} else if (typ(curve->field) == t_FFELT){
+	} else if (typ(curve->field) == t_FFELT) {
 		cm_disc = NULL;
 	} else {
 		return -7;

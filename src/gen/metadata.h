@@ -16,4 +16,4 @@
  */
 GENERATOR(metadata_gen);
 
-#endif //ECGEN_GEN_METADATA_H
+#endif  // ECGEN_GEN_METADATA_H

@@ -4,8 +4,9 @@
  */
 #include "types.h"
 
-const char* offset_s[OFFSET_END] = {"SEED",  "FIELD", "A",          "B",
-                                    "CURVE", "ORDER", "GENERATORS", "POINTS", "METADATA"};
+const char* offset_s[OFFSET_END] = {"SEED",       "FIELD",  "A",
+                                    "B",          "CURVE",  "ORDER",
+                                    "GENERATORS", "POINTS", "METADATA"};
 
 GENERATOR(gen_skip) { return 1; }
 

@@ -113,8 +113,6 @@ typedef struct {
 	metadata_t meta;
 } curve_t;
 
-
-
 /**
  * @brief
  */
