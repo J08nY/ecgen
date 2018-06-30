@@ -37,6 +37,7 @@ static void invalid_original_ginit(gen_f *generators) {
 	generators[OFFSET_GENERATORS] = &gens_gen_any;
 	generators[OFFSET_CURVE] = &curve_gen_any;
 	generators[OFFSET_ORDER] = &order_gen_any;
+	generators[OFFSET_METADATA] = &gen_skip;
 }
 
 static void invalid_invalid_ginit(gen_f *generators) {
@@ -52,6 +53,7 @@ static void invalid_invalid_ginit(gen_f *generators) {
 		generators[OFFSET_GENERATORS] = &gens_gen_any;
 	}
 	generators[OFFSET_POINTS] = &points_gen_trial;
+	generators[OFFSET_METADATA] = &gen_skip;
 }
 
 static void invalid_cinit(check_t **validators) {

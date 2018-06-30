@@ -99,6 +99,8 @@ typedef struct {
 	char *hex_check;
 	/** @brief What points to generate on the curves. */
 	struct points_s points;
+	/** @brief Compute curve metadata. */
+	bool metadata;
 
 	/** @brief The datadir to use, if any. */
 	char *datadir;

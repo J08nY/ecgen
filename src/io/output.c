@@ -5,6 +5,8 @@
 
 #include "output.h"
 #include <parson/parson.h>
+#include <misc/config.h>
+#include <misc/types.h>
 #include "gen/field.h"
 #include "util/bits.h"
 #include "util/memory.h"
@@ -119,6 +121,39 @@ static JSON_Value *output_jjson(curve_t *curve) {
 			json_array_append_value(gens_array, gen_value);
 		}
 		json_object_set_value(root_object, "subgroups", gens_value);
+	}
+	if (cfg->metadata) {
+		debug_log("here");
+		if (curve->meta.j_invariant != NULL) {
+			char *j = pari_sprintf("%Pi", curve->meta.j_invariant);
+			json_object_dotset_string(root_object, "meta.j", j);
+			pari_free(j);
+		}
+		debug_log("here");
+		if (curve->meta.discriminant != NULL) {
+			char *disc = pari_sprintf("%Pi", curve->meta.discriminant);
+			json_object_dotset_string(root_object, "meta.discriminant", disc);
+			pari_free(disc);
+		}
+		debug_log("here");
+		if (curve->meta.embedding_degree != NULL) {
+			char *embedding_degree = pari_sprintf("%Pi", curve->meta.embedding_degree);
+			json_object_dotset_string(root_object, "meta.embedding_degree", embedding_degree);
+			pari_free(embedding_degree);
+		}
+		debug_log("here");
+		if (curve->meta.frobenius_trace != NULL) {
+			char *frobenius = pari_sprintf("%Pi", curve->meta.frobenius_trace);
+			json_object_dotset_string(root_object, "meta.frobenius", frobenius);
+			pari_free(frobenius);
+		}
+		debug_log("here");
+		if (curve->meta.cm_discriminant != NULL) {
+			char *cm_discriminant = pari_sprintf("%Pi", curve->meta.cm_discriminant);
+			json_object_dotset_string(root_object, "meta.cm_discriminant", cm_discriminant);
+			pari_free(cm_discriminant);
+		}
+		debug_log("here");
 	}
 
 	avma = ltop;

@@ -39,6 +39,7 @@ enum opt_keys {
 	OPT_TIMEOUT,
 	OPT_ANOMALOUS,
 	OPT_HEXCHECK,
+	OPT_METADATA,
 	OPT_BRAINPOOL_RFC,
 	OPT_TWIST,
 };
@@ -59,7 +60,8 @@ struct argp_option cli_options[] = {
 		{"twist",         OPT_TWIST,         0,        0,                 "Generate a twist of a given curve.",                                                    2},
 
 		{0,               0,                 0,        0,                 "Generation options:",                                                                   3},
-		{"random",        OPT_RANDOM,        "WHAT", OPTION_ARG_OPTIONAL, "Generate a random curve (using Random approach). Optionally, only generate random parameters WHAT (seed,field,a,b,equation).",                                      3},
+		{"random",        OPT_RANDOM,        "WHAT", OPTION_ARG_OPTIONAL, "Generate a random curve (using Random approach). "
+																	      "Optionally, only generate random parameters WHAT (seed,field,a,b,equation).",           3},
 		{"prime",         OPT_PRIME,         0,        0,                 "Generate a curve with prime order.",                                                    3},
 		{"cofactor",      OPT_COFACTOR,      "VALUE",  0,                 "Generate a curve with cofactor of VALUE.",                                              3},
 		{"koblitz",       OPT_KOBLITZ,       "A",    OPTION_ARG_OPTIONAL, "Generate a Koblitz curve (a in {0, 1}, b = 1).",                                        3},
@@ -67,6 +69,8 @@ struct argp_option cli_options[] = {
 		{"hex-check",     OPT_HEXCHECK,      "HEX",    0,                 "Check a generated curve param hex expansion for the HEX string.",                       3},
 		{"points",        OPT_POINTS,        "TYPE",   0,                 "Generate points of given type (random/prime/all/nonprime/none).",                       3},
 		{"count",         OPT_COUNT,         "COUNT",  0,                 "Generate multiple curves.",                                                             3},
+		{"metadata",      OPT_METADATA,      0,        0,                 "Compute curve metadata "
+																	      "(j-invariant, discriminant, trace of Frobenius, embedding degree, CM discriminant).",   3},
 
 		{0,               0,                 0,        0,                 "Input/Output options:",                                                                 4},
 		{"input",         OPT_INPUT,         "FILE",   0,                 "Input from file.",                                                                      4},
@@ -310,6 +314,9 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			cfg->hex_check = str_start;
 			break;
 		}
+		case OPT_METADATA:
+			cfg->metadata = true;
+			break;
 		case OPT_POINTS: {
 			char *num_end;
 			long amount = strtol(arg, &num_end, 10);

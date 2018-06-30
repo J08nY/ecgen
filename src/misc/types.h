@@ -79,6 +79,17 @@ typedef struct {
 } subgroup_t;
 
 /**
+ * @brief Curve metadata.
+ */
+typedef struct {
+	GEN j_invariant;
+	GEN discriminant;
+	GEN cm_discriminant;
+	GEN frobenius_trace;
+	GEN embedding_degree;
+} metadata_t;
+
+/**
  * @brief A curve type.
  * @param seed a seed_t
  * @param field a t_INT or t_FFELT
@@ -87,6 +98,7 @@ typedef struct {
  * @param curve a t_ELL, curve object
  * @param order a t_INT, curve order
  * @param generators generators saved
+ * @param meta
  * @param ngens number of generators saved in the curve type
  */
 typedef struct {
@@ -98,7 +110,10 @@ typedef struct {
 	GEN order;
 	subgroup_t **generators;
 	size_t ngens;
+	metadata_t meta;
 } curve_t;
+
+
 
 /**
  * @brief
@@ -112,6 +127,7 @@ typedef enum {
 	OFFSET_ORDER,
 	OFFSET_GENERATORS,
 	OFFSET_POINTS,
+	OFFSET_METADATA,
 	OFFSET_END
 } offset_e;
 

@@ -15,6 +15,7 @@
 #include "gen/hex.h"
 #include "gen/order.h"
 #include "gen/point.h"
+#include "gen/metadata.h"
 #include "gen/seed.h"
 #include "io/output.h"
 #include "misc/config.h"
@@ -180,6 +181,12 @@ static void exhaustive_ginit(gen_f *generators) {
 		generators[OFFSET_CURVE] = &curve_gen_any_twist;
 	} else {
 		generators[OFFSET_CURVE] = &curve_gen_any;
+	}
+
+	if (cfg->metadata) {
+		generators[OFFSET_METADATA] = &metadata_gen;
+	} else {
+		generators[OFFSET_METADATA] = &gen_skip;
 	}
 
 	switch (cfg->points.type) {

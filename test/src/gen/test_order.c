@@ -97,8 +97,8 @@ Test(order, test_order_check_discriminant) {
 	cfg->bits = 16;
 	cfg->field = FIELD_PRIME;
 
-	char *min_factor = "12";
-	arg_t arg = {.args = min_factor, .nargs = 1};
+	char *min_disc = "12";
+	arg_t arg = {.args = min_disc, .nargs = 1};
 
 	int ret = order_check_discriminant(&curve, &arg, OFFSET_ORDER);
 	cr_assert_eq(ret, 1, );
