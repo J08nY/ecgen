@@ -3,6 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include <criterion/criterion.h>
+#include <obj/obj.h>
 #include "gen/order.h"
 #include "test/io.h"
 
@@ -97,9 +98,14 @@ Test(order, test_order_check_discriminant) {
 	cfg->bits = 16;
 	cfg->field = FIELD_PRIME;
 
-	char *min_disc = "12";
+	char *min_disc = "9";
 	arg_t arg = {.args = min_disc, .nargs = 1};
 
 	int ret = order_check_discriminant(&curve, &arg, OFFSET_ORDER);
 	cr_assert_eq(ret, 1, );
+
+	char *nok_disc = "12";
+	arg.args = nok_disc;
+	ret = order_check_discriminant(&curve, &arg, OFFSET_ORDER);
+	cr_assert_eq(ret, -4, );
 }

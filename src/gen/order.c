@@ -2,6 +2,7 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017-2018 J08nY
  */
+#include "field.h"
 #include "order.h"
 #include "exhaustive/arg.h"
 #include "io/input.h"
@@ -126,26 +127,8 @@ CHECK(order_check_discriminant) {
 
 	GEN t = negi(subii(curve->order, addii(curve->field, gen_1)));
 	GEN tp = subii(sqri(t), mulis(curve->field, 4));
-	GEN tp_factors = factor(tp);
 
-	GEN tp_primes = gel(tp_factors, 1);
-	GEN tp_pows = gel(tp_factors, 2);
-	long tp_pow_len = glength(tp_pows);
-	GEN value = gen_1;
-	for (long i = 1; i <= tp_pow_len; ++i) {
-		if (!dvdis(gel(tp_pows, i), 2)) {
-			continue;
-		}
-		GEN one_value = powii(gel(tp_primes, i), divis(gel(tp_pows, i), 2));
-		muliiz(value, one_value, value);
-	}
-	GEN s = value;
-
-	GEN D = divii(tp, s);
-	if (mod4(D) != 1) {
-		D = mulis(D, 4);
-	}
-
+	GEN D = field_elementi(core(tp));
 	if (abscmpii(D, mind) <= 0) {
 		avma = ltop;
 		return -4;
