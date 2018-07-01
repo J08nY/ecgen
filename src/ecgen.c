@@ -58,6 +58,10 @@ bool init(void) {
 		default0("datadir", cfg->datadir);
 	}
 
+#ifdef DEBUG
+	default0("debug", "2");
+#endif
+
 	// init the modular polynomial db from seadata
 	pari_sp ltop = avma;
 	pari_CATCH(e_FILE) {
