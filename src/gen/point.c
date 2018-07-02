@@ -3,6 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "point.h"
+#include <obj/obj.h>
 #include "exhaustive/arg.h"
 #include "math/subgroup.h"
 #include "obj/point.h"
@@ -44,11 +45,17 @@ GENERATOR(points_gen_random) {
 		subgroup->points = points_new(npoints_per_gen[i]);
 
 		for (size_t j = 0; j < npoints_per_gen[i]; ++j) {
-			GEN mul = random_range(gen_0, subgroup->generator->order);
-			GEN p = ellmul(curve->curve, subgroup->generator->point, mul);
 			point_t *point = point_new();
-			point->point = p;
-			point->order = ellorder(curve->curve, p, NULL);
+			// Handle the special case of subgroup of order 2.
+			if (equalis(subgroup->generator->order, 2)) {
+				point->point = gcopy(subgroup->generator->point);
+				point->order = stoi(2);
+			} else {
+				GEN mul = random_range(gen_1, subgroup->generator->order);
+				GEN p = ellmul(curve->curve, subgroup->generator->point, mul);
+				point->point = p;
+				point->order = ellorder(curve->curve, p, NULL);
+			}
 			subgroup->points[j] = point;
 		}
 	}
