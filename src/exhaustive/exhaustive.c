@@ -20,6 +20,7 @@
 #include "io/output.h"
 #include "misc/config.h"
 #include "obj/curve.h"
+#include "supersingular.h"
 #include "util/memory.h"
 #include "util/timeout.h"
 
@@ -124,6 +125,9 @@ static void exhaustive_ginit(gen_f *generators) {
 		if (cfg->method == METHOD_ANOMALOUS) {
 			generators[OFFSET_A] = &gen_skip;
 			generators[OFFSET_B] = &anomalous_gen_equation;
+		} else if (cfg->method == METHOD_SUPERSINGULAR) {
+			generators[OFFSET_A] = &gen_skip;
+			generators[OFFSET_B] = &supersingular_gen_equation;
 		} else if (cfg->koblitz) {
 			switch (cfg->koblitz_value) {
 				case 0:

@@ -47,7 +47,8 @@ typedef enum {
 	METHOD_ANOMALOUS = 1 << 1,
 	METHOD_SEED = 1 << 2,
 	METHOD_INVALID = 1 << 3,
-	METHOD_TWIST = 1 << 4
+	METHOD_TWIST = 1 << 4,
+	METHOD_SUPERSINGULAR = 1 << 5
 } method_e;
 
 /**

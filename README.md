@@ -14,6 +14,7 @@ Tool for generating Elliptic curve domain parameters.
 #### Generation methods
 
  - `--anomalous`            Generate an anomalous curve (of trace one, with field order equal to curve order).
+ - `--supersingular`        Generate a supersingular curve.
  - `-i / --invalid`			Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).
  - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication).
  - `-s / --ansi[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
@@ -195,6 +196,10 @@ Four different EC curve parameters generation methods are implemented.
  - Creates the class polynomials using the built in PARI/GP `polclass()` function or the implemented class polynomial algorithm from IEEE P1363
  - [Constructing elliptic curves of prescribed order - [Broker (thesis)]](https://openaccess.leidenuniv.nl/bitstream/handle/1887/4425/Thesis.pdf)
  - [Generating Elliptic Curves of Prime Order - [Savas, Schmidt, Koc]](http://people.oregonstate.edu/~schmidtt/ourPapers/SavasKoc/ches01curve.pdf)
+
+#### Supersingular curves
+
+ - [CONSTRUCTING SUPERSINGULAR ELLIPTIC CURVES - [Broker]](https://pdfs.semanticscholar.org/56c5/5b9cf0b218f93b8d263cc9f64ccb5fb97f52.pdf)
 
 #### Anomalous curve generation
 

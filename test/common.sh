@@ -36,3 +36,8 @@ strip_num() {
 	num="${num##+(0)}"
 	echo $num
 }
+
+canonical_num() {
+    num=$(strip_num "$1")
+    echo "ibase=16;${num^^}" | bc
+}

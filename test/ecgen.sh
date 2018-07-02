@@ -93,10 +93,20 @@ function brainpool() {
 function anomalous() {
 	start_test
 	assert_raises "${ecgen} --fp --anomalous -r 20"
-	out=$(${ecgen} --fp -tjson --anomalous -r 20 2>/dev/null)
+	out=$(${ecgen} --fp --anomalous -r 20 2>/dev/null)
 	p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
 	order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
 	assert "strip_num $p" $(strip_num $order)
+}
+
+function supersingular() {
+    start_test
+    assert_raises "${ecgen} --fp --supersingular -r 20"
+    out=$(${ecgen} --fp --supersingular -r 20 2>/dev/null)
+	p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
+	order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
+	order_m1=$(echo $(canonical_num $order) - 1 | bc)
+    assert "canonical_num $p" $order_m1
 }
 
 function invalid() {
@@ -133,6 +143,7 @@ function cli() {
 	assert_raises "${ecgen} --ansi=01234 --fp 10" 1
 	assert_raises "${ecgen} --hex-check=not_hex --fp 10" 1
 	assert_raises "${ecgen} abc" 1
+	assert_raises "${ecgen} --supersingular --f2m 10" 1
 }
 
 function hex() {
@@ -171,6 +182,7 @@ exhaustive
 ansix962
 brainpool
 anomalous
+supersingular
 invalid
 twist
 cli
