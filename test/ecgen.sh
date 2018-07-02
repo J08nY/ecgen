@@ -101,7 +101,7 @@ function anomalous() {
 
 function supersingular() {
     start_test
-    assert_raises "${ecgen} --fp --supersingular -r 20"
+    assert_raises "${ecgen} --fp --supersingular -r -c 5 20"
     out=$(${ecgen} --fp --supersingular -r 20 2>/dev/null)
 	p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
 	order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
