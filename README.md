@@ -30,6 +30,7 @@ Tool for generating Elliptic curve domain parameters.
  - `--points=TYPE`			Generate points of given `TYPE` (random/prime/all/nonprime/none).
  - `-r / --random`			Generate a random curve (using Random approach).
  - `-u / --unique`			Generate a curve with only one generator.
+ - `--metadata`				Compute the curve metadata (j-invariant, discriminant, trace of Frobenius, CM discriminant, embedding degree)
 
 #### IO options
 
@@ -90,6 +91,60 @@ Generate a prime field, uniquely generated, prime order curve, don't ask for inp
             }
         ]
     }
+
+Generate a prime field, uniquely generated random curve, of size 192 bits, also display its metadata:
+
+	> ecgen --fp -r -u --metadata 192
+	[{
+	    "field": {
+	        "p": "0xc61cc69c570f03c690df1177fa1ac8c5b295587f876df1bf"
+	    },
+	    "a": "0xaa67a35fbec93655b4a9dc2fa84e2deff18077a4fa12d2ef",
+	    "b": "0x4477eabe9abbcfccaa3f996ed03d58f32b149c42cb22d1b9",
+	    "order": "0xc61cc69c570f03c690df1178443ec606114599ad0f6d8790",
+	    "subgroups": [
+	        {
+	            "x": "0x909b1f3b6378fb77a2c1d2117fe7229c329a4fa400605a62",
+	            "y": "0x2da7e3fafdd4c3b4b149cf6693151dd559eebf8b081435fd",
+	            "order": "0xc61cc69c570f03c690df1178443ec606114599ad0f6d8790",
+	            "cofactor": "0x1",
+	            "points": [
+	                {
+	                    "x": "0x6831806c80fbd016fb59c2eb20700716eeb392c601deda25",
+	                    "y": "0x000000000000000000000000000000000000000000000000",
+	                    "order": "0x2"
+	                },
+	                {
+	                    "x": "0x6206b8e9d56a22485c1b2baa6c61292ff51aa0848097e823",
+	                    "y": "0xbd0a1bda7ba13c81bb3ecaf4abfd34c054d9e4a41aa00733",
+	                    "order": "0xa3"
+	                },
+	                {
+	                    "x": "0x9e196e607959b78f821600fdf263834d4ad2b10046b5921c",
+	                    "y": "0x26f2c864a472bacd4bbb3e513b0a1c1f59a919a187fa4b47",
+	                    "order": "0xbe3b5"
+	                },
+	                {
+	                    "x": "0x0220c948fbb6403608563efc5cf16a630953281155e62d47",
+	                    "y": "0x3a630cd359f8028da08b27df562ab8749e3c2430b8a9f3a9",
+	                    "order": "0x202205798a8a981b"
+	                },
+	                {
+	                    "x": "0x76f971b3722e4b8bfc284c7c39adb395ade0baa61b1e6820",
+	                    "y": "0xb7304431b86e6a06576005a6da2afcd96b43e1ce62056724",
+	                    "order": "0xd07e2df2cc0790a9a06ccfa45"
+	                }
+	            ]
+	        }
+	    ],
+	    "meta": {
+	        "j": "2147872786867739581244581376066320780390424557746041800843",
+	        "discriminant": "1437087699540380117015716490177070508119149165688061690066",
+	        "embedding_degree": "4857702049745916698354329148965234205490318980592629024655",
+	        "frobenius": "-22945399076600858943676192208",
+	        "cm_discriminant": "4726079215049797810784721872708419089129671954601412853631"
+	    }
+	}]
 
 ### Docs
 
