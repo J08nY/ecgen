@@ -14,8 +14,8 @@ GENERATOR(supersingular_gen_equation) {
 		return 1;
 	}
 	GEN q = stoi(3);
-	while (mod4(q) != 3 && kronecker(curve->field, q) != -1) {
-		q = nextprime(q);
+	while (!(mod4(q) == 3 && kronecker(curve->field, q) == -1)) {
+		q = nextprime(addis(q, 1));
 	}
 
 	if (equalis(q, 3)) {
@@ -26,12 +26,13 @@ GENERATOR(supersingular_gen_equation) {
 		GEN H = polclass(negi(q), 0, 0);
 		GEN r = FpX_roots(H, curve->field);
 		GEN root = gel(r, 1);
-		curve->a =
+		curve->a = mkintmod(
 		    Fp_div(Fp_mul(stoi(27), root, curve->field),
 		           Fp_mul(stoi(4), Fp_sub(stoi(1728), root, curve->field),
 		                  curve->field),
-		           curve->field);
-		curve->b = negi(curve->a);
+		           curve->field),
+		    curve->field);
+		curve->b = gneg(curve->a);
 		return 1;
 	}
 }

@@ -145,6 +145,7 @@ curve_t *custom_curve() {
 	}
 
 	GEN a = NULL;
+	GEN b = NULL;
 	GEN e = NULL;
 	GEN g = NULL;
 
@@ -170,11 +171,14 @@ curve_t *custom_curve() {
 		long rlen = glength(r);
 		for (long i = 1; i <= rlen; ++i) {
 			GEN root = gel(r, i);
-			a = Fp_div(
-			    Fp_mul(stoi(27), root, quadr.p),
-			    Fp_mul(stoi(4), Fp_sub(stoi(1728), root, quadr.p), quadr.p),
+			a = mkintmod(
+			    Fp_div(
+			        Fp_mul(stoi(27), root, quadr.p),
+			        Fp_mul(stoi(4), Fp_sub(stoi(1728), root, quadr.p), quadr.p),
+			        quadr.p),
 			    quadr.p);
-			e = ellinit(mkvec2(a, negi(a)), quadr.p, 0);
+			b = gneg(a);
+			e = ellinit(mkvec2(a, b), quadr.p, 0);
 			pari_CATCH(e_TYPE) { continue; }
 			pari_TRY { checkell(e); };
 			pari_ENDCATCH{};
@@ -196,7 +200,7 @@ curve_t *custom_curve() {
 	curve_t *result = curve_new();
 	result->field = quadr.p;
 	result->a = a;
-	result->b = negi(a);
+	result->b = b;
 	result->curve = e;
 	result->order = order;
 	result->generators = subgroups_new(1);
