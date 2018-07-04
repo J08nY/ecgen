@@ -102,8 +102,8 @@ CHECK(gens_check_anomalous) {
 	return 1;
 }
 
-GEN gens_get_embedding(GEN prime, GEN order) {
-	return Fp_order(prime, subis(order, 1), order);
+GEN gens_get_embedding(GEN prime, GEN generator_order) {
+	return order(mkintmod(prime, generator_order));
 }
 
 CHECK(gens_check_embedding) {

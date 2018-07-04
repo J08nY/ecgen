@@ -3,10 +3,10 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "cli.h"
-#include "misc/config.h"
 #include <string.h>
 #include "exhaustive/ansi.h"
 #include "exhaustive/brainpool.h"
+#include "misc/config.h"
 
 char cli_doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) "
