@@ -14,11 +14,11 @@
 enum field_e { FIELD_PRIME = 1 << 0, FIELD_BINARY = 1 << 1 };
 enum format_e { FORMAT_JSON };
 enum points_e {
-	POINTS_NONE = 0,
-	POINTS_PRIME,
+	POINTS_PRIME = 0,
+	POINTS_NONPRIME,
 	POINTS_RANDOM,
 	POINTS_ALL,
-	POINTS_NONPRIME
+	POINTS_NONE
 };
 struct points_s {
 	enum points_e type;

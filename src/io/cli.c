@@ -3,7 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "cli.h"
-#include <misc/config.h>
+#include "misc/config.h"
 #include <string.h>
 #include "exhaustive/ansi.h"
 #include "exhaustive/brainpool.h"
@@ -178,9 +178,6 @@ static void cli_end(struct argp_state *state) {
 	}
 	if (!cfg->thread_memory) {
 		cfg->thread_memory = cfg->bits * 2000000;
-	}
-	if (!cfg->points.type) {
-		cfg->points.type = POINTS_PRIME;
 	}
 	cfg->format = FORMAT_JSON;
 }
