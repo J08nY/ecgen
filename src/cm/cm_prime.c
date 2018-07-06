@@ -1,16 +1,15 @@
 /*
  * ecgen, tool for generating Elliptic curve domain parameters
- * Copyright (C) 2017 J08nY
+ * Copyright (C) 2017-2018 J08nY
  */
-#include "custom.h"
+#include "cm_prime.h"
 #include "io/output.h"
 #include "obj/curve.h"
 #include "obj/point.h"
 #include "obj/subgroup.h"
 #include "util/bits.h"
 
-static size_t custom_add_primes(GEN r, GEN order, GEN **primes,
-                                size_t nprimes) {
+static size_t add_primes(GEN r, GEN order, GEN **primes, size_t nprimes) {
 	debug_log("add_primes r = %Pi, nprimes = %lu", r, nprimes);
 	size_t nalloc = nprimes;
 	if (nprimes == 0) {
@@ -49,44 +48,44 @@ static size_t custom_add_primes(GEN r, GEN order, GEN **primes,
 	return nprimes;
 }
 
-static void custom_quadr_init(custom_quadr_t *quadr, GEN order) {
-	quadr->D = gen_0;
-	quadr->p = gen_0;
-	quadr->t = gen_0;
+static void qdisc_init(cm_prime_qdisc_t *qdisc, GEN order) {
+	qdisc->D = gen_0;
+	qdisc->p = gen_0;
+	qdisc->t = gen_0;
 
-	quadr->order = order;
-	quadr->r = gen_0;
-	quadr->i = gen_0;
-	quadr->Sp = NULL;
-	quadr->nprimes = 0;
+	qdisc->order = order;
+	qdisc->r = gen_0;
+	qdisc->i = gen_0;
+	qdisc->Sp = NULL;
+	qdisc->nprimes = 0;
 }
 
-static void custom_quadr_next(custom_quadr_t *quadr) {
+static void qdisc_next(cm_prime_qdisc_t *qdisc) {
 	// Ok I get some state in r, i, Sp and nprimes.
 	// Here I want to check if I want to generate more primes into Sp
 	// Then continue with i
 
-	GEN logN = ground(glog(quadr->order, BIGDEFAULTPREC));
-	GEN rlog2 = sqri(mulii(addis(quadr->r, 1), logN));
+	GEN logN = ground(glog(qdisc->order, BIGDEFAULTPREC));
+	GEN rlog2 = sqri(mulii(addis(qdisc->r, 1), logN));
 
 	// When do I want more primes? If i == imax, or nprimes == 0
-	GEN imax = int2n(quadr->nprimes);
-	if (equalii(quadr->i, imax) || quadr->nprimes == 0) {
-		quadr->nprimes = custom_add_primes(quadr->r, quadr->order, &(quadr->Sp),
-		                                   quadr->nprimes);
-		imax = int2n(quadr->nprimes);
+	GEN imax = int2n(qdisc->nprimes);
+	if (equalii(qdisc->i, imax) || qdisc->nprimes == 0) {
+		qdisc->nprimes =
+		    add_primes(qdisc->r, qdisc->order, &(qdisc->Sp), qdisc->nprimes);
+		imax = int2n(qdisc->nprimes);
 	}
 
 	pari_sp btop = avma;
 	while (true) {
-		while (cmpii(quadr->i, imax) < 0) {
-			// debug_log("i %Pi", quadr->i);
+		while (cmpii(qdisc->i, imax) < 0) {
+			// debug_log("i %Pi", qdisc->i);
 			GEN pprod = gen_1;
-			bits_t *ibits = bits_from_i_len(quadr->i, quadr->nprimes);
-			for (size_t j = 0; j < quadr->nprimes; ++j) {
+			bits_t *ibits = bits_from_i_len(qdisc->i, qdisc->nprimes);
+			for (size_t j = 0; j < qdisc->nprimes; ++j) {
 				if (GET_BIT(ibits->bits, j) == 1) {
-					// debug_log("multiplying %Pi", quadr->Sp[j]);
-					pprod = mulii(pprod, quadr->Sp[j]);
+					// debug_log("multiplying %Pi", qdisc->Sp[j]);
+					pprod = mulii(pprod, qdisc->Sp[j]);
 				}
 			}
 			bits_free(&ibits);
@@ -98,69 +97,63 @@ static void custom_quadr_next(custom_quadr_t *quadr) {
 				debug_log("candidate D = %Pi", pprod);
 				GEN x;
 				GEN y;
-				if (!cornacchia2(absp, quadr->order, &x, &y)) {
-					quadr->i = gerepileupto(btop, addis(quadr->i, 1));
+				if (!cornacchia2(absp, qdisc->order, &x, &y)) {
+					qdisc->i = gerepileupto(btop, addis(qdisc->i, 1));
 					// debug_log("Cornacchia fail");
 					continue;
 				}
-				GEN pp1 = addii(addis(quadr->order, 1), x);
-				GEN pp2 = subii(addis(quadr->order, 1), x);
+				GEN pp1 = addii(addis(qdisc->order, 1), x);
+				GEN pp2 = subii(addis(qdisc->order, 1), x);
 				if (isprime(pp1)) {
-					quadr->p = pp1;
-					quadr->D = pprod;
-					quadr->t = x;
-					quadr->i = addis(quadr->i, 1);
+					qdisc->p = pp1;
+					qdisc->D = pprod;
+					qdisc->t = x;
+					qdisc->i = addis(qdisc->i, 1);
 					debug_log("good D %Pi", pprod);
 					return;
 				}
 				if (isprime(pp2)) {
-					quadr->p = pp2;
-					quadr->D = pprod;
-					quadr->t = x;
-					quadr->i = addis(quadr->i, 1);
+					qdisc->p = pp2;
+					qdisc->D = pprod;
+					qdisc->t = x;
+					qdisc->i = addis(qdisc->i, 1);
 					debug_log("good D %Pi", pprod);
 					return;
 				}
 			}
-			quadr->i = gerepileupto(btop, addis(quadr->i, 1));
+			qdisc->i = gerepileupto(btop, addis(qdisc->i, 1));
 		}
 
-		quadr->r = addis(quadr->r, 1);
-		quadr->nprimes = custom_add_primes(quadr->r, quadr->order, &(quadr->Sp),
-		                                   quadr->nprimes);
-		rlog2 = sqri(mulii(addis(quadr->r, 1), logN));
-		imax = int2n(quadr->nprimes);
+		qdisc->r = addis(qdisc->r, 1);
+		qdisc->nprimes =
+		    add_primes(qdisc->r, qdisc->order, &(qdisc->Sp), qdisc->nprimes);
+		rlog2 = sqri(mulii(addis(qdisc->r, 1), logN));
+		imax = int2n(qdisc->nprimes);
 
 		btop = avma;
 	}
 }
 
-static void custom_quadr_free(custom_quadr_t *quadr) { try_free(quadr->Sp); }
+static void qdisc_free(cm_prime_qdisc_t *qdisc) { try_free(qdisc->Sp); }
 
-curve_t *custom_curve() {
-	GEN order = strtoi(cfg->cm_order);
-	if (!isprime(order)) {
-		fprintf(err, "Currently, order must be prime for CM to work.\n");
-		return NULL;
-	}
-
+curve_t *cm_prime_curve(GEN order) {
 	GEN a = NULL;
 	GEN b = NULL;
 	GEN e = NULL;
 	GEN g = NULL;
 
-	custom_quadr_t quadr;
-	custom_quadr_init(&quadr, order);
+	cm_prime_qdisc_t qdisc;
+	qdisc_init(&qdisc, order);
 	while (true) {
-		custom_quadr_next(&quadr);
+		qdisc_next(&qdisc);
 
 		debug_log("order = %Pi", order);
-		debug_log("p = %Pi, t = %Pi, D = %Pi, ", quadr.p, quadr.t, quadr.D);
-		GEN H = polclass(quadr.D, 0, 0);
+		debug_log("p = %Pi, t = %Pi, D = %Pi, ", qdisc.p, qdisc.t, qdisc.D);
+		GEN H = polclass(qdisc.D, 0, 0);
 
 		debug_log("H = %Ps", H);
 
-		GEN r = FpX_roots(H, quadr.p);
+		GEN r = FpX_roots(H, qdisc.p);
 		debug_log("roots = %Ps", r);
 		if (gequal(r, gtovec(gen_0))) {
 			continue;
@@ -173,12 +166,12 @@ curve_t *custom_curve() {
 			GEN root = gel(r, i);
 			a = mkintmod(
 			    Fp_div(
-			        Fp_mul(stoi(27), root, quadr.p),
-			        Fp_mul(stoi(4), Fp_sub(stoi(1728), root, quadr.p), quadr.p),
-			        quadr.p),
-			    quadr.p);
+			        Fp_mul(stoi(27), root, qdisc.p),
+			        Fp_mul(stoi(4), Fp_sub(stoi(1728), root, qdisc.p), qdisc.p),
+			        qdisc.p),
+			    qdisc.p);
 			b = gneg(a);
-			e = ellinit(mkvec2(a, b), quadr.p, 0);
+			e = ellinit(mkvec2(a, b), qdisc.p, 0);
 			pari_CATCH(e_TYPE) { continue; }
 			pari_TRY { checkell(e); };
 			pari_ENDCATCH{};
@@ -195,10 +188,10 @@ curve_t *custom_curve() {
 		if (has_curve) break;
 	}
 
-	custom_quadr_free(&quadr);
+	qdisc_free(&qdisc);
 
 	curve_t *result = curve_new();
-	result->field = quadr.p;
+	result->field = qdisc.p;
 	result->a = a;
 	result->b = b;
 	result->curve = e;

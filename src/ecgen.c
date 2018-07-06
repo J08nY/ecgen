@@ -58,7 +58,7 @@ bool init(void) {
 		default0("datadir", cfg->datadir);
 	}
 
-#ifdef DEBUG
+#ifdef PARI_DEBUG
 	default0("debug", "2");
 #endif
 

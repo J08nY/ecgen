@@ -1,15 +1,15 @@
 /*
  * ecgen, tool for generating Elliptic curve domain parameters
- * Copyright (C) 2017 J08nY
+ * Copyright (C) 2017-2018 J08nY
  */
-#ifndef ECGEN_CUSTOM_H
-#define ECGEN_CUSTOM_H
+#ifndef ECGEN_CM_PRIME_H
+#define ECGEN_CM_PRIME_H
 
 #include "misc/config.h"
 #include "misc/types.h"
 
 typedef struct {
-	/* Stuff filled with custom_quadr_next. */
+	/* Stuff filled with qdisc_next. */
 	GEN p;
 	GEN t;
 	GEN D;
@@ -20,14 +20,15 @@ typedef struct {
 	GEN i;
 	GEN* Sp;
 	size_t nprimes;
-} custom_quadr_t;
+} cm_prime_qdisc_t;
 
 /**
  * Algorithm mostly from:
  *     Constructing elliptic curves of prime order
  *     by Reinier Broker and Peter Stevenhagen
+ * @param order the requested order, must be prime
  * @return
  */
-curve_t* custom_curve();
+curve_t* cm_prime_curve(GEN order);
 
-#endif  // ECGEN_CUSTOM_H
+#endif  // ECGEN_CM_PRIME_H
