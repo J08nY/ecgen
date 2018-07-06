@@ -15,6 +15,16 @@ typedef struct {
 /**
  * @brief
  * @param order
+ * @param d
+ * @param p
+ * @param ord_prime
+ * @return
+ */
+GEN cm_construct_curve(GEN order, GEN d, GEN p, bool ord_prime);
+
+/**
+ * @brief
+ * @param order
  * @return
  */
 curve_t *cm_any_curve(GEN order);

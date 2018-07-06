@@ -3,6 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "cm_prime.h"
+#include "cm_any.h"
 #include "io/output.h"
 #include "obj/curve.h"
 #include "obj/point.h"
@@ -137,69 +138,26 @@ static void qdisc_next(cm_prime_qdisc_t *qdisc) {
 static void qdisc_free(cm_prime_qdisc_t *qdisc) { try_free(qdisc->Sp); }
 
 curve_t *cm_prime_curve(GEN order) {
-	GEN a = NULL;
-	GEN b = NULL;
 	GEN e = NULL;
-	GEN g = NULL;
 
 	cm_prime_qdisc_t qdisc;
 	qdisc_init(&qdisc, order);
-	while (true) {
+	do {
 		qdisc_next(&qdisc);
-
-		debug_log("order = %Pi", order);
-		debug_log("p = %Pi, t = %Pi, D = %Pi, ", qdisc.p, qdisc.t, qdisc.D);
-		GEN H = polclass(qdisc.D, 0, 0);
-
-		debug_log("H = %Ps", H);
-
-		GEN r = FpX_roots(H, qdisc.p);
-		debug_log("roots = %Ps", r);
-		if (gequal(r, gtovec(gen_0))) {
-			continue;
-		}
-
-		bool has_curve = false;
-
-		long rlen = glength(r);
-		for (long i = 1; i <= rlen; ++i) {
-			GEN root = gel(r, i);
-			a = mkintmod(
-			    Fp_div(
-			        Fp_mul(stoi(27), root, qdisc.p),
-			        Fp_mul(stoi(4), Fp_sub(stoi(1728), root, qdisc.p), qdisc.p),
-			        qdisc.p),
-			    qdisc.p);
-			b = gneg(a);
-			e = ellinit(mkvec2(a, b), qdisc.p, 0);
-			pari_CATCH(e_TYPE) { continue; }
-			pari_TRY { checkell(e); };
-			pari_ENDCATCH{};
-
-			g = genrand(e);
-			GEN gmul = ellmul(e, g, order);
-			if (ell_is_inf(gmul)) {
-				debug_log("YES %Ps", e);
-				has_curve = true;
-				break;
-			}
-		}
-
-		if (has_curve) break;
-	}
-
+		e = cm_construct_curve(order, qdisc.D, qdisc.p, true);
+	} while (e == NULL);
 	qdisc_free(&qdisc);
 
 	curve_t *result = curve_new();
 	result->field = qdisc.p;
-	result->a = a;
-	result->b = b;
+	result->a = ell_get_a4(e);
+	result->b = ell_get_a6(e);
 	result->curve = e;
 	result->order = order;
 	result->generators = subgroups_new(1);
 	result->generators[0] = subgroup_new();
 	result->generators[0]->generator = point_new();
-	result->generators[0]->generator->point = g;
+	result->generators[0]->generator->point = genrand(e);
 	result->generators[0]->generator->order = order;
 	result->generators[0]->generator->cofactor = stoi(1);
 	result->generators[0]->npoints = 0;
