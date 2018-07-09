@@ -3,8 +3,6 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "cm_any.h"
-#include <misc/config.h>
-#include <obj/obj.h>
 #include "io/output.h"
 #include "obj/curve.h"
 #include "util/memory.h"
@@ -203,24 +201,6 @@ GEN cm_construct_curve(GEN order, GEN d, GEN p, bool ord_prime) {
 		}
 	}
 	return NULL;
-}
-
-curve_t *cm_any_curve(GEN order) {
-	cm_any_qdisc_t min_disc = {0};
-	good_qdisc_minimal(&min_disc, order);
-	debug_log("Got min D = %Pi", min_disc.d);
-	GEN e = cm_construct_curve(order, min_disc.d, min_disc.p, false);
-	if (e == NULL) {
-		fprintf(err, "Could not construct curve.");
-		return NULL;
-	}
-	curve_t *curve = curve_new();
-	curve->field = min_disc.p;
-	curve->curve = e;
-	curve->a = ell_get_a4(e);
-	curve->b = ell_get_a6(e);
-	curve->order = gcopy(order);
-	return curve;
 }
 
 GENERATOR(cm_gen_curve_any) {

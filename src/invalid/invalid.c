@@ -3,7 +3,6 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "invalid.h"
-#include <misc/config.h>
 #include "exhaustive/arg.h"
 #include "exhaustive/check.h"
 #include "exhaustive/exhaustive.h"

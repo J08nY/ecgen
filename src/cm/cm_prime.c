@@ -96,8 +96,8 @@ static void qdisc_next(cm_prime_qdisc_t *qdisc) {
 			if (cmpii(absp, rlog2) < 0 && equalii(modis(pprod, 8), stoi(5)) &&
 			    m4 != 1 && m4 != 2) {
 				debug_log("candidate D = %Pi", pprod);
-				GEN x;
-				GEN y;
+				GEN x = NULL;
+				GEN y = NULL;
 				if (!cornacchia2(absp, qdisc->order, &x, &y)) {
 					qdisc->i = gerepileupto(btop, addis(qdisc->i, 1));
 					// debug_log("Cornacchia fail");
@@ -136,35 +136,6 @@ static void qdisc_next(cm_prime_qdisc_t *qdisc) {
 }
 
 static void qdisc_free(cm_prime_qdisc_t *qdisc) { try_free(qdisc->Sp); }
-
-curve_t *cm_prime_curve(GEN order) {
-	GEN e = NULL;
-
-	cm_prime_qdisc_t qdisc = {0};
-	qdisc_init(&qdisc, order);
-	do {
-		qdisc_next(&qdisc);
-		e = cm_construct_curve(order, qdisc.D, qdisc.p, true);
-	} while (e == NULL);
-	qdisc_free(&qdisc);
-
-	curve_t *result = curve_new();
-	result->field = qdisc.p;
-	result->a = ell_get_a4(e);
-	result->b = ell_get_a6(e);
-	result->curve = e;
-	result->order = order;
-	result->generators = subgroups_new(1);
-	result->generators[0] = subgroup_new();
-	result->generators[0]->generator = point_new();
-	result->generators[0]->generator->point = genrand(e);
-	result->generators[0]->generator->order = order;
-	result->generators[0]->generator->cofactor = stoi(1);
-	result->generators[0]->npoints = 0;
-	result->ngens = 1;
-
-	return result;
-}
 
 GENERATOR(cm_gen_curve_prime) {
 	GEN order = strtoi(cfg->cm_order);

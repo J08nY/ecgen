@@ -5,7 +5,6 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
-#include <misc/types.h>
 #include "test/default.h"
 #include "test/memory.h"
 #include "util/bits.h"

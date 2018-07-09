@@ -3,7 +3,6 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include <criterion/criterion.h>
-#include <obj/obj.h>
 #include "gen/order.h"
 #include "test/io.h"
 

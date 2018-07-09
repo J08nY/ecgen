@@ -5,7 +5,6 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
-#include <misc/types.h>
 #include "exhaustive/brainpool.h"
 #include "exhaustive/brainpool_rfc.h"
 #include "exhaustive/check.h"

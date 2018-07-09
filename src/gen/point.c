@@ -3,7 +3,6 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "point.h"
-#include <obj/obj.h>
 #include "exhaustive/arg.h"
 #include "math/subgroup.h"
 #include "obj/point.h"

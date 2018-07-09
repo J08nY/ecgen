@@ -13,7 +13,8 @@ typedef struct {
 } cm_any_qdisc_t;
 
 /**
- * @brief
+ * @brief Construct an elliptic curve given its order, CM discriminant and field
+ * order.
  * @param order
  * @param d
  * @param p
@@ -21,13 +22,6 @@ typedef struct {
  * @return
  */
 GEN cm_construct_curve(GEN order, GEN d, GEN p, bool ord_prime);
-
-/**
- * @brief
- * @param order
- * @return
- */
-curve_t *cm_any_curve(GEN order);
 
 /**
  * @brief

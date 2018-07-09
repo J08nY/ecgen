@@ -26,13 +26,6 @@ typedef struct {
  * Algorithm mostly from:
  *     Constructing elliptic curves of prime order
  *     by Reinier Broker and Peter Stevenhagen
- * @param order the requested order, must be prime
- * @return
- */
-curve_t* cm_prime_curve(GEN order);
-
-/**
- * @brief
  * @param curve
  * @param args
  * @param state
