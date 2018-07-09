@@ -3,6 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "cm_any.h"
+#include <misc/config.h>
 #include <obj/obj.h>
 #include "io/output.h"
 #include "obj/curve.h"
@@ -13,9 +14,8 @@
  *        Constructing elliptic curves of prescribed order,
  *        Reiner Broker
  * @param order
- * @return
  */
-static cm_any_qdisc_t *good_qdisc_minimal(GEN order) {
+static void good_qdisc_minimal(cm_any_qdisc_t *qdisc, GEN order) {
 	pari_sp ltop = avma;
 	GEN d = stoi(2);
 	while (true) {
@@ -37,11 +37,10 @@ static cm_any_qdisc_t *good_qdisc_minimal(GEN order) {
 					debug_log(
 					    "Got an elem of prime trace: %Pi, d = %Pi, D = %Pi", p,
 					    d, D);
-					cm_any_qdisc_t *result = try_calloc(sizeof(cm_any_qdisc_t));
-					result->p = p;
-					result->d = D;
-					gerepileall(ltop, 2, &result->p, &result->d);
-					return result;
+					qdisc->p = p;
+					qdisc->d = D;
+					gerepileall(ltop, 2, &qdisc->p, &qdisc->d);
+					return;
 				}
 			}
 		}
@@ -200,26 +199,50 @@ GEN cm_construct_curve(GEN order, GEN d, GEN p, bool ord_prime) {
 					debug_log("Got curve twist.");
 					return gerepilecopy(ltop, twist);
 				}
-			};
+			}
 		}
 	}
 	return NULL;
 }
 
 curve_t *cm_any_curve(GEN order) {
-	cm_any_qdisc_t *min_disc = good_qdisc_minimal(order);
-	debug_log("Got min D = %Pi", min_disc->d);
-	GEN e = cm_construct_curve(order, min_disc->d, min_disc->p, false);
+	cm_any_qdisc_t min_disc = {0};
+	good_qdisc_minimal(&min_disc, order);
+	debug_log("Got min D = %Pi", min_disc.d);
+	GEN e = cm_construct_curve(order, min_disc.d, min_disc.p, false);
 	if (e == NULL) {
 		fprintf(err, "Could not construct curve.");
 		return NULL;
 	}
 	curve_t *curve = curve_new();
-	curve->field = min_disc->p;
+	curve->field = min_disc.p;
 	curve->curve = e;
 	curve->a = ell_get_a4(e);
 	curve->b = ell_get_a6(e);
 	curve->order = gcopy(order);
-	try_free(min_disc);
 	return curve;
+}
+
+GENERATOR(cm_gen_curve_any) {
+	pari_sp ltop = avma;
+	GEN order = strtoi(cfg->cm_order);
+	cm_any_qdisc_t min_disc = {0};
+	good_qdisc_minimal(&min_disc, order);
+	debug_log("Got min D = %Pi", min_disc.d);
+	GEN e = cm_construct_curve(order, min_disc.d, min_disc.p, false);
+	if (e == NULL) {
+		fprintf(err, "Could not construct curve.");
+		avma = ltop;
+		return -3;
+	}
+	curve->field = min_disc.p;
+	curve->a = ell_get_a4(e);
+	curve->b = ell_get_a6(e);
+	curve->curve = e;
+	return 1;
+}
+
+GENERATOR(cm_gen_order) {
+	curve->order = strtoi(cfg->cm_order);
+	return 1;
 }

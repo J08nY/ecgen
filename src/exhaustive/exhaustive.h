@@ -56,6 +56,13 @@ int exhaustive_gen(curve_t *curve, const exhaustive_t *setup,
                    offset_e start_offset, offset_e end_offset);
 
 /**
+ * @brief
+ * @param setup
+ * @return
+ */
+int exhaustive_generate(exhaustive_t *setup);
+
+/**
  *
  * @return
  */

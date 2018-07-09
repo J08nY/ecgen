@@ -71,6 +71,9 @@ static GEN subgroups_2n_factors(GEN factors, size_t min_bits) {
 }
 
 GEN subgroups_prime(GEN order) {
+	if (isprime(order)) {
+		return gtovec(order);
+	}
 	GEN factors = Z_factor(order);
 	return gtovec(gel(factors, 1));
 }

@@ -2,8 +2,8 @@
  * ecgen, tool for generating Elliptic curve domain parameters
  * Copyright (C) 2017-2018 J08nY
  */
-#ifndef ECGEN_EXHAUSTIVE_SUPERSINGULAR_H
-#define ECGEN_EXHAUSTIVE_SUPERSINGULAR_H
+#ifndef ECGEN_CM_SUPERSINGULAR_H
+#define ECGEN_CM_SUPERSINGULAR_H
 
 #include "misc/types.h"
 
@@ -25,4 +25,4 @@ GENERATOR(supersingular_gen_equation);
  */
 GENERATOR(supersingular_gen_order);
 
-#endif  // ECGEN_EXHAUSTIVE_SUPERSINGULAR_H
+#endif  // ECGEN_CM_SUPERSINGULAR_H

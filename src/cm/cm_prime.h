@@ -31,4 +31,13 @@ typedef struct {
  */
 curve_t* cm_prime_curve(GEN order);
 
+/**
+ * @brief
+ * @param curve
+ * @param args
+ * @param state
+ * @return
+ */
+GENERATOR(cm_gen_curve_prime);
+
 #endif  // ECGEN_CM_PRIME_H

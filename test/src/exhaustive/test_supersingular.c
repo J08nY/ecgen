@@ -5,7 +5,7 @@
 
 #include <criterion/criterion.h>
 #include <criterion/parameterized.h>
-#include "exhaustive/supersingular.h"
+#include "cm/supersingular.h"
 #include "test/default.h"
 #include "test/memory.h"
 

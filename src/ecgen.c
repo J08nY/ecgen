@@ -141,7 +141,6 @@ int quit(int status) {
  *
  */
 int main(int argc, char *argv[]) {
-	// Parse cli args
 	memset(cfg, 0, sizeof(config_t));
 	argp_parse(&argp, argc, argv, 0, 0, cfg);
 
@@ -150,12 +149,14 @@ int main(int argc, char *argv[]) {
 	}
 
 	int status;
-	if (cfg->method == METHOD_CM) {
+	if (cfg->method == METHOD_CM || cfg->method == METHOD_ANOMALOUS ||
+	    cfg->method == METHOD_SUPERSINGULAR) {
 		status = cm_do();
 	} else if (cfg->method == METHOD_INVALID) {
 		status = invalid_do();
 	} else {
 		status = exhaustive_do();
 	}
+
 	return quit(status);
 }

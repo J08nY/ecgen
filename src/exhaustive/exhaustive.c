@@ -3,8 +3,8 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "exhaustive.h"
-#include "anomalous.h"
 #include "ansi.h"
+#include "arg.h"
 #include "brainpool.h"
 #include "brainpool_rfc.h"
 #include "check.h"
@@ -20,7 +20,6 @@
 #include "io/output.h"
 #include "misc/config.h"
 #include "obj/curve.h"
-#include "supersingular.h"
 #include "util/memory.h"
 #include "util/timeout.h"
 
@@ -122,13 +121,13 @@ static void exhaustive_ginit(gen_f *generators) {
 		// setup normal generators
 		generators[OFFSET_SEED] = &gen_skip;
 
-		if (cfg->method == METHOD_ANOMALOUS) {
-			generators[OFFSET_A] = &gen_skip;
-			generators[OFFSET_B] = &anomalous_gen_equation;
-		} else if (cfg->method == METHOD_SUPERSINGULAR) {
-			generators[OFFSET_A] = &gen_skip;
-			generators[OFFSET_B] = &supersingular_gen_equation;
-		} else if (cfg->koblitz) {
+		if (cfg->random & RANDOM_FIELD) {
+			generators[OFFSET_FIELD] = &field_gen_random;
+		} else {
+			generators[OFFSET_FIELD] = &field_gen_input;
+		}
+
+		if (cfg->koblitz) {
 			switch (cfg->koblitz_value) {
 				case 0:
 					generators[OFFSET_A] = &a_gen_zero;
@@ -141,14 +140,16 @@ static void exhaustive_ginit(gen_f *generators) {
 			}
 			generators[OFFSET_B] = &b_gen_one;
 		} else {
-			generators[OFFSET_A] = &a_gen_input;
-			generators[OFFSET_B] = &b_gen_input;
-
 			if (cfg->random & RANDOM_A) {
 				generators[OFFSET_A] = &a_gen_random;
+			} else {
+				generators[OFFSET_A] = &a_gen_input;
 			}
+
 			if (cfg->random & RANDOM_B) {
 				generators[OFFSET_B] = &b_gen_random;
+			} else {
+				generators[OFFSET_B] = &b_gen_input;
 			}
 		}
 
@@ -156,22 +157,10 @@ static void exhaustive_ginit(gen_f *generators) {
 			generators[OFFSET_ORDER] = &order_gen_prime;
 		} else if (cfg->cofactor) {
 			generators[OFFSET_ORDER] = &order_gen_cofactor;
-		} else if (cfg->method == METHOD_ANOMALOUS) {
-			generators[OFFSET_ORDER] = &anomalous_gen_order;
-		} else if (cfg->method == METHOD_SUPERSINGULAR) {
-			generators[OFFSET_ORDER] = &supersingular_gen_order;
 		} else if (cfg->koblitz) {
 			generators[OFFSET_ORDER] = &order_gen_koblitz;
 		} else {
 			generators[OFFSET_ORDER] = &order_gen_any;
-		}
-
-		if (cfg->method == METHOD_ANOMALOUS) {
-			generators[OFFSET_FIELD] = &anomalous_gen_field;
-		} else if (cfg->random & RANDOM_FIELD) {
-			generators[OFFSET_FIELD] = &field_gen_random;
-		} else {
-			generators[OFFSET_FIELD] = &field_gen_input;
 		}
 
 		if (cfg->unique) {
@@ -182,6 +171,7 @@ static void exhaustive_ginit(gen_f *generators) {
 			generators[OFFSET_GENERATORS] = &gens_gen_any;
 		}
 	}
+
 	// setup common generators
 	if (cfg->method == METHOD_TWIST) {
 		generators[OFFSET_CURVE] = &curve_gen_any_twist;
@@ -248,20 +238,6 @@ static void exhaustive_cinit(check_t **validators) {
 }
 
 static void exhaustive_ainit(arg_t **gen_argss, arg_t **check_argss) {
-	if (cfg->method == METHOD_ANOMALOUS) {
-		arg_t *field_arg = arg_new();
-		arg_t *eq_arg = arg_new();
-		size_t *i = try_calloc(sizeof(size_t));
-		*i = 3;
-		field_arg->args = i;
-		field_arg->nargs = 1;
-		eq_arg->args = i;
-		eq_arg->nargs = 1;
-		eq_arg->allocd = i;
-		gen_argss[OFFSET_FIELD] = field_arg;
-		gen_argss[OFFSET_B] = eq_arg;
-	}
-
 	if (cfg->points.type == POINTS_RANDOM) {
 		arg_t *points_arg = arg_new();
 		points_arg->args = &cfg->points.amount;
@@ -415,14 +391,36 @@ static void exhaustive_init(exhaustive_t *setup) {
 	exhaustive_cinit(setup->validators);
 	exhaustive_ainit(setup->gen_argss, setup->check_argss);
 	exhaustive_uinit(setup->unrolls);
-	anomalous_init();
 }
 
 static void exhaustive_quit(exhaustive_t *setup) {
 	field_quit();
 	equation_quit();
-	anomalous_quit();
 	exhaustive_clear(setup);
+}
+
+int exhaustive_generate(exhaustive_t *setup) {
+	output_o_begin();
+	int result = EXIT_SUCCESS;
+	for (unsigned long i = 0; i < cfg->count; ++i) {
+		debug_log_start("Generating new curve");
+		curve_t *curve = curve_new();
+		if (!exhaustive_gen(curve, setup, OFFSET_SEED, OFFSET_END)) {
+			curve_free(&curve);
+			result = EXIT_FAILURE;
+			break;
+		}
+		debug_log_end("Generated new curve");
+
+		output_o(curve);
+		if (i != cfg->count - 1) {
+			output_o_separator();
+		}
+		curve_free(&curve);
+	}
+	output_o_end();
+
+	return result;
 }
 
 int exhaustive_do() {
@@ -440,27 +438,7 @@ int exhaustive_do() {
 	                      .check_argss = check_argss,
 	                      .unrolls = unrolls};
 	exhaustive_init(&setup);
-
-	output_o_begin();
-	int result = EXIT_SUCCESS;
-	for (unsigned long i = 0; i < cfg->count; ++i) {
-		debug_log_start("Generating new curve");
-		curve_t *curve = curve_new();
-		if (!exhaustive_gen(curve, &setup, OFFSET_SEED, OFFSET_END)) {
-			curve_free(&curve);
-			result = EXIT_FAILURE;
-			break;
-		}
-		debug_log_end("Generated new curve");
-
-		output_o(curve);
-		if (i != cfg->count - 1) {
-			output_o_separator();
-		}
-		curve_free(&curve);
-	}
-	output_o_end();
-
+	int result = exhaustive_generate(&setup);
 	exhaustive_quit(&setup);
 	debug_log_end("Finished Exhaustive method");
 	return result;

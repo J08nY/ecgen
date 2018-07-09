@@ -184,7 +184,7 @@ static void cli_end(struct argp_state *state) {
 
 error_t cli_parse(int key, char *arg, struct argp_state *state) {
 	switch (key) {
-		/* Field options */
+			/* Field options */
 		case OPT_FP:
 			cfg->field |= FIELD_PRIME;
 			break;

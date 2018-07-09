@@ -29,4 +29,22 @@ GEN cm_construct_curve(GEN order, GEN d, GEN p, bool ord_prime);
  */
 curve_t *cm_any_curve(GEN order);
 
+/**
+ * @brief
+ * @param curve
+ * @param args
+ * @param state
+ * @return
+ */
+GENERATOR(cm_gen_curve_any);
+
+/**
+ * @brief
+ * @param curve
+ * @param args
+ * @param state
+ * @return
+ */
+GENERATOR(cm_gen_order);
+
 #endif  // ECGEN_CM_ANY_H

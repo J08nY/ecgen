@@ -140,7 +140,7 @@ static void qdisc_free(cm_prime_qdisc_t *qdisc) { try_free(qdisc->Sp); }
 curve_t *cm_prime_curve(GEN order) {
 	GEN e = NULL;
 
-	cm_prime_qdisc_t qdisc;
+	cm_prime_qdisc_t qdisc = {0};
 	qdisc_init(&qdisc, order);
 	do {
 		qdisc_next(&qdisc);
@@ -164,4 +164,23 @@ curve_t *cm_prime_curve(GEN order) {
 	result->ngens = 1;
 
 	return result;
+}
+
+GENERATOR(cm_gen_curve_prime) {
+	GEN order = strtoi(cfg->cm_order);
+	GEN e = NULL;
+
+	cm_prime_qdisc_t qdisc = {0};
+	qdisc_init(&qdisc, order);
+	do {
+		qdisc_next(&qdisc);
+		e = cm_construct_curve(order, qdisc.D, qdisc.p, true);
+	} while (e == NULL);
+	qdisc_free(&qdisc);
+
+	curve->field = qdisc.p;
+	curve->a = ell_get_a4(e);
+	curve->b = ell_get_a6(e);
+	curve->curve = e;
+	return 1;
 }
