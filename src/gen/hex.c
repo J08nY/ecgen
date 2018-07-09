@@ -109,9 +109,8 @@ CHECK(hex_check_param) {
 	int result = OFFSET_FIELD - state;
 	for (offset_e i = OFFSET_SEED; i < OFFSET_END; ++i) {
 		if (params[i]) {
-			if (strstr(params[i], search_hex)) {
+			if (result != 1 && strstr(params[i], search_hex)) {
 				result = 1;
-				break;
 			}
 			if (pari[i]) {
 				pari_free(params[i]);
