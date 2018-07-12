@@ -3,21 +3,21 @@ sudo: required
 language: C
 matrix:
   include:
-    - compiler: gcc-7
+    - compiler: gcc-8
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - gcc-7
-    - compiler: clang-5.0
+            - gcc-8
+    - compiler: clang-6.0
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-5.0
+            - llvm-toolchain-trusty-6.0
           packages:
-            - clang-5.0
+            - clang-6.0
 
 before_install:
   - sudo apt-get update
