@@ -4,6 +4,7 @@
  */
 #include "cm_prime.h"
 #include "cm_any.h"
+#include "exhaustive/arg.h"
 #include "io/output.h"
 #include "obj/curve.h"
 #include "obj/point.h"
@@ -138,7 +139,9 @@ static void qdisc_next(cm_prime_qdisc_t *qdisc) {
 static void qdisc_free(cm_prime_qdisc_t *qdisc) { try_free(qdisc->Sp); }
 
 GENERATOR(cm_gen_curve_prime) {
-	GEN order = strtoi(cfg->cm_order);
+	HAS_ARG(args);
+	const char *order_s = (const char *)args->args;
+	GEN order = strtoi(order_s);
 	GEN e = NULL;
 
 	cm_prime_qdisc_t qdisc = {0};

@@ -42,4 +42,12 @@ char *str_joinv(char *separator, ...);
  */
 char *str_concat(char **strings, size_t len);
 
+/**
+ * @brief
+ * @param str
+ * @param c
+ * @return
+ */
+size_t str_cnt(const char *str, const char c);
+
 #endif  // ECGEN_UTIL_STR_H

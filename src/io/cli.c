@@ -3,10 +3,10 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "cli.h"
+#include <regex.h>
 #include <string.h>
 #include "exhaustive/ansi.h"
 #include "exhaustive/brainpool.h"
-#include "misc/config.h"
 
 char cli_doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) "
@@ -89,6 +89,24 @@ struct argp_option cli_options[] = {
 		{0}
 };
 // clang-format on
+
+static regex_t re_cm_order;
+
+bool cli_init() {
+	int error = regcomp(
+	    &re_cm_order,
+	    "((0[xX][0-9a-fA-F]+)|([0-9]+))(,((0[xX][0-9a-fA-F]+)|([0-9]+)))*",
+	    REG_EXTENDED);
+	if (error) {
+		size_t length = regerror(error, &re_cm_order, NULL, 0);
+		char msg[length + 1];
+		regerror(error, &re_cm_order, msg, length + 1);
+		fprintf(stderr, "Error compiling regex: %s\n", msg);
+		return false;
+	}
+
+	return true;
+}
 
 static unsigned long cli_parse_memory(const char *str,
                                       struct argp_state *state) {
@@ -184,7 +202,7 @@ static void cli_end(struct argp_state *state) {
 
 error_t cli_parse(int key, char *arg, struct argp_state *state) {
 	switch (key) {
-			/* Field options */
+		/* Field options */
 		case OPT_FP:
 			cfg->field |= FIELD_PRIME;
 			break;
@@ -206,6 +224,10 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 		case OPT_ORDER:
 			cfg->method |= METHOD_CM;
 			if (arg) {
+				int error = regexec(&re_cm_order, arg, 0, NULL, 0);
+				if (error != 0) {
+					argp_failure(state, 1, 0, "Invalid order %s", arg);
+				}
 				cfg->cm_order = arg;
 			}
 			break;
@@ -418,3 +440,5 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 char *cli_filter(int key, const char *text, void *input) {
 	return (char *)text;
 }
+
+void cli_quit() { regfree(&re_cm_order); }

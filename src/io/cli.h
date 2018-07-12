@@ -18,6 +18,11 @@ extern struct argp_option cli_options[];
 
 /**
  * @brief
+ */
+bool cli_init();
+
+/**
+ * @brief
  * @param key
  * @param arg
  * @param state
@@ -33,5 +38,10 @@ error_t cli_parse(int key, char *arg, struct argp_state *state);
  * @return
  */
 char *cli_filter(int key, const char *text, void *input);
+
+/**
+ *
+ */
+void cli_quit();
 
 #endif  // ECGEN_IO_CLI_H

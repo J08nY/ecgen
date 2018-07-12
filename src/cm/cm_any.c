@@ -3,6 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "cm_any.h"
+#include "exhaustive/arg.h"
 #include "io/output.h"
 #include "obj/curve.h"
 #include "util/memory.h"
@@ -204,8 +205,10 @@ GEN cm_construct_curve(GEN order, GEN d, GEN p, bool ord_prime) {
 }
 
 GENERATOR(cm_gen_curve_any) {
+	HAS_ARG(args);
 	pari_sp ltop = avma;
-	GEN order = strtoi(cfg->cm_order);
+	const char *order_s = (const char *)args->args;
+	GEN order = strtoi(order_s);
 	cm_any_qdisc_t min_disc = {0};
 	good_qdisc_minimal(&min_disc, order);
 	debug_log("Got min D = %Pi", min_disc.d);
@@ -223,6 +226,8 @@ GENERATOR(cm_gen_curve_any) {
 }
 
 GENERATOR(cm_gen_order) {
-	curve->order = strtoi(cfg->cm_order);
+	HAS_ARG(args);
+	const char *order_s = (const char *)args->args;
+	curve->order = strtoi(order_s);
 	return 1;
 }

@@ -65,3 +65,10 @@ char *str_joinv(char *separator, ...) {
 char *str_concat(char **strings, size_t len) {
 	return str_join(NULL, strings, len);
 }
+
+size_t str_cnt(const char *str, const char c) {
+	size_t result = 0;
+	for (; str[result]; str[result] == c ? result++ : *str++)
+		;
+	return result;
+}

@@ -72,6 +72,9 @@ bool init(void) {
 	pari_TRY { ellmodulareqn(2, -1, -1); }
 	pari_ENDCATCH avma = ltop;
 
+	// Fix the mysterious isprime bug.
+	isprime(stoi(1));
+
 	// open outfile
 	if (!output_init()) return false;
 
@@ -142,7 +145,11 @@ int quit(int status) {
  */
 int main(int argc, char *argv[]) {
 	memset(cfg, 0, sizeof(config_t));
+	if (!cli_init()) {
+		return quit(EXIT_FAILURE);
+	}
 	argp_parse(&argp, argc, argv, 0, 0, cfg);
+	cli_quit();
 
 	if (!init()) {
 		return quit(EXIT_FAILURE);

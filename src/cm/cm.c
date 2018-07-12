@@ -16,6 +16,7 @@
 #include "gen/point.h"
 #include "obj/curve.h"
 #include "supersingular.h"
+#include "util/str.h"
 
 static void cm_ginit(gen_f *generators, bool prime) {
 	// SEED unused.
@@ -87,7 +88,21 @@ static void cm_ginit(gen_f *generators, bool prime) {
 	}
 }
 
-static void cm_ainit(arg_t **gen_argss, arg_t **check_argss) {
+static void cm_ainit(arg_t **gen_argss, arg_t **check_argss,
+                     const char *order_s) {
+	if (cfg->method == METHOD_CM) {
+		arg_t *curve_arg = arg_new();
+		arg_t *order_arg = arg_new();
+		char *order = try_strdup(order_s);
+		curve_arg->args = order;
+		curve_arg->nargs = 1;
+		order_arg->args = order;
+		order_arg->nargs = 1;
+		order_arg->allocd = order;
+		gen_argss[OFFSET_CURVE] = curve_arg;
+		gen_argss[OFFSET_ORDER] = order_arg;
+	}
+
 	if (cfg->method == METHOD_ANOMALOUS) {
 		arg_t *field_arg = arg_new();
 		arg_t *eq_arg = arg_new();
@@ -120,6 +135,78 @@ static void cm_cinit(check_t **validators) {
 	}
 }
 
+static int cm_init(exhaustive_t *setup) {
+	bool ord_prime = false;
+
+	char *order_s = NULL;
+	if (cfg->method == METHOD_CM) {
+		size_t delims = str_cnt(cfg->cm_order, ',');
+		GEN order;
+		if (delims == 0) {
+			order = strtoi(cfg->cm_order);
+			order_s = cfg->cm_order;
+		} else {
+			GEN factors = gtovec0(gen_0, delims + 1);
+			char *delim;
+			char *s_start = try_strdup(cfg->cm_order);
+			char *s = s_start;
+			long i = 1;
+			while (true) {
+				if ((delim = strchr(s, ',')) != NULL) {
+					*delim = 0;
+					gel(factors, i++) = strtoi(s);
+					s = delim + 1;
+				} else {
+					gel(factors, i++) = strtoi(s);
+					break;
+				}
+			}
+
+			order = gen_1;
+			long len = glength(factors);
+			for (long j = 1; j <= len; ++j) {
+				GEN factor = gel(factors, j);
+				if (isprime(factor)) {
+					addprimes(gtovec(factor));
+				} else {
+					GEN factored = Z_factor(order);
+					addprimes(gel(factored, 1));
+				}
+				order = mulii(order, factor);
+			}
+			try_free(s_start);
+			order_s = pari_sprintf("%Pi", order);
+		}
+		if (gequal0(order)) {
+			fprintf(err, "Order requested not a number: %s\n", cfg->cm_order);
+			return 1;
+		}
+		if (delims == 0) {
+			ord_prime = (bool)isprime(order);
+		} else {
+			ord_prime = false;
+		}
+	}
+
+	if (cfg->method == METHOD_ANOMALOUS) {
+		anomalous_init();
+	}
+
+	cm_ginit(setup->generators, ord_prime);
+	cm_ainit(setup->gen_argss, setup->check_argss, order_s);
+	cm_cinit(setup->validators);
+	exhaustive_uinit(setup->unrolls);
+
+	return 0;
+}
+
+static void cm_quit(exhaustive_t *setup) {
+	if (cfg->method == METHOD_ANOMALOUS) {
+		anomalous_quit();
+	}
+	exhaustive_clear(setup);
+}
+
 int cm_do() {
 	debug_log_start("Starting Complex Multiplication method");
 
@@ -135,31 +222,14 @@ int cm_do() {
 	                      .check_argss = check_argss,
 	                      .unrolls = unrolls};
 
-	bool ord_prime = false;
-	if (cfg->method == METHOD_CM) {
-		GEN order = strtoi(cfg->cm_order);
-		if (gequal0(order)) {
-			fprintf(err, "Order requested not a number: %s\n", cfg->cm_order);
-			return 1;
-		}
-		ord_prime = (bool)isprime(order);
+	int result = cm_init(&setup);
+	if (result) {
+		return result;
 	}
 
-	if (cfg->method == METHOD_ANOMALOUS) {
-		anomalous_init();
-	}
+	result = exhaustive_generate(&setup);
 
-	cm_ginit(setup.generators, ord_prime);
-	cm_ainit(setup.gen_argss, setup.check_argss);
-	cm_cinit(setup.validators);
-	exhaustive_uinit(setup.unrolls);
-
-	int result = exhaustive_generate(&setup);
-
-	if (cfg->method == METHOD_ANOMALOUS) {
-		anomalous_quit();
-	}
-	exhaustive_clear(&setup);
+	cm_quit(&setup);
 
 	debug_log_start("Finished Complex Multiplication method");
 	return result;
