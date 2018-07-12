@@ -3,13 +3,13 @@ sudo: required
 language: C
 matrix:
   include:
-    - compiler: gcc-8
+    - compiler: gcc-7
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
           packages:
-            - gcc-8
+            - gcc-7
     - compiler: clang-6.0
       addons:
         apt:
@@ -22,12 +22,12 @@ matrix:
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y dpkg apt
-  - wget https://mirrors.kernel.org/ubuntu/pool/universe/p/pari/libpari-gmp-tls5_2.9.5-1_amd64.deb
-  - wget https://mirrors.kernel.org/ubuntu/pool/universe/p/pari/libpari-dev_2.9.5-1_amd64.deb
-  - wget https://mirrors.kernel.org/ubuntu/pool/universe/p/pari/pari-gp_2.9.5-1_amd64.deb
-  - wget https://mirrors.kernel.org/ubuntu/pool/main/r/readline/libreadline7_7.0-0ubuntu2_amd64.deb
-  - wget https://mirrors.kernel.org/ubuntu/pool/main/n/ncurses/libtinfo5_6.0%2B20160625-1ubuntu1_amd64.deb
-  - wget http://pari.math.u-bordeaux.fr/pub/pari/packages/seadata.tgz
+  - wget https://mirrors.edge.kernel.org/ubuntu/pool/universe/p/pari/libpari-gmp-tls5_2.9.5-1_amd64.deb
+  - wget https://mirrors.edge.kernel.org/ubuntu/pool/universe/p/pari/libpari-dev_2.9.5-1_amd64.deb
+  - wget https://mirrors.edge.kernel.org/ubuntu/pool/universe/p/pari/pari-gp_2.9.5-1_amd64.deb
+  - wget https://mirrors.edge.kernel.org/ubuntu/pool/main/r/readline/libreadline7_7.0-0ubuntu2_amd64.deb
+  - wget https://mirrors.edge.kernel.org/ubuntu/pool/main/n/ncurses/libtinfo5_6.0%2B20160625-1ubuntu1_amd64.deb
+  - wget https://pari.math.u-bordeaux.fr/pub/pari/packages/seadata.tgz
   - sudo dpkg --force-all -i libtinfo5_6.0+20160625-1ubuntu1_amd64.deb libreadline7_7.0-0ubuntu2_amd64.deb libpari-gmp-tls5_2.9.5-1_amd64.deb libpari-dev_2.9.5-1_amd64.deb pari-gp_2.9.5-1_amd64.deb
   - DATADIR=$(echo "default(datadir)" | gp -q | cut -d\" -f2)
   - sudo tar --strip-components=1 -C ${DATADIR} -xzvf seadata.tgz data/

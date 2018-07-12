@@ -1,7 +1,7 @@
 ####
 #
 # ecgen, tool for generating Elliptic curve domain parameters
-# Copyright (C) 2017 J08nY
+# Copyright (C) 2017-2018 J08nY
 #
 ####
 
