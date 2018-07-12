@@ -107,6 +107,13 @@ function supersingular() {
 	order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
 	order_m1=$(echo $(canonical_num $order) - 1 | bc)
     assert "canonical_num $p" $order_m1
+
+    assert_raises "${ecgen} --fp --supersingular -r -u --metadata 20"
+    assert_raises "${ecgen} --fp --supersingular -r --points=random 16"
+    assert_raises "${ecgen} --fp --supersingular -r --points=5random 16"
+    assert_raises "${ecgen} --fp --supersingular -r --points=nonprime 16"
+    assert_raises "${ecgen} --fp --supersingular -r --points=all 16"
+    assert_raises "${ecgen} --fp --supersingular -r --points=none 20"
 }
 
 function invalid() {
@@ -144,6 +151,7 @@ function cli() {
 	assert_raises "${ecgen} --hex-check=not_hex --fp 10" 1
 	assert_raises "${ecgen} abc" 1
 	assert_raises "${ecgen} --supersingular --f2m 10" 1
+	assert_raises "${ecgen} --fp --order=not_a_number 32" 1
 }
 
 function hex() {
@@ -156,6 +164,7 @@ function cm() {
     assert_raises "${ecgen} --fp --order=2147483723 32"
     assert_raises "${ecgen} --fp --order=123456789012345678901234567890123456789012345678901234568197 137"
     assert_raises "${ecgen} --fp --order=46874566546,3546,3125 64"
+    assert_raises "${ecgen} --fp --order=0 16" 1
 }
 
 function secg() {
