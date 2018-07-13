@@ -181,6 +181,14 @@ static int cm_init(exhaustive_t *setup) {
 			fprintf(err, "Order requested not a number: %s\n", cfg->cm_order);
 			return 1;
 		}
+		long ord_log = logint0(order, gen_2, NULL);
+		if (ord_log > cfg->bits) {
+			pari_fprintf(err,
+			             "Order requested does not fit(2^%li) into requested "
+			             "bitsize(2^%li): %Pi\n",
+			             ord_log, cfg->bits, order);
+			return 1;
+		}
 		if (delims == 0) {
 			ord_prime = (bool)isprime(order);
 		} else {
