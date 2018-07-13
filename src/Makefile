@@ -29,6 +29,11 @@ LDFLAGS = -L../lib/parson -L../lib/sha1 -L../lib/pari
 INCLUDES = -I. -I../lib
 LIBS = -lrt -lpari -lpthread -lparson -lsha1
 
+GIT_COMMIT = $(shell git rev-parse --short HEAD)
+ifneq ($(GIT_COMMIT),)
+	CFLAGS += -DGIT_COMMIT=\"$(GIT_COMMIT)\"
+endif
+
 ####
 
 ECGEN_SRC = ecgen.c $(wildcard */*.c)

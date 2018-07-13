@@ -31,8 +31,17 @@
 #include "io/output.h"
 #include "util/timeout.h"
 
+#ifdef GIT_COMMIT
+#define GIT_VERSION "(git " GIT_COMMIT ")"
+#else
+#define GIT_VERSION ""
+#endif
+
 const char *argp_program_version =
-    "ecgen 0.7.2\n"
+    "ecgen 0.7.2" GIT_VERSION
+    "\n"
+    "Compiled with: " PARIVERSION
+    "\n\n"
     "Copyright (C) 2017-2018 J08nY\n"
     "License GPLv2: GNU GPL version 2 (or later) "
     "<http://gnu.org/licenses/gpl.html>\n"
