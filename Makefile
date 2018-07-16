@@ -50,6 +50,13 @@ help:
 	@echo " - clean-all : cleans all"
 	@echo " - format : run clang-format on source files"
 	@echo " - help : print this help"
+	@echo
+	@echo "Available variables:"
+	@echo " - CC : The compiler to use"
+	@echo " - DEBUG : Whether to enable DEBUG build = default 0"
+	@echo " - TEST : Whether to enable TEST build(code coverage) = default 0"
+	@echo " - FAST : Whether to enable additional optimization(gcc only) = default 0"
+	@echo " - STATIC : Whether to link PARI statically = default 0"
 
 .PHONY: all clean clean-all docs test unittest help
 

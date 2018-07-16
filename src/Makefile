@@ -11,6 +11,8 @@ CFLAGS = -Wall
 DEBUG ?= 0
 TEST ?= 0
 FAST ?= 0
+STATIC ?= 0
+
 ifeq ($(DEBUG), 1)
     CFLAGS += -DDEBUG -g -Og -Werror -pedantic
 else ifeq ($(TEST), 1)
@@ -24,10 +26,16 @@ else ifeq ($(FAST), 1)
 else
     CFLAGS += -DNDEBUG -O2
 endif
+
 LDFLAGS = -L../lib/parson -L../lib/sha1 -L../lib/pari
+ifeq ($(STATIC), 1)
+	LIBS = -lrt -Wl,-Bstatic -lpari -Wl,-Bdynamic -lpthread -lparson -lsha1 -lm -lgmp -ldl
+else
+	LIBS = -lrt -lpari -lpthread -lparson -lsha1
+endif
 
 INCLUDES = -I. -I../lib
-LIBS = -lrt -lpari -lpthread -lparson -lsha1
+
 
 GIT_COMMIT = $(shell git rev-parse --short HEAD)
 ifneq ($(GIT_COMMIT),)
