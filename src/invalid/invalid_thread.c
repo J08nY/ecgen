@@ -11,6 +11,13 @@
 #include "util/random.h"
 #include "util/timeout.h"
 
+static size_t invalid_get_generated(thread_t *thread) {
+	pthread_mutex_lock(thread->mutex_state);
+	size_t result = *thread->generated;
+	pthread_mutex_unlock(thread->mutex_state);
+	return result;
+}
+
 void *invalid_thread(void *arg) {
 	thread_t *thread = (thread_t *)arg;
 	pari_thread_start(thread->pari_thread);
@@ -26,7 +33,7 @@ void *invalid_thread(void *arg) {
 	invalid->field = gcopy(thread->original_curve->field);
 	invalid->a = gcopy(thread->original_curve->a);
 
-	while (*thread->generated < thread->nprimes) {
+	while (invalid_get_generated(thread) < thread->nprimes) {
 		pari_sp btop = avma;
 		exhaustive_gen(invalid, thread->setup, OFFSET_B, OFFSET_GENERATORS);
 		size_t ndivides = 0;

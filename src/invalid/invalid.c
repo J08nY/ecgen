@@ -241,10 +241,10 @@ static size_t invalid_curves_threaded(const curve_t *curve, pari_ulong *primes,
 	struct pari_thread pari_threads[cfg->threads];
 	pari_thread_sync();
 
-	size_t generated = 0;
-	state_e states[nprimes];
-	state_e old_states[nprimes];
-	curve_t *local_curves[nprimes];
+	size_t *generated = try_calloc(sizeof(size_t));
+	state_e *states = try_calloc(sizeof(state_e) * nprimes);
+	state_e *old_states = try_calloc(sizeof(state_e) * nprimes);
+	curve_t **local_curves = try_calloc(sizeof(curve_t *) * nprimes);
 	for (size_t i = 0; i < nprimes; ++i) {
 		states[i] = STATE_FREE;
 		old_states[i] = STATE_FREE;
@@ -262,7 +262,7 @@ static size_t invalid_curves_threaded(const curve_t *curve, pari_ulong *primes,
 		threads[i].primes = primes;
 		threads[i].states = states;
 		threads[i].curves = local_curves;
-		threads[i].generated = &generated;
+		threads[i].generated = generated;
 		threads[i].mutex_state = &state_mutex;
 		threads[i].cond_generated = &generated_cond;
 		threads[i].cfg = cfg;
@@ -275,22 +275,22 @@ static size_t invalid_curves_threaded(const curve_t *curve, pari_ulong *primes,
 		               (void *)&threads[i]);
 	}
 
-	bool running = true;
-	do {
+	while (true) {
 		pthread_cond_wait(&generated_cond, &state_mutex);
 		for (size_t i = 0; i < nprimes; ++i) {
 			if (old_states[i] != states[i] && states[i] == STATE_GENERATED) {
 				output_o(local_curves[i]);
-				if (generated != nprimes) {
+				if (*generated != nprimes) {
 					output_o_separator();
 				}
 				old_states[i] = states[i];
 			}
 		}
 
-		if (generated == nprimes) running = false;
-		pthread_mutex_unlock(&state_mutex);
-	} while (running);
+		if (*generated == nprimes)
+			break;
+	}
+	pthread_mutex_unlock(&state_mutex);
 
 	for (size_t i = 0; i < cfg->threads; ++i) {
 		pthread_join(pthreads[i], NULL);
@@ -307,7 +307,13 @@ static size_t invalid_curves_threaded(const curve_t *curve, pari_ulong *primes,
 	pthread_mutex_destroy(&state_mutex);
 	pthread_cond_destroy(&generated_cond);
 
-	return generated;
+	size_t result = *generated;
+	try_free(generated);
+	try_free(states);
+	try_free(old_states);
+	try_free(local_curves);
+
+	return result;
 }
 
 curve_t *invalid_original_curve(exhaustive_t *setup) {
