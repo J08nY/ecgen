@@ -19,7 +19,7 @@ else ifeq ($(TEST), 1)
 	CFLAGS += -DNDEBUG --coverage -g -O0
 else ifeq ($(FAST), 1)
     ifeq ($(CC), gcc)
-        CFLAGS += -DNDEBUG -O3 -march=native -pipe
+        CFLAGS += -DNDEBUG -O3 -march=native -mtune=native -pipe
     else
         CFLAGS += -DNDEBUG -O3
     endif

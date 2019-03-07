@@ -117,10 +117,8 @@ GENERATOR(points_gen_trial) {
 				} else {
 					vec_append(orders_per_gen[i], num);
 				}
-				break;
 			}
 		}
-		debug_log("Should not happen.");
 	}
 
 	for (size_t i = 0; i < curve->ngens; ++i) {
