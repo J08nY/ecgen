@@ -7,7 +7,7 @@
 
 CC ?= gcc
 
-CFLAGS = -Wall
+CFLAGS = -Wall -flto
 DEBUG ?= 0
 TEST ?= 0
 FAST ?= 0
