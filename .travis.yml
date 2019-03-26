@@ -10,14 +10,16 @@ matrix:
             - ubuntu-toolchain-r-test
           packages:
             - gcc-7
-    - compiler: clang-6.0
+    - compiler: clang-7
       addons:
         apt:
           sources:
             - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-6.0
+            - llvm-toolchain-trusty-7
           packages:
-            - clang-6.0
+            - clang-7
+            - llvm-7-dev
+            - lld-7
 
 before_install:
   - sudo apt-get update
