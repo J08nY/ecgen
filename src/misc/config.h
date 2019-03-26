@@ -80,6 +80,8 @@ typedef struct {
 	bool prime;
 	/** @brief Whether the Complex Multiplication method should be used. */
 	char *cm_order;
+	/** @brief Whether the Anomalous method should be used. */
+	char *anom_order;
 	/** @brief Whether the curves should be Koblitz (a \\in {0, 1}, b = 1). */
 	bool koblitz;
 	long koblitz_value;

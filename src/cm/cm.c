@@ -197,6 +197,10 @@ static int cm_init(exhaustive_t *setup) {
 	}
 
 	if (cfg->method == METHOD_ANOMALOUS) {
+		GEN order;
+		if (cfg->anom_order) {
+			//TODO: Finish implementation of anomalous method with given order.
+		}
 		anomalous_init();
 	}
 

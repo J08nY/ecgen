@@ -54,7 +54,7 @@ struct argp_option cli_options[] = {
 		{0,               0,                 0,       0,                   "Generation methods:",                                                                  2},
 		{"order",         OPT_ORDER,         "ORDER", 0,                   "Generate a curve with given order (using Complex Multiplication).",                    2},
 		{"supersingular", OPT_SUPERSINGULAR, 0,       0,                   "Generate a supersingular curve.",                                                      2},
-		{"anomalous",     OPT_ANOMALOUS,     0,       0,                   "Generate an anomalous curve (of trace one, with field order equal to curve order).",   2},
+		{"anomalous",     OPT_ANOMALOUS,     "ORDER", OPTION_ARG_OPTIONAL, "Generate an anomalous curve (of trace one, with field order equal to curve order).",   2},
 		{"ansi",          OPT_ANSI,          "SEED",  OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure).",                        2},
 		{"brainpool",     OPT_BRAINPOOL,     "SEED",  OPTION_ARG_OPTIONAL, "Generate a curve from SEED (Brainpool procedure).",                                    2},
 		{"brainpool-rfc", OPT_BRAINPOOL_RFC, "SEED",  OPTION_ARG_OPTIONAL, "Generate a curve from SEED (Brainpool procedure, as per RFC 5639).",                   2},
@@ -91,21 +91,24 @@ struct argp_option cli_options[] = {
 // clang-format on
 
 static regex_t re_cm_order;
+static regex_t re_anom_order;
 
-bool cli_init() {
-	int error = regcomp(
-	    &re_cm_order,
-	    "((0[xX][0-9a-fA-F]+)|([0-9]+))(,((0[xX][0-9a-fA-F]+)|([0-9]+)))*",
-	    REG_EXTENDED);
+static bool cli_compile_regex(const char *regex_str, regex_t *regex) {
+	int error = regcomp(regex, regex_str, REG_EXTENDED);
 	if (error) {
-		size_t length = regerror(error, &re_cm_order, NULL, 0);
+		size_t length = regerror(error, regex, NULL, 0);
 		char msg[length + 1];
-		regerror(error, &re_cm_order, msg, length + 1);
+		regerror(error, regex, msg, length + 1);
 		fprintf(stderr, "Error compiling regex: %s\n", msg);
 		return false;
+	} else {
+		return true;
 	}
+}
 
-	return true;
+bool cli_init() {
+	return cli_compile_regex("((0[xX][0-9a-fA-F]+)|([0-9]+))(,((0[xX][0-9a-fA-F]+)|([0-9]+)))*", &re_cm_order) &&
+	cli_compile_regex("((0[xX][0-9a-fA-F]+)|([0-9]+))", &re_anom_order);
 }
 
 static unsigned long cli_parse_memory(const char *str,
@@ -233,6 +236,13 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			break;
 		case OPT_ANOMALOUS:
 			cfg->method |= METHOD_ANOMALOUS;
+			if (arg) {
+				int error = regexec(&re_anom_order, arg, 0, NULL, 0);
+				if (error != 0) {
+					argp_failure(state, 1, 0, "Invalid order %s", arg);
+				}
+				cfg->anom_order = arg;
+			}
 			break;
 		case OPT_SUPERSINGULAR:
 			cfg->method |= METHOD_SUPERSINGULAR;
