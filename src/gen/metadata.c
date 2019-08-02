@@ -7,6 +7,7 @@
 #include "gens.h"
 
 GENERATOR(metadata_gen) {
+	pari_sp ltop = avma;
 	GEN j = field_elementi(ell_get_j(curve->curve));
 	GEN disc = field_elementi(ell_get_disc(curve->curve));
 	GEN embedding_degree;
@@ -21,11 +22,17 @@ GENERATOR(metadata_gen) {
 		return -7;
 	}
 	GEN frobenius = negi(subii(curve->order, addis(q, 1)));
+	GEN conductor;
 	GEN cm_disc;
 	if (typ(curve->field) == t_INT) {
-		cm_disc = core(subii(mulis(q, 4), sqri(frobenius)));
+		GEN full_disc = subii(mulis(q, 4), sqri(frobenius));
+		cm_disc = core(full_disc);
+		conductor = sqrti(diviiexact(full_disc, cm_disc));
+		gerepileall(ltop, 6, &j, &disc, &embedding_degree, &frobenius, &cm_disc, &conductor);
 	} else if (typ(curve->field) == t_FFELT) {
 		cm_disc = NULL;
+		conductor = NULL;
+		gerepileall(ltop, 3, &j, &disc, &frobenius);
 	} else {
 		return -7;
 	}
@@ -34,5 +41,6 @@ GENERATOR(metadata_gen) {
 	curve->meta.embedding_degree = embedding_degree;
 	curve->meta.frobenius_trace = frobenius;
 	curve->meta.cm_discriminant = cm_disc;
+	curve->meta.conductor = conductor;
 	return 1;
 }

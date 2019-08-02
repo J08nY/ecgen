@@ -17,10 +17,15 @@
 static void good_qdisc_minimal(cm_any_qdisc_t *qdisc, GEN order) {
 	pari_sp ltop = avma;
 	GEN d = stoi(2);
+	size_t j = 0;
 	while (true) {
+		++j;
 		if (!issquarefree(d)) {
 			d = addis(d, 1);
 			continue;
+		}
+		if (j % 100 == 0) {
+			debug_log("D: %Ps", d);
 		}
 		GEN D = quaddisc(negi(d));
 		GEN K = Buchall(quadpoly(D), 0, DEFAULTPREC);

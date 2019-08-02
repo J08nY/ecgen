@@ -87,6 +87,7 @@ typedef struct {
 	GEN cm_discriminant;
 	GEN frobenius_trace;
 	GEN embedding_degree;
+	GEN conductor;
 } metadata_t;
 
 /**
