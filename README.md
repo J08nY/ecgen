@@ -1,4 +1,6 @@
-## ecgen [![Build Status](https://travis-ci.org/J08nY/ecgen.svg?branch=master)](https://travis-ci.org/J08nY/ecgen) [![GitHub release](https://img.shields.io/github/release/J08nY/ecgen.svg)](https://github.com/J08nY/ecgen/releases/latest) [![codecov](https://codecov.io/gh/J08nY/ecgen/branch/master/graph/badge.svg)](https://codecov.io/gh/J08nY/ecgen)
+# ![](docs/full.png)
+
+[![Build Status](https://travis-ci.org/J08nY/ecgen.svg?branch=master)](https://travis-ci.org/J08nY/ecgen) [![GitHub release](https://img.shields.io/github/release/J08nY/ecgen.svg)](https://github.com/J08nY/ecgen/releases/latest) [![codecov](https://codecov.io/gh/J08nY/ecgen/branch/master/graph/badge.svg)](https://codecov.io/gh/J08nY/ecgen)
 
 Tool for generating Elliptic curve domain parameters.
 
