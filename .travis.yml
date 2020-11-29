@@ -1,36 +1,27 @@
-dist: trusty
-sudo: required
-language: C
-matrix:
+os: linux
+dist: focal
+language: c
+jobs:
   include:
-    - compiler: gcc-7
+    - compiler: gcc-9
+    - compiler: clang-10
       addons:
         apt:
-          sources:
-            - ubuntu-toolchain-r-test
           packages:
-            - gcc-7
-    - compiler: clang-7
-      addons:
-        apt:
-          sources:
-            - ubuntu-toolchain-r-test
-            - llvm-toolchain-trusty-7
-          packages:
-            - clang-7
-            - llvm-7-dev
-            - lld-7
+            - clang-10
+            - llvm-10-dev
+            - lld-10
 
 before_install:
   - sudo apt-get update
   - sudo apt-get install -y dpkg apt
-  - wget https://mirrors.edge.kernel.org/ubuntu/pool/universe/p/pari/libpari-gmp-tls6_2.11.0-1_amd64.deb
-  - wget https://mirrors.edge.kernel.org/ubuntu/pool/universe/p/pari/libpari-dev_2.11.0-1_amd64.deb
-  - wget https://mirrors.edge.kernel.org/ubuntu/pool/universe/p/pari/pari-gp_2.11.0-1_amd64.deb
-  - wget https://mirrors.edge.kernel.org/ubuntu/pool/main/r/readline/libreadline7_7.0-5_amd64.deb
-  - wget https://mirrors.edge.kernel.org/ubuntu/pool/main/n/ncurses/libtinfo6_6.1%2B20180210-4ubuntu1_amd64.deb
+  - wget https://mirrors.edge.kernel.org/ubuntu/pool/universe/p/pari/libpari-gmp-tls7_2.13.0-2_amd64.deb
+  - wget https://mirrors.edge.kernel.org/ubuntu/pool/universe/p/pari/libpari-dev_2.13.0-2_amd64.deb
+  - wget https://mirrors.edge.kernel.org/ubuntu/pool/universe/p/pari/pari-gp_2.13.0-2_amd64.deb
+  - wget https://mirrors.edge.kernel.org/ubuntu/pool/main/r/readline/libreadline8_8.0-4_amd64.deb
+  - wget https://mirrors.edge.kernel.org/ubuntu/pool/main/n/ncurses/libtinfo6_6.2-1_amd64.deb
   - wget https://pari.math.u-bordeaux.fr/pub/pari/packages/seadata.tgz
-  - sudo dpkg --force-all -i libtinfo6_6.1+20180210-4ubuntu1_amd64.deb libreadline7_7.0-5_amd64.deb libpari-gmp-tls6_2.11.0-1_amd64.deb libpari-dev_2.11.0-1_amd64.deb pari-gp_2.11.0-1_amd64.deb
+  - sudo dpkg --force-all -i libtinfo6_6.2-1_amd64.deb libreadline8_8.0-4_amd64.deb libpari-gmp-tls7_2.13.0-2_amd64.deb libpari-dev_2.13.0-2_amd64.deb pari-gp_2.13.0-2_amd64.deb
   - DATADIR=$(echo "default(datadir)" | gp -q | cut -d\" -f2)
   - sudo tar --strip-components=1 -C ${DATADIR} -xzvf seadata.tgz data/
 
@@ -44,10 +35,9 @@ after_success:
 
 deploy:
   provider: releases
-  api_key:
+  token:
     secure: Yrkxhis0VKnfOBd9q6IN28P3BfERSOoebkVU5Mjamq36+kvlPy86CYgELIjX2Q2f0HCIwIK3lU3439qTASv5BzexmyfD7kp4gGxD/IDxm5jMw0mkwp3UhG12gWTfxigj7MGO3T9+N1iFU4oiIaFmfc+zu249WFwPsVwF+a9ujalUwnuZvvlgRZnMcZY+M/Pn69F/BQyh8xZHx3I414shYm6sf7muWrnLg+fJSXUz5pqcfz3YhMTQu1h/kEAolCNeUovIrELwhsC7lmUVqCbKoQubfPgrbGklDdAm6MfAD0T5wHE7QLqpG6ubCI9GQRhJTb0BLi/qN2gYv/H9HXJ0TP1pLj6XHD9Q3dYSMEfI2D3jKT1Abay99i+PqD5XmKOEGewNXYY+a/jejHi5ufyg3pPyC23HiFmmSmGduszRjyW8BZxi98hmEmZ2hE6D81u//6aHVetXOWz0dT7cmAiQZmVn7LxO9UVkAoYKo5IzdxHvoz7IF5Z9qG5ZOVuZRL0Z4isXtzON1YTrzb5gi7uj5CR1R4LqEkpilM/qaxRDZQL0w8gzZAFyzeHcpRuPO9N43y65AdsJeMf6Vr0ldHXTWyzd5khic4gp0cQGoaCAYCpBMgo/PIYam4wtQGjhyxwYlYZVAWPS6bj+2acHLQ1mj77rU8K03hsHCvZUUZ/HHS0=
   file: ecgen
-  skip_cleanup: true
   on:
     condition: "$CC == *\"gcc\"*"
     tags: true
