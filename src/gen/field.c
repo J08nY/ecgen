@@ -84,7 +84,7 @@ GENERATOR(field_gen_input) {
 			gel(v, 1) = gen_1;
 
 			GEN poly = gmul(gtopolyrev(v, -1), gmodulss(1, 2));
-			if (!isirreducible(poly)) {
+			if (!polisirreducible(poly)) {
 				fprintf(err, "Polynomial is reducible.\n");
 				avma = ltop;
 				return 0;

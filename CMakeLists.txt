@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 3.10)
 project(ecgen C)
 
 add_subdirectory(lib)
@@ -12,7 +12,7 @@ set(CMAKE_C_FLAGS_RELEASE "${CMAKE_C_FLAGS_RELEASE} -DNDEBUG -O3 -Wall -flto")
 include_directories(src)
 include_directories(lib)
 
-add_subdirectory(test)
+#add_subdirectory(test)
 
 add_executable(ecgen ${ECGEN_SRC})
 

@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 2.8.11)
+cmake_minimum_required(VERSION 3.10)
 
 # This is an issue because criterion contains a header "io/output.h" which is
 # after ecgen's "io/output.h" and so gets shadowed in the include directories

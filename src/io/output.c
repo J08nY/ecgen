@@ -9,6 +9,11 @@
 #include "util/bits.h"
 #include "util/memory.h"
 
+char *(*output_s)(curve_t *curve);
+char *(*output_s_separator)();
+char *(*output_s_begin)();
+char *(*output_s_end)();
+
 FILE *out;
 FILE *err;
 FILE *verbose;

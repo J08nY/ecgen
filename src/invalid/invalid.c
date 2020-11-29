@@ -239,7 +239,6 @@ static size_t invalid_curves_threaded(const curve_t *curve, pari_ulong *primes,
 	pthread_t pthreads[cfg->threads];
 	thread_t threads[cfg->threads];
 	struct pari_thread pari_threads[cfg->threads];
-	pari_thread_sync();
 
 	size_t *generated = try_calloc(sizeof(size_t));
 	state_e *states = try_calloc(sizeof(state_e) * nprimes);

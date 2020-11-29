@@ -110,7 +110,7 @@ char *output_sjson_end();
  * @param curve
  * @return
  */
-char *(*output_s)(curve_t *curve);
+extern char *(*output_s)(curve_t *curve);
 
 /**
  * @brief Output curve to a FILE *out in configured format.
@@ -129,7 +129,7 @@ void output_o(curve_t *curve);
  * @brief Output separator to a malloc'ed string in configured format.
  * @return
  */
-char *(*output_s_separator)();
+extern char *(*output_s_separator)();
 
 /**
  * @brief Output separator to a FILE *out in configured format.
@@ -146,7 +146,7 @@ void output_o_separator();
  * @brief Output header to a malloc'ed string in configured format.
  * @return
  */
-char *(*output_s_begin)();
+extern char *(*output_s_begin)();
 
 /**
  * @brief Output header to a FILE *out in configured format.
@@ -163,7 +163,7 @@ void output_o_begin();
  * @brief Output footer to a malloc'ed string in configured format.
  * @return
  */
-char *(*output_s_end)();
+extern char *(*output_s_end)();
 
 /**
  * @brief Output footer to a FILE *out in configured format.
