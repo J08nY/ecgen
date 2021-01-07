@@ -6,6 +6,7 @@
 #include "io/input.h"
 #include "io/output.h"
 #include "math/poly.h"
+#include "misc/compat.h"
 
 static GEN field_primer(unsigned long bits) { return random_prime(bits); }
 
