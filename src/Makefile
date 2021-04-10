@@ -1,7 +1,7 @@
 ####
 #
 # ecgen, tool for generating Elliptic curve domain parameters
-# Copyright (C) 2017-2018 J08nY
+# Copyright (C) 2017-2021 J08nY
 #
 ####
 
@@ -14,32 +14,32 @@ FAST ?= 0
 STATIC ?= 0
 
 ifeq ($(DEBUG), 1)
-    CFLAGS += -DDEBUG -g -Og -Werror -pedantic
+    ECGEN_CFLAGS = -DDEBUG -g -Og -Werror -pedantic
 else ifeq ($(TEST), 1)
-	CFLAGS += -DNDEBUG --coverage -g -O0
+	ECGEN_CFLAGS = -DNDEBUG --coverage -g -O0
 else ifeq ($(FAST), 1)
     ifeq ($(CC), gcc)
-        CFLAGS += -DNDEBUG -O3 -march=native -mtune=native -pipe -flto
+        ECGEN_CFLAGS = -DNDEBUG -O3 -march=native -mtune=native -pipe -flto
     else
-        CFLAGS += -DNDEBUG -O3
+        ECGEN_CFLAGS = -DNDEBUG -O3
     endif
 else
-    CFLAGS += -DNDEBUG -O2
+    ECGEN_CFLAGS = -DNDEBUG -O2
 endif
 
-LDFLAGS = -L../lib/parson -L../lib/sha1 -L../lib/pari
+ECGEN_LDFLAGS = -L../lib/parson -L../lib/sha1 -L../lib/pari
 ifeq ($(STATIC), 1)
-	LIBS = -lrt -Wl,-Bstatic -lpari -Wl,-Bdynamic -lpthread -lparson -lsha1 -lm -lgmp -ldl
+	ECGEN_LIBS = -lrt -Wl,-Bstatic -lpari -Wl,-Bdynamic -lpthread -lparson -lsha1 -lm -lgmp -ldl
 else
-	LIBS = -lrt -lpari -lpthread -lparson -lsha1
+	ECGEN_LIBS = -lrt -lpari -lpthread -lparson -lsha1
 endif
 
-INCLUDES = -I. -I../lib
+ECGEN_INCLUDES = -I. -I../lib
 
 
-GIT_COMMIT = $(shell git rev-parse --short HEAD)
+GIT_COMMIT = $(shell git rev-parse --short HEAD 2>/dev/null)
 ifneq ($(GIT_COMMIT),)
-	CFLAGS += -DGIT_COMMIT=\"$(GIT_COMMIT)\"
+	ECGEN_CFLAGS += -DGIT_COMMIT=\"$(GIT_COMMIT)\"
 endif
 
 ####
@@ -55,11 +55,11 @@ HDR = $(wildcard */*.h)
 all: ecgen
 
 ecgen: ecgen.o $(ECGEN_OBJ)
-	$(CC) $(CFLAGS) $(INCLUDES) -o $@ $^ $(LDFLAGS) $(LIBS)
+	$(CC) $(strip $(CPPFLAGS) $(ECGEN_INCLUDES) $(ECGEN_CFLAGS) $(CFLAGS) -o) $@ $^ $(ECGEN_LDFLAGS) $(LDFLAGS) $(ECGEN_LIBS) $(LIBS)
 	mv ecgen ..
 
 %.o: %.c
-	$(CC) $(CFLAGS) $(INCLUDES) -c -o $@ $<
+	$(CC) $(strip $(CPPFLAGS) $(ECGEN_INCLUDES) $(ECGEN_CFLAGS) $(CFLAGS) -c -o) $@ $<
 
 ####
 
