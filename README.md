@@ -212,7 +212,13 @@ Four different EC curve parameters generation methods are implemented.
 
 ### Build
 
-ecgen can be built using Make or CMake.
+ecgen can be built using Make or CMake. ecgen uses git submodules for testing at:
+
+ - `test/lib/assert.sh` pointing at <https://github.com/J08nY/assert.sh>
+ - `test/lib/JSON.sh` pointing at <https://github.com/jimklimov/JSON.sh>
+ - `test/lib/criterion` pointing at <https://github.com/Snaipe/Criterion>
+
+these need to be initialized for `make test` to work.
 
 #### Make
 

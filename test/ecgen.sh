@@ -185,6 +185,15 @@ function secg() {
     test_order secp160k1 fp 160
 }
 
+if [ ! -f $ASSERT ]; then
+	echo "$ASSERT not found. It is a git submodule from https://github.com/J08nY/assert.sh @679ed66 that should be at $(dirname $ASSERT)."
+	exit 1
+fi
+if [ ! -f $JSON ]; then
+	echo "$JSON not found. It is a git submodule from https://github.com/jimklimov/JSON.sh @679ed66 that should be at $(dirname $JSON)."
+	exit 1
+fi
+
 . ${ASSERT} -v
 start_suite
 runs

@@ -10,7 +10,7 @@ test: ecgen
 unittest: unit ecgen
 
 unit:
-	cd lib/criterion && mkdir -p build && cd build && cmake ..  >/dev/null && cmake --build . >/dev/null
+	./criterion.sh
 	+$(MAKE) -C src all
 
 ecgen:
