@@ -33,12 +33,4 @@ script: # Test, clean, build for release
 after_success:
   - bash <(curl -s https://codecov.io/bash)
 
-deploy:
-  provider: releases
-  token:
-    secure: Yrkxhis0VKnfOBd9q6IN28P3BfERSOoebkVU5Mjamq36+kvlPy86CYgELIjX2Q2f0HCIwIK3lU3439qTASv5BzexmyfD7kp4gGxD/IDxm5jMw0mkwp3UhG12gWTfxigj7MGO3T9+N1iFU4oiIaFmfc+zu249WFwPsVwF+a9ujalUwnuZvvlgRZnMcZY+M/Pn69F/BQyh8xZHx3I414shYm6sf7muWrnLg+fJSXUz5pqcfz3YhMTQu1h/kEAolCNeUovIrELwhsC7lmUVqCbKoQubfPgrbGklDdAm6MfAD0T5wHE7QLqpG6ubCI9GQRhJTb0BLi/qN2gYv/H9HXJ0TP1pLj6XHD9Q3dYSMEfI2D3jKT1Abay99i+PqD5XmKOEGewNXYY+a/jejHi5ufyg3pPyC23HiFmmSmGduszRjyW8BZxi98hmEmZ2hE6D81u//6aHVetXOWz0dT7cmAiQZmVn7LxO9UVkAoYKo5IzdxHvoz7IF5Z9qG5ZOVuZRL0Z4isXtzON1YTrzb5gi7uj5CR1R4LqEkpilM/qaxRDZQL0w8gzZAFyzeHcpRuPO9N43y65AdsJeMf6Vr0ldHXTWyzd5khic4gp0cQGoaCAYCpBMgo/PIYam4wtQGjhyxwYlYZVAWPS6bj+2acHLQ1mj77rU8K03hsHCvZUUZ/HHS0=
-  file: ecgen
-  on:
-    condition: "$CC == *\"gcc\"*"
-    tags: true
-    repo: J08nY/ecgen
+
