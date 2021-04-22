@@ -1,6 +1,6 @@
 # ![](docs/full.png)
 
-[![Build Status](https://travis-ci.org/J08nY/ecgen.svg?branch=master)](https://travis-ci.org/J08nY/ecgen) [![GitHub release](https://img.shields.io/github/release/J08nY/ecgen.svg)](https://github.com/J08nY/ecgen/releases/latest) [![codecov](https://codecov.io/gh/J08nY/ecgen/branch/master/graph/badge.svg)](https://codecov.io/gh/J08nY/ecgen)
+[![Test](https://github.com/J08nY/ecgen/actions/workflows/test.yml/badge.svg)](https://github.com/J08nY/ecgen/actions/workflows/test.yml) [![GitHub release](https://img.shields.io/github/release/J08nY/ecgen.svg)](https://github.com/J08nY/ecgen/releases/latest) [![codecov](https://codecov.io/gh/J08nY/ecgen/branch/master/graph/badge.svg)](https://codecov.io/gh/J08nY/ecgen)
 
 Tool for generating Elliptic curve domain parameters.
 
@@ -100,52 +100,63 @@ Generate a prime field, uniquely generated random curve, of size 192 bits, also 
 	> ecgen --fp -r -u --metadata 192
 	[{
 	    "field": {
-	        "p": "0xc61cc69c570f03c690df1177fa1ac8c5b295587f876df1bf"
+	        "p": "0xf0886302f64dfdd33035064e0f0a346a74c0cf0c22e22a79"
 	    },
-	    "a": "0xaa67a35fbec93655b4a9dc2fa84e2deff18077a4fa12d2ef",
-	    "b": "0x4477eabe9abbcfccaa3f996ed03d58f32b149c42cb22d1b9",
-	    "order": "0xc61cc69c570f03c690df1178443ec606114599ad0f6d8790",
+	    "a": "0x54c517a28dd47c296842f20273a0ec1840e576e6c06bb4e8",
+	    "b": "0x3ee3025dc7d8c26104e6fb3e11f3bdaabc15c73b9df27c8f",
+	    "order": "0xf0886302f64dfdd33035064df1a3dc1e3c4577ad590bfaa6",
 	    "subgroups": [
 	        {
-	            "x": "0x909b1f3b6378fb77a2c1d2117fe7229c329a4fa400605a62",
-	            "y": "0x2da7e3fafdd4c3b4b149cf6693151dd559eebf8b081435fd",
-	            "order": "0xc61cc69c570f03c690df1178443ec606114599ad0f6d8790",
+	            "x": "0x9e886fbe1f155acdd790183bf1ceb5c92cfa112e693d34ef",
+	            "y": "0x9723f733f48229287d173ce4a5147cd947de0637def3f3ed",
+	            "order": "0xf0886302f64dfdd33035064df1a3dc1e3c4577ad590bfaa6",
 	            "cofactor": "0x1",
 	            "points": [
 	                {
-	                    "x": "0x6831806c80fbd016fb59c2eb20700716eeb392c601deda25",
+	                    "x": "0x1f7b95e47d5224164880e9809082c60194152901d1bc613e",
 	                    "y": "0x000000000000000000000000000000000000000000000000",
 	                    "order": "0x2"
 	                },
 	                {
-	                    "x": "0x6206b8e9d56a22485c1b2baa6c61292ff51aa0848097e823",
-	                    "y": "0xbd0a1bda7ba13c81bb3ecaf4abfd34c054d9e4a41aa00733",
-	                    "order": "0xa3"
+	                    "x": "0xce3e0c542060d6e2b244ba5850e7ccdda413854454b464ff",
+	                    "y": "0x38c193df5bb67817128fbf9f63d4c7af55535110553d247f",
+	                    "order": "0x3"
 	                },
 	                {
-	                    "x": "0x9e196e607959b78f821600fdf263834d4ad2b10046b5921c",
-	                    "y": "0x26f2c864a472bacd4bbb3e513b0a1c1f59a919a187fa4b47",
-	                    "order": "0xbe3b5"
+	                    "x": "0x73d0035006dc8c9e63c65d76f96cbb5da7ab9735980ece74",
+	                    "y": "0x420a85069882811d44458106bba9b2aedd4820f25ca7761c",
+	                    "order": "0x9d"
 	                },
 	                {
-	                    "x": "0x0220c948fbb6403608563efc5cf16a630953281155e62d47",
-	                    "y": "0x3a630cd359f8028da08b27df562ab8749e3c2430b8a9f3a9",
-	                    "order": "0x202205798a8a981b"
+	                    "x": "0x68f998d413b99520fe2ba1501f8ea22db0357cf88e4ab80f",
+	                    "y": "0x6321a63274a60d2d0db49800e806d8d7923a5eb8bcd990a6",
+	                    "order": "0x1ca3"
 	                },
 	                {
-	                    "x": "0x76f971b3722e4b8bfc284c7c39adb395ade0baa61b1e6820",
-	                    "y": "0xb7304431b86e6a06576005a6da2afcd96b43e1ce62056724",
-	                    "order": "0xd07e2df2cc0790a9a06ccfa45"
+	                    "x": "0xd81d2b8eb95474be0e456dfd3e85d17d7832775a9e867ad4",
+	                    "y": "0x6dc2c4c566616b1b959935192e14d403d7cfcaac4a9f0b90",
+	                    "order": "0x67a21"
+	                },
+	                {
+	                    "x": "0x919460438753800b0332685fc9294d0ae44d61fd8d7d4403",
+	                    "y": "0xefa307fb3d2946939461fa3b6ac2a1c658821e69837d0122",
+	                    "order": "0x1053aa57a15ae784f7"
+	                },
+	                {
+	                    "x": "0xce1773b3b404b78923f0e8ba5493e806c088ef527c712dfb",
+	                    "y": "0x451aa2ca72326983381c77a1965517787333ffe8c036073d",
+	                    "order": "0x5869ef97eaf9885325d01"
 	                }
 	            ]
 	        }
 	    ],
 	    "meta": {
-	        "j": "2147872786867739581244581376066320780390424557746041800843",
-	        "discriminant": "1437087699540380117015716490177070508119149165688061690066",
-	        "embedding_degree": "4857702049745916698354329148965234205490318980592629024655",
-	        "frobenius": "-22945399076600858943676192208",
-	        "cm_discriminant": "4726079215049797810784721872708419089129671954601412853631"
+	        "j": "1634327697577408300542081333151383474217426785000945527408",
+	        "discriminant": "4412636550389189038392233746786780978750224170644136456036",
+	        "embedding_degree": "529827387818798217347035546078799382319810259857040",
+	        "frobenius": "9098792692692684052427583444",
+	        "cm_discriminant": "-23508596506131498450876986604994502392929597678959240749652",
+	        "conductor": "1"
 	    }
 	}]
 
