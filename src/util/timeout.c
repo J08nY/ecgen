@@ -5,7 +5,7 @@
 #include "timeout.h"
 #include "util/memory.h"
 
-__thread jmp_buf timeout_ptr;
+__thread sigjmp_buf timeout_ptr;
 __thread bool timeout_in = false;
 __thread timer_t *timeout_timer;
 __thread struct sigevent *sevp;
