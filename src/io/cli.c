@@ -10,8 +10,7 @@
 
 char cli_doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) "
-    "2017-2018 "
-    "Eastern Seaboard Phishing Authority";
+    "2017-2018,2021 J08nY";
 char cli_args_doc[] = "bits";
 
 enum opt_keys {
