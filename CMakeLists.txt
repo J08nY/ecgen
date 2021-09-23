@@ -16,6 +16,16 @@ include_directories(lib)
 
 add_executable(ecgen ${ECGEN_SRC})
 
-target_link_libraries(ecgen pthread rt pari parson sha1)
+set(PLATFORM_SPECIFIC_LIBS)
 
+if (APPLE)
+  find_library(LIB_ARGP argp)
 
+  find_library(LIB_POSIX_MACOS_TIMER posix-macos-timer)
+
+  set(PLATFORM_SPECIFIC_LIBS ${LIB_ARGP} ${LIB_POSIX_MACOS_TIMER})
+else ()
+  set(PLATFORM_SPECIFIC_LIBS rt)
+endif()
+
+target_link_libraries(ecgen pthread pari parson sha1 ${PLATFORM_SPECIFIC_LIBS})

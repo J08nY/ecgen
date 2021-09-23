@@ -15,6 +15,19 @@
 #include "io/output.h"
 #include "misc/config.h"
 
+#ifdef __APPLE__
+
+#include <posix-macos-timer.h>
+#define SIGEV_THREAD_ID 0
+#define SIGEV_UN_TID_SYS_GETTID
+
+#else
+
+#define SIGEV_UN_TID_SYS_GETTID \
+	sevp->_sigev_un._tid = (__pid_t)syscall(SYS_gettid);
+
+#endif
+
 extern __thread sigjmp_buf timeout_ptr;
 extern __thread bool timeout_in;
 extern __thread timer_t *timeout_timer;
@@ -35,8 +48,7 @@ extern __thread struct sigevent *sevp;
 		sevp->sigev_notify = SIGEV_THREAD_ID;                 \
 		sevp->sigev_signo = SIGALRM;                          \
 		sevp->sigev_value.sival_int = 0;                      \
-		sevp->_sigev_un._tid = (__pid_t)syscall(SYS_gettid);  \
-                                                              \
+		SIGEV_UN_TID_SYS_GETTID                               \
 		timer_create(CLOCK_MONOTONIC, sevp, timeout_timer);   \
 		struct itimerspec timer_time = {                      \
 		    .it_interval = {.tv_sec = 0, .tv_nsec = 0},       \

@@ -249,6 +249,7 @@ these need to be initialized for `make test` to work.
 
  - PARI/GP
  - gcc / clang
+ - [posix-macos-addons](https://github.com/stanislaw/posix-macos-addons) for macOS
 
 ecgen uses the [PARI/GP](http://pari.math.u-bordeaux.fr/) library for elliptic
 curve arithmetic and it's SEA point counting algorithm implementation. It also requires the 
