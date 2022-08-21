@@ -12,7 +12,7 @@
  * HPL-98-135
  * August, 1998
  *
- * http://www.hpl.hp.com/techreports/98/HPL-98-135.pdf
+ * https://www.hpl.hp.com/techreports/98/HPL-98-135.pdf
  */
 static polynomial_t hp_trinomials[] = {
     {2, 1},       {3, 1},       {4, 1},       {5, 2},       {6, 1},
