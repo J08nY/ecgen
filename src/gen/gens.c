@@ -7,6 +7,7 @@
 #include "math/subgroup.h"
 #include "obj/point.h"
 #include "obj/subgroup.h"
+#include "misc/compat.h"
 
 static subgroup_t *gens_point(GEN point, const curve_t *curve) {
 	subgroup_t *sub = subgroup_new();
@@ -103,7 +104,7 @@ CHECK(gens_check_anomalous) {
 }
 
 GEN gens_get_embedding(GEN prime, GEN generator_order) {
-	return order(mkintmod(prime, generator_order));
+	return znorder(mkintmod(prime, generator_order), NULL);
 }
 
 CHECK(gens_check_embedding) {
