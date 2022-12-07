@@ -18,10 +18,12 @@
 #define PARI_VERSION_LT(a,b,c) !(PARI_VERSION_GE(a,b,c))
 #define PARI_VERSION_LE(a,b,c) !(PARI_VERSION_GT(a,b,c))
 
-
 #if PARI_VERSION_LT(2,12,1)
 #define polisirreducible isirreducible
 #endif
 
+#if PARI_VERSION_LT(2,15,0)
+#define znorder(x, o) order(x);
+#endif
 
 #endif  // ECGEN_MISC_COMPAT_H
