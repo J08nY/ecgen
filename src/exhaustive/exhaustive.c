@@ -47,6 +47,8 @@ static void exhaustive_ginit(gen_f *generators) {
 			generators[OFFSET_ORDER] = &order_gen_prime;
 		} else if (cfg->cofactor) {
 			generators[OFFSET_ORDER] = &order_gen_cofactor;
+		} else if (cfg->smooth) {
+			generators[OFFSET_ORDER] = &order_gen_smooth;
 		} else {
 			generators[OFFSET_ORDER] = &order_gen_any;
 		}
@@ -157,6 +159,8 @@ static void exhaustive_ginit(gen_f *generators) {
 			generators[OFFSET_ORDER] = &order_gen_prime;
 		} else if (cfg->cofactor) {
 			generators[OFFSET_ORDER] = &order_gen_cofactor;
+		} else if (cfg->smooth) {
+			generators[OFFSET_ORDER] = &order_gen_smooth;
 		} else if (cfg->koblitz) {
 			generators[OFFSET_ORDER] = &order_gen_koblitz;
 		} else {
@@ -254,6 +258,13 @@ static void exhaustive_ainit(arg_t **gen_argss, arg_t **check_argss) {
 		gens_arg->nargs = 1;
 		gen_argss[OFFSET_ORDER] = order_arg;
 		gen_argss[OFFSET_GENERATORS] = gens_arg;
+	}
+
+	if (cfg->smooth) {
+		arg_t *order_arg = arg_new();
+		order_arg->args = &cfg->smooth_value;
+		order_arg->nargs = 1;
+		gen_argss[OFFSET_ORDER] = order_arg;
 	}
 
 	if (cfg->hex_check) {

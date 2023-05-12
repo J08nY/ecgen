@@ -28,6 +28,7 @@ Tool for generating Elliptic curve domain parameters.
 
  - `-c / --count=COUNT`		Generate multiple curves.
  - `-k / --cofactor=VALUE`	Generate a curve with cofactor of `VALUE`.
+ - `-B / --smooth=BOUND`    Generate a smooth order curve with bit-lengths of factors bounded by `BOUND`.
  - `-K / --koblitz[=A]`		Generate a Koblitz curve (a in {0, 1}, b = 1).
  - `-p / --prime`			Generate a curve with prime order.
  - `--points=TYPE`			Generate points of given `TYPE` (random/prime/all/nonprime/none).

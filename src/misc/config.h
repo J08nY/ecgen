@@ -83,6 +83,9 @@ typedef struct {
 	/** @brief Whether the curves should be Koblitz (a \\in {0, 1}, b = 1). */
 	bool koblitz;
 	long koblitz_value;
+	/** @brief Whether the curves should have a smooth order (bit-length bound). */
+	bool smooth;
+	long smooth_value;
 	/** @brief Whether the curves should have a bound on the cofactor value. */
 	bool cofactor;
 	long cofactor_value;

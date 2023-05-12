@@ -66,6 +66,29 @@ GENERATOR(order_gen_cofactor) {
 	return 1;
 }
 
+GENERATOR(order_gen_smooth) {
+	HAS_ARG(args);
+	pari_ulong smooth_bound = *(pari_ulong *)args->args;
+	pari_sp ltop = avma;
+	GEN order = ellff_get_card(curve->curve);
+
+	GEN factors = factor(order);
+	GEN primes = gel(factors, 1);
+	long uniqs = glength(primes);
+
+	for (long i = 1; i <= uniqs; ++i) {
+		long blen = glength(binary_zv(gel(primes, i)));
+		if (blen > smooth_bound) {
+			avma = ltop;
+			return -4;
+		}
+	}
+
+	curve->order = gerepilecopy(ltop, order);
+	obj_insert_shallow(curve->curve, 1, order);
+	return 1;
+}
+
 GENERATOR(order_gen_prime) {
 	pari_sp ltop = avma;
 	GEN order = ellsea(curve->curve, 1);

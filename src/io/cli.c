@@ -10,7 +10,7 @@
 
 char cli_doc[] =
     "ecgen, tool for generating Elliptic curve domain parameters.\v(C) "
-    "2017-2018,2021 J08nY";
+    "2017-2018,2021,2023 J08nY";
 char cli_args_doc[] = "bits";
 
 enum opt_keys {
@@ -18,6 +18,7 @@ enum opt_keys {
 	OPT_COUNT = 'c',
 	OPT_PRIME = 'p',
 	OPT_COFACTOR = 'k',
+	OPT_SMOOTH = 'B',
 	OPT_RANDOM = 'r',
 	OPT_ANSI = 's',
 	OPT_BRAINPOOL = 'b',
@@ -65,6 +66,7 @@ struct argp_option cli_options[] = {
 																		   "Optionally, only generate random parameters WHAT (seed,field,a,b,equation).",          3},
 		{"prime",         OPT_PRIME,         0,       0,                   "Generate a curve with prime order.",                                                   3},
 		{"cofactor",      OPT_COFACTOR,      "VALUE", 0,                   "Generate a curve with cofactor of VALUE.",                                             3},
+		{"smooth",        OPT_SMOOTH,        "BOUND", 0,                   "Generate a smooth order curve with bit-lengths of factors bounded by BOUND.",          3},
 		{"koblitz",       OPT_KOBLITZ,       "A",     OPTION_ARG_OPTIONAL, "Generate a Koblitz curve (a in {0, 1}, b = 1).",                                       3},
 		{"unique",        OPT_UNIQUE,        0,       0,                   "Generate a curve with only one generator.",                                            3},
 		{"hex-check",     OPT_HEXCHECK,      "HEX",   0,                   "Check a generated curve param hex expansion for the HEX string.",                      3},
@@ -151,6 +153,10 @@ static void cli_end(struct argp_state *state) {
 		argp_failure(state, 1, 0,
 		             "Specify field type, prime or binary, with --fp / "
 		             "--f2m (but not both).");
+	}
+	// Only one of prime, cofactor, smooth
+	if (cfg->prime + cfg->smooth + cfg->cofactor > 1) {
+		argp_failure(state, 1, 0, "Can only choose one of prime-order, cofactor value or smoothness bound.");
 	}
 	// Only one gen method
 	switch (cfg->method) {
@@ -306,6 +312,10 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			break;
 		case OPT_PRIME:
 			cfg->prime = true;
+			break;
+		case OPT_SMOOTH:
+			cfg->smooth = true;
+			cfg->smooth_value = strtol(arg, NULL, 10);
 			break;
 		case OPT_COFACTOR:
 			cfg->cofactor = true;

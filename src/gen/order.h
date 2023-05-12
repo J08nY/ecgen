@@ -56,6 +56,16 @@ GENERATOR(order_gen_cofactor);
 
 /**
  * GENERATOR(gen_f)
+ *
+ * @param curve A curve_t being generated
+ * @param args pari_ulong the desired cofactor
+ * @param state
+ * @return state diff
+ */
+GENERATOR(order_gen_smooth);
+
+/**
+ * GENERATOR(gen_f)
  * Calculates the curve order, always using the SEA algorithm,
  * gives up early in case the order is divisible by "something".
  * Succeeds if the curve has a prime order.
