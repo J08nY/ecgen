@@ -46,7 +46,7 @@ function exhaustive() {
 	assert_raises "${ecgen} --fp -r -i -u 10"
 	assert_raises "${ecgen} --f2m -r -i -u 10"
 	assert_raises "${ecgen} --fp -r -p -u 10"
-	assert_raises "${ecgen} --fp -r -B 5 -u 10":
+	assert_raises "${ecgen} --fp -r -B 5 -u 10"
 	assert_raises "${ecgen} --fp -r -k 10 10"
 	assert_raises "${ecgen} --f2m -r -k 10 10"
 	assert_raises "${ecgen} --fp -r -K 10"
