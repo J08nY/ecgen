@@ -41,6 +41,7 @@ enum opt_keys {
 	OPT_HEXCHECK,
 	OPT_METADATA,
 	OPT_SUPERSINGULAR,
+	OPT_NUMS,
 	OPT_BRAINPOOL_RFC,
 	OPT_TWIST,
 };
@@ -58,6 +59,7 @@ struct argp_option cli_options[] = {
 		{"ansi",          OPT_ANSI,          "SEED",  OPTION_ARG_OPTIONAL, "Generate a curve from SEED (ANSI X9.62 verifiable procedure).",                        2},
 		{"brainpool",     OPT_BRAINPOOL,     "SEED",  OPTION_ARG_OPTIONAL, "Generate a curve from SEED (Brainpool procedure).",                                    2},
 		{"brainpool-rfc", OPT_BRAINPOOL_RFC, "SEED",  OPTION_ARG_OPTIONAL, "Generate a curve from SEED (Brainpool procedure, as per RFC 5639).",                   2},
+		{"nums",		  OPT_NUMS, 		 0,		  0,				   "Generate a curve using the NUMS procedure.", 										   2},
 		{"invalid",       OPT_INVALID,       "RANGE", OPTION_ARG_OPTIONAL, "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).", 2},
 		{"twist",         OPT_TWIST,         0,       0,                   "Generate a twist of a given curve.",                                                   2},
 
@@ -175,10 +177,15 @@ static void cli_end(struct argp_state *state) {
 			break;
 	}
 
-	if (cfg->method == METHOD_SEED && cfg->seed_algo == SEED_BRAINPOOL &&
+	if (cfg->method == METHOD_SEED && (cfg->seed_algo == SEED_BRAINPOOL || cfg->seed_algo == SEED_BRAINPOOL_RFC) &&
 	    cfg->field == FIELD_BINARY) {
 		argp_failure(state, 1, 0,
 		             "Brainpool algorithm only creates prime field curves.");
+	}
+	if (cfg->method == METHOD_SEED && cfg->seed_algo == SEED_NUMS &&
+	    cfg->field == FIELD_BINARY) {
+		argp_failure(state, 1, 0,
+		             "NUMS algorithm only creates prime field curves.");
 	}
 	if (cfg->method == METHOD_CM && cfg->field == FIELD_BINARY) {
 		argp_failure(state, 1, 0,
@@ -265,6 +272,10 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				}
 				cfg->seed = arg;
 			}
+			break;
+		case OPT_NUMS:
+			cfg->method |= METHOD_SEED;
+			cfg->seed_algo = SEED_NUMS;
 			break;
 		case OPT_BRAINPOOL_RFC:
 			cfg->method |= METHOD_SEED;

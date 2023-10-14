@@ -22,6 +22,7 @@ Tool for generating Elliptic curve domain parameters.
  - `-s / --ansi[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
  - `-b / --brainpool[=SEED]`Generate a curve using the Brainpool verifiably pseudorandom algorithm from the original paper.
  - `--brainpool-rfc[=SEED]` Generate a curve using the Brainpool verifiably pseudorandom algorithm as per RFC 5639.
+ - `--nums`                 Generate a curve using the NUMS procedure (as per draft-black-numscurves-02).
  - `--twist`                Generate a twist of a given curve.
 
 #### Generation options
@@ -34,6 +35,7 @@ Tool for generating Elliptic curve domain parameters.
  - `--points=TYPE`			Generate points of given `TYPE` (random/prime/all/nonprime/none).
  - `-r / --random`			Generate a random curve (using Random approach).
  - `-u / --unique`			Generate a curve with only one generator.
+ - `--hex-check=HEX`        Generate a curve with `HEX` string in the hex expansion of its parameters.
  - `--metadata`				Compute the curve metadata (j-invariant, discriminant, trace of Frobenius, CM discriminant, embedding degree)
 
 #### IO options

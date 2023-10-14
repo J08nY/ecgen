@@ -59,7 +59,8 @@ typedef enum {
 	SEED_ANSI,
 	SEED_BRAINPOOL,
 	SEED_BRAINPOOL_RFC,
-	SEED_FIPS
+	SEED_FIPS,
+	SEED_NUMS
 } seed_e;
 
 /**

@@ -7,6 +7,7 @@
 #include "arg.h"
 #include "brainpool.h"
 #include "brainpool_rfc.h"
+#include "nums.h"
 #include "check.h"
 #include "gen/curve.h"
 #include "gen/equation.h"
@@ -113,6 +114,14 @@ static void exhaustive_ginit(gen_f *generators) {
 				generators[OFFSET_B] = &brainpool_rfc_gen_equation;
 				generators[OFFSET_ORDER] = &order_gen_prime;
 				generators[OFFSET_GENERATORS] = &brainpool_gen_gens;
+			} break;
+			case SEED_NUMS: {
+				generators[OFFSET_SEED] = &gen_skip;
+				generators[OFFSET_FIELD] = &nums_gen_field;
+				generators[OFFSET_A] = &nums_gen_a;
+				generators[OFFSET_B] = &nums_gen_b;  // TODO: Missing transformation from b -> -b.
+				generators[OFFSET_ORDER] = &nums_gen_order;
+				generators[OFFSET_GENERATORS] = &nums_gen_gens;
 			} break;
 			case SEED_FIPS:
 				break;
@@ -227,8 +236,15 @@ static void exhaustive_cinit(check_t **validators) {
 				break;
 			case SEED_BRAINPOOL:
 			case SEED_BRAINPOOL_RFC: {
+				// TODO: Missing Brainpool CM disc check.
 				check_t *order_check = check_new(brainpool_check_order, NULL);
 				validators[OFFSET_ORDER] = order_check;
+				check_t *gens_check =
+				    check_new(gens_check_anomalous, brainpool_check_gens, NULL);
+				validators[OFFSET_GENERATORS] = gens_check;
+			} break;
+			case SEED_NUMS: {
+				// TODO: Missing CM disc check.
 				check_t *gens_check =
 				    check_new(gens_check_anomalous, brainpool_check_gens, NULL);
 				validators[OFFSET_GENERATORS] = gens_check;
@@ -407,6 +423,7 @@ static void exhaustive_init(exhaustive_t *setup) {
 static void exhaustive_quit(exhaustive_t *setup) {
 	field_quit();
 	equation_quit();
+	nums_quit();
 	exhaustive_clear(setup);
 }
 
