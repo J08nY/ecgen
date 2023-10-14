@@ -181,40 +181,40 @@ char *output_sjson_begin() { return output_malloc("[\n"); }
 
 char *output_sjson_end() { return output_malloc("]\n"); }
 
-void output_f(FILE *out, curve_t *curve) {
+void output_f(FILE *output, curve_t *curve) {
 	char *s = output_s(curve);
 	if (s) {
-		fprintf(out, "%s", s);
+		fprintf(output, "%s", s);
 		try_free(s);
 	}
 }
 
 void output_o(curve_t *curve) { output_f(out, curve); }
 
-void output_f_separator(FILE *out) {
+void output_f_separator(FILE *output) {
 	char *s = output_s_separator();
 	if (s) {
-		fprintf(out, "%s", s);
+		fprintf(output, "%s", s);
 		try_free(s);
 	}
 }
 
 void output_o_separator() { output_f_separator(out); }
 
-void output_f_begin(FILE *out) {
+void output_f_begin(FILE *output) {
 	char *s = output_s_begin();
 	if (s) {
-		fprintf(out, "%s", s);
+		fprintf(output, "%s", s);
 		try_free(s);
 	}
 }
 
 void output_o_begin() { output_f_begin(out); }
 
-void output_f_end(FILE *out) {
+void output_f_end(FILE *output) {
 	char *s = output_s_end();
 	if (s) {
-		fprintf(out, "%s", s);
+		fprintf(output, "%s", s);
 		try_free(s);
 	}
 }

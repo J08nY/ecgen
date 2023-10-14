@@ -49,6 +49,8 @@ void seed_free(seed_t **seed) {
 				break;
 			case SEED_FIPS:
 				break;
+			case SEED_NUMS:
+				break;
 			case SEED_NONE:
 				break;
 		}
