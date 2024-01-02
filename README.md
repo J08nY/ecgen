@@ -18,7 +18,7 @@ Tool for generating Elliptic curve domain parameters.
  - `--anomalous`            Generate an anomalous curve (of trace one, with field order equal to curve order).
  - `--supersingular`        Generate a supersingular curve.
  - `-i / --invalid`			Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).
- - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication).
+ - `-n / --order=ORDER`		Generate a curve with given `ORDER` (using Complex Multiplication), order can be a comma-separated(no spaces) list of factors.
  - `-s / --ansi[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
  - `-b / --brainpool[=SEED]`Generate a curve using the Brainpool verifiably pseudorandom algorithm from the original paper.
  - `--brainpool-rfc[=SEED]` Generate a curve using the Brainpool verifiably pseudorandom algorithm as per RFC 5639.
@@ -97,6 +97,27 @@ Generate a prime field, uniquely generated, prime order curve, don't ask for inp
             }
         ]
     }
+
+Generate a prime field curve with given order (given as a list of factors) of size 128 bits and do not output any points on subgroups:
+
+	> ecgen --fp -n 7,43,83,503,653,823,863,887,1019,1279,2011,2311,2381,2957 --points=none 128
+	[{
+	    "field": {
+	        "p": "0xa5dad2cb65b65ab89ed2248be2971c0d"
+	    },
+	    "a": "0x2407ec02a74565af4952f552fee14588",
+	    "b": "0x5e80456d719dcb64df00923e8b7aa726",
+	    "order": "0xa5dad2cb65b65ab704d75427e1e4f81b",
+	    "subgroups": [
+	        {
+	            "x": "0x3219e70cb3b557dd8f8ddf9e6264a28d",
+	            "y": "0x0aa1274c0272f13411833fd7eb7e86d8",
+	            "order": "0xa5dad2cb65b65ab704d75427e1e4f81b",
+	            "cofactor": "0x1"
+	        }
+	    ]
+	}]
+	
 
 Generate a prime field, uniquely generated random curve, of size 192 bits, also display its metadata:
 
