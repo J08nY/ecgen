@@ -77,7 +77,6 @@ static size_t invalid_primes(GEN order, pari_ulong **primes) {
 	pari_ulong upper = 0;
 	size_t nprimes = 0;
 
-	GET(invalid_primes);
 	if (cfg->invalid_primes) {
 		char *end = NULL;
 		last = (pari_ulong)strtol(cfg->invalid_primes, &end, 10) - 1;
@@ -353,6 +352,7 @@ int invalid_do() {
 	                              .check_argss = common_check_argss,
 	                              .unrolls = common_unrolls};
 	invalid_invalid_ginit(invalid_gens);
+	GET(invalid_primes);
 	config_report_unused();
 
 	debug_log_start("Starting to create curve to invalidate");

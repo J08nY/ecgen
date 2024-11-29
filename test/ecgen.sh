@@ -94,8 +94,8 @@ function brainpool() {
 
 function nums() {
     start_test
-    assert_raises "${ecgen} --fp -r --nums 10"
-    assert_raises "${ecgen} --f2m -r --nums 10" 1
+    assert_raises "${ecgen} --fp --nums 10"
+    assert_raises "${ecgen} --f2m --nums 10" 1
 }
 
 function anomalous() {

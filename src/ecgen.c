@@ -120,6 +120,7 @@ int main(int argc, char *argv[]) {
 	}
 
 	int status;
+	GET(method);
 	if (cfg->method == METHOD_CM || cfg->method == METHOD_ANOMALOUS ||
 	    cfg->method == METHOD_SUPERSINGULAR) {
 		status = cm_do();

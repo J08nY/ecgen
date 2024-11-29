@@ -484,6 +484,7 @@ int exhaustive_do() {
 	                      .check_argss = check_argss,
 	                      .unrolls = unrolls};
 	exhaustive_init(&setup);
+	GET(count);
 	config_report_unused();
 	int result = exhaustive_generate(&setup);
 	exhaustive_quit(&setup);

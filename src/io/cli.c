@@ -205,6 +205,16 @@ static void cli_end(struct argp_state *state) {
 		             "Can only generate supersingular curves over prime fields "
 		             "currently.");
 	}
+	// Some method specific things
+	if (cfg->method == METHOD_SEED && cfg->seed_algo == SEED_NUMS &&
+	    cfg->random) {
+		argp_failure(state, 1, 0,
+		             "NUMS curve generation is a deterministic process.");
+	}
+	if (cfg->method == METHOD_ANOMALOUS && !cfg->random) {
+		argp_failure(state, 1, 0,
+			"Anomalous curves can only be generated randomly (specify the -r option).");
+	}
 	// default values
 	if (!cfg->count) {
 		cfg->count = 1;
