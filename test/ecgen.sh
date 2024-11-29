@@ -116,6 +116,8 @@ function supersingular() {
 	order_m1=$(echo $(canonical_num $order) - 1 | bc)
     assert "canonical_num $p" $order_m1
 
+    assert_raises "${ecgen} --fp --supersingular --input=data/prime.in 64"
+
     assert_raises "${ecgen} --fp --supersingular -r -u --metadata 20"
     assert_raises "${ecgen} --fp --supersingular -r --points=random 16"
     assert_raises "${ecgen} --fp --supersingular -r --points=5random 16"

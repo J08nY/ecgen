@@ -244,6 +244,7 @@ Four different EC curve parameters generation methods are implemented.
  - Used with the `--anomalous` option.
  - These curves are **NOT SECURE** and are useful for implementation testing.
  - [Elliptic curves over F_p suitable for cryptosystems - [Miyaji]](https://dspace.jaist.ac.jp/dspace/bitstream/10119/4464/1/73-61.pdf)
+ - TODO: Extend with [Generating Anomalous Elliptic Curves - [Leprevost, Monnerat, Varrette, Vaydenay]](https://www.monnerat.info/publications/anomalous.pdf)
 
 ### Build
 
