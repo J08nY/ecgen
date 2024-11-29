@@ -239,6 +239,6 @@ int cm_do() {
 
 	cm_quit(&setup);
 
-	debug_log_start("Finished Complex Multiplication method");
+	debug_log_end("Finished Complex Multiplication method");
 	return result;
 }

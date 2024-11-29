@@ -104,6 +104,9 @@ CHECK(gens_check_anomalous) {
 }
 
 GEN gens_get_embedding(GEN prime, GEN generator_order) {
+	if (gequal(prime, generator_order)) {
+		return stoi(0);
+	}
 	return znorder(mkintmod(prime, generator_order), NULL);
 }
 
