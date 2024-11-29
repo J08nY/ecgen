@@ -2,86 +2,86 @@
 ####
 #
 # ecgen, tool for generating Elliptic curve domain parameters
-# Copyright (C) 2017 J08nY
+# Copyright (C) 2017, 2024 J08nY
 #
 ####
 
 . ./common.sh
 
 function runs() {
-	start_test
-	assert_raises "${ecgen} --help"
-	assert_raises "${ecgen} --version"
-	assert_raises "${ecgen}" 64
+    start_test
+    assert_raises "${ecgen} --help"
+    assert_raises "${ecgen} --version"
+    assert_raises "${ecgen}" 64
 }
 
 function json() {
-	start_test
-	assert_raises "${ecgen} --fp --input=data/fp_10_a.csv.in 10"
-	assert_raises "${ecgen} --f2m --input=data/f2m_10_a.csv.in 10"
-	fp=$(${ecgen} --fp --input=data/fp_10_a.csv.in 10 2>/dev/null)
-	f2m=$(${ecgen} --f2m --input=data/f2m_10_a.csv.in 10 2>/dev/null)
-	assert_raises "${JSON}" 0 "${fp}"
-	assert_matches "${JSON} -x field\\\",\\\"p" "0x000b" "${fp}"
-	assert_matches "${JSON} -x \\\"a\\\"" "0x0001" "${fp}"
-	assert_matches "${JSON} -x \\\"b\\\"" "0x0002" "${fp}"
-	assert_matches "${JSON} -x \\\"order\\\"" "0x0010" "${fp}"
+    start_test
+    assert_raises "${ecgen} --fp --input=data/fp_10_a.csv.in 10"
+    assert_raises "${ecgen} --f2m --input=data/f2m_10_a.csv.in 10"
+    fp=$(${ecgen} --fp --input=data/fp_10_a.csv.in 10 2>/dev/null)
+    f2m=$(${ecgen} --f2m --input=data/f2m_10_a.csv.in 10 2>/dev/null)
+    assert_raises "${JSON}" 0 "${fp}"
+    assert_matches "${JSON} -x field\\\",\\\"p" "0x000b" "${fp}"
+    assert_matches "${JSON} -x \\\"a\\\"" "0x0001" "${fp}"
+    assert_matches "${JSON} -x \\\"b\\\"" "0x0002" "${fp}"
+    assert_matches "${JSON} -x \\\"order\\\"" "0x0010" "${fp}"
 
-	assert_raises "${JSON}" 0 "${f2m}"
-	assert_matches "${JSON} -x field\\\",\\\"m" "0xa" "${f2m}"
-	assert_matches "${JSON} -x field\\\",\\\"e1" "0x3" "${f2m}"
-	assert_matches "${JSON} -x field\\\",\\\"e2" "0x0" "${f2m}"
-	assert_matches "${JSON} -x field\\\",\\\"e3" "0x0" "${f2m}"
-	assert_matches "${JSON} -x \\\"a\\\"" "0x02ed" "${f2m}"
-	assert_matches "${JSON} -x \\\"b\\\"" "0x00b7" "${f2m}"
-	assert_matches "${JSON} -x \\\"order\\\"" "0x3de" "${f2m}"
+    assert_raises "${JSON}" 0 "${f2m}"
+    assert_matches "${JSON} -x field\\\",\\\"m" "0xa" "${f2m}"
+    assert_matches "${JSON} -x field\\\",\\\"e1" "0x3" "${f2m}"
+    assert_matches "${JSON} -x field\\\",\\\"e2" "0x0" "${f2m}"
+    assert_matches "${JSON} -x field\\\",\\\"e3" "0x0" "${f2m}"
+    assert_matches "${JSON} -x \\\"a\\\"" "0x02ed" "${f2m}"
+    assert_matches "${JSON} -x \\\"b\\\"" "0x00b7" "${f2m}"
+    assert_matches "${JSON} -x \\\"order\\\"" "0x3de" "${f2m}"
 }
 
 function exhaustive() {
-	start_test
-	assert_raises "${ecgen} --fp -r 10"
-	assert_raises "${ecgen} --f2m -r 10"
-	assert_raises "${ecgen} --fp -r -p 10"
-	assert_raises "${ecgen} --f2m -r -u 10"
-	assert_raises "${ecgen} --fp -r -i -u 10"
-	assert_raises "${ecgen} --f2m -r -i -u 10"
-	assert_raises "${ecgen} --fp -r -p -u 10"
-	assert_raises "${ecgen} --fp -r -B 5 -u 10"
-	assert_raises "${ecgen} --fp -r -k 10 10"
-	assert_raises "${ecgen} --f2m -r -k 10 10"
-	assert_raises "${ecgen} --fp -r -K 10"
-	assert_raises "${ecgen} --f2m -r -K 10"
-	assert_raises "${ecgen} --fp -r -K1 10"
-	assert_raises "${ecgen} --f2m -r -K1 10"
+    start_test
+    assert_raises "${ecgen} --fp -r 10"
+    assert_raises "${ecgen} --f2m -r 10"
+    assert_raises "${ecgen} --fp -r -p 10"
+    assert_raises "${ecgen} --f2m -r -u 10"
+    assert_raises "${ecgen} --fp -r -i -u 10"
+    assert_raises "${ecgen} --f2m -r -i -u 10"
+    assert_raises "${ecgen} --fp -r -p -u 10"
+    assert_raises "${ecgen} --fp -r -B 5 -u 10"
+    assert_raises "${ecgen} --fp -r -k 10 10"
+    assert_raises "${ecgen} --f2m -r -k 10 10"
+    assert_raises "${ecgen} --fp -r -K 10"
+    assert_raises "${ecgen} --f2m -r -K 10"
+    assert_raises "${ecgen} --fp -r -K1 10"
+    assert_raises "${ecgen} --f2m -r -K1 10"
 
-	assert_raises "${ecgen} --f2m -r -K1 101"
+    assert_raises "${ecgen} --f2m -r -K1 101"
 
-	assert_raises "${ecgen} --fp -r --points=random 10"
-	assert_raises "${ecgen} --fp -r --points=10random 10"
-	assert_raises "${ecgen} --fp -r --points=prime 10"
-	assert_raises "${ecgen} --fp -r --points=nonprime 10"
-	assert_raises "${ecgen} --fp -r --points=all 10"
-	assert_raises "${ecgen} --fp -r --points=none 10"
+    assert_raises "${ecgen} --fp -r --points=random 10"
+    assert_raises "${ecgen} --fp -r --points=10random 10"
+    assert_raises "${ecgen} --fp -r --points=prime 10"
+    assert_raises "${ecgen} --fp -r --points=nonprime 10"
+    assert_raises "${ecgen} --fp -r --points=all 10"
+    assert_raises "${ecgen} --fp -r --points=none 10"
 
-	assert_raises "${ecgen} --f2m -r --points=random 10"
-	assert_raises "${ecgen} --f2m -r --points=10random 10"
-	assert_raises "${ecgen} --f2m -r --points=prime 10"
-	assert_raises "${ecgen} --f2m -r --points=nonprime 10"
-	assert_raises "${ecgen} --f2m -r --points=all 10"
-	assert_raises "${ecgen} --f2m -r --points=none 10"
+    assert_raises "${ecgen} --f2m -r --points=random 10"
+    assert_raises "${ecgen} --f2m -r --points=10random 10"
+    assert_raises "${ecgen} --f2m -r --points=prime 10"
+    assert_raises "${ecgen} --f2m -r --points=nonprime 10"
+    assert_raises "${ecgen} --f2m -r --points=all 10"
+    assert_raises "${ecgen} --f2m -r --points=none 10"
 
-	assert_raises "${ecgen} --fp --random=seed,field,a,b,equation 10"
+    assert_raises "${ecgen} --fp --random=seed,field,a,b,equation 10"
 
-	assert_raises "${ecgen} --fp -r -c 5 10"
+    assert_raises "${ecgen} --fp -r -c 5 10"
 
-	assert_raises "${ecgen} --fp -r --metadata 10"
-	assert_raises "${ecgen} --f2m -r --metadata 10"
+    assert_raises "${ecgen} --fp -r --metadata 10"
+    assert_raises "${ecgen} --f2m -r --metadata 10"
 }
 
 function ansix962() {
-	start_test
-	assert_raises "${ecgen} --fp -r --ansi 10"
-	assert_raises "${ecgen} --f2m -r --ansi 10"
+    start_test
+    assert_raises "${ecgen} --fp -r --ansi 10"
+    assert_raises "${ecgen} --f2m -r --ansi 10"
 }
 
 function brainpool() {
@@ -93,27 +93,27 @@ function brainpool() {
 }
 
 function nums() {
-	start_test
-	assert_raises "${ecgen} --fp -r --nums 10"
-	assert_raises "${ecgen} --f2m -r --nums 10" 1
+    start_test
+    assert_raises "${ecgen} --fp -r --nums 10"
+    assert_raises "${ecgen} --f2m -r --nums 10" 1
 }
 
 function anomalous() {
-	start_test
-	assert_raises "${ecgen} --fp --anomalous -r 20"
-	out=$(${ecgen} --fp --anomalous -r 20 2>/dev/null)
-	p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
-	order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
-	assert "strip_num $p" $(strip_num $order)
+    start_test
+    assert_raises "${ecgen} --fp --anomalous -r 20"
+    out=$(${ecgen} --fp --anomalous -r 20 2>/dev/null)
+    p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
+    order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
+    assert "strip_num $p" $(strip_num $order)
 }
 
 function supersingular() {
     start_test
     assert_raises "${ecgen} --fp --supersingular -r -c 5 20"
     out=$(${ecgen} --fp --supersingular -r 20 2>/dev/null)
-	p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
-	order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
-	order_m1=$(echo $(canonical_num $order) - 1 | bc)
+	  p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
+	  order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
+	  order_m1=$(echo $(canonical_num $order) - 1 | bc)
     assert "canonical_num $p" $order_m1
 
     assert_raises "${ecgen} --fp --supersingular --input=data/prime.in 64"
@@ -127,17 +127,17 @@ function supersingular() {
 }
 
 function invalid() {
-	start_test
-	assert_raises "${ecgen} --fp -r -i 10"
-	assert_raises "${ecgen} --f2m -r -i 10"
-	assert_raises "${ecgen} --fp -r -i5-15 10"
-	assert_raises "${ecgen} --f2m -r -i5-15 10"
-	assert_raises "${ecgen} --fp -r -i17 10"
-	assert_raises "${ecgen} --f2m -r -i17 10"
-	assert_raises "${ecgen} --fp --threads=2 -r -i -u 10"
-	assert_raises "${ecgen} --f2m --threads=2 -r -i -u 10"
-	assert_raises "${ecgen} --fp --threads=auto -r -i -u 10"
-	assert_raises "${ecgen} --f2m --threads=auto -r -i -u 10"
+    start_test
+    assert_raises "${ecgen} --fp -r -i 10"
+    assert_raises "${ecgen} --f2m -r -i 10"
+    assert_raises "${ecgen} --fp -r -i5-15 10"
+    assert_raises "${ecgen} --f2m -r -i5-15 10"
+    assert_raises "${ecgen} --fp -r -i17 10"
+    assert_raises "${ecgen} --f2m -r -i17 10"
+    assert_raises "${ecgen} --fp --threads=2 -r -i -u 10"
+    assert_raises "${ecgen} --f2m --threads=2 -r -i -u 10"
+    assert_raises "${ecgen} --fp --threads=auto -r -i -u 10"
+    assert_raises "${ecgen} --f2m --threads=auto -r -i -u 10"
 }
 
 function twist() {
@@ -147,26 +147,26 @@ function twist() {
 }
 
 function cli() {
-	start_test
-	assert_raises "${ecgen} --threads=a" 1
-	assert_raises "${ecgen} --koblitz=2" 1
-	assert_raises "${ecgen} --points=something" 1
-	assert_raises "${ecgen} --seed=some" 64
-	assert_raises "${ecgen} 1 2 3" 64
-	assert_raises "${ecgen} --fp --f2m 1" 1
-	assert_raises "${ecgen} --brainpool --anomalous --fp 10" 1
-	assert_raises "${ecgen} --brainpool=01234 --fp 10" 1
-	assert_raises "${ecgen} --brainpool-rfc=01234 --fp 10" 1
-	assert_raises "${ecgen} --ansi=01234 --fp 10" 1
-	assert_raises "${ecgen} --hex-check=not_hex --fp 10" 1
-	assert_raises "${ecgen} abc" 1
-	assert_raises "${ecgen} --supersingular --f2m 10" 1
-	assert_raises "${ecgen} --fp --order=not_a_number 32" 1
+    start_test
+    assert_raises "${ecgen} --threads=a" 1
+    assert_raises "${ecgen} --koblitz=2" 1
+    assert_raises "${ecgen} --points=something" 1
+    assert_raises "${ecgen} --seed=some" 64
+    assert_raises "${ecgen} 1 2 3" 64
+    assert_raises "${ecgen} --fp --f2m 1" 1
+    assert_raises "${ecgen} --brainpool --anomalous --fp 10" 1
+    assert_raises "${ecgen} --brainpool=01234 --fp 10" 1
+    assert_raises "${ecgen} --brainpool-rfc=01234 --fp 10" 1
+    assert_raises "${ecgen} --ansi=01234 --fp 10" 1
+    assert_raises "${ecgen} --hex-check=not_hex --fp 10" 1
+    assert_raises "${ecgen} abc" 1
+    assert_raises "${ecgen} --supersingular --f2m 10" 1
+    assert_raises "${ecgen} --fp --order=not_a_number 32" 1
 }
 
 function hex() {
-	start_test
-	assert_raises "${ecgen} --fp -r --hex-check=\"abc\" 32 | grep \"abc\""
+    start_test
+    assert_raises "${ecgen} --fp -r --hex-check=\"abc\" 32 | grep \"abc\""
 }
 
 function cm() {

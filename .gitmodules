@@ -3,7 +3,7 @@
 	url = https://github.com/J08nY/assert.sh
 [submodule "test/lib/JSON.sh"]
 	path = test/lib/JSON.sh
-	url = https://github.com/jimklimov/JSON.sh
+	url = https://github.com/J08nY/JSON.sh
 [submodule "test/lib/criterion"]
 	path = test/lib/criterion
 	url = https://github.com/Snaipe/Criterion
