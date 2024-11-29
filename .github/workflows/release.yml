@@ -15,7 +15,7 @@ jobs:
       - name: Setup pari
         run: |
           sudo apt-get update
-          sudo apt-get install -y libpari-dev pari-gp pari-seadata
+          sudo apt-get install -y libpari-dev pari-gp pari-seadata meson ninja-build
       - name: Build
         run: |
           make
@@ -24,5 +24,3 @@ jobs:
         uses: softprops/action-gh-release@v2
         with:
           files: ecgen
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

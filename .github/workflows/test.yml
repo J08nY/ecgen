@@ -17,7 +17,7 @@ jobs:
       - name: Setup pari
         run: |
           sudo apt-get update
-          sudo apt-get install -y libpari-dev pari-gp pari-seadata
+          sudo apt-get install -y libpari-dev pari-gp pari-seadata meson ninja-build
       - name: Test
         run: |
           TEST=1 make unittest
