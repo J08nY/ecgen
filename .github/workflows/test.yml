@@ -4,31 +4,20 @@ on: [push, pull_request]
 
 jobs:
   test:
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-latest
     strategy:
       matrix:
         CC: [gcc, clang]
     env:
       CC: ${{ matrix.CC }}
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
         with:
           submodules: true
-      - name: Setup ${{ matrix.CC }}
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y $CC dpkg apt
       - name: Setup pari
         run: |
-          wget -q https://mirrors.edge.kernel.org/ubuntu/pool/universe/p/pari/libpari-gmp-tls8_2.15.4-2_amd64.deb
-          wget -q https://mirrors.edge.kernel.org/ubuntu/pool/universe/p/pari/libpari-dev_2.15.4-2_amd64.deb
-          wget -q https://mirrors.edge.kernel.org/ubuntu/pool/universe/p/pari/pari-gp_2.15.4-2_amd64.deb
-          wget -q https://mirrors.edge.kernel.org/ubuntu/pool/main/r/readline/libreadline8_8.2-1.3_amd64.deb
-          wget -q https://mirrors.edge.kernel.org/ubuntu/pool/main/n/ncurses/libtinfo6_6.4+20230625-2_amd64.deb
-          wget -q https://pari.math.u-bordeaux.fr/pub/pari/packages/seadata.tgz
-          sudo dpkg --force-all -i libtinfo6_6.4+20230625-2_amd64.deb libreadline8_8.2-1.3_amd64.deb libpari-gmp-tls8_2.15.4-2_amd64.deb libpari-dev_2.15.4-2_amd64.deb pari-gp_2.15.4-2_amd64.deb
-          DATADIR=$(echo "default(datadir)" | gp -q | cut -d\" -f2)
-          sudo tar --strip-components=1 -C ${DATADIR} -xzf seadata.tgz data/
+          sudo apt-get update
+          sudo apt-get install -y libpari-dev pari-gp pari-seadata
       - name: Test
         run: |
           TEST=1 make unittest
@@ -37,8 +26,8 @@ jobs:
         run: |
           cd src && find . -name "*.gcda" -exec gcov -pb "{}" +;
       - name: Code coverage upload
-        uses: codecov/codecov-action@v3
+        uses: codecov/codecov-action@v4
         if: ${{ matrix.CC == 'gcc' }}
         with:
           env_vars: CC
-          gcov: true
+          token: ${{ secrets.CODECOV_TOKEN }}
