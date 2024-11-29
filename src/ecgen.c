@@ -20,7 +20,7 @@
 /**
  * @file ecgen.c
  * @author J08nY <johny@neuromancer.sk>
- * @version 0.7.6
+ * @version 0.7.7
  * @copyright GPL v2.0
  */
 #include <pari/pari.h>
@@ -38,11 +38,11 @@
 #endif
 
 const char *argp_program_version =
-    "ecgen 0.7.6" GIT_VERSION
+    "ecgen 0.7.7" GIT_VERSION
     "\n"
     "Compiled with: " PARIVERSION
     "\n\n"
-    "Copyright (C) 2017-2018,2021 J08nY\n"
+    "Copyright (C) 2017-2018,2021,2024 J08nY\n"
     "License GPLv2: GNU GPL version 2 (or later) "
     "<http://gnu.org/licenses/gpl.html>\n"
     "This is free software: you are free to change and redistribute it.\n"
@@ -106,51 +106,6 @@ int quit(int status) {
 
 /**
  * @mainpage
- *
- * Three fundamentally different Elliptic curve generation approaches can be
- * taken.
- *
- * [Baier] -
- * https://www.cdc.informatik.tu-darmstadt.de/reports/reports/harald_baier.diss.pdf
- *
- * [Baier, Buchmann] -
- * https://www.ipa.go.jp/security/enc/CRYPTREC/fy15/doc/1030_Buchmann.evaluation.pdf
- *
- *   - Complex Multiplication:
- *     - Capable of generating a curve of a given (prime) order.
- *     - Generates a subset of all Elliptic Curves over a given field.
- *     - Used with the -n / --order option
- *
- *     - [Broker, Stevenhagen] - https://arxiv.org/abs/0712.2022
- *     - [Savas, Schmidt, Koc] -
- * http://people.oregonstate.edu/~schmidtt/ourPapers/SavasKoc/ches01curve.pdf
- *
- *   - Invalid curve generation:
- *     - Generates *invalid* curves for a given curve.
- *     - These curves have the same field, and *A* parameter in the short
- * Weierstrass equation.
- *     - Multiplication using some(most?) scalar multiplication algorithm
- * proceeds the same way
- *       multiplication on the input curve would.
- *
- *     - [Antipa, Brown, Menezes, Struik, Vanstone] -
- * https://www.iacr.org/archive/pkc2003/25670211/25670211.pdf
- *     - [Biehl, Mayer, Muller] -
- * http://citeseerx.ist.psu.edu/viewdoc/download?doi=10.1.1.107.3920&rep=rep1&type=pdf
- *     - [Jager, Schwenk, Somorovksy] -
- * http://euklid.org/pdf/ECC_Invalid_Curve.pdf
- *
- *   - Exhaustive/Random approach:
- *     - Generates field and equation parameters:
- *       - randomly
- *       - using ANSI X9.62 verifiably random method(from seed)
- *       - given input
- *     , until a curve with requested properties appears.
- *     - Can generate curves repeatedly until one satisfies requested
- * properties:
- *       - -p / --prime generates curves until a prime order curve is found.
- *       - -K / --koblitz generates a curve with fixed A = 0 parameter.
- *
  */
 int main(int argc, char *argv[]) {
 	memset(cfg, 0, sizeof(config_t));

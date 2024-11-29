@@ -158,7 +158,9 @@ static void cli_end(struct argp_state *state) {
 	}
 	// Only one of prime, cofactor, smooth
 	if (cfg->prime + cfg->smooth + cfg->cofactor > 1) {
-		argp_failure(state, 1, 0, "Can only choose one of prime-order, cofactor value or smoothness bound.");
+		argp_failure(state, 1, 0,
+		             "Can only choose one of prime-order, cofactor value or "
+		             "smoothness bound.");
 	}
 	// Only one gen method
 	switch (cfg->method) {
@@ -171,13 +173,15 @@ static void cli_end(struct argp_state *state) {
 		case METHOD_SUPERSINGULAR:
 			break;
 		default:
-			printf("%u\n", cfg->method);
 			argp_failure(state, 1, 0,
 			             "Only one generation method can be specified.");
 			break;
 	}
 
-	if (cfg->method == METHOD_SEED && (cfg->seed_algo == SEED_BRAINPOOL || cfg->seed_algo == SEED_BRAINPOOL_RFC) &&
+	// Many methods are prime field only
+	if (cfg->method == METHOD_SEED &&
+	    (cfg->seed_algo == SEED_BRAINPOOL ||
+	     cfg->seed_algo == SEED_BRAINPOOL_RFC) &&
 	    cfg->field == FIELD_BINARY) {
 		argp_failure(state, 1, 0,
 		             "Brainpool algorithm only creates prime field curves.");
@@ -190,6 +194,11 @@ static void cli_end(struct argp_state *state) {
 	if (cfg->method == METHOD_CM && cfg->field == FIELD_BINARY) {
 		argp_failure(state, 1, 0,
 		             "Complex multiplication only creates prime field curves.");
+	}
+	if (cfg->method == METHOD_ANOMALOUS && cfg->field == FIELD_BINARY) {
+		argp_failure(state, 1, 0,
+		             "Can only generate anomalous curves over prime fields "
+		             "currently.");
 	}
 	if (cfg->method == METHOD_SUPERSINGULAR && cfg->field == FIELD_BINARY) {
 		argp_failure(state, 1, 0,

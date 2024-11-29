@@ -9,7 +9,7 @@ cmake_minimum_required(VERSION 3.10)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/src)
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/lib/criterion/include)
 
-find_library(criterion NAMES criterion PATHS ${CMAKE_CURRENT_SOURCE_DIR}/lib/criterion/build)
+find_library(criterion NAMES criterion PATHS ${CMAKE_CURRENT_SOURCE_DIR}/lib/criterion/build/src)
 
 file(GLOB TEST_SRC "src/math/*.c" "src/obj/*.c" "src/gen/*.c" "src/cm/*.c" "src/invalid/*.c" "src/io/*.c" "src/exhaustive/*.c" "src/util/*.c")
 file(GLOB TESTING_SRC "src/test/*.c")

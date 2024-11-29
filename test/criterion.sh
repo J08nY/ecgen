@@ -6,5 +6,5 @@ if [ ! -f "lib/criterion/meson.build" ]; then
 fi
 
 cd lib/criterion
-meson setup build
-meson compile -C build
+meson setup build > /dev/null
+meson compile -C build > /dev/null
