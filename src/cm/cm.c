@@ -19,22 +19,25 @@
 #include "util/str.h"
 
 static void cm_ginit(gen_f *generators, bool prime) {
+	GET(field);
+
 	// SEED unused.
 	generators[OFFSET_SEED] = &gen_skip;
 
 	// Setup stuff so it can be overridden.
-	if (cfg->unique) {
+	if (GET_BOOL(unique)) {
 		generators[OFFSET_GENERATORS] = &gens_gen_one;
 	} else {
 		generators[OFFSET_GENERATORS] = &gens_gen_any;
 	}
 
-	if (cfg->metadata) {
+	if (GET_BOOL(metadata)) {
 		generators[OFFSET_METADATA] = &metadata_gen;
 	} else {
 		generators[OFFSET_METADATA] = &gen_skip;
 	}
 
+	GET(points);
 	switch (cfg->points.type) {
 		case POINTS_RANDOM:
 			if (cfg->points.amount) {
@@ -58,6 +61,7 @@ static void cm_ginit(gen_f *generators, bool prime) {
 	}
 
 	// Now do the actual CM setup.
+	GET(method);
 	if (cfg->method == METHOD_CM) {
 		generators[OFFSET_FIELD] = &gen_skip;
 		generators[OFFSET_A] = &gen_skip;
@@ -76,6 +80,7 @@ static void cm_ginit(gen_f *generators, bool prime) {
 		generators[OFFSET_CURVE] = &curve_gen_any;
 		generators[OFFSET_ORDER] = &anomalous_gen_order;
 	} else if (cfg->method == METHOD_SUPERSINGULAR) {
+		GET(random);
 		if (cfg->random & RANDOM_FIELD) {
 			generators[OFFSET_FIELD] = &field_gen_random;
 		} else {
@@ -123,13 +128,20 @@ static void cm_ainit(arg_t **gen_argss, arg_t **check_argss,
 		points_arg->nargs = 1;
 		gen_argss[OFFSET_POINTS] = points_arg;
 	}
+
+	if (cfg->hex_check) {
+		arg_t *point_arg = arg_new();
+		point_arg->args = cfg->hex_check;
+		point_arg->nargs = 1;
+		check_argss[OFFSET_POINTS] = point_arg;
+	}
 }
 
 static void cm_cinit(check_t **validators) {
 	check_t *curve_check = check_new(curve_check_nonzero, NULL);
 	validators[OFFSET_CURVE] = curve_check;
 
-	if (cfg->hex_check) {
+	if (GET_BOOL(hex_check)) {
 		check_t *hex_check = check_new(hex_check_param, NULL);
 		validators[OFFSET_POINTS] = hex_check;
 	}
@@ -140,6 +152,7 @@ static int cm_init(exhaustive_t *setup) {
 
 	char *order_s = NULL;
 	if (cfg->method == METHOD_CM) {
+		GET(cm_order);
 		size_t delims = str_cnt(cfg->cm_order, ',');
 		GEN order;
 		if (delims == 0) {
@@ -234,7 +247,7 @@ int cm_do() {
 	if (result) {
 		return result;
 	}
-
+	config_report_unused();
 	result = exhaustive_generate(&setup);
 
 	cm_quit(&setup);

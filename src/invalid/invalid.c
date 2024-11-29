@@ -17,7 +17,10 @@
 #include "util/memory.h"
 
 static void invalid_original_ginit(gen_f *generators) {
+	GET(field);
+
 	generators[OFFSET_SEED] = &gen_skip;
+	GET(random);
 	if (cfg->random & RANDOM_FIELD) {
 		generators[OFFSET_FIELD] = &field_gen_random;
 	} else {
@@ -46,7 +49,7 @@ static void invalid_invalid_ginit(gen_f *generators) {
 	generators[OFFSET_B] = &b_gen_random;
 	generators[OFFSET_CURVE] = &curve_gen_any;
 	generators[OFFSET_ORDER] = &order_gen_any;
-	if (cfg->unique) {
+	if (GET_BOOL(unique)) {
 		generators[OFFSET_GENERATORS] = &gens_gen_one;
 	} else {
 		generators[OFFSET_GENERATORS] = &gens_gen_any;
@@ -74,6 +77,7 @@ static size_t invalid_primes(GEN order, pari_ulong **primes) {
 	pari_ulong upper = 0;
 	size_t nprimes = 0;
 
+	GET(invalid_primes);
 	if (cfg->invalid_primes) {
 		char *end = NULL;
 		last = (pari_ulong)strtol(cfg->invalid_primes, &end, 10) - 1;
@@ -349,6 +353,7 @@ int invalid_do() {
 	                              .check_argss = common_check_argss,
 	                              .unrolls = common_unrolls};
 	invalid_invalid_ginit(invalid_gens);
+	config_report_unused();
 
 	debug_log_start("Starting to create curve to invalidate");
 	curve_t *curve = invalid_original_curve(&original_setup);

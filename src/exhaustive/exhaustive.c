@@ -43,20 +43,22 @@ void exhaustive_clear(exhaustive_t *setup) {
 }
 
 static void exhaustive_ginit(gen_f *generators) {
-	if (cfg->seed_algo) {
-		if (cfg->prime) {
+	GET(field);
+
+	if (GET_BOOL(seed_algo)) {
+		if (GET_BOOL(prime)) {
 			generators[OFFSET_ORDER] = &order_gen_prime;
-		} else if (cfg->cofactor) {
+		} else if (GET_BOOL(cofactor)) {
 			generators[OFFSET_ORDER] = &order_gen_cofactor;
-		} else if (cfg->smooth) {
+		} else if (GET_BOOL(smooth)) {
 			generators[OFFSET_ORDER] = &order_gen_smooth;
 		} else {
 			generators[OFFSET_ORDER] = &order_gen_any;
 		}
 
-		if (cfg->unique) {
+		if (GET_BOOL(unique)) {
 			generators[OFFSET_GENERATORS] = &gens_gen_one;
-		} else if (cfg->cofactor) {
+		} else if (GET_BOOL(cofactor)) {
 			generators[OFFSET_GENERATORS] = &gens_gen_cofactor;
 		} else {
 			generators[OFFSET_GENERATORS] = &gens_gen_any;
@@ -65,15 +67,18 @@ static void exhaustive_ginit(gen_f *generators) {
 		switch (cfg->seed_algo) {
 			case SEED_ANSI: {
 				// setup ANSI X9.62 generators
+				GET(seed);
 				if (cfg->seed) {
 					generators[OFFSET_SEED] = &ansi_gen_seed_argument;
 				} else {
+					GET(random);
 					if (cfg->random & RANDOM_SEED) {
 						generators[OFFSET_SEED] = &ansi_gen_seed_random;
 					} else {
 						generators[OFFSET_SEED] = &ansi_gen_seed_input;
 					}
 				}
+				GET(random);
 				if (cfg->random & RANDOM_FIELD) {
 					generators[OFFSET_FIELD] = &field_gen_random;
 				} else {
@@ -83,9 +88,11 @@ static void exhaustive_ginit(gen_f *generators) {
 				generators[OFFSET_B] = &ansi_gen_equation;
 			} break;
 			case SEED_BRAINPOOL: {
+				GET(seed);
 				if (cfg->seed) {
 					generators[OFFSET_SEED] = &brainpool_gen_seed_argument;
 				} else {
+					GET(random);
 					if (cfg->random & RANDOM_SEED) {
 						generators[OFFSET_SEED] = &brainpool_gen_seed_random;
 					} else {
@@ -99,9 +106,11 @@ static void exhaustive_ginit(gen_f *generators) {
 				generators[OFFSET_GENERATORS] = &brainpool_gen_gens;
 			} break;
 			case SEED_BRAINPOOL_RFC: {
+				GET(seed);
 				if (cfg->seed) {
 					generators[OFFSET_SEED] = &brainpool_rfc_gen_seed_argument;
 				} else {
+					GET(random);
 					if (cfg->random & RANDOM_SEED) {
 						generators[OFFSET_SEED] =
 						    &brainpool_rfc_gen_seed_random;
@@ -132,13 +141,15 @@ static void exhaustive_ginit(gen_f *generators) {
 		// setup normal generators
 		generators[OFFSET_SEED] = &gen_skip;
 
+		GET(random);
 		if (cfg->random & RANDOM_FIELD) {
 			generators[OFFSET_FIELD] = &field_gen_random;
 		} else {
 			generators[OFFSET_FIELD] = &field_gen_input;
 		}
 
-		if (cfg->koblitz) {
+		if (GET_BOOL(koblitz)) {
+			GET(koblitz_value);
 			switch (cfg->koblitz_value) {
 				case 0:
 					generators[OFFSET_A] = &a_gen_zero;
@@ -151,12 +162,14 @@ static void exhaustive_ginit(gen_f *generators) {
 			}
 			generators[OFFSET_B] = &b_gen_one;
 		} else {
+			GET(random);
 			if (cfg->random & RANDOM_A) {
 				generators[OFFSET_A] = &a_gen_random;
 			} else {
 				generators[OFFSET_A] = &a_gen_input;
 			}
 
+			GET(random);
 			if (cfg->random & RANDOM_B) {
 				generators[OFFSET_B] = &b_gen_random;
 			} else {
@@ -164,21 +177,21 @@ static void exhaustive_ginit(gen_f *generators) {
 			}
 		}
 
-		if (cfg->prime) {
+		if (GET_BOOL(prime)) {
 			generators[OFFSET_ORDER] = &order_gen_prime;
-		} else if (cfg->cofactor) {
+		} else if (GET_BOOL(cofactor)) {
 			generators[OFFSET_ORDER] = &order_gen_cofactor;
-		} else if (cfg->smooth) {
+		} else if (GET_BOOL(smooth)) {
 			generators[OFFSET_ORDER] = &order_gen_smooth;
-		} else if (cfg->koblitz) {
+		} else if (GET_BOOL(koblitz)) {
 			generators[OFFSET_ORDER] = &order_gen_koblitz;
 		} else {
 			generators[OFFSET_ORDER] = &order_gen_any;
 		}
 
-		if (cfg->unique) {
+		if (GET_BOOL(unique)) {
 			generators[OFFSET_GENERATORS] = &gens_gen_one;
-		} else if (cfg->cofactor) {
+		} else if (GET_BOOL(cofactor)) {
 			generators[OFFSET_GENERATORS] = &gens_gen_cofactor;
 		} else {
 			generators[OFFSET_GENERATORS] = &gens_gen_any;
@@ -186,18 +199,21 @@ static void exhaustive_ginit(gen_f *generators) {
 	}
 
 	// setup common generators
+	GET(method);
 	if (cfg->method == METHOD_TWIST) {
 		generators[OFFSET_CURVE] = &curve_gen_any_twist;
 	} else {
 		generators[OFFSET_CURVE] = &curve_gen_any;
 	}
 
+	GET(metadata);
 	if (cfg->metadata) {
 		generators[OFFSET_METADATA] = &metadata_gen;
 	} else {
 		generators[OFFSET_METADATA] = &gen_skip;
 	}
 
+	GET(points);
 	switch (cfg->points.type) {
 		case POINTS_RANDOM:
 			if (cfg->points.amount) {
@@ -225,12 +241,14 @@ static void exhaustive_cinit(check_t **validators) {
 	check_t *curve_check = check_new(curve_check_nonzero, NULL);
 	validators[OFFSET_CURVE] = curve_check;
 
-	if (cfg->hex_check) {
+	if (GET_BOOL(hex_check)) {
 		check_t *hex_check = check_new(hex_check_param, NULL);
 		validators[OFFSET_POINTS] = hex_check;
 	}
 
+	GET(method);
 	if (cfg->method == METHOD_SEED) {
+		GET(seed_algo);
 		switch (cfg->seed_algo) {
 			case SEED_ANSI:
 				break;
@@ -466,6 +484,7 @@ int exhaustive_do() {
 	                      .check_argss = check_argss,
 	                      .unrolls = unrolls};
 	exhaustive_init(&setup);
+	config_report_unused();
 	int result = exhaustive_generate(&setup);
 	exhaustive_quit(&setup);
 	debug_log_end("Finished Exhaustive method");

@@ -226,41 +226,51 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 		/* Field options */
 		case OPT_FP:
 			cfg->field |= FIELD_PRIME;
+			SET(field);
 			break;
 		case OPT_F2M:
 			cfg->field |= FIELD_BINARY;
+			SET(field);
 			break;
 
 			/* Generation method  */
 		case OPT_INVALID:
 			cfg->method |= METHOD_INVALID;
+			SET(method);
 			if (arg) {
 				size_t span = strspn(arg, "0123456789-");
 				if (span != strlen(arg)) {
 					argp_failure(state, 1, 0, "Invalid range %s", arg);
 				}
 				cfg->invalid_primes = arg;
+				SET(invalid_primes);
 			}
 			break;
 		case OPT_ORDER:
 			cfg->method |= METHOD_CM;
+			SET(method);
 			if (arg) {
 				int error = regexec(&re_cm_order, arg, 0, NULL, 0);
 				if (error != 0) {
 					argp_failure(state, 1, 0, "Invalid order %s", arg);
 				}
 				cfg->cm_order = arg;
+				SET(cm_order);
 			}
 			break;
 		case OPT_ANOMALOUS:
 			cfg->method |= METHOD_ANOMALOUS;
+			SET(method);
 			break;
 		case OPT_SUPERSINGULAR:
 			cfg->method |= METHOD_SUPERSINGULAR;
+			SET(method);
 			break;
 		case OPT_ANSI:
 			cfg->method |= METHOD_SEED;
+			SET(method);
 			cfg->seed_algo = SEED_ANSI;
+			SET(seed_algo);
 			if (arg) {
 				if (!ansi_seed_valid(arg)) {
 					argp_failure(
@@ -268,11 +278,14 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 					    "SEED must be at least 160 bits (40 characters).");
 				}
 				cfg->seed = arg;
+				SET(seed);
 			}
 			break;
 		case OPT_BRAINPOOL:
 			cfg->method |= METHOD_SEED;
+			SET(method);
 			cfg->seed_algo = SEED_BRAINPOOL;
+			SET(seed_algo);
 			if (arg) {
 				if (!brainpool_seed_valid(arg)) {
 					argp_failure(
@@ -280,15 +293,20 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 					    "SEED must be exactly 160 bits (40 hex characters).");
 				}
 				cfg->seed = arg;
+				SET(seed);
 			}
 			break;
 		case OPT_NUMS:
 			cfg->method |= METHOD_SEED;
+			SET(method);
 			cfg->seed_algo = SEED_NUMS;
+			SET(seed_algo);
 			break;
 		case OPT_BRAINPOOL_RFC:
 			cfg->method |= METHOD_SEED;
+			SET(method);
 			cfg->seed_algo = SEED_BRAINPOOL_RFC;
+			SET(seed_algo);
 			if (arg) {
 				if (!brainpool_seed_valid(arg)) {
 					argp_failure(
@@ -296,15 +314,18 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 					    "SEED must be exactly 160 bits (40 hex characters).");
 				}
 				cfg->seed = arg;
+				SET(seed);
 			}
 			break;
 		case OPT_TWIST:
 			cfg->method |= METHOD_TWIST;
+			SET(method);
 			break;
 
 			/* Generation options */
 		case OPT_COUNT:
 			cfg->count = strtoul(arg, NULL, 10);
+			SET(count);
 			break;
 		case OPT_RANDOM:
 			if (arg) {
@@ -329,22 +350,28 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			} else {
 				cfg->random = RANDOM_ALL;
 			}
+			SET(random);
 			break;
 		case OPT_PRIME:
 			cfg->prime = true;
+			SET(prime);
 			break;
 		case OPT_SMOOTH:
 			cfg->smooth = true;
+			SET(smooth);
 			cfg->smooth_value = strtol(arg, NULL, 10);
 			break;
 		case OPT_COFACTOR:
 			cfg->cofactor = true;
+			SET(cofactor);
 			cfg->cofactor_value = strtol(arg, NULL, 10);
 			break;
 		case OPT_KOBLITZ:
 			cfg->koblitz = true;
+			SET(koblitz);
 			if (arg) {
 				cfg->koblitz_value = strtol(arg, NULL, 10);
+				SET(koblitz_value);
 				if (cfg->koblitz_value != 0 && cfg->koblitz_value != 1) {
 					argp_failure(state, 1, 0, "Wrong value for a = %li",
 					             cfg->koblitz_value);
@@ -353,6 +380,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			break;
 		case OPT_UNIQUE:
 			cfg->unique = true;
+			SET(unique);
 			break;
 		case OPT_HEXCHECK: {
 			char *str_start = arg;
@@ -371,10 +399,12 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 				}
 			}
 			cfg->hex_check = str_start;
+			SET(hex_check);
 			break;
 		}
 		case OPT_METADATA:
 			cfg->metadata = true;
+			SET(metadata);
 			break;
 		case OPT_POINTS: {
 			char *num_end;
@@ -393,6 +423,7 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			} else {
 				argp_failure(state, 1, 0, "Unknown point type. %s", num_end);
 			}
+			SET(points);
 			break;
 		}
 			/* IO options */

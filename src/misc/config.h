@@ -142,4 +142,36 @@ typedef struct {
 extern config_t cfg_s;
 extern config_t *cfg;
 
+typedef struct {
+	bool field;
+	bool method;
+	bool count;
+	bool random;
+	bool prime;
+	bool cm_order;
+	bool koblitz;
+	bool koblitz_value;
+	bool smooth;
+	bool cofactor;
+	bool invalid_primes;
+	bool seed_algo;
+	bool seed;
+	bool unique;
+	bool hex_check;
+	bool points;
+	bool metadata;
+} config_names_t;
+
+extern config_names_t cfg_used_s;
+extern config_names_t *cfg_used;
+
+extern config_names_t cfg_set_s;
+extern config_names_t *cfg_set;
+
+#define GET(x) cfg_used->x = true
+#define GET_BOOL(x) ((cfg_used->x = true) && cfg->x)
+#define SET(x) cfg_set->x = true
+
+void config_report_unused();
+
 #endif  // ECGEN_MISC_CONFIG_H

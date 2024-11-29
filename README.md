@@ -184,6 +184,15 @@ Generate a prime field, uniquely generated random curve, of size 192 bits, also 
 	    }
 	}]
 
+
+> [!NOTE]  
+> The command-line interface is quite tricky and **will** ignore options somewhat silently,
+> meaning that the computation will go on and some properties of the output curve will be wrong.
+> 
+> If this happens, you will get a warning such as:
+> > Warning: Ignored command-line argument prime (-p/--prime).
+
+
 ### Docs
 
 See [docs](docs/readme.md). Also:
@@ -236,11 +245,14 @@ Four different EC curve parameters generation methods are implemented.
 
 #### Supersingular curves
 
+ - Generates curves of order equal to prime + 1 (trace of Frobenius equal to zero).
+ - Used with the `--supersingular` option.
+ - These curves are **NOT SECURE** and are useful for implementation testing.
  - [CONSTRUCTING SUPERSINGULAR ELLIPTIC CURVES - [Broker]](https://pdfs.semanticscholar.org/56c5/5b9cf0b218f93b8d263cc9f64ccb5fb97f52.pdf)
 
 #### Anomalous curve generation
 
- - Generates curves of order equal to field order.
+ - Generates curves of order equal to field order (trace of Frobenius equal to 1).
  - Used with the `--anomalous` option.
  - These curves are **NOT SECURE** and are useful for implementation testing.
  - [Elliptic curves over F_p suitable for cryptosystems - [Miyaji]](https://dspace.jaist.ac.jp/dspace/bitstream/10119/4464/1/73-61.pdf)
@@ -251,8 +263,8 @@ Four different EC curve parameters generation methods are implemented.
 ecgen can be built using Make or CMake. ecgen uses git submodules for testing at:
 
  - `test/lib/assert.sh` pointing at <https://github.com/J08nY/assert.sh>
- - `test/lib/JSON.sh` pointing at <https://github.com/jimklimov/JSON.sh>
- - `test/lib/criterion` pointing at <https://github.com/Snaipe/Criterion>
+ - `test/lib/JSON.sh` pointing at <https://github.com/J08nY/JSON.sh>
+ - `test/lib/criterion` pointing at <https://github.com/Snaipe/Criterion>, its build requires meson.
 
 these need to be initialized for `make test` to work.
 
