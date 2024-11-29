@@ -11,7 +11,7 @@ TEST ?= 0
 ifeq ($(TEST), 1)
     ECGEN_CFLAGS = --coverage -g -O0
 endif
-ECGEN_LDFLAGS = -L../../lib/parson -L../../lib/sha1 -L../../lib/pari -L../lib/criterion/build
+ECGEN_LDFLAGS = -L../../lib/parson -L../../lib/sha1 -L../../lib/pari -L../lib/criterion/build/src
 ECGEN_INCLUDES = -I. -I../../src -I../../lib -I../lib/criterion/include
 ECGEN_LIBS = -lrt -lpari -lpthread -lparson -lsha1 -lcriterion
 
@@ -26,10 +26,10 @@ ECGEN_OBJ = $(patsubst %.c,%.o, $(ECGEN_SRC))
 all: unittest
 
 unittest: test_ecgen
-	LD_LIBRARY_PATH=../lib/criterion/build DYLD_LIBRARY_PATH=../lib/criterion/build ./test_ecgen --verbose=1 --filter \!\(brainpool_rfc/test_brainpool_rfc_params\)
+	LD_LIBRARY_PATH=../lib/criterion/build/src DYLD_LIBRARY_PATH=../lib/criterion/build/src ./test_ecgen --verbose=1 --filter \!\(brainpool_rfc/test_brainpool_rfc_params\)
 
 fulltest: test_ecgen
-	LD_LIBRARY_PATH=../lib/criterion/build DYLD_LIBRARY_PATH=../lib/criterion/build ./test_ecgen --verbose=1
+	LD_LIBRARY_PATH=../lib/criterion/build/src DYLD_LIBRARY_PATH=../lib/criterion/build/src ./test_ecgen --verbose=1
 
 test_ecgen: $(TEST_OBJ) $(ECGEN_OBJ)
 	$(CC) $(strip $(CPPFLAGS) $(ECGEN_INCLUDES) $(ECGEN_CFLAGS) $(CFLAGS) -o) $@ $^ $(ECGEN_LDFLAGS) $(LDFLAGS) $(ECGEN_LIBS) $(LIBS)
