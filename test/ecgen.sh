@@ -128,9 +128,17 @@ function supersingular() {
 
 function family() {
     start_test
-    assert_raises "${ecgen} --fp -r --family=BN 32"
-    assert_raises "${ecgen} --fp -r --family=BLS12 32"
-    assert_raises "${ecgen} --fp -r --family=BLS24 32"
+    assert_raises "${ecgen} --fp -r --family=BN 16"
+    assert_raises "${ecgen} --fp -r --family=BLS12 16"
+    assert_raises "${ecgen} --fp -r --family=BLS24 16"
+
+    assert_raises "${ecgen} --fp --family=BN 16"    0 "0xe5a2"
+    assert_raises "${ecgen} --fp --family=BLS12 16" 0 "0xafa2"
+    assert_raises "${ecgen} --fp --family=BLS24 16" 0 "0x8278"
+    assert_raises "${ecgen} --fp --family=KSS16 16" 0 "0x8acc"
+    assert_raises "${ecgen} --fp --family=KSS18 16" 0 "0xd2ac"
+    assert_raises "${ecgen} --fp --family=KSS36 16" 0 "0xf07f"
+    assert_raises "${ecgen} --fp --family=KSS40 16" 0 "-0xb18f"
 }
 
 function invalid() {

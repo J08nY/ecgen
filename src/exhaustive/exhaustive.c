@@ -148,7 +148,7 @@ static void exhaustive_ginit(gen_f *generators) {
 		}
 		generators[OFFSET_FIELD] = &family_gen_field;
 		generators[OFFSET_A] = &gen_skip;
-		if (cfg->family == FAMILY_KSS16) {
+		if (cfg->family == FAMILY_KSS16 || cfg->family == FAMILY_KSS40) {
 			generators[OFFSET_B] = &family_gen_equation_cm;
 		} else {
 			generators[OFFSET_B] = &family_gen_equation_iter;

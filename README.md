@@ -22,7 +22,7 @@ Tool for generating Elliptic curve domain parameters.
  - `-s / --ansi[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
  - `-b / --brainpool[=SEED]`Generate a curve using the Brainpool verifiably pseudorandom algorithm from the original paper.
  - `--brainpool-rfc[=SEED]` Generate a curve using the Brainpool verifiably pseudorandom algorithm as per RFC 5639.
- - `-F / --family=FAMILY`   Generate a pairing friendly curve from a curve family (e.g. "BN", "BLS12", "BLS24").
+ - `-F / --family=FAMILY`   Generate a pairing friendly curve from a curve family (e.g. "BN", "BLS12", "BLS24", "KSS16", "KSS18", "KSS36", "KSS40").
  - `--nums`                 Generate a curve using the NUMS procedure (as per draft-black-numscurves-02).
  - `--twist`                Generate a twist of a given curve.
 

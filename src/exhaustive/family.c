@@ -7,7 +7,9 @@
 #include "cm/cm_any.h"
 #include "gen/seed.h"
 #include "misc/config.h"
+#include "util/bits.h"
 #include "util/random.h"
+#include "io/output.h"
 
 #define FAMILIES (FAMILY_KSS40 + 1)
 
@@ -17,49 +19,54 @@ static GEN rz_store[FAMILIES] = {0};
 static GEN tz_store[FAMILIES] = {0};
 static GEN D_store[FAMILIES] = {0};
 
+// clang-format off
 void family_init() {
 	pari_sp ltop = avma;
 	nz_store[FAMILY_BN] = gclone(closure_evalgen(compile_str("(z) -> z")));
-	pz_store[FAMILY_BN] = gclone(closure_evalgen(
-	    compile_str("(z) -> 36*z^4 + 36*z^3 + 24*z^2 + 6*z + 1")));
-	rz_store[FAMILY_BN] = gclone(closure_evalgen(
-	    compile_str("(z) -> 36*z^4 + 36*z^3 + 18*z^2 + 6*z + 1")));
-	tz_store[FAMILY_BN] =
-	    gclone(closure_evalgen(compile_str("(z) -> 6*z + 1")));
+	pz_store[FAMILY_BN] = gclone(closure_evalgen(compile_str("(z) -> 36*z^4 + 36*z^3 + 24*z^2 + 6*z + 1")));
+	rz_store[FAMILY_BN] = gclone(closure_evalgen(compile_str("(z) -> 36*z^4 + 36*z^3 + 18*z^2 + 6*z + 1")));
+	tz_store[FAMILY_BN] = gclone(closure_evalgen(compile_str("(z) -> 6*z + 1")));
 	D_store[FAMILY_BN] = gclone(stoi(-3));
 
 	nz_store[FAMILY_BLS12] = gclone(closure_evalgen(compile_str("(z) -> z")));
-	pz_store[FAMILY_BLS12] = gclone(closure_evalgen(
-	    compile_str("(z) -> (z - 1)^2 * (z^4 - z^2 + 1)/3 + z")));
-	rz_store[FAMILY_BLS12] =
-	    gclone(closure_evalgen(compile_str("(z) -> z^4 - z^2 + 1")));
-	tz_store[FAMILY_BLS12] =
-	    gclone(closure_evalgen(compile_str("(z) -> z + 1")));
+	pz_store[FAMILY_BLS12] = gclone(closure_evalgen(compile_str("(z) -> (z - 1)^2 * (z^4 - z^2 + 1)/3 + z")));
+	rz_store[FAMILY_BLS12] = gclone(closure_evalgen(compile_str("(z) -> z^4 - z^2 + 1")));
+	tz_store[FAMILY_BLS12] = gclone(closure_evalgen(compile_str("(z) -> z + 1")));
 	D_store[FAMILY_BLS12] = gclone(stoi(-3));
 
 	nz_store[FAMILY_BLS24] = gclone(closure_evalgen(compile_str("(z) -> z")));
-	pz_store[FAMILY_BLS24] = gclone(closure_evalgen(
-	    compile_str("(z) -> (z - 1)^2 * (z^8 - z^4 + 1)/3 + z")));
-	rz_store[FAMILY_BLS24] =
-	    gclone(closure_evalgen(compile_str("(z) -> z^8 - z^4 + 1")));
-	tz_store[FAMILY_BLS24] =
-	    gclone(closure_evalgen(compile_str("(z) -> z + 1")));
+	pz_store[FAMILY_BLS24] = gclone(closure_evalgen(compile_str("(z) -> (z - 1)^2 * (z^8 - z^4 + 1)/3 + z")));
+	rz_store[FAMILY_BLS24] = gclone(closure_evalgen(compile_str("(z) -> z^8 - z^4 + 1")));
+	tz_store[FAMILY_BLS24] = gclone(closure_evalgen(compile_str("(z) -> z + 1")));
 	D_store[FAMILY_BLS24] = gclone(stoi(-3));
 
-	//TODO: This does not work...
-	nz_store[FAMILY_KSS16] =
-	    gclone(closure_evalgen(compile_str("(z) -> 70*z + 25")));
-	pz_store[FAMILY_KSS16] = gclone(closure_evalgen(
-	    compile_str("(z) -> (z^10 + 2*z^9 + 5*z^8 + 48*z^6 + 152*z^5 + 240*z^4 "
-	                "+ 625*z^2 + 2398*z + 3125)/980")));
-	rz_store[FAMILY_KSS16] = gclone(
-	    closure_evalgen(compile_str("(z) -> (z^8 + 48*z^4 + 625)/61250")));
-	tz_store[FAMILY_KSS16] =
-	    gclone(closure_evalgen(compile_str("(z) -> (2*z^5 + 41*z + 35)/35")));
-	D_store[FAMILY_KSS16] = gclone(stoi(-1));
+	nz_store[FAMILY_KSS16] = gclone(closure_evalgen(compile_str("(z) -> 70*z + 25")));
+	pz_store[FAMILY_KSS16] = gclone(closure_evalgen(compile_str("(z) -> (z^10 + 2*z^9 + 5*z^8 + 48*z^6 + 152*z^5 + 240*z^4 + 625*z^2 + 2398*z + 3125)/980")));
+	rz_store[FAMILY_KSS16] = gclone(closure_evalgen(compile_str("(z) -> (z^8 + 48*z^4 + 625)/61250")));
+	tz_store[FAMILY_KSS16] = gclone(closure_evalgen(compile_str("(z) -> (2*z^5 + 41*z + 35)/35")));
+	D_store[FAMILY_KSS16] = gclone(stoi(-4));
+
+	nz_store[FAMILY_KSS18] = gclone(closure_evalgen(compile_str("(z) -> 42*z + 14")));
+	pz_store[FAMILY_KSS18] = gclone(closure_evalgen(compile_str("(z) -> (z^8 + 5*z^7 + 7*z^6 + 37*z^5 + 188*z^4 + 259*z^3 + 343*z^2 + 1763*z + 2401)/21")));
+	rz_store[FAMILY_KSS18] = gclone(closure_evalgen(compile_str("(z) -> (z^6 + 37*z^3 + 343)/343")));
+	tz_store[FAMILY_KSS18] = gclone(closure_evalgen(compile_str("(z) -> (z^4 + 16*z + 7)/7")));
+	D_store[FAMILY_KSS18] = gclone(stoi(-3));
+
+	nz_store[FAMILY_KSS36] = gclone(closure_evalgen(compile_str("(z) -> 777 * z + 287")));
+	pz_store[FAMILY_KSS36] = gclone(closure_evalgen(compile_str("(z) -> (z^14 - 4*z^13 + 7*z^12 + 683*z^8 - 2510*z^7 + 4781*z^6 + 117649*z^2 - 386569*z + 823543)/28749")));
+	rz_store[FAMILY_KSS36] = gclone(closure_evalgen(compile_str("(z) -> (z^12 + 683*z^6 + 117649)/161061481")));
+	tz_store[FAMILY_KSS36] = gclone(closure_evalgen(compile_str("(z) -> (2*z^7 + 757*z + 259)/259")));
+	D_store[FAMILY_KSS36] = gclone(stoi(-3));
+
+	nz_store[FAMILY_KSS40] = gclone(closure_evalgen(compile_str("(z) -> 2370*z + 1205")));
+	pz_store[FAMILY_KSS40] = gclone(closure_evalgen(compile_str("(z) -> (z^22 - 2*z^21 + 5*z^20 + 6232*z^12 - 10568*z^11 + 31160*z^10 + 9765625*z^2 - 13398638*z + 48828125)/1123380")));
+	rz_store[FAMILY_KSS40] = gclone(closure_evalgen(compile_str("(z) -> (z^16 + 8*z^14 + 39*z^12 + 112*z^10 - 79*z^8 + 2800*z^6 + 24375*z^4 + 125000*z^2 + 390625)/2437890625")));
+	tz_store[FAMILY_KSS40] = gclone(closure_evalgen(compile_str("(z) -> (2*z^11 + 6469*z + 1185)/1185")));
+	D_store[FAMILY_KSS40] = gclone(stoi(-4));
 
 	avma = ltop;
 }
+// clang-format on
 
 static seed_t *family_new_seed() {
 	seed_t *result = seed_new();
@@ -70,21 +77,18 @@ static seed_t *family_new_seed() {
 GENERATOR(family_gen_seed_random) {
 	curve->seed = family_new_seed();
 	curve->seed->family.z = random_int(cfg->bits);
+	if (random_bits(1)) {
+		togglesign(curve->seed->family.z);
+	}
+	curve->seed->seed = bits_from_i(curve->seed->family.z);
 	return 1;
 }
 
 GENERATOR(family_gen_seed_input) {
-	pari_sp ltop = avma;
 	GEN inp = input_int("z:", cfg->bits);
-	if (gequalm1(inp)) {
-		avma = ltop;
-		return 0;
-	} else if (equalii(inp, gen_m2)) {
-		avma = ltop;
-		return INT_MIN;
-	}
 	curve->seed = family_new_seed();
 	curve->seed->family.z = inp;
+	curve->seed->seed = bits_from_i(curve->seed->family.z);
 	return 1;
 }
 
@@ -96,13 +100,11 @@ GENERATOR(family_gen_field) {
 		avma = ltop;
 		return -1;
 	}
-	printf("p");
 	GEN rz = closure_callgen1(rz_store[cfg->family], n);
 	if (typ(rz) != t_INT || !isprime(rz)) {
 		avma = ltop;
 		return -1;
 	}
-	printf("r");
 	curve->field = gerepilecopy(ltop, pz);
 	return 1;
 }

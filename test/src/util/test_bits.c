@@ -172,7 +172,7 @@ Test(bits, test_bits_to_hex) {
 
 	char *hex = bits_to_hex(bits);
 	cr_assert_not_null(hex, );
-	cr_assert_str_eq(hex, "abc0", );
+	cr_assert_str_eq(hex, "0abc", );
 	try_free(hex);
 	bits_free(&bits);
 }

@@ -84,9 +84,17 @@ static JSON_Value *output_jjson(curve_t *curve) {
 	if (curve->seed && curve->seed->seed) {
 		char *hex_str = bits_to_hex(curve->seed->seed);
 		char *hex = try_calloc(strlen(hex_str) + 3);
-		hex[0] = '0';
-		hex[1] = 'x';
+		if (curve->seed->seed->sign) {
+			hex[0] = '-';
+			hex[1] = '0';
+		} else {
+			hex[0] = '0';
+			hex[1] = 'x';
+		}
 		strcat(hex, hex_str);
+		if (curve->seed->seed->sign) {
+			hex[2] = 'x';
+		}
 		json_object_set_string(root_object, "seed", hex);
 		try_free(hex_str);
 		try_free(hex);

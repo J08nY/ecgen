@@ -15,11 +15,13 @@
 /**
  * @brief
  * @param bits
+ * @param sign
  * @param bitlen
  * @param allocated
  */
 typedef struct {
 	unsigned char *bits;
+	bool sign;
 	size_t bitlen;
 	size_t allocated;
 } bits_t;

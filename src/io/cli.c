@@ -63,7 +63,7 @@ struct argp_option cli_options[] = {
 		{"nums",		   OPT_NUMS, 		   0,		0,				   "Generate a curve using the NUMS procedure.",											2},
 		{"invalid",       OPT_INVALID,       "RANGE", OPTION_ARG_OPTIONAL, "Generate a set of invalid curves, for a given curve (using Invalid curve algorithm).", 2},
 		{"twist",			OPT_TWIST,         0,       0,                   "Generate a twist of a given curve.",                                                   2},
-		{"family",			OPT_FAMILY,		"NAME", 0, "Generate a curve from a curve family (e.g. BN, BLS12, BLS24, KSS)."},
+		{"family",			OPT_FAMILY,		"NAME", 0, "Generate a curve from a curve family (e.g. BN, BLS12, BLS24, KSS16, KSS18, KSS36, KSS40).",  2},
 
 		{0,               0,                 0,       0,                   "Generation options:",                                                                  3},
 		{"random",        OPT_RANDOM,        "WHAT",  OPTION_ARG_OPTIONAL, "Generate a random curve (using Random approach). "
@@ -294,16 +294,12 @@ error_t cli_parse(int key, char *arg, struct argp_state *state) {
 			} else if (strcasecmp(arg, "BLS24") == 0) {
 				cfg->family = FAMILY_BLS24;
 			} else if (strcasecmp(arg, "KSS16") == 0) {
-				argp_failure(state, 1, 0, "Family not yet supported.");
 				cfg->family = FAMILY_KSS16;
 			} else if (strcasecmp(arg, "KSS18") == 0) {
-				argp_failure(state, 1, 0, "Family not yet supported.");
 				cfg->family = FAMILY_KSS18;
 			} else if (strcasecmp(arg, "KSS36") == 0) {
-				argp_failure(state, 1, 0, "Family not yet supported.");
 				cfg->family = FAMILY_KSS36;
 			} else if (strcasecmp(arg, "KSS40") == 0) {
-				argp_failure(state, 1, 0, "Family not yet supported.");
 				cfg->family = FAMILY_KSS40;
 			} else {
 				argp_failure(state, 1, 0, "Unknown curve family = %s", arg);

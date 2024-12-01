@@ -44,10 +44,12 @@ void bits_cpy(bits_t *dest, const bits_t *src) {
 	memcpy(dest->bits, src->bits, src->allocated);
 	dest->allocated = src->allocated;
 	dest->bitlen = src->bitlen;
+	dest->sign = src->sign;
 }
 
 bits_t *bits_copy(const bits_t *bits) {
 	bits_t *result = try_calloc(sizeof(bits_t));
+	result->sign = bits->sign;
 	result->bitlen = bits->bitlen;
 	result->allocated = bits->allocated;
 	if (bits->allocated != 0)
@@ -70,6 +72,7 @@ bits_t *bits_from_i(GEN i) {
 	GEN bitvec = binary_zv(i);
 	size_t bit_len = (size_t)glength(bitvec);
 	bits_t *result = bits_new(bit_len);
+	result->sign = signe(i) == -1;
 	for (size_t j = 0; j < bit_len; ++j) {
 		if (gel(bitvec, j + 1) == (GEN)1) {
 			result->bits[j / 8] |= 1 << (7 - (j % 8));
@@ -84,6 +87,7 @@ bits_t *bits_from_i_len(GEN i, size_t bit_len) {
 	GEN bitvec = binary_zv(i);
 	size_t i_len = (size_t)glength(bitvec);
 	bits_t *result = bits_new(bit_len);
+	result->sign = signe(i) == -1;
 	size_t offset = 0;
 	if (i_len < bit_len) {
 		offset = bit_len - i_len;
@@ -150,22 +154,53 @@ GEN bits_to_i(const bits_t *bits) {
 		if (GET_BIT(bits->bits, i) != 0)
 			result = addii(result, int2n(bits->bitlen - i - 1));
 	}
+	if (bits->sign) {
+		setsigne(result, -1);
+	}
 	return gerepilecopy(ltop, result);
 }
 
 char *bits_to_hex(const bits_t *bits) {
-	char *result = try_calloc(BYTE_LEN(bits->bitlen) * 2 + 1);
-	// probably right pad with zeroes, as thats what is actually stored.
+	char *result =
+	    try_calloc(BYTE_LEN(bits->bitlen) * 2 + 1 + (bits->sign ? 1 : 0));
+	if (bits->sign) {
+		result[0] = '-';
+	}
+	size_t offset = bits->bitlen % 8;
+	// if offset == 0
+	// | a b | c d |
+	// ^-----^ first byte
+	//       ^-----^ second byte
+	// else
+	// 0 0 | a b | c d | e
+	//  ^-----^ (8-offset zero bits, offset bits from first byte)
+	//        ^-----^ (8-offset bits from first byte, offset bits from second byte)
+	//           ....
+	//              ^-----^ (8-offset bits from second to last byte, offset bits from last byte)
 	for (size_t i = 0; i < BYTE_LEN(bits->bitlen); ++i) {
-		sprintf(result + (i * 2), "%02x", bits->bits[i]);
+		size_t pos = (i * 2) + (bits->sign ? 1 : 0);
+		unsigned char value;
+		if (offset) {
+			value = bits->bits[i] >> (8 - offset);
+			if (i != 0) {
+				value |= (bits->bits[i-1] & ~(1 << (8 - offset))) << offset;
+			}
+		} else {
+			value = bits->bits[i];
+		}
+		sprintf(result + pos, "%02x", value);
 	}
 	return result;
 }
 
 char *bits_to_bin(const bits_t *bits) {
-	char *result = try_calloc(bits->bitlen + 1);
+	char *result = try_calloc(bits->bitlen + 1 + (bits->sign ? 1 : 0));
+	if (bits->sign) {
+		result[0] = '-';
+	}
 	for (size_t i = 0; i < bits->bitlen; ++i) {
-		sprintf(result + i, "%1u", GET_BIT(bits->bits, i));
+		sprintf(result + i + (bits->sign ? 1 : 0), "%1u",
+		        GET_BIT(bits->bits, i));
 	}
 	return result;
 }
@@ -459,6 +494,7 @@ void bits_sha1(const bits_t *bits, unsigned char hashout[20]) {
 }
 
 bool bits_eq(const bits_t *one, const bits_t *other) {
+	if (one->sign != other->sign) return false;
 	if (one->bitlen != other->bitlen) return false;
 	if (one->bitlen == 0) return true;
 	if (memcmp(one->bits, other->bits, one->bitlen / 8) != 0) return false;
