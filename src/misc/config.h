@@ -48,7 +48,8 @@ typedef enum {
 	METHOD_SEED = 1 << 2,
 	METHOD_INVALID = 1 << 3,
 	METHOD_TWIST = 1 << 4,
-	METHOD_SUPERSINGULAR = 1 << 5
+	METHOD_SUPERSINGULAR = 1 << 5,
+	METHOD_FAMILY = 1 << 6
 } method_e;
 
 /**
@@ -60,8 +61,22 @@ typedef enum {
 	SEED_BRAINPOOL,
 	SEED_BRAINPOOL_RFC,
 	SEED_FIPS,
-	SEED_NUMS
+	SEED_NUMS,
+	SEED_FAMILY
 } seed_e;
+
+/**
+ * @brief
+ */
+typedef enum {
+	FAMILY_BN = 0,
+	FAMILY_BLS12,
+	FAMILY_BLS24,
+	FAMILY_KSS16,
+	FAMILY_KSS18,
+	FAMILY_KSS36,
+	FAMILY_KSS40
+} family_e;
 
 /**
  * @brief
@@ -84,7 +99,8 @@ typedef struct {
 	/** @brief Whether the curves should be Koblitz (a \\in {0, 1}, b = 1). */
 	bool koblitz;
 	long koblitz_value;
-	/** @brief Whether the curves should have a smooth order (bit-length bound). */
+	/** @brief Whether the curves should have a smooth order (bit-length bound).
+	 */
 	bool smooth;
 	long smooth_value;
 	/** @brief Whether the curves should have a bound on the cofactor value. */
@@ -97,6 +113,8 @@ typedef struct {
 	seed_e seed_algo;
 	/** @brief What seed to use, if any, to generate the curves. */
 	char *seed;
+	/** @brief What family of curves to generate. */
+	family_e family;
 	/** @brief Whether the curves should be uniquely generated (one generator).
 	 */
 	bool unique;
@@ -156,6 +174,7 @@ typedef struct {
 	bool invalid_primes;
 	bool seed_algo;
 	bool seed;
+	bool family;
 	bool unique;
 	bool hex_check;
 	bool points;

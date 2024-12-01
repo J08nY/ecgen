@@ -126,6 +126,13 @@ function supersingular() {
     assert_raises "${ecgen} --fp --supersingular -r --points=none 20"
 }
 
+function family() {
+    start_test
+    assert_raises "${ecgen} --fp -r --family=BN 32"
+    assert_raises "${ecgen} --fp -r --family=BLS12 32"
+    assert_raises "${ecgen} --fp -r --family=BLS24 32"
+}
+
 function invalid() {
     start_test
     assert_raises "${ecgen} --fp -r -i 10"
@@ -214,6 +221,7 @@ brainpool
 nums
 anomalous
 supersingular
+family
 invalid
 twist
 cli

@@ -8,6 +8,7 @@
 #include "brainpool.h"
 #include "brainpool_rfc.h"
 #include "nums.h"
+#include "family.h"
 #include "check.h"
 #include "gen/curve.h"
 #include "gen/equation.h"
@@ -137,6 +138,25 @@ static void exhaustive_ginit(gen_f *generators) {
 			default:
 				break;
 		}
+	} else if (cfg->method == METHOD_FAMILY) {
+		// setup family generators
+		if (GET_BOOL(random)) {
+			generators[OFFSET_SEED] = &family_gen_seed_random;
+		} else {
+			generators[OFFSET_SEED] = &family_gen_seed_input;
+
+		}
+		generators[OFFSET_FIELD] = &family_gen_field;
+		generators[OFFSET_A] = &gen_skip;
+		if (cfg->family == FAMILY_KSS16) {
+			generators[OFFSET_B] = &family_gen_equation_cm;
+		} else {
+			generators[OFFSET_B] = &family_gen_equation_iter;
+		}
+
+		//TODO make the prime check optional, based on cfg->prime.
+		generators[OFFSET_ORDER] = &family_gen_order;
+		generators[OFFSET_GENERATORS] = &gens_gen_any;
 	} else {
 		// setup normal generators
 		generators[OFFSET_SEED] = &gen_skip;
@@ -250,8 +270,6 @@ static void exhaustive_cinit(check_t **validators) {
 	if (cfg->method == METHOD_SEED) {
 		GET(seed_algo);
 		switch (cfg->seed_algo) {
-			case SEED_ANSI:
-				break;
 			case SEED_BRAINPOOL:
 			case SEED_BRAINPOOL_RFC: {
 				// TODO: Missing Brainpool CM disc check.
@@ -267,8 +285,6 @@ static void exhaustive_cinit(check_t **validators) {
 				    check_new(gens_check_anomalous, brainpool_check_gens, NULL);
 				validators[OFFSET_GENERATORS] = gens_check;
 			} break;
-			case SEED_FIPS:
-				break;
 			default:
 				break;
 		}
@@ -310,7 +326,7 @@ static void exhaustive_ainit(arg_t **gen_argss, arg_t **check_argss) {
 }
 
 void exhaustive_uinit(unroll_f *unrolls) {
-	if (cfg->seed_algo) {
+	if (cfg->seed_algo || cfg->method == METHOD_FAMILY) {
 		unrolls[OFFSET_SEED] = &seed_unroll;
 	} else {
 		unrolls[OFFSET_SEED] = &unroll_skip;
@@ -436,12 +452,14 @@ static void exhaustive_init(exhaustive_t *setup) {
 	exhaustive_cinit(setup->validators);
 	exhaustive_ainit(setup->gen_argss, setup->check_argss);
 	exhaustive_uinit(setup->unrolls);
+	family_init();
 }
 
 static void exhaustive_quit(exhaustive_t *setup) {
 	field_quit();
 	equation_quit();
 	nums_quit();
+	family_quit();
 	exhaustive_clear(setup);
 }
 

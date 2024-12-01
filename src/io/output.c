@@ -81,7 +81,7 @@ static JSON_Value *output_jjson(curve_t *curve) {
 			fprintf(err, "Error, field has unknown amount of elements.\n");
 			exit(1);
 	}
-	if (curve->seed) {
+	if (curve->seed && curve->seed->seed) {
 		char *hex_str = bits_to_hex(curve->seed->seed);
 		char *hex = try_calloc(strlen(hex_str) + 3);
 		hex[0] = '0';

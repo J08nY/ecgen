@@ -51,6 +51,9 @@ typedef struct {
 			bits_t *seed_b;
 			GEN mult;
 		} brainpool;
+		struct {
+			GEN z;
+		} family;
 	};
 } seed_t;
 

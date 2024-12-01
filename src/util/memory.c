@@ -46,7 +46,7 @@ void *try_calloc(size_t size) { return alloc(calloc_func, size); }
 void *try_realloc(void *ptr, size_t size) {
 	void *result = realloc_func(ptr, size);
 	if (!result) {
-		perror("Couldn't alloc.");
+		perror("Couldn't realloc.");
 		exit(EXIT_FAILURE);
 	}
 	return result;

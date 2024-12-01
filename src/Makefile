@@ -14,7 +14,7 @@ FAST ?= 0
 STATIC ?= 0
 
 ifeq ($(DEBUG), 1)
-    ECGEN_CFLAGS = -DDEBUG -g -Og -Werror -pedantic
+    ECGEN_CFLAGS = -DDEBUG -g -O0 -Werror -pedantic
 else ifeq ($(TEST), 1)
 	ECGEN_CFLAGS = -DNDEBUG --coverage -g -O0
 else ifeq ($(FAST), 1)

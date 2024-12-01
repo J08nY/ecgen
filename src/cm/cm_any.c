@@ -143,6 +143,7 @@ GEN cm_construct_curve(GEN order, GEN d, GEN p, bool ord_prime) {
 	GEN r = FpX_roots(H, p);
 	debug_log("roots = %Ps", r);
 	if (gequal(r, gtovec(gen_0))) {
+		avma = ltop;
 		return NULL;
 	}
 
@@ -206,6 +207,43 @@ GEN cm_construct_curve(GEN order, GEN d, GEN p, bool ord_prime) {
 			}
 		}
 	}
+	avma = ltop;
+	return NULL;
+}
+
+GEN cm_construct_curve_subgroup(GEN r, GEN d, GEN p) {
+	debug_log("Constructing a curve with r = %Pi, d = %Pi, p = %Pi", r, d,
+	          p);
+	pari_sp ltop = avma;
+	GEN H = polclass(d, 0, 0);
+	debug_log("H = %Ps", H);
+
+	GEN roots = FpX_roots(H, p);
+	debug_log("roots = %Ps", roots);
+	if (gequal(roots, gtovec(gen_0))) {
+		avma = ltop;
+		return NULL;
+	}
+
+	long rlen = glength(roots);
+	pari_sp btop = avma;
+	for (long i = 1; i <= rlen; ++i) {
+		GEN root = gel(roots, i);
+		debug_log("trying root = %Pi", root);
+
+		GEN e = ellinit(ellfromj(mkintmod(root, p)), p, 0);
+		pari_CATCH(e_TYPE) { avma = btop; continue; }
+		pari_TRY { checkell(e); };
+		pari_ENDCATCH{};
+
+		GEN ord = ellff_get_card(e);
+		if (dvdii(ord, r)) {
+			debug_log("Got curve.");
+			return gerepilecopy(ltop, e);
+		}
+		avma = btop;
+	}
+	avma = ltop;
 	return NULL;
 }
 

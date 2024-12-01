@@ -53,6 +53,8 @@ void seed_free(seed_t **seed) {
 				break;
 			case SEED_NONE:
 				break;
+			case SEED_FAMILY:
+				break;
 		}
 		try_free(*seed);
 		*seed = NULL;

@@ -24,6 +24,12 @@ typedef struct {
 GEN cm_construct_curve(GEN order, GEN d, GEN p, bool ord_prime);
 
 /**
+ * @brief Construct an elliptic curve given a factor of its order, CM
+ * discriminant and field order.
+ */
+GEN cm_construct_curve_subgroup(GEN r, GEN d, GEN p);
+
+/**
  * @brief
  * @param curve
  * @param args

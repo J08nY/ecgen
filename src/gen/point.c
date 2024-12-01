@@ -41,6 +41,9 @@ GENERATOR(points_gen_random) {
 	for (size_t i = 0; i < curve->ngens; ++i) {
 		subgroup_t *subgroup = curve->generators[i];
 		subgroup->npoints = npoints_per_gen[i];
+		if (npoints_per_gen[i] == 0) {
+			continue;
+		}
 		subgroup->points = points_new(npoints_per_gen[i]);
 
 		for (size_t j = 0; j < npoints_per_gen[i]; ++j) {

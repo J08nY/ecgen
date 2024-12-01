@@ -22,6 +22,7 @@ Tool for generating Elliptic curve domain parameters.
  - `-s / --ansi[=SEED]`		Generate a curve from `SEED` (ANSI X9.62 verifiable procedure).
  - `-b / --brainpool[=SEED]`Generate a curve using the Brainpool verifiably pseudorandom algorithm from the original paper.
  - `--brainpool-rfc[=SEED]` Generate a curve using the Brainpool verifiably pseudorandom algorithm as per RFC 5639.
+ - `-F / --family=FAMILY`   Generate a pairing friendly curve from a curve family (e.g. "BN", "BLS12", "BLS24").
  - `--nums`                 Generate a curve using the NUMS procedure (as per draft-black-numscurves-02).
  - `--twist`                Generate a twist of a given curve.
 
@@ -203,7 +204,7 @@ for Doxygen.
 
 ### Generation methods
 
-Four different EC curve parameters generation methods are implemented.
+Five different EC curve parameters generation methods are implemented.
 
 [Efficient Algorithms for Generating Elliptic Curves over Finite Fields Suitable for Use in Cryptography - [Baier]](https://www.cdc.informatik.tu-darmstadt.de/reports/reports/harald_baier.diss.pdf)
 
@@ -257,6 +258,11 @@ Four different EC curve parameters generation methods are implemented.
  - These curves are **NOT SECURE** and are useful for implementation testing.
  - [Elliptic curves over F_p suitable for cryptosystems - [Miyaji]](https://dspace.jaist.ac.jp/dspace/bitstream/10119/4464/1/73-61.pdf)
  - TODO: Extend with [Generating Anomalous Elliptic Curves - [Leprevost, Monnerat, Varrette, Vaydenay]](https://www.monnerat.info/publications/anomalous.pdf)
+
+#### Curve families
+
+ - Generates pairing friendly curves.
+ - Used with the `-F / --family` option. Select from BN, BLS12 or BLS24 currently. 
 
 ### Build
 
