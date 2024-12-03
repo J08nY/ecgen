@@ -20,7 +20,7 @@
 /**
  * @file ecgen.c
  * @author J08nY <johny@neuromancer.sk>
- * @version 0.7.7
+ * @version 0.8.0
  * @copyright GPL v2.0
  */
 #include <pari/pari.h>
@@ -38,7 +38,7 @@
 #endif
 
 const char *argp_program_version =
-    "ecgen 0.7.7" GIT_VERSION
+    "ecgen 0.8.0" GIT_VERSION
     "\n"
     "Compiled with: " PARIVERSION
     "\n\n"
