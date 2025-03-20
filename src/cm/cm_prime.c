@@ -146,11 +146,14 @@ GENERATOR(cm_gen_curve_prime) {
 
 	cm_prime_qdisc_t qdisc = {0};
 	qdisc_init(&qdisc, order);
+	cm_any_roots_t *roots = try_calloc(sizeof(cm_any_roots_t));
 	do {
 		qdisc_next(&qdisc);
-		e = cm_construct_curve(order, qdisc.D, qdisc.p, true);
+		cm_update_roots(qdisc.D, qdisc.p, roots);
+		e = cm_construct_curve(order, qdisc.D, qdisc.p, roots, true);
 	} while (e == NULL);
 	qdisc_free(&qdisc);
+	cm_free_roots(roots);
 
 	curve->field = qdisc.p;
 	curve->a = ell_get_a4(e);

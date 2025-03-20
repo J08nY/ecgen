@@ -5,8 +5,8 @@
 #define _POSIX_C_SOURCE 200809L
 
 #include "random.h"
-#include <time.h>
 #include <stdint.h>
+#include <time.h>
 
 void random_reseed(void) {
 	pari_ulong seed = 0;
@@ -15,7 +15,8 @@ void random_reseed(void) {
 	if (rand) {
 		size_t read = 0;
 		while (read < sizeof(pari_ulong)) {
-			read += fread(((uint8_t*) &seed) + read, 1, sizeof(pari_ulong) - read, rand);
+			read += fread(((uint8_t *)&seed) + read, 1,
+			              sizeof(pari_ulong) - read, rand);
 		}
 
 		fclose(rand);

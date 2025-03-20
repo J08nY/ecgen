@@ -7,9 +7,8 @@
 #include "arg.h"
 #include "brainpool.h"
 #include "brainpool_rfc.h"
-#include "nums.h"
-#include "family.h"
 #include "check.h"
+#include "family.h"
 #include "gen/curve.h"
 #include "gen/equation.h"
 #include "gen/field.h"
@@ -21,6 +20,7 @@
 #include "gen/seed.h"
 #include "io/output.h"
 #include "misc/config.h"
+#include "nums.h"
 #include "obj/curve.h"
 #include "util/memory.h"
 #include "util/timeout.h"
@@ -129,7 +129,8 @@ static void exhaustive_ginit(gen_f *generators) {
 				generators[OFFSET_SEED] = &gen_skip;
 				generators[OFFSET_FIELD] = &nums_gen_field;
 				generators[OFFSET_A] = &nums_gen_a;
-				generators[OFFSET_B] = &nums_gen_b;  // TODO: Missing transformation from b -> -b.
+				generators[OFFSET_B] =
+				    &nums_gen_b;  // TODO: Missing transformation from b -> -b.
 				generators[OFFSET_ORDER] = &nums_gen_order;
 				generators[OFFSET_GENERATORS] = &nums_gen_gens;
 			} break;
@@ -144,7 +145,6 @@ static void exhaustive_ginit(gen_f *generators) {
 			generators[OFFSET_SEED] = &family_gen_seed_random;
 		} else {
 			generators[OFFSET_SEED] = &family_gen_seed_input;
-
 		}
 		generators[OFFSET_FIELD] = &family_gen_field;
 		generators[OFFSET_A] = &gen_skip;
@@ -154,7 +154,7 @@ static void exhaustive_ginit(gen_f *generators) {
 			generators[OFFSET_B] = &family_gen_equation_iter;
 		}
 
-		//TODO make the prime check optional, based on cfg->prime.
+		// TODO make the prime check optional, based on cfg->prime.
 		generators[OFFSET_ORDER] = &family_gen_order;
 		generators[OFFSET_GENERATORS] = &gens_gen_any;
 	} else {

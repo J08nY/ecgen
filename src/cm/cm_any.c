@@ -16,16 +16,21 @@
  */
 static void good_qdisc_minimal(cm_any_qdisc_t *qdisc, GEN order) {
 	pari_sp ltop = avma;
-	GEN d = stoi(2);
-	size_t j = 0;
+	GEN d;
+	if (qdisc->d) {
+		d = negi(subis(qdisc->d, 1));
+	} else {
+		d = stoi(2);
+	}
+	size_t j = 1;
 	while (true) {
 		++j;
+		if (j % 100 == 0) {
+			debug_log("d: %Ps", d);
+		}
 		if (!issquarefree(d)) {
 			d = addis(d, 1);
 			continue;
-		}
-		if (j % 100 == 0) {
-			debug_log("D: %Ps", d);
 		}
 		GEN D = quaddisc(negi(d));
 		GEN K = Buchall(quadpoly(D), 0, DEFAULTPREC);
@@ -52,7 +57,7 @@ static void good_qdisc_minimal(cm_any_qdisc_t *qdisc, GEN order) {
 	}
 }
 
-/**
+/*
  * @brief Find a fundamental quadratic discriminant < d_range, start looking
  *        at the sides of the inverted Hasse interval around order, upto p_range
  *
@@ -114,9 +119,9 @@ static cm_any_qdisc_t *good_qdisc_brute_range(GEN order, GEN p_range, GEN d_rang
 		return result;
 	};
 }
-
 */
-/**
+/*
+ *
  * @brief Find a fundamental quadratic discriminant < order^beta, start looking
  * 		  at the sides of the inverted Hasse interval around order, upto
  * order^alpha width.
@@ -124,33 +129,60 @@ static cm_any_qdisc_t *good_qdisc_brute_range(GEN order, GEN p_range, GEN d_rang
  * @param alpha
  * @param beta
  * @return
- *//*
-
+ *
 static cm_any_qdisc_t *good_qdisc_brute(GEN order, GEN alpha, GEN beta) {
-	GEN ord_a = ground(gpow(order, alpha, DEFAULTPREC));
-	GEN ord_b = ground(gpow(order, beta, DEFAULTPREC));
-	return good_qdisc_brute_range(order, ord_a, ord_b);
+    GEN ord_a = ground(gpow(order, alpha, DEFAULTPREC));
+    GEN ord_b = ground(gpow(order, beta, DEFAULTPREC));
+    return good_qdisc_brute_range(order, ord_a, ord_b);
 }
 */
 
-GEN cm_construct_curve(GEN order, GEN d, GEN p, bool ord_prime) {
+void cm_update_roots(GEN d, GEN p, cm_any_roots_t *roots) {
+	pari_sp ltop = avma;
+	GEN H = polclass(d, 0, 0);
+	GEN raw = FpX_roots(H, p);
+	if (roots->roots && isclone(roots->roots)) {
+		gunclone(roots->roots);
+	}
+	roots->roots = gclone(raw);
+	roots->total = glength(raw);
+	roots->used = 0;
+	avma = ltop;
+}
+
+cm_any_roots_t *cm_make_roots(GEN d, GEN p) {
+	debug_log("Making roots, d = %Pi, p = %Pi", d, p);
+	cm_any_roots_t *roots = try_calloc(sizeof(cm_any_roots_t));
+	cm_update_roots(d, p, roots);
+	return roots;
+}
+
+void cm_free_roots(cm_any_roots_t *roots) {
+	if (roots) {
+		if (roots->roots && isclone(roots->roots)) {
+			gunclone(roots->roots);
+		}
+		try_free(roots);
+	}
+}
+
+GEN cm_construct_curve(GEN order, GEN d, GEN p, cm_any_roots_t *roots,
+                       bool ord_prime) {
 	debug_log("Constructing a curve with N = %Pi, d = %Pi, p = %Pi", order, d,
 	          p);
 	pari_sp ltop = avma;
-	GEN H = polclass(d, 0, 0);
-	debug_log("H = %Ps", H);
 
-	GEN r = FpX_roots(H, p);
-	debug_log("roots = %Ps", r);
-	if (gequal(r, gtovec(gen_0))) {
+	debug_log("roots(%li/%li) = %Ps", roots->used, roots->total, roots->roots);
+	if (roots->total == 0 || roots->used == roots->total ||
+	    gequal(roots->roots, gtovec(gen_0))) {
 		avma = ltop;
 		return NULL;
 	}
 
-	long rlen = glength(r);
-	for (long i = 1; i <= rlen; ++i) {
-		GEN root = gel(r, i);
-		debug_log("trying root = %Pi", root);
+	for (long i = roots->used; i < roots->total; ++i) {
+		roots->used = i + 1;
+		GEN root = gel(roots->roots, i + 1);
+		debug_log("trying root[%i] = %Pi", i + 1, root);
 
 		GEN e = ellinit(ellfromj(mkintmod(root, p)), p, 0);
 		pari_CATCH(e_TYPE) { continue; }
@@ -211,28 +243,28 @@ GEN cm_construct_curve(GEN order, GEN d, GEN p, bool ord_prime) {
 	return NULL;
 }
 
-GEN cm_construct_curve_subgroup(GEN r, GEN d, GEN p) {
-	debug_log("Constructing a curve with r = %Pi, d = %Pi, p = %Pi", r, d,
-	          p);
+GEN cm_construct_curve_subgroup(GEN r, GEN d, GEN p, cm_any_roots_t *roots) {
+	debug_log("Constructing a curve with r = %Pi, d = %Pi, p = %Pi", r, d, p);
 	pari_sp ltop = avma;
-	GEN H = polclass(d, 0, 0);
-	debug_log("H = %Ps", H);
 
-	GEN roots = FpX_roots(H, p);
-	debug_log("roots = %Ps", roots);
-	if (gequal(roots, gtovec(gen_0))) {
+	debug_log("roots(%li/%li) = %Ps", roots->used, roots->total, roots->roots);
+	if (roots->total == 0 || roots->used == roots->total ||
+	    gequal(roots->roots, gtovec(gen_0))) {
 		avma = ltop;
 		return NULL;
 	}
 
-	long rlen = glength(roots);
 	pari_sp btop = avma;
-	for (long i = 1; i <= rlen; ++i) {
-		GEN root = gel(roots, i);
-		debug_log("trying root = %Pi", root);
+	for (long i = roots->used; i < roots->total; ++i) {
+		roots->used = i + 1;
+		GEN root = gel(roots->roots, i + 1);
+		debug_log("trying root[%i] = %Pi", i + 1, root);
 
 		GEN e = ellinit(ellfromj(mkintmod(root, p)), p, 0);
-		pari_CATCH(e_TYPE) { avma = btop; continue; }
+		pari_CATCH(e_TYPE) {
+			avma = btop;
+			continue;
+		}
 		pari_TRY { checkell(e); };
 		pari_ENDCATCH{};
 
@@ -247,21 +279,68 @@ GEN cm_construct_curve_subgroup(GEN r, GEN d, GEN p) {
 	return NULL;
 }
 
+static cm_any_qdisc_t *min_d = NULL;
+static cm_any_roots_t *min_roots = NULL;
+static curve_t *min_curve = NULL;
+
 GENERATOR(cm_gen_curve_any) {
 	HAS_ARG(args);
 	pari_sp ltop = avma;
 	const char *order_s = (const char *)args->args;
 	GEN order = strtoi(order_s);
-	cm_any_qdisc_t min_disc = {0};
-	good_qdisc_minimal(&min_disc, order);
-	debug_log("Got min D = %Pi", min_disc.d);
-	GEN e = cm_construct_curve(order, min_disc.d, min_disc.p, false);
+	GEN e;
+	if (min_d && min_roots && min_curve == curve &&
+	    min_roots->used < min_roots->total) {
+		debug_log("Reusing roots.");
+		// We can just use the roots we have stored and take some out.
+		e = cm_construct_curve(order, min_d->d, min_d->p, min_roots, false);
+	} else if (min_d && min_curve == curve) {
+		debug_log("Reusing min D = %Pi", min_d->d);
+		// We just have the discriminant but no roots (or they are used up), we
+		// need to continue
+		if (min_d->d && isclone(min_d->d)) {
+			gunclone(min_d->d);
+		}
+		if (min_d->p && isclone(min_d->p)) {
+			gunclone(min_d->p);
+		}
+		good_qdisc_minimal(min_d, order);
+		min_d->d = gclone(min_d->d);
+		min_d->p = gclone(min_d->p);
+		debug_log("Got min D = %Pi", min_d->d);
+		if (min_roots) {
+			cm_update_roots(min_d->d, min_d->p, min_roots);
+		} else {
+			min_roots = cm_make_roots(min_d->d, min_d->p);
+		}
+		e = cm_construct_curve(order, min_d->d, min_d->p, min_roots, false);
+	} else {
+		// We have nothing. Start fresh.
+		debug_log("Fresh start.");
+		if (!min_d) {
+			min_d = try_calloc(sizeof(cm_any_qdisc_t));
+		}
+		if (min_d->d && isclone(min_d->d)) {
+			gunclone(min_d->d);
+		}
+		if (min_d->p && isclone(min_d->p)) {
+			gunclone(min_d->p);
+		}
+		good_qdisc_minimal(min_d, order);
+		min_d->d = gclone(min_d->d);
+		min_d->p = gclone(min_d->p);
+		debug_log("Got min D = %Pi", min_d->d);
+		min_roots = cm_make_roots(min_d->d, min_d->p);
+		min_curve = curve;
+		e = cm_construct_curve(order, min_d->d, min_d->p, min_roots, false);
+	}
+
 	if (e == NULL) {
 		fprintf(err, "Could not construct curve.");
 		avma = ltop;
 		return -3;
 	}
-	curve->field = min_disc.p;
+	curve->field = min_d->p;
 	curve->a = ell_get_a4(e);
 	curve->b = ell_get_a6(e);
 	curve->curve = e;
@@ -273,4 +352,13 @@ GENERATOR(cm_gen_order) {
 	const char *order_s = (const char *)args->args;
 	curve->order = strtoi(order_s);
 	return 1;
+}
+
+void cm_any_quit() {
+	if (min_d) {
+		try_free(min_d);
+	}
+	if (min_roots) {
+		cm_free_roots(min_roots);
+	}
 }

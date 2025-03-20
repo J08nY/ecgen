@@ -26,5 +26,4 @@ void family_init();
 
 void family_quit();
 
-
-#endif //ECGEN_EXHAUSTIVE_FAMILY_H
+#endif  // ECGEN_EXHAUSTIVE_FAMILY_H

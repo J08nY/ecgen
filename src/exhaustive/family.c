@@ -6,10 +6,10 @@
 #include "family.h"
 #include "cm/cm_any.h"
 #include "gen/seed.h"
+#include "io/output.h"
 #include "misc/config.h"
 #include "util/bits.h"
 #include "util/random.h"
-#include "io/output.h"
 
 #define FAMILIES (FAMILY_KSS40 + 1)
 
@@ -143,7 +143,9 @@ GENERATOR(family_gen_equation_cm) {
 	GEN n = closure_callgen1(nz_store[cfg->family], curve->seed->family.z);
 	GEN rz = closure_callgen1(rz_store[cfg->family], n);
 	GEN D = D_store[cfg->family];
-	GEN e = cm_construct_curve_subgroup(rz, D, curve->field);
+	cm_any_roots_t *roots = cm_make_roots(D, curve->field);
+	GEN e = cm_construct_curve_subgroup(rz, D, curve->field, roots);
+	cm_free_roots(roots);
 	if (e) {
 		curve->a = ell_get_a4(e);
 		curve->b = ell_get_a6(e);

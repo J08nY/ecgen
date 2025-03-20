@@ -5,9 +5,9 @@
 #include "gens.h"
 #include "exhaustive/arg.h"
 #include "math/subgroup.h"
+#include "misc/compat.h"
 #include "obj/point.h"
 #include "obj/subgroup.h"
-#include "misc/compat.h"
 
 static subgroup_t *gens_point(GEN point, const curve_t *curve) {
 	subgroup_t *sub = subgroup_new();
@@ -42,7 +42,7 @@ GENERATOR(gens_gen_one) {
 	if (len == 2) {
 		avma = ltop;
 		return -5;
-    }
+	}
 	GEN generators = ellff_get_gens(curve->curve);
 	len = glength(generators);
 	if (len == 2) {

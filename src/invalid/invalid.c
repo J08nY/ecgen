@@ -289,8 +289,7 @@ static size_t invalid_curves_threaded(const curve_t *curve, pari_ulong *primes,
 			}
 		}
 
-		if (*generated == nprimes)
-			break;
+		if (*generated == nprimes) break;
 	}
 	pthread_mutex_unlock(&state_mutex);
 

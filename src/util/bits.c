@@ -174,16 +174,18 @@ char *bits_to_hex(const bits_t *bits) {
 	// else
 	// 0 0 | a b | c d | e
 	//  ^-----^ (8-offset zero bits, offset bits from first byte)
-	//        ^-----^ (8-offset bits from first byte, offset bits from second byte)
+	//        ^-----^ (8-offset bits from first byte, offset bits from second
+	//        byte)
 	//           ....
-	//              ^-----^ (8-offset bits from second to last byte, offset bits from last byte)
+	//              ^-----^ (8-offset bits from second to last byte, offset bits
+	//              from last byte)
 	for (size_t i = 0; i < BYTE_LEN(bits->bitlen); ++i) {
 		size_t pos = (i * 2) + (bits->sign ? 1 : 0);
 		unsigned char value;
 		if (offset) {
 			value = bits->bits[i] >> (8 - offset);
 			if (i != 0) {
-				value |= (bits->bits[i-1] & ~(1 << (8 - offset))) << offset;
+				value |= (bits->bits[i - 1] & ~(1 << (8 - offset))) << offset;
 			}
 		} else {
 			value = bits->bits[i];

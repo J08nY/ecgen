@@ -165,8 +165,7 @@ static JSON_Value *output_jjson(curve_t *curve) {
 		}
 		if (curve->meta.conductor != NULL) {
 			char *conductor = pari_sprintf("%Pi", curve->meta.conductor);
-			json_object_dotset_string(root_object, "meta.conductor",
-			                          conductor);
+			json_object_dotset_string(root_object, "meta.conductor", conductor);
 			pari_free(conductor);
 		}
 	}

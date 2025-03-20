@@ -74,7 +74,7 @@ static void cm_ginit(gen_f *generators, bool prime) {
 		}
 		generators[OFFSET_ORDER] = &cm_gen_order;
 	} else if (cfg->method == METHOD_ANOMALOUS) {
-		GET(random); // Used within the method.
+		GET(random);  // Used within the method.
 		generators[OFFSET_FIELD] = &anomalous_gen_field;
 		generators[OFFSET_A] = &gen_skip;
 		generators[OFFSET_B] = &anomalous_gen_equation;
@@ -226,6 +226,7 @@ static void cm_quit(exhaustive_t *setup) {
 	if (cfg->method == METHOD_ANOMALOUS) {
 		anomalous_quit();
 	}
+	cm_any_quit();
 	exhaustive_clear(setup);
 }
 

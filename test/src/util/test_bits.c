@@ -243,14 +243,14 @@ Test(bits, test_bits_or) {
 	bits_t *other_bits = bits_new(6);
 	other_bits->bits[0] = 0b10000000;
 
-	bits_t * or = bits_or(bits, other_bits);
+	bits_t *or = bits_or(bits, other_bits);
 	cr_assert_not_null(or, );
 	cr_assert_eq(or->bitlen, 10, );
 	cr_assert_eq(or->bits[0], 0b00001000, );
 	cr_assert_eq(or->bits[1], 0b11000000, );
 	bits_free(&bits);
 	bits_free(&other_bits);
-	bits_free(& or);
+	bits_free(&or);
 }
 
 Test(bits, test_bits_and) {

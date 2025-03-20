@@ -28,7 +28,8 @@ GENERATOR(metadata_gen) {
 		GEN d_f = coredisc2(subii(sqri(frobenius), mulis(q, 4)));
 		cm_disc = gcopy(gel(d_f, 1));
 		conductor = gcopy(gel(d_f, 2));
-		gerepileall(ltop, 6, &j, &disc, &embedding_degree, &frobenius, &cm_disc, &conductor);
+		gerepileall(ltop, 6, &j, &disc, &embedding_degree, &frobenius, &cm_disc,
+		            &conductor);
 	} else if (typ(curve->field) == t_FFELT) {
 		cm_disc = NULL;
 		conductor = NULL;

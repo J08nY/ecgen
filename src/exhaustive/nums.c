@@ -22,7 +22,7 @@ GENERATOR(nums_gen_field) {
 }
 
 GENERATOR(nums_gen_a) {
-	curve-> a = gmodulo(stoi(-3), curve->field);
+	curve->a = gmodulo(stoi(-3), curve->field);
 	return 1;
 }
 
@@ -102,7 +102,6 @@ GENERATOR(nums_gen_gens) {
 	gerepileall(ltop, 3, &G->point, &G->order, &G->cofactor);
 	return 1;
 }
-
 
 void nums_quit(void) {
 	if (b && isclone(b)) {
