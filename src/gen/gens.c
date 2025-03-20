@@ -37,13 +37,19 @@ GENERATOR(gens_gen_any) {
 
 GENERATOR(gens_gen_one) {
 	pari_sp ltop = avma;
+	GEN group = ellff_get_group(curve->curve);
+	long len = glength(group);
+	if (len == 1) {
+        avma = ltop;
+        return -5;
+    }
 	GEN generators = ellff_get_gens(curve->curve);
-	long len = glength(generators);
+	len = glength(generators);
 	if (len == 2) {
 		avma = ltop;
 		return -5;
 	}
-	return gens_put(curve, generators, len);
+	return gens_put(curve, gerepilecopy(ltop, generators), len);
 }
 
 GENERATOR(gens_gen_cofactor) {
