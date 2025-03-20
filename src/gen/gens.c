@@ -39,9 +39,9 @@ GENERATOR(gens_gen_one) {
 	pari_sp ltop = avma;
 	GEN group = ellff_get_group(curve->curve);
 	long len = glength(group);
-	if (len == 1) {
-        avma = ltop;
-        return -5;
+	if (len == 2) {
+		avma = ltop;
+		return -5;
     }
 	GEN generators = ellff_get_gens(curve->curve);
 	len = glength(generators);
