@@ -38,6 +38,7 @@ GENERATOR(gens_gen_any) {
 GENERATOR(gens_gen_one) {
 	pari_sp ltop = avma;
 	GEN group = ellff_get_group(curve->curve);
+	debug_log("Group structure %Ps.", group);
 	long len = glength(group);
 	if (len == 2) {
 		avma = ltop;

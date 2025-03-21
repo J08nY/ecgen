@@ -181,10 +181,15 @@ static int cm_init(exhaustive_t *setup) {
 			for (long j = 1; j <= len; ++j) {
 				GEN factor = gel(factors, j);
 				if (isprime(factor)) {
+					debug_log("Adding prime factor %Pi", factor);
 					addprimes(gtovec(factor));
 				} else {
-					GEN factored = Z_factor(order);
-					addprimes(gel(factored, 1));
+					GEN factored = Z_factor(factor);
+					GEN primes = gel(factored, 1);
+					for (long k = 1; k <= glength(primes); ++k) {
+						debug_log("Adding prime factor %Pi", gel(primes, k));
+						addprimes(gel(primes, k));
+					}
 				}
 				order = mulii(order, factor);
 			}
