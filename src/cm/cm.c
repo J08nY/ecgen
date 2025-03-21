@@ -69,6 +69,8 @@ static void cm_ginit(gen_f *generators, bool prime) {
 		if (prime) {
 			generators[OFFSET_CURVE] = &cm_gen_curve_prime;
 			generators[OFFSET_POINTS] = &points_gen_prime;
+		} else if (GET_BOOL(unique)) {
+			generators[OFFSET_CURVE] = &cm_gen_curve_unique;
 		} else {
 			generators[OFFSET_CURVE] = &cm_gen_curve_any;
 		}

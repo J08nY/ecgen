@@ -76,6 +76,15 @@ GENERATOR(cm_gen_curve_any);
  * @param state
  * @return
  */
+GENERATOR(cm_gen_curve_unique);
+
+/**
+ * @brief
+ * @param curve
+ * @param args
+ * @param state
+ * @return
+ */
 GENERATOR(cm_gen_order);
 
 /**

@@ -347,6 +347,103 @@ GENERATOR(cm_gen_curve_any) {
 	return 1;
 }
 
+GENERATOR(cm_gen_curve_unique) {
+	HAS_ARG(args);
+	pari_sp ltop = avma;
+	const char *order_s = (const char *)args->args;
+	GEN order = strtoi(order_s);
+	GEN e;
+	if (min_d && min_roots && min_curve == curve &&
+	    min_roots->used < min_roots->total) {
+		debug_log("Reusing roots.");
+		// We can just use the roots we have stored and take some out.
+		e = cm_construct_curve(order, min_d->d, min_d->p, min_roots, false);
+	} else if (min_d && min_curve == curve) {
+		debug_log("Reusing min D = %Pi", min_d->d);
+		// We just have the discriminant but no roots (or they are used up), we
+		// need to continue
+		if (min_d->d && isclone(min_d->d)) {
+			gunclone(min_d->d);
+		}
+		if (min_d->p && isclone(min_d->p)) {
+			gunclone(min_d->p);
+		}
+		good_qdisc_minimal(min_d, order);
+		min_d->d = gclone(min_d->d);
+		min_d->p = gclone(min_d->p);
+		debug_log("Got min D = %Pi", min_d->d);
+		if (min_roots) {
+			cm_update_roots(min_d->d, min_d->p, min_roots);
+		} else {
+			min_roots = cm_make_roots(min_d->d, min_d->p);
+		}
+		e = cm_construct_curve(order, min_d->d, min_d->p, min_roots, false);
+	} else {
+		// We have nothing. Start fresh.
+		debug_log("Fresh start.");
+		if (!min_d) {
+			min_d = try_calloc(sizeof(cm_any_qdisc_t));
+		}
+		if (min_d->d && isclone(min_d->d)) {
+			gunclone(min_d->d);
+		}
+		if (min_d->p && isclone(min_d->p)) {
+			gunclone(min_d->p);
+		}
+		good_qdisc_minimal(min_d, order);
+		min_d->d = gclone(min_d->d);
+		min_d->p = gclone(min_d->p);
+		debug_log("Got min D = %Pi", min_d->d);
+		min_roots = cm_make_roots(min_d->d, min_d->p);
+		min_curve = curve;
+		e = cm_construct_curve(order, min_d->d, min_d->p, min_roots, false);
+	}
+
+	if (e == NULL) {
+		fprintf(err, "Could not construct curve.");
+		avma = ltop;
+		return -3;
+	}
+
+	GEN group = ellff_get_group(e);
+	long len = glength(group);
+	if (len == 2) {
+		debug_log("Walking down with structure %Ps.", group);
+		GEN d = gcopy(min_d->d);
+		GEN one = gel(group, 1);
+		GEN two = gel(group, 2);
+		GEN towalk = cmpii(one, two) < 0 ? one : two;
+		GEN factored = Z_factor(towalk);
+		GEN primes = gel(factored, 1);
+		GEN powers = gel(factored, 2);
+		for (long i = 1; i <= glength(primes); ++i) {
+			GEN prime = gel(primes, i);
+			GEN power = gel(powers, i);
+			debug_log("Walking down with %Pi %Pi", prime, power);
+			GEN exp = mulis(power, 2);
+			GEN mul = powii(prime, exp);
+			d = mulii(d, mul);
+		}
+		if (min_d->d && isclone(min_d->d)) {
+			gunclone(min_d->d);
+		}
+		min_d->d = gclone(d);
+		if (min_roots) {
+			cm_update_roots(min_d->d, min_d->p, min_roots);
+		} else {
+			min_roots = cm_make_roots(min_d->d, min_d->p);
+		}
+		e = cm_construct_curve(order, min_d->d, min_d->p, min_roots, false);
+		//TODO: Stack cleanup here
+	}
+
+	curve->field = min_d->p;
+	curve->a = ell_get_a4(e);
+	curve->b = ell_get_a6(e);
+	curve->curve = e;
+	return 1;
+}
+
 GENERATOR(cm_gen_order) {
 	HAS_ARG(args);
 	const char *order_s = (const char *)args->args;
