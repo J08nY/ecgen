@@ -422,7 +422,7 @@ GENERATOR(cm_gen_curve_unique) {
 			debug_log("d %Pi", d);
 		}
 		if (logint(d, gen_2) > 64) {
-            fprintf(err, "Discriminant too large.");
+            debug_log("Discriminant too large after walkdown (%Pi).", d);
             avma = ltop;
             return -3;
         }
