@@ -187,7 +187,7 @@ function hex() {
 function cm() {
     start_test
     assert_raises "${ecgen} --fp --order=2147483723 32"
-    assert_raises "${ecgen} --fp --order=123456789012345678901234567890123456789012345678901234568197 196"
+    assert_raises "${ecgen} --fp --order=123456789012345678901234567890123456789012345678901234568197 --threads=5 196"
     assert_raises "${ecgen} --fp --order=46874566546,3546,3125 64"
     assert_raises "${ecgen} --fp -u --order=46874566546,3546,3125 64"
     assert_raises "${ecgen} --fp --order=0 16" 1

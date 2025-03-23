@@ -50,7 +50,7 @@ Tool for generating Elliptic curve domain parameters.
 
  - `-d / --data-dir=DIR`	Set PARI/GP data directory (containing seadata package).
  - `-m / --memory=SIZE`		Use PARI stack of `SIZE` (can have suffix k/m/g).
- - `--threads=NUM`			Use `NUM` threads.
+ - `--threads=NUM`			Use `NUM` threads (in PARI or invalid generation).
  - `--thread-stack=SIZE`	Use PARI stack of `SIZE` (per thread, can have suffix k/m/g).
  - `--timeout=TIME`			Timeout computation of a curve parameter after `TIME` (can have suffix s/m/h/d).
 

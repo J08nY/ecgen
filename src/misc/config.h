@@ -129,7 +129,7 @@ typedef struct {
 	char *datadir;
 	/** @brief How much memory to allocate for the PARI stack. */
 	unsigned long memory;
-	/** @brief How many threads to use, only useful for invalid generation(atm).
+	/** @brief How many threads to use (or limit PARI to use).
 	 */
 	unsigned long threads;
 	/** @brief How much memory to allocate for the PARI stack, per thread. */

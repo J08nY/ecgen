@@ -88,7 +88,7 @@ struct argp_option cli_options[] = {
 		{0,               0,                 0,       0,                   "Other:",                                                                               5},
 		{"data-dir",      OPT_DATADIR,       "DIR",   0,                   "Set PARI/GP data directory (containing seadata package).",                             5},
 		{"memory",        OPT_MEMORY,        "SIZE",  0,                   "Use PARI stack of SIZE (can have suffix k/m/g).",                                      5},
-		{"threads",       OPT_THREADS,       "NUM",   0,                   "Use NUM threads.",                                                                     5},
+		{"threads",       OPT_THREADS,       "NUM",   0,                   "Use NUM threads (in PARI or invalid generation).",                                     5},
 		{"thread-stack",  OPT_TSTACK,        "SIZE",  0,                   "Use PARI stack of SIZE (per thread, can have suffix k/m/g).",                          5},
 		{"timeout",       OPT_TIMEOUT,       "TIME",  0,                   "Timeout computation of a curve parameter after TIME (can have suffix s/m/h/d).",       5},
 		{0}
