@@ -3,6 +3,7 @@
  * Copyright (C) 2017-2018 J08nY
  */
 #include "subgroup.h"
+#include "io/output.h"
 
 /**
  * @brief All prime divisors of a given integer with multiplicity.
@@ -46,6 +47,11 @@ static GEN subgroups_2n_factors(GEN factors, size_t min_bits) {
 	long nprimes = glength(factors);
 	if (nprimes == min_bits) return NULL;
 	GEN amount = int2n(nprimes);
+	long abits = logint(amount, gen_2);
+	if (abits >= 64) {
+		fprintf(err, "Too many factors to generate points (%li bits).", abits);
+		return NULL;
+	}
 	GEN groups = gtovec0(gen_0, itos(amount) - (min_bits * nprimes) - 1);
 
 	size_t i = 0;

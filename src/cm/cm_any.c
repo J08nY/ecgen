@@ -353,15 +353,9 @@ GENERATOR(cm_gen_curve_unique) {
 	const char *order_s = (const char *)args->args;
 	GEN order = strtoi(order_s);
 	GEN e;
-	if (min_d && min_roots && min_curve == curve &&
-	    min_roots->used < min_roots->total) {
-		debug_log("Reusing roots.");
-		// We can just use the roots we have stored and take some out.
-		e = cm_construct_curve(order, min_d->d, min_d->p, min_roots, false);
-	} else if (min_d && min_curve == curve) {
+	if (min_d && min_curve == curve) {
 		debug_log("Reusing min D = %Pi", min_d->d);
-		// We just have the discriminant but no roots (or they are used up), we
-		// need to continue
+		// We have some discriminant, cannot use the roots because the D with walkdown was too large.
 		if (min_d->d && isclone(min_d->d)) {
 			gunclone(min_d->d);
 		}
@@ -421,9 +415,17 @@ GENERATOR(cm_gen_curve_unique) {
 			GEN power = gel(powers, i);
 			debug_log("Walking down with %Pi %Pi", prime, power);
 			GEN exp = mulis(power, 2);
+			debug_log("%Pi, %Pi", prime, exp);
 			GEN mul = powii(prime, exp);
+			debug_log("%Pi", mul);
 			d = mulii(d, mul);
+			debug_log("d %Pi", d);
 		}
+		if (logint(d, gen_2) > 64) {
+            fprintf(err, "Discriminant too large.");
+            avma = ltop;
+            return -3;
+        }
 		if (min_d->d && isclone(min_d->d)) {
 			gunclone(min_d->d);
 		}
