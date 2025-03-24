@@ -421,8 +421,9 @@ GENERATOR(cm_gen_curve_unique) {
 			d = mulii(d, mul);
 			debug_log("d %Pi", d);
 		}
-		if (logint(d, gen_2) > 64) {
-            debug_log("Discriminant too large after walkdown (%Pi).", d);
+		long dsize = logint(d, gen_2);
+		if (dsize > 30) {
+            debug_log("Discriminant too large after walkdown (d = %Pi, %li bits).", d, dsize);
             avma = ltop;
             return -3;
         }
