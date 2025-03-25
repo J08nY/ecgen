@@ -340,7 +340,7 @@ GENERATOR(cm_gen_curve_any) {
 		avma = ltop;
 		return -3;
 	}
-	curve->field = min_d->p;
+	curve->field = gcopy(min_d->p);
 	curve->a = ell_get_a4(e);
 	curve->b = ell_get_a6(e);
 	curve->curve = e;
@@ -442,7 +442,7 @@ GENERATOR(cm_gen_curve_unique) {
 		return -3;
 	}
 
-	curve->field = min_d->p;
+	curve->field = gcopy(min_d->p);
 	curve->a = ell_get_a4(e);
 	curve->b = ell_get_a6(e);
 	curve->curve = e;
