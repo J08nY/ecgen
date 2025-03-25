@@ -402,6 +402,7 @@ GENERATOR(cm_gen_curve_unique) {
 	GEN group = ellff_get_group(e);
 	long len = glength(group);
 	if (len == 2) {
+		pari_sp btop = avma;
 		debug_log("Walking down with structure %Ps.", group);
 		GEN d = gcopy(min_d->d);
 		GEN one = gel(group, 1);
@@ -413,13 +414,12 @@ GENERATOR(cm_gen_curve_unique) {
 		for (long i = 1; i <= glength(primes); ++i) {
 			GEN prime = gel(primes, i);
 			GEN power = gel(powers, i);
-			debug_log("Walking down with %Pi %Pi", prime, power);
+			debug_log("Walking down with %Pi^(2*%Pi)", prime, power);
 			GEN exp = mulis(power, 2);
-			debug_log("%Pi, %Pi", prime, exp);
 			GEN mul = powii(prime, exp);
-			debug_log("%Pi", mul);
+			debug_log("%Pi^%Pi = %Pi", prime, exp, mul);
 			d = mulii(d, mul);
-			debug_log("d %Pi", d);
+			debug_log("d = %Pi", d);
 		}
 		long dsize = logint(d, gen_2);
 		if (dsize > 30) {
@@ -427,17 +427,19 @@ GENERATOR(cm_gen_curve_unique) {
             avma = ltop;
             return -3;
         }
-		if (min_d->d && isclone(min_d->d)) {
-			gunclone(min_d->d);
-		}
-		min_d->d = gclone(d);
 		if (min_roots) {
-			cm_update_roots(min_d->d, min_d->p, min_roots);
+			cm_update_roots(d, min_d->p, min_roots);
 		} else {
-			min_roots = cm_make_roots(min_d->d, min_d->p);
+			min_roots = cm_make_roots(d, min_d->p);
 		}
-		e = cm_construct_curve(order, min_d->d, min_d->p, min_roots, false);
-		//TODO: Stack cleanup here
+		e = cm_construct_curve(order, d, min_d->p, min_roots, false);
+		e = gerepilecopy(btop, e);
+	}
+
+	if (e == NULL) {
+		fprintf(err, "Could not construct curve.");
+		avma = ltop;
+		return -3;
 	}
 
 	curve->field = min_d->p;
@@ -456,6 +458,12 @@ GENERATOR(cm_gen_order) {
 
 void cm_any_quit() {
 	if (min_d) {
+		if (min_d->d && isclone(min_d->d)) {
+			gunclone(min_d->d);
+		}
+		if (min_d->p && isclone(min_d->p)) {
+			gunclone(min_d->p);
+		}
 		try_free(min_d);
 	}
 	if (min_roots) {
