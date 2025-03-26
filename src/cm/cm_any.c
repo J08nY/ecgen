@@ -182,12 +182,17 @@ GEN cm_construct_curve(GEN order, GEN d, GEN p, cm_any_roots_t *roots,
 	for (long i = roots->used; i < roots->total; ++i) {
 		roots->used = i + 1;
 		GEN root = gel(roots->roots, i + 1);
+		if (gequal(root, gen_0)) {
+			debug_log("skipping root = 0");
+			continue;
+		}
 		debug_log("trying root[%i] = %Pi", i + 1, root);
 
 		GEN e = ellinit(ellfromj(mkintmod(root, p)), p, 0);
 		pari_CATCH(e_TYPE) { continue; }
 		pari_TRY { checkell(e); };
 		pari_ENDCATCH{};
+		debug_log("ellinit done");
 
 		if (ord_prime) {
 			// Easy part, the requested order is prime so
