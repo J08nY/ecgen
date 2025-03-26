@@ -341,7 +341,7 @@ GENERATOR(cm_gen_curve_any) {
 	}
 
 	if (e == NULL) {
-		fprintf(err, "Could not construct curve.");
+		debug_log("Could not construct curve.");
 		avma = ltop;
 		return -3;
 	}
@@ -399,7 +399,7 @@ GENERATOR(cm_gen_curve_unique) {
 	}
 
 	if (e == NULL) {
-		fprintf(err, "Could not construct curve.");
+		debug_log("Could not construct curve.");
 		avma = ltop;
 		return -3;
 	}
@@ -442,7 +442,7 @@ GENERATOR(cm_gen_curve_unique) {
 	}
 
 	if (e == NULL) {
-		fprintf(err, "Could not construct curve.");
+		debug_log("Could not construct curve.");
 		avma = ltop;
 		return -3;
 	}
