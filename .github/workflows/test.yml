@@ -18,6 +18,14 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libpari-dev pari-gp pari-seadata meson ninja-build
+      - name: Build
+        run: |
+          make
+          make clean
+          make STATIC=1
+          make clean
+          make DEBUG=1
+          make clean
       - name: Test
         run: |
           TEST=1 make unittest

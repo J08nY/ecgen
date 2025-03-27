@@ -28,4 +28,10 @@ else ()
   set(PLATFORM_SPECIFIC_LIBS rt)
 endif()
 
-target_link_libraries(ecgen pthread pari parson sha1 ${PLATFORM_SPECIFIC_LIBS})
+if (STATIC)
+  # Find the static libpari library
+  find_library(PARI_STATIC NAMES libpari.a)
+  target_link_libraries(ecgen pthread ${PARI_STATIC} parson sha1 ${PLATFORM_SPECIFIC_LIBS})
+else ()
+  target_link_libraries(ecgen pthread pari parson sha1 ${PLATFORM_SPECIFIC_LIBS})
+endif()
