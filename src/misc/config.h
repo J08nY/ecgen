@@ -191,6 +191,6 @@ extern config_names_t *cfg_set;
 #define GET_BOOL(x) ((cfg_used->x = true) && cfg->x)
 #define SET(x) cfg_set->x = true
 
-void config_report_unused();
+void config_report_unused(void);
 
 #endif  // ECGEN_MISC_CONFIG_H

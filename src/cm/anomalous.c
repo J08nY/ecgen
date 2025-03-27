@@ -8,7 +8,7 @@
 
 static disc_t **disc_table;
 
-void anomalous_init() {
+void anomalous_init(void) {
 	disc_table = try_calloc(sizeof(disc_t *) * 5);
 	for (int i = 0; i < 5; ++i) {
 		disc_table[i] = try_calloc(sizeof(disc_t));
@@ -128,7 +128,7 @@ GENERATOR(anomalous_gen_order) {
 	return 1;
 }
 
-void anomalous_quit() {
+void anomalous_quit(void) {
 	if (disc_table) {
 		for (int i = 0; i < 5; ++i) {
 			if (disc_table[i]) {

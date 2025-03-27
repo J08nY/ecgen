@@ -5,15 +5,15 @@
 #include "misc/types.h"
 #include "util/memory.h"
 
-#define OBJ(obj_name, obj_type, copy_func, clone_func)                  \
-	obj_type *obj_name##_new() { return try_calloc(sizeof(obj_type)); } \
-	obj_type *obj_name##_new_copy(const obj_type *src) {                \
-		obj_type *result = obj_name##_new();                            \
-		return copy_func(src, result);                                  \
-	}                                                                   \
-	obj_type *obj_name##_new_clone(const obj_type *src) {               \
-		obj_type *result = obj_name##_new();                            \
-		return clone_func(src, result);                                 \
+#define OBJ(obj_name, obj_type, copy_func, clone_func)                      \
+	obj_type *obj_name##_new(void) { return try_calloc(sizeof(obj_type)); } \
+	obj_type *obj_name##_new_copy(const obj_type *src) {                    \
+		obj_type *result = obj_name##_new();                                \
+		return copy_func(src, result);                                      \
+	}                                                                       \
+	obj_type *obj_name##_new_clone(const obj_type *src) {                   \
+		obj_type *result = obj_name##_new();                                \
+		return clone_func(src, result);                                     \
 	}
 
 #define OBJS(obj_name, obj_type, copy_func, clone_func)                  \
@@ -44,7 +44,7 @@
 	}
 
 #define OBJ_H(obj_name, obj_type)                       \
-	obj_type *obj_name##_new();                         \
+	obj_type *obj_name##_new(void);                     \
 	obj_type *obj_name##_new_copy(const obj_type *src); \
 	obj_type *obj_name##_new_clone(const obj_type *src);
 

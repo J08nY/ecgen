@@ -10,9 +10,9 @@
 #include "util/memory.h"
 
 char *(*output_s)(curve_t *curve);
-char *(*output_s_separator)();
-char *(*output_s_begin)();
-char *(*output_s_end)();
+char *(*output_s_separator)(void);
+char *(*output_s_begin)(void);
+char *(*output_s_end)(void);
 
 FILE *out;
 FILE *err;
@@ -182,11 +182,11 @@ char *output_sjson(curve_t *curve) {
 	return result;
 }
 
-char *output_sjson_separator() { return output_malloc(",\n"); }
+char *output_sjson_separator(void) { return output_malloc(",\n"); }
 
-char *output_sjson_begin() { return output_malloc("[\n"); }
+char *output_sjson_begin(void) { return output_malloc("[\n"); }
 
-char *output_sjson_end() { return output_malloc("]\n"); }
+char *output_sjson_end(void) { return output_malloc("]\n"); }
 
 void output_f(FILE *output, curve_t *curve) {
 	char *s = output_s(curve);
@@ -206,7 +206,7 @@ void output_f_separator(FILE *output) {
 	}
 }
 
-void output_o_separator() { output_f_separator(out); }
+void output_o_separator(void) { output_f_separator(out); }
 
 void output_f_begin(FILE *output) {
 	char *s = output_s_begin();
@@ -216,7 +216,7 @@ void output_f_begin(FILE *output) {
 	}
 }
 
-void output_o_begin() { output_f_begin(out); }
+void output_o_begin(void) { output_f_begin(out); }
 
 void output_f_end(FILE *output) {
 	char *s = output_s_end();
@@ -226,9 +226,9 @@ void output_f_end(FILE *output) {
 	}
 }
 
-void output_o_end() { output_f_end(out); }
+void output_o_end(void) { output_f_end(out); }
 
-bool output_init() {
+bool output_init(void) {
 	json_set_allocation_functions(try_malloc, try_free);
 
 	if (cfg->output) {

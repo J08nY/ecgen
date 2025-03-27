@@ -15,6 +15,6 @@
  *
  * @return
  */
-int cm_do();
+int cm_do(void);
 
 #endif  // ECGEN_CM_CM_H

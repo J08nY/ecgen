@@ -11,7 +11,7 @@
 #include "util/memory.h"
 #include "util/str.h"
 
-static seed_t *ansi_new() {
+static seed_t *ansi_new(void) {
 	seed_t *result = seed_new();
 	result->type = SEED_ANSI;
 	return result;

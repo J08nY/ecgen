@@ -461,7 +461,7 @@ GENERATOR(cm_gen_order) {
 	return 1;
 }
 
-void cm_any_quit() {
+void cm_any_quit(void) {
 	if (min_d) {
 		if (min_d->d && isclone(min_d->d)) {
 			gunclone(min_d->d);

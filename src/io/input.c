@@ -93,7 +93,7 @@ GEN input_string(const char *prompt) {
 	return result;
 }
 
-bool input_init() {
+bool input_init(void) {
 	if (cfg->input) {
 		in = fopen(cfg->input, "r");
 		delim = ',';

@@ -49,12 +49,12 @@ GENERATOR(anomalous_gen_order);
 /**
  * @brief Initialize anomalous generation, allocate and set the disc_table.
  */
-void anomalous_init();
+void anomalous_init(void);
 
 /**
  * @brief Deinitialize anomalous generation, free the discriminants from the
  * disc_table.
  */
-void anomalous_quit();
+void anomalous_quit(void);
 
 #endif  // ECGEN_CM_ANOMALOUS_H

@@ -90,6 +90,6 @@ GENERATOR(cm_gen_order);
 /**
  * @brief Deinitialize.
  */
-void cm_any_quit();
+void cm_any_quit(void);
 
 #endif  // ECGEN_CM_ANY_H

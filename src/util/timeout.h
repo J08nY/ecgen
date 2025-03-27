@@ -69,19 +69,19 @@ extern __thread struct sigevent *sevp;
 		}                                 \
 	}
 
-void timeout_thread_init();
+void timeout_thread_init(void);
 
-void timeout_thread_quit();
+void timeout_thread_quit(void);
 
 /**
  * @brief Initialize the timeout system.
  * @return whether the initalization was successful
  */
-bool timeout_init();
+bool timeout_init(void);
 
 /**
  * @brief Deinitialize the timeout system.
  */
-void timeout_quit();
+void timeout_quit(void);
 
 #endif  // ECGEN_UTIL_TIMEOUT_H

@@ -66,6 +66,6 @@ int exhaustive_generate(exhaustive_t *setup);
  *
  * @return
  */
-int exhaustive_do();
+int exhaustive_do(void);
 
 #endif  // ECGEN_EXHAUSTIVE_EXHAUSTIVE_H

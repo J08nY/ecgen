@@ -89,21 +89,21 @@ char *output_sjson(curve_t *curve);
  * format.
  * @return
  */
-char *output_sjson_separator();
+char *output_sjson_separator(void);
 
 /**
  * @brief Output JSON output header(a "[") to a malloc'ed string in CSV
  * format.
  * @return
  */
-char *output_sjson_begin();
+char *output_sjson_begin(void);
 
 /**
  * @brief Output JSON output footer(a "]") to a malloc'ed string in CSV
  * format.
  * @return
  */
-char *output_sjson_end();
+char *output_sjson_end(void);
 
 /**
  * @brief Output curve to a malloc'ed string in configured format.
@@ -129,7 +129,7 @@ void output_o(curve_t *curve);
  * @brief Output separator to a malloc'ed string in configured format.
  * @return
  */
-extern char *(*output_s_separator)();
+extern char *(*output_s_separator)(void);
 
 /**
  * @brief Output separator to a FILE *out in configured format.
@@ -140,13 +140,13 @@ void output_f_separator(FILE *out);
 /**
  * @brief Output separator to configured output in configured format.
  */
-void output_o_separator();
+void output_o_separator(void);
 
 /**
  * @brief Output header to a malloc'ed string in configured format.
  * @return
  */
-extern char *(*output_s_begin)();
+extern char *(*output_s_begin)(void);
 
 /**
  * @brief Output header to a FILE *out in configured format.
@@ -157,13 +157,13 @@ void output_f_begin(FILE *out);
 /**
  * @brief Output header to configured output in configured format.
  */
-void output_o_begin();
+void output_o_begin(void);
 
 /**
  * @brief Output footer to a malloc'ed string in configured format.
  * @return
  */
-extern char *(*output_s_end)();
+extern char *(*output_s_end)(void);
 
 /**
  * @brief Output footer to a FILE *out in configured format.
@@ -174,7 +174,7 @@ void output_f_end(FILE *out);
 /**
  * @brief Output header to configured output in configured format.
  */
-void output_o_end();
+void output_o_end(void);
 
 /**
  * @brief Configured output FILE*.
@@ -195,7 +195,7 @@ extern FILE *verbose;
  * @brief Initialize output based on cfg.
  * @return whether the initialization was successful
  */
-bool output_init();
+bool output_init(void);
 
 /**
  * @brief Deinitialize output.

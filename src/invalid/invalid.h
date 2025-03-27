@@ -14,6 +14,6 @@
  *
  * @return
  */
-int invalid_do();
+int invalid_do(void);
 
 #endif  // ECGEN_INVALID_INVALID_H

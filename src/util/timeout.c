@@ -19,17 +19,17 @@ void timeout_handle(int signum, siginfo_t *siginfo, void *other) {
 	if (timeout_in) siglongjmp(timeout_ptr, 1);
 }
 
-void timeout_thread_init() {
+void timeout_thread_init(void) {
 	timeout_timer = try_calloc(sizeof(timer_t));
 	sevp = try_calloc(sizeof(struct sigevent));
 }
 
-void timeout_thread_quit() {
+void timeout_thread_quit(void) {
 	try_free(timeout_timer);
 	try_free(sevp);
 }
 
-bool timeout_init() {
+bool timeout_init(void) {
 	// init for the main thread.
 	timeout_thread_init();
 	struct sigaction new_action;
@@ -42,7 +42,7 @@ bool timeout_init() {
 	return true;
 }
 
-void timeout_quit() {
+void timeout_quit(void) {
 	// deinit the main thread.
 	timeout_thread_quit();
 }

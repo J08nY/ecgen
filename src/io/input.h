@@ -50,7 +50,7 @@ extern FILE *in;
  * @brief Initialize input based on cfg.
  * @return whether the initialization was successful
  */
-bool input_init();
+bool input_init(void);
 
 /**
  * @brief Deinitialize input.

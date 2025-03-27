@@ -20,7 +20,7 @@ static GEN tz_store[FAMILIES] = {0};
 static GEN D_store[FAMILIES] = {0};
 
 // clang-format off
-void family_init() {
+void family_init(void) {
 	pari_sp ltop = avma;
 	nz_store[FAMILY_BN] = gclone(closure_evalgen(compile_str("(z) -> z")));
 	pz_store[FAMILY_BN] = gclone(closure_evalgen(compile_str("(z) -> 36*z^4 + 36*z^3 + 24*z^2 + 6*z + 1")));
@@ -68,7 +68,7 @@ void family_init() {
 }
 // clang-format on
 
-static seed_t *family_new_seed() {
+static seed_t *family_new_seed(void) {
 	seed_t *result = seed_new();
 	result->type = SEED_FAMILY;
 	return result;
@@ -173,7 +173,7 @@ GENERATOR(family_gen_order) {
 	}
 }
 
-void family_quit() {
+void family_quit(void) {
 	for (int i = 0; i < FAMILIES; i++) {
 		if (nz_store[i]) {
 			gunclone(nz_store[i]);

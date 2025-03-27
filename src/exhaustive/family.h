@@ -22,8 +22,8 @@ GENERATOR(family_gen_equation_cm);
 
 GENERATOR(family_gen_order);
 
-void family_init();
+void family_init(void);
 
-void family_quit();
+void family_quit(void);
 
 #endif  // ECGEN_EXHAUSTIVE_FAMILY_H

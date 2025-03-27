@@ -237,7 +237,7 @@ static void cm_quit(exhaustive_t *setup) {
 	exhaustive_clear(setup);
 }
 
-int cm_do() {
+int cm_do(void) {
 	debug_log_start("Starting Complex Multiplication method");
 
 	gen_f generators[OFFSET_END] = {NULL};

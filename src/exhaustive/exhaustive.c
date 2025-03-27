@@ -487,7 +487,7 @@ int exhaustive_generate(exhaustive_t *setup) {
 	return result;
 }
 
-int exhaustive_do() {
+int exhaustive_do(void) {
 	debug_log_start("Starting Exhaustive method");
 
 	gen_f generators[OFFSET_END] = {NULL};

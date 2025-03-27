@@ -19,7 +19,7 @@ extern struct argp_option cli_options[];
 /**
  * @brief
  */
-bool cli_init();
+bool cli_init(void);
 
 /**
  * @brief
@@ -42,6 +42,6 @@ char *cli_filter(int key, const char *text, void *input);
 /**
  *
  */
-void cli_quit();
+void cli_quit(void);
 
 #endif  // ECGEN_IO_CLI_H

@@ -15,7 +15,7 @@ config_names_t *cfg_used = &cfg_used_s;
 config_names_t cfg_set_s = {0};
 config_names_t *cfg_set = &cfg_set_s;
 
-void config_report_unused() {
+void config_report_unused(void) {
 	bool unused = false;
 	if (cfg_set->field && !cfg_used->field) {
 		fprintf(

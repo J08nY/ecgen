@@ -13,7 +13,7 @@
 #include "util/bits.h"
 #include "util/str.h"
 
-static seed_t *brainpool_new() {
+static seed_t *brainpool_new(void) {
 	seed_t *result = seed_new();
 	result->type = SEED_BRAINPOOL;
 	return result;

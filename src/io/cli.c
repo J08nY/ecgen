@@ -97,7 +97,7 @@ struct argp_option cli_options[] = {
 
 static regex_t re_cm_order;
 
-bool cli_init() {
+bool cli_init(void) {
 	int error = regcomp(
 	    &re_cm_order,
 	    "((0[xX][0-9a-fA-F]+)|([0-9]+))(,((0[xX][0-9a-fA-F]+)|([0-9]+)))*",
@@ -540,4 +540,4 @@ char *cli_filter(int key, const char *text, void *input) {
 	return (char *)text;
 }
 
-void cli_quit() { regfree(&re_cm_order); }
+void cli_quit(void) { regfree(&re_cm_order); }

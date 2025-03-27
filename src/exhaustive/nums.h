@@ -55,6 +55,6 @@ GENERATOR(nums_gen_order);
  */
 GENERATOR(nums_gen_gens);
 
-void nums_quit();
+void nums_quit(void);
 
 #endif  // ECGEN_EXHAUSTIVE_NUMS_H

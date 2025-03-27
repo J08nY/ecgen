@@ -327,7 +327,7 @@ curve_t *invalid_original_curve(exhaustive_t *setup) {
 	return curve;
 }
 
-int invalid_do() {
+int invalid_do(void) {
 	debug_log_start("Starting Invalid curve method");
 
 	gen_f original_gens[OFFSET_END] = {NULL};
