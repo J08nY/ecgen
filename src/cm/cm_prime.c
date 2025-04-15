@@ -28,16 +28,12 @@ static size_t add_primes(GEN r, GEN order, GEN **primes, size_t nprimes) {
 
 	GEN rlog = mulii(r, logN);
 	GEN rplog = mulii(addis(r, 1), logN);
-	// debug_log("rlog = %Pi", rlog);
-	// debug_log("rplog = %Pi", rplog);
 
 	forprime_t iter;
 	forprime_init(&iter, rlog, rplog);
 	GEN prime;
 	while ((prime = forprime_next(&iter))) {
-		// debug_log("prime = %Pi", prime);
 		long k = kronecker(order, prime);
-		// debug_log("k = %li", k);
 		if (k == 1) {
 			GEN pstar = prime;
 			GEN ppow = divis(subis(prime, 1), 2);
@@ -53,8 +49,9 @@ static size_t add_primes(GEN r, GEN order, GEN **primes, size_t nprimes) {
 			(*primes)[nprimes++] = pstar;
 		}
 	}
-
-	*primes = try_realloc(*primes, sizeof(GEN) * nprimes);
+	if (nprimes) {
+		*primes = try_realloc(*primes, sizeof(GEN) * nprimes);
+	}
 
 	return nprimes;
 }
@@ -84,61 +81,75 @@ static void qdisc_next(cm_prime_qdisc_t *qdisc) {
 	if (equalii(qdisc->i, imax) || qdisc->nprimes == 0) {
 		qdisc->nprimes =
 		    add_primes(qdisc->r, qdisc->order, &(qdisc->Sp), qdisc->nprimes);
+		qdisc->i = gen_0;
 		imax = int2n(qdisc->nprimes);
 	}
 
 	pari_sp btop = avma;
 	while (true) {
-		while (cmpii(qdisc->i, imax) < 0) {
+		debug_log("Primes:");
+		for (size_t j = 0; j < qdisc->nprimes; ++j) {
+			debug_log("%Pi", qdisc->Sp[j]);
+		}
+
+		GEN i = qdisc->i;
+		while (cmpii(i, imax) < 0) {
 			// debug_log("i %Pi", qdisc->i);
 			GEN pprod = gen_1;
-			bits_t *ibits = bits_from_i_len(qdisc->i, qdisc->nprimes);
+			bits_t *ibits = bits_from_i_len(i, qdisc->nprimes);
+			char *b = bits_to_bin(ibits);
+			debug_log("bits: %s", b);
+			try_free(b);
 			for (size_t j = 0; j < qdisc->nprimes; ++j) {
 				if (GET_BIT(ibits->bits, j) == 1) {
-					// debug_log("multiplying %Pi", qdisc->Sp[j]);
 					pprod = mulii(pprod, qdisc->Sp[j]);
 				}
 			}
 			bits_free(&ibits);
-			// debug_log("pprod = %Pi", pprod);
+			debug_log("pprod = %Pi, rlog^2 = %Pi, m8 = %Pi", pprod, rlog2,
+			          modis(pprod, 8));
 
 			GEN absp = absi(pprod);
-			long m4 = mod4(absp);
-			if (cmpii(absp, rlog2) < 0 && equalii(modis(pprod, 8), stoi(5)) &&
-			    m4 != 1 && m4 != 2) {
+			// long m4 = mod4(absp);
+			if (cmpii(absp, rlog2) < 0 &&
+			    equalii(modis(pprod, 8), stoi(5))  // && m4 != 1 && m4 != 2
+			) {
 				debug_log("candidate D = %Pi", pprod);
 				GEN x = NULL;
 				GEN y = NULL;
+				// TODO: Check cornacchia -D  vs +D
 				if (!cornacchia2(absp, qdisc->order, &x, &y)) {
-					qdisc->i = gerepileupto(btop, addis(qdisc->i, 1));
-					// debug_log("Cornacchia fail");
+					i = gerepileupto(btop, addis(i, 1));
+					debug_log("Cornacchia fail");
 					continue;
 				}
 				GEN pp1 = addii(addis(qdisc->order, 1), x);
 				GEN pp2 = subii(addis(qdisc->order, 1), x);
-				if (isprime(pp1)) {
+				if (isprime(pp1) && cmpiu(pp1, 5) >= 0) {
 					qdisc->p = pp1;
 					qdisc->D = pprod;
 					qdisc->t = x;
-					qdisc->i = addis(qdisc->i, 1);
+					qdisc->i = addis(i, 1);
 					debug_log("good D %Pi", pprod);
 					return;
 				}
-				if (isprime(pp2)) {
+				if (isprime(pp2) && cmpiu(pp2, 5) >= 0) {
 					qdisc->p = pp2;
 					qdisc->D = pprod;
 					qdisc->t = x;
-					qdisc->i = addis(qdisc->i, 1);
+					qdisc->i = addis(i, 1);
 					debug_log("good D %Pi", pprod);
 					return;
 				}
 			}
-			qdisc->i = gerepileupto(btop, addis(qdisc->i, 1));
+			i = gerepileupto(btop, addis(i, 1));
 		}
 
+		// Another r loop
 		qdisc->r = addis(qdisc->r, 1);
 		qdisc->nprimes =
 		    add_primes(qdisc->r, qdisc->order, &(qdisc->Sp), qdisc->nprimes);
+		qdisc->i = gen_0;
 		rlog2 = sqri(mulii(addis(qdisc->r, 1), logN));
 		imax = int2n(qdisc->nprimes);
 
