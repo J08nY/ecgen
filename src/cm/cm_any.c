@@ -182,66 +182,24 @@ GEN cm_construct_curve(GEN order, GEN d, GEN p, cm_any_roots_t *roots,
 	for (long i = roots->used; i < roots->total; ++i) {
 		roots->used = i + 1;
 		GEN root = gel(roots->roots, i + 1);
-		if (gequal(root, gen_0)) {
-			debug_log("skipping root = 0");
+		if (gequal(root, gen_0) || equaliu(root, 1728)) {
+			debug_log("skipping root = 0 or 1728");
 			continue;
 		}
 		debug_log("trying root[%i] = %Pi", i + 1, root);
 
-		GEN e = ellinit(ellfromj(mkintmod(root, p)), p, 0);
+		GEN e1 = ellinit(ellfromj(mkintmod(root, p)), p, 0);
 		pari_CATCH(e_TYPE) { continue; }
-		pari_TRY { checkell(e); };
+		pari_TRY { checkell(e1); };
 		pari_ENDCATCH{};
 		debug_log("ellinit done");
 
-		if (ord_prime) {
-			// Easy part, the requested order is prime so
-			// [order]G = 0 iff the curve has exactly order points, for any G on
-			// it. otherwise it is the twist
-			GEN g = genrand(e);
-			if (ell_is_inf(ellmul(e, g, order))) {
-				debug_log("Got curve.");
-				return gerepilecopy(ltop, e);
-			} else {
-				debug_log("Got curve twist.");
-				return gerepilecopy(ltop, ellinit(elltwist(e, NULL), p, 0));
-			}
+		GEN ord = ellff_get_card(e1);
+		if (equalii(ord, order)) {
+			return gerepilecopy(ltop, e1);
 		} else {
-			// Hard part, requested order is composite, so it might share a
-			// factor with the order of the twist, which means [order]G = 0
-			// might be true for a point on the twist as well as a point o the
-			// right curve.
-			//
-			// We calculate what the twist order is, then compute gcd of the
-			// orders which leads to the product of the factors that the orders
-			// do not share. By multiplying a random point by this product on
-			// some curve, we can determine that that curve has that number of
-			// points.
-			GEN twist_order = subii(addis(p, 1), subii(order, addis(p, 1)));
-			GEN twist = ellinit(elltwist(e, NULL), p, 0);
-			GEN gcd = gcdii(order, twist_order);
-			GEN orig_mul = divii(order, gcd);
-			GEN twist_mul = divii(twist_order, gcd);
-			while (true) {
-				GEN orig_point = genrand(e);
-				if (ell_is_inf(ellmul(e, orig_point, orig_mul))) {
-					debug_log("Got curve.");
-					return gerepilecopy(ltop, e);
-				}
-				if (ell_is_inf(ellmul(e, orig_point, twist_mul))) {
-					debug_log("Got curve twist.");
-					return gerepilecopy(ltop, twist);
-				}
-				GEN twist_point = genrand(twist);
-				if (ell_is_inf(ellmul(e, twist_point, twist_mul))) {
-					debug_log("Got curve.");
-					return gerepilecopy(ltop, e);
-				}
-				if (ell_is_inf(ellmul(e, twist_point, orig_mul))) {
-					debug_log("Got curve twist.");
-					return gerepilecopy(ltop, twist);
-				}
-			}
+			GEN e2 = ellinit(elltwist(e1, NULL), p, 0);
+			return gerepilecopy(ltop, e2);
 		}
 	}
 	avma = ltop;
@@ -360,7 +318,8 @@ GENERATOR(cm_gen_curve_unique) {
 	GEN e;
 	if (min_d && min_curve == curve) {
 		debug_log("Reusing min D = %Pi", min_d->d);
-		// We have some discriminant, cannot use the roots because the D with walkdown was too large.
+		// We have some discriminant, cannot use the roots because the D with
+		// walkdown was too large.
 		if (min_d->d && isclone(min_d->d)) {
 			gunclone(min_d->d);
 		}
@@ -428,10 +387,12 @@ GENERATOR(cm_gen_curve_unique) {
 		}
 		long dsize = logint(d, gen_2);
 		if (dsize > 30) {
-            debug_log("Discriminant too large after walkdown (d = %Pi, %li bits).", d, dsize);
-            avma = ltop;
-            return -3;
-        }
+			debug_log(
+			    "Discriminant too large after walkdown (d = %Pi, %li bits).", d,
+			    dsize);
+			avma = ltop;
+			return -3;
+		}
 		if (min_roots) {
 			cm_update_roots(d, min_d->p, min_roots);
 		} else {

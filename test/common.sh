@@ -7,7 +7,6 @@
 ####
 
 ecgen="../ecgen"
-econvert="../econvert"
 ASSERT="lib/assert.sh/assert.sh"
 JSON="lib/JSON.sh/JSON.sh"
 
@@ -40,4 +39,11 @@ strip_num() {
 canonical_num() {
     num=$(strip_num "$1")
     echo "ibase=16;${num^^}" | bc
+}
+
+get_pari_order() {
+  p=$(canonical_num $(echo $1 | ${JSON} -x field\",\"p | cut -f 2))
+  a=$(canonical_num $(echo $1 | ${JSON} -x \"a | cut -f 2))
+  b=$(canonical_num $(echo $1 | ${JSON} -x \"b | cut -f 2))
+  echo "ellcard(ellinit([${a}, ${b}], ${p}))" | gp -q 2>/dev/null
 }

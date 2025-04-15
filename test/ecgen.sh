@@ -101,20 +101,24 @@ function nums() {
 function anomalous() {
     start_test
     assert_raises "${ecgen} --fp --anomalous -r 20"
-    out=$(${ecgen} --fp --anomalous -r 20 2>/dev/null)
-    p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
-    order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
-    assert "strip_num $p" $(strip_num $order)
+    for i in $(seq 10); do
+      out=$(${ecgen} --fp --anomalous -r 20 2>/dev/null)
+      p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
+      order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
+      assert "strip_num $p" $(strip_num $order)
+    done
 }
 
 function supersingular() {
     start_test
     assert_raises "${ecgen} --fp --supersingular -r -c 5 20"
-    out=$(${ecgen} --fp --supersingular -r 20 2>/dev/null)
-	  p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
-	  order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
-	  order_m1=$(echo $(canonical_num $order) - 1 | bc)
-    assert "canonical_num $p" $order_m1
+    for i in $(seq 10); do
+      out=$(${ecgen} --fp --supersingular -r 20 2>/dev/null)
+      p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
+      order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
+      order_m1=$(echo $(canonical_num $order) - 1 | bc)
+      assert "canonical_num $p" $order_m1
+    done
 
     assert_raises "${ecgen} --fp --supersingular --input=data/prime.in 64"
 
@@ -194,6 +198,35 @@ function cm() {
     assert_raises "${ecgen} --fp --order=0x1000 8" 1
 }
 
+function cm_orders() {
+  start_test
+  for i in $(seq 5 100); do
+    out=$(timeout -k 4 3 ${ecgen} --fp -n $i --points=none 6 2>/dev/null)
+    if [[ -z "$out" || "$out" = "[" ]]; then
+      continue
+    fi
+    order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
+    pari_order=$(get_pari_order "$out")
+    assert "canonical_num $order" $pari_order
+  done
+
+  prime_orders=(45678945611413 47889465415131 78246132456157 3879641663983 134537095890397 3790687732807)
+  for ord in "${prime_orders[@]}"; do
+    out=$(${ecgen} --fp -r --order=$ord 64 2>/dev/null)
+    p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
+    order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
+    assert "canonical_num $order" $ord
+  done
+
+  composite_orders=(106618070007935 32268705670290 78286235471710 93953327960423 17042092126557 43615536370894)
+  for ord in "${composite_orders[@]}"; do
+    out=$(${ecgen} --fp -r --order=$ord 64 2>/dev/null)
+    p=$(echo $out | ${JSON} -x field\",\"p | cut -f 2)
+    order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
+    assert "canonical_num $order" $ord
+  done
+}
+
 function secg() {
     function test_order() {
         name="${1}"
@@ -236,5 +269,6 @@ twist
 cli
 hex
 cm
+cm_orders
 secg
 end_suite ecgen

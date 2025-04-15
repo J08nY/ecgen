@@ -11,6 +11,11 @@
 #include "obj/subgroup.h"
 #include "util/bits.h"
 
+/*
+ * This file implements Algorithm 2.2 from
+ * "Constructing elliptic curves of prime order"
+ * https://pub.math.leidenuniv.nl/~stevenhagenp/bs.pdf
+ */
 static size_t add_primes(GEN r, GEN order, GEN **primes, size_t nprimes) {
 	debug_log("add_primes r = %Pi, nprimes = %lu", r, nprimes);
 	size_t nalloc = nprimes;
@@ -23,12 +28,16 @@ static size_t add_primes(GEN r, GEN order, GEN **primes, size_t nprimes) {
 
 	GEN rlog = mulii(r, logN);
 	GEN rplog = mulii(addis(r, 1), logN);
+	// debug_log("rlog = %Pi", rlog);
+	// debug_log("rplog = %Pi", rplog);
 
 	forprime_t iter;
 	forprime_init(&iter, rlog, rplog);
 	GEN prime;
 	while ((prime = forprime_next(&iter))) {
+		// debug_log("prime = %Pi", prime);
 		long k = kronecker(order, prime);
+		// debug_log("k = %li", k);
 		if (k == 1) {
 			GEN pstar = prime;
 			GEN ppow = divis(subis(prime, 1), 2);
@@ -91,6 +100,7 @@ static void qdisc_next(cm_prime_qdisc_t *qdisc) {
 				}
 			}
 			bits_free(&ibits);
+			// debug_log("pprod = %Pi", pprod);
 
 			GEN absp = absi(pprod);
 			long m4 = mod4(absp);
