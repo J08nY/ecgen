@@ -207,7 +207,7 @@ function cm_orders() {
     fi
     order=$(echo $out | ${JSON} -x ^0,\"order\" | cut -f 2)
     pari_order=$(get_pari_order "$out")
-    assert "canonical_num $order" $pari_order
+    assert "canonical_num $order" "$pari_order"
   done
 
   prime_orders=(45678945611413 47889465415131 78246132456157 3879641663983 134537095890397 3790687732807)
