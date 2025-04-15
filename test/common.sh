@@ -45,5 +45,5 @@ get_pari_order() {
   p=$(canonical_num $(echo $1 | ${JSON} -x field\",\"p | cut -f 2))
   a=$(canonical_num $(echo $1 | ${JSON} -x \"a | cut -f 2))
   b=$(canonical_num $(echo $1 | ${JSON} -x \"b | cut -f 2))
-  echo "ellcard(ellinit([${a}, ${b}], ${p}))" | gp -q 2>/dev/null
+  echo "ellcard(ellinit([${a}, ${b}], ${p}))" | gp -f -q | tr -cd [:digit:] 2>/dev/null
 }
