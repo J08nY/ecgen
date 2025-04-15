@@ -20,7 +20,7 @@
 /**
  * @file ecgen.c
  * @author J08nY <johny@neuromancer.sk>
- * @version 0.8.1
+ * @version 0.8.2
  * @copyright GPL v2.0
  */
 #include <pari/pari.h>
@@ -38,11 +38,11 @@
 #endif
 
 const char *argp_program_version =
-    "ecgen 0.8.1" GIT_VERSION
+    "ecgen 0.8.2" GIT_VERSION
     "\n"
     "Compiled with: " PARIVERSION
     "\n\n"
-    "Copyright (C) 2017-2018,2021,2024 J08nY\n"
+    "Copyright (C) 2017-2018,2021,2024,2025 J08nY\n"
     "License GPLv2: GNU GPL version 2 (or later) "
     "<http://gnu.org/licenses/gpl.html>\n"
     "This is free software: you are free to change and redistribute it.\n"
