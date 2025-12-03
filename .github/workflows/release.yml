@@ -20,7 +20,19 @@ jobs:
         run: |
           make
           strip ecgen
+          mv ecgen ecgen-release
+          make clean
+          make STATIC=1
+          mv ecgen ecgen-static
+          make clean
+          make DEBUG=1
+          mv ecgen ecgen-debug
+          make clean
+          mv ecgen-release ecgen
       - name: Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ecgen
+          files: |
+            ecgen
+            ecgen-static
+            ecgen-debug
