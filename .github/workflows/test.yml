@@ -11,7 +11,7 @@ jobs:
     env:
       CC: ${{ matrix.CC }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v6
         with:
           submodules: true
       - name: Setup pari
@@ -34,7 +34,7 @@ jobs:
         run: |
           cd src && find . -name "*.gcda" -exec gcov -pb "{}" +;
       - name: Code coverage upload
-        uses: codecov/codecov-action@v4
+        uses: codecov/codecov-action@v5
         if: ${{ matrix.CC == 'gcc' }}
         with:
           env_vars: CC
